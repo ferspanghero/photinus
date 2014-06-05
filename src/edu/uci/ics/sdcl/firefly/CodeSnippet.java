@@ -27,6 +27,16 @@ public class CodeSnippet
 		this.statments = statments;
 	}
 	
+	@Override
+	public String toString() {
+		return "CodeSnippet [uniqueName=" + uniqueName + ", visibilityType="
+				+ visibilityType + ", implementationType=" + implementationType
+				+ ", methodBody=" + methodBody + ", methodInterface="
+				+ methodInterface + ", returnStatment=" + returnStatment
+				+ ", methodDeclaration=" + methodDeclaration + ", statments="
+				+ statments + "]";
+	}
+
 	public void print()
 	{
 		//TO DO
