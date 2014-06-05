@@ -1,4 +1,4 @@
-// package edu.uci.ics.sdcl.firefly;
+package edu.uci.ics.sdcl.firefly;
 import java.util.ArrayList;
 
 public class CodeSnippet
