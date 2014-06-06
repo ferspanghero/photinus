@@ -4,10 +4,13 @@ import java.util.Map;
 
 import org.eclipse.jdt.core.*;
 import org.eclipse.jdt.core.dom.*;
+import org.eclipse.jface.text.*;
 
 
 public class JavaParser {
-	
+
+	private ICompilationUnit unit = null;
+
 	public JavaParser(StringBuffer SourcePath) {
 
 		char[] source = SourcePath.toString().toCharArray(); // obtain an array of char from the source file = ...;
@@ -17,7 +20,46 @@ public class JavaParser {
 		Map options = JavaCore.getOptions();
 		JavaCore.setComplianceOptions(JavaCore.VERSION_1_7, options);
 		parser.setCompilerOptions(options);
-		CompilationUnit result = (CompilationUnit) parser.createAST(null);
+		ICompilationUnit result = (ICompilationUnit) parser.createAST(null);
+
+	}
+
+
+	public void printICompilationUnitInfo()
+			throws JavaModelException {
+		if(this.unit!=null)
+			printCompilationUnitDetails(this.unit);
+		else
+			System.err.println("No Compilation Unit to print");
+	}
+
+	private void printCompilationUnitDetails(ICompilationUnit unit)
+			throws JavaModelException {
+		System.out.println("Source file " + unit.getElementName());
+		//  DocumentCommand doc = new DocumentCommand(unit.getSource());
+		// System.out.println("Has number of lines: " + doc.getNumberOfLines());
+		printIMethods();
+	}
+
+	private void  printIMethods() throws JavaModelException {
+		IType[] allTypes = this.unit.getAllTypes();
+		for (IType type : allTypes) {
+			printIMethodDetails(type);
+		}
+	}
+
+
+
+	private void printIMethodDetails(IType type) throws JavaModelException {
+		IMethod[] methods = type.getMethods();
+		for (IMethod method : methods) {
+
+			System.out.println("Method name " + method.getElementName());
+			System.out.println("Signature " + method.getSignature());
+			System.out.println("Return Type " + method.getReturnType());
+			System.out.println("Source " + method.getSource());
+			System.out.println("Compilation Unit Source " + method.getCompilationUnit().getSource());
+		}
 
 	}
 }
