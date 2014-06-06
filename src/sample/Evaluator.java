@@ -49,7 +49,7 @@ public class Evaluator {
 	private BugGraph bugGraph = null;
 	private Map<String, Function> functions = new HashMap<String, Function>();
 
-	public Evaluator(BugGraph bugGraph) {
+	public   Evaluator(BugGraph bugGraph) {
 		this.bugGraph = bugGraph;
 		initFunctions();
 	}
