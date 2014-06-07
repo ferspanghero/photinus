@@ -9,7 +9,7 @@ public class MethodSignature {
 	protected ArrayList<String> Parameters;
 	protected Integer LineNumber;
 
-	public MethodDeclaration(String name, String modifier,
+	public MethodSignature(String name, String modifier,
 			ArrayList<String> parameters, Integer lineNumber) {
 		super();
 		Name = name;
@@ -22,7 +22,7 @@ public class MethodSignature {
 	 * Compare the current method against a provided one.
 	 * @return true is mehods are the same (name and parameters match), otherwise false
 	 */
-	public boolean compareMethods(MethodDeclaration method){
+	public boolean compareMethods(MethodSignature method){
 		//TO DO
 		return false;
 	}

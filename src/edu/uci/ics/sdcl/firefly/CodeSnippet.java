@@ -9,13 +9,13 @@ public class CodeSnippet
 	protected String methodBody;			// whole content of method
 	protected String methodInterface;		// method declaration
 	protected Boolean returnStatment;		// true if there is a return value
-	protected MethodDeclaration methodDeclaration;	// parsed method declaration
+	protected MethodSignature methodSignature;	// parsed method declaration
 	protected ArrayList<CodeElement> statments;		// flow control statments
 	
 	
 	public CodeSnippet(String uniqueName, String visibilityType, String implementationType, 
 			String methodBody, String methodInterface, Boolean returnStatment, 
-			MethodDeclaration methodDeclaration, ArrayList<CodeElement> statments)
+			MethodSignature methodSignature, ArrayList<CodeElement> statments)
 	{
 		this.uniqueName = uniqueName;
 		this.visibilityType = visibilityType;
@@ -23,7 +23,7 @@ public class CodeSnippet
 		this.methodBody = methodBody;
 		this.methodInterface = methodInterface;
 		this.returnStatment = returnStatment;
-		this.methodDeclaration = methodDeclaration;
+		this.methodSignature = methodSignature;
 		this.statments = statments;
 	}
 	
@@ -33,7 +33,7 @@ public class CodeSnippet
 				+ visibilityType + ", implementationType=" + implementationType
 				+ ", methodBody=" + methodBody + ", methodInterface="
 				+ methodInterface + ", returnStatment=" + returnStatment
-				+ ", methodDeclaration=" + methodDeclaration + ", statments="
+				+ ", methodDeclaration=" + methodSignature + ", statments="
 				+ statments + "]";
 	}
 
