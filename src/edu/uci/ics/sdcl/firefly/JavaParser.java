@@ -12,10 +12,13 @@ public class JavaParser {
 
 	private CompilationUnit unit = null;
 	private MethodVisitor methodVisitor = null;
-	//private WhileVisitor whileVisitor= null;
-	//private ForVisitor forVisitor = null;
-	//private SwitchVisitor switchVisitor = null; 
-	//private IfVisitor ifVisitor = null;
+	private IfVisitor ifVisitor = null; //See org.eclipse.jdt.core.dom.IfStatement
+	
+	//private WhileVisitor whileVisitor= null; //See org.eclipse.jdt.core.dom.WhileStatement
+	//private ForVisitor forVisitor = null; //See org.eclipse.jdt.core.dom.ForStatement
+	//private SwitchVisitor switchVisitor = null; //See org.eclipse.jdt.core.dom.SwitchStatement
+	//private ReturnVisitor returnVisitor = null; // 
+	//private MethodInvocationVisitor methodInvocationVisitor = null; //See org.eclipse.jdt.core.dom.MethodInvocation
 
 	public JavaParser(StringBuffer SourcePath) {
 
@@ -47,48 +50,34 @@ public class JavaParser {
 			System.err.println("No Compilation Unit to print");
 	}
 	
-	public void printMethods(){
-		
+	
+	public void printMethods(){	
 		for (MethodDeclaration method : methodVisitor.getMethods()) {
 			System.out.println("-----------");
 			System.out.print("Method name: " + method.getName());
 			System.out.print(" Return type: " + method.getReturnType2());
 			System.out.print(" Body: " + method.getBody().toString());
 			System.out.print(" Line: " + method.getStartPosition());
+			System.out.println("-----------");	
+			
+			printIfs(method);
+		//	printWhiles(method);
+		//	printFors(method);
+		//	printSwitches(method);
+		//  printMethodInvocation(method);
+		//  printReturnStatement(method);
+		}
+	}
+	
+	
+	private void printIfs(MethodDeclaration method){
+		CompilationUnit methodUnit = (CompilationUnit) method.getRoot();
+		this.ifVisitor=new IfVisitor();
+		methodUnit.accept(ifVisitor);
+		for (IfStatement statement : ifVisitor.getStatements()) {
 			System.out.println("-----------");
+			System.out.print("Line position for If: " + statement.getStartPosition());
 		}
 	}
 	  
-	
-	/*
-	private void printCompilationUnitDetails( CompilationUnit unit)
-			throws JavaModelException {
-		//System.out.println("Source file " + unit.getElementName());
-		//DocumentCommand doc = new DocumentCommand(unit.getSource());
-		// System.out.println("Has number of lines: " + doc.getNumberOfLines());
-		printIMethods();
-	}
-
-	private void  printIMethods() throws JavaModelException {
-		List allTypes = this.unit.types();
-		for (IType type : allTypes) {
-			printIMethodDetails(type);
-		}
-	}
-
-
-
-	private void printIMethodDetails(IType type) throws JavaModelException {
-		IMethod[] methods = type.getMethods();
-		for (IMethod method : methods) {
-
-			System.out.println("Method name " + method.getElementName());
-			System.out.println("Signature " + method.getSignature());
-			System.out.println("Return Type " + method.getReturnType());
-			System.out.println("Source " + method.getSource());
-			System.out.println("Compilation Unit Source " + method.getCompilationUnit().getSource());
-		}
-
-	}
-	*/
 }

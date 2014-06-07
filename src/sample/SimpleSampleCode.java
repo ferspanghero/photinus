@@ -2,7 +2,11 @@ package sample;
 
 public class SimpleSampleCode {
 
+	Integer SeedLimit = null;
+	
 	public SimpleSampleCode() {
+		if(SeedLimit == null)
+			this.SeedLimit = new Integer(10);
 	}
 	
 	public Integer factorial(Integer Seed, Integer Iterations){
