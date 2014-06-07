@@ -53,6 +53,7 @@ public class SourceFileReaderTester {
 		JavaParser parser = new JavaParser(buffer);
 		try{
 			parser.printICompilationUnitInfo();
+			parser.printMethods();
 		}
 		catch(Exception e){
 			System.err.println("Exception at runTest :" +e.toString());

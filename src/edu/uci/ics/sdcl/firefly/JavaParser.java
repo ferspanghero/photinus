@@ -1,5 +1,6 @@
 package edu.uci.ics.sdcl.firefly;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.core.*;
@@ -9,7 +10,12 @@ import org.eclipse.jface.text.*;
 
 public class JavaParser {
 
-	private ICompilationUnit unit = null;
+	private CompilationUnit unit = null;
+	private MethodVisitor methodVisitor = null;
+	//private WhileVisitor whileVisitor= null;
+	//private ForVisitor forVisitor = null;
+	//private SwitchVisitor switchVisitor = null; 
+	//private IfVisitor ifVisitor = null;
 
 	public JavaParser(StringBuffer SourcePath) {
 
@@ -20,29 +26,51 @@ public class JavaParser {
 		Map options = JavaCore.getOptions();
 		JavaCore.setComplianceOptions(JavaCore.VERSION_1_7, options);
 		parser.setCompilerOptions(options);
-		ICompilationUnit result = (ICompilationUnit) parser.createAST(null);
-
+		
+		this.unit  = (CompilationUnit) parser.createAST(null);
+		
+		//Add a Method Visitor
+		this.methodVisitor = new MethodVisitor();
+		this.unit.accept(methodVisitor);
+		
 	}
 
 
-	public void printICompilationUnitInfo()
-			throws JavaModelException {
-		if(this.unit!=null)
-			printCompilationUnitDetails(this.unit);
+	public void printICompilationUnitInfo(){
+		if(this.unit!=null){
+			List<AbstractTypeDeclaration> list = this.unit.types();
+			for(AbstractTypeDeclaration declaration: list){
+			System.out.println("Name : "+ declaration.getName().toString());
+		}
+			}
 		else
 			System.err.println("No Compilation Unit to print");
 	}
-
-	private void printCompilationUnitDetails(ICompilationUnit unit)
+	
+	public void printMethods(){
+		
+		for (MethodDeclaration method : methodVisitor.getMethods()) {
+			System.out.println("-----------");
+			System.out.print("Method name: " + method.getName());
+			System.out.print(" Return type: " + method.getReturnType2());
+			System.out.print(" Body: " + method.getBody().toString());
+			System.out.print(" Line: " + method.getStartPosition());
+			System.out.println("-----------");
+		}
+	}
+	  
+	
+	/*
+	private void printCompilationUnitDetails( CompilationUnit unit)
 			throws JavaModelException {
-		System.out.println("Source file " + unit.getElementName());
-		//  DocumentCommand doc = new DocumentCommand(unit.getSource());
+		//System.out.println("Source file " + unit.getElementName());
+		//DocumentCommand doc = new DocumentCommand(unit.getSource());
 		// System.out.println("Has number of lines: " + doc.getNumberOfLines());
 		printIMethods();
 	}
 
 	private void  printIMethods() throws JavaModelException {
-		IType[] allTypes = this.unit.getAllTypes();
+		List allTypes = this.unit.types();
 		for (IType type : allTypes) {
 			printIMethodDetails(type);
 		}
@@ -62,4 +90,5 @@ public class JavaParser {
 		}
 
 	}
+	*/
 }
