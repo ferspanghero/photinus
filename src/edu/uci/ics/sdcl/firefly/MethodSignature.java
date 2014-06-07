@@ -2,7 +2,7 @@ package edu.uci.ics.sdcl.firefly;
 
 import java.util.ArrayList;
 
-public class MethodDeclaration {
+public class MethodSignature {
 
 	protected String Name;
 	protected String Modifier;
@@ -26,5 +26,5 @@ public class MethodDeclaration {
 		//TO DO
 		return false;
 	}
-	
+
 }
