@@ -8,6 +8,8 @@ public class CodeElement {
 	public final static String SWITCH_CONDITIONAL = "SWITCH_CONDITIONAL"; 
 	public final static String METHOD_CALL = "METHOD_CALL"; 
 	public final static String METHOD_PARAMETERS = "METHOD_PARAMETERS"; 
+	public final static String METHOD_NAME = "METHOD_NAME";
+	public static final String RETURN_STATEMENT = "RETURN_STATEMENT";
 
 	private String Type;
 	private Integer LineNumber;

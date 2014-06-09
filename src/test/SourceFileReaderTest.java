@@ -7,16 +7,16 @@ import java.io.FileReader;
 
 import edu.uci.ics.sdcl.firefly.JavaParser;
 
-public class SourceFileReaderTester {
+public class SourceFileReaderTest {
 
 	public static void main(String args[]){
-		SourceFileReaderTester tester = new SourceFileReaderTester();
+		SourceFileReaderTest tester = new SourceFileReaderTest();
 		tester.runTest();
 	}
 	
 	String path = "C:/Users/Christian Adriano/Documents/GitHub/crowd-debug-firefly/src/sample/SimpleSampleCode.java"; 
 
-	public SourceFileReaderTester() {}
+	public SourceFileReaderTest() {}
 
 
 	public StringBuffer readFileToBuffer(String path){

@@ -3,43 +3,110 @@ import java.util.ArrayList;
 
 public class CodeSnippet
 {
-	protected String uniqueName; 			// path + name of method
-	protected String visibilityType;		// public, protected or private
+	protected String packageName;		// package name
+	protected String className; 			// file
+	protected String methodName; 			// name of method
 	protected String implementationType; 	// concrete or abstract
-	protected String methodBody;			// whole content of method
-	protected String methodInterface;		// method declaration
-	protected Boolean returnStatment;		// true if there is a return value
+	protected StringBuffer methodBody;			// whole content of method
+	protected Boolean returnStatement;		// true if there is a return value
 	protected MethodSignature methodSignature;	// parsed method declaration
-	protected ArrayList<CodeElement> statments;		// flow control statments
+	protected ArrayList<CodeElement> statements;		// list of statements
 	
 	
-	public CodeSnippet(String uniqueName, String visibilityType, String implementationType, 
-			String methodBody, String methodInterface, Boolean returnStatment, 
-			MethodSignature methodSignature, ArrayList<CodeElement> statments)
+	public CodeSnippet(String packageName, String className, String methodName,String implementationType, 
+			StringBuffer methodBody, Boolean returnStatement, 
+			MethodSignature methodSignature)
 	{
-		this.uniqueName = uniqueName;
-		this.visibilityType = visibilityType;
+		this.packageName = packageName;
+		this.className = className;
+		this.methodName = methodName;
 		this.implementationType = implementationType;
 		this.methodBody = methodBody;
-		this.methodInterface = methodInterface;
-		this.returnStatment = returnStatment;
+		this.returnStatement = returnStatement;
 		this.methodSignature = methodSignature;
-		this.statments = statments;
+		this.statements = new ArrayList<CodeElement>();
 	}
 	
 	@Override
 	public String toString() {
-		return "CodeSnippet [uniqueName=" + uniqueName + ", visibilityType="
-				+ visibilityType + ", implementationType=" + implementationType
-				+ ", methodBody=" + methodBody + ", methodInterface="
-				+ methodInterface + ", returnStatment=" + returnStatment
-				+ ", methodDeclaration=" + methodSignature + ", statments="
-				+ statments + "]";
+		return "CodeSnippet [package name=" + packageName + "className="+ className+ "methodName="+methodName+
+				", implementationType=" + implementationType
+				+ ", methodBody=" + methodBody + ", returnStatment=" + returnStatement
+				+ ", methodSignature=" + methodSignature + ", statements="
+				+ statements + "]";
 	}
 
-	public void print()
-	{
-		//TO DO
-	}
 	
+	public void addElement(CodeElement element){
+		this.statements.add(element);
+	}
+
+	public boolean isEqualTo(CodeSnippet targetSnippet) {
+		MethodSignature targetMethod = targetSnippet.getMethodSignature();
+		return this.methodSignature.isEqualTo(targetMethod);
+	}
+
+	public String getPackageName() {
+		return packageName;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public String getMethodName() {
+		return methodName;
+	}
+
+	public void setMethodName(String methodName) {
+		this.methodName = methodName;
+	}
+
+	public String getImplementationType() {
+		return implementationType;
+	}
+
+	public void setImplementationType(String implementationType) {
+		this.implementationType = implementationType;
+	}
+
+	public StringBuffer getMethodBody() {
+		return methodBody;
+	}
+
+	public void setMethodBody(StringBuffer methodBody) {
+		this.methodBody = methodBody;
+	}
+
+	public Boolean getReturnStatement() {
+		return returnStatement;
+	}
+
+	public void setReturnStatement(Boolean returnStatement) {
+		this.returnStatement = returnStatement;
+	}
+
+	public MethodSignature getMethodSignature() {
+		return methodSignature;
+	}
+
+	public void setMethodSignature(MethodSignature methodSignature) {
+		this.methodSignature = methodSignature;
+	}
+
+	public ArrayList<CodeElement> getStatements() {
+		return statements;
+	}
+
+	public void setStatements(ArrayList<CodeElement> statements) {
+		this.statements = statements;
+	}
 }
