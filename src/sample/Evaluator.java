@@ -60,7 +60,7 @@ public class Evaluator {
 		functions.put("COMMITTED", new Commited());
 		functions.put("COMMENTED", new Commented());
 	}
-	
+
 	public BugTagSet evaluate(Tree ast) throws Exception {
 		logger.info("Evaluating AST: " + ast.toStringTree());
 		String tag = ast.getChild(0).getText();
@@ -138,7 +138,7 @@ public class Evaluator {
 		}
 	}
 
-	private String evaluateFunction(String fn, String param, Bug bug) {
+	protected String evaluateFunction(String fn, String param, Bug bug) {
 		Function function = functions.get(fn);
 
 		if (function != null) {

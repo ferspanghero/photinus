@@ -3,35 +3,49 @@ import java.util.ArrayList;
 
 public class CodeSnippet
 {
-	protected String packageName;		// package name
-	protected String className; 			// file
-	protected String methodName; 			// name of method
-	protected String implementationType; 	// concrete or abstract
-	protected StringBuffer methodBody;			// whole content of method
-	protected Boolean returnStatement;		// true if there is a return value
-	protected MethodSignature methodSignature;	// parsed method declaration
-	protected ArrayList<CodeElement> statements;		// list of statements
+	protected String packageName;					// package name
+	protected String className; 					// file
+//	protected String methodName; 					// name of method
+//	protected String implementationType; 			// concrete or abstract
+	protected String methodBody;					// whole content of method
+	protected Boolean returnStatement;				// true if there is a return value
+	protected MethodSignature methodSignature;		// parsed method declaration
+	protected ArrayList<CodeElement> statements;	// list of statements
 	
 	
 	public CodeSnippet(String packageName, String className, String methodName,String implementationType, 
-			StringBuffer methodBody, Boolean returnStatement, 
+			String methodBody, Boolean returnStatement, 
 			MethodSignature methodSignature)
 	{
 		this.packageName = packageName;
 		this.className = className;
-		this.methodName = methodName;
-		this.implementationType = implementationType;
+//		this.methodName = methodName;
+//		this.implementationType = implementationType;
 		this.methodBody = methodBody;
 		this.returnStatement = returnStatement;
 		this.methodSignature = methodSignature;
 		this.statements = new ArrayList<CodeElement>();
 	}
 	
+	public CodeSnippet(String packageName2, String className2, String name,
+			String implementationType, StringBuffer buffer,
+			Boolean returnStatement2, MethodSignature signature)
+	{
+		this.packageName = packageName2;
+		this.className = className2;
+//		this.methodName = name;
+//		this.implementationType = implementationType;
+		this.methodBody = buffer.toString();
+		this.returnStatement = returnStatement2;
+		this.methodSignature = signature;
+		this.statements = new ArrayList<CodeElement>();
+	}
+
 	@Override
 	public String toString() {
-		return "CodeSnippet [package name=" + packageName + "className="+ className+ "methodName="+methodName+
-				", implementationType=" + implementationType
-				+ ", methodBody=" + methodBody + ", returnStatment=" + returnStatement
+		return "CodeSnippet [package name=" + packageName + "className="+ className+ 
+//				" methodName= "+methodName +", implementationType=" + implementationType
+				 ", methodBody=" + methodBody + ", returnStatment=" + returnStatement
 				+ ", methodSignature=" + methodSignature + ", statements="
 				+ statements + "]";
 	}
@@ -62,27 +76,27 @@ public class CodeSnippet
 		this.className = className;
 	}
 
-	public String getMethodName() {
-		return methodName;
-	}
+//	public String getMethodName() {
+//		return methodName;
+//	}
+//
+//	public void setMethodName(String methodName) {
+//		this.methodName = methodName;
+//	}
 
-	public void setMethodName(String methodName) {
-		this.methodName = methodName;
-	}
+//	public String getImplementationType() {
+//		return implementationType;
+//	}
+//
+//	public void setImplementationType(String implementationType) {
+//		this.implementationType = implementationType;
+//	}
 
-	public String getImplementationType() {
-		return implementationType;
-	}
-
-	public void setImplementationType(String implementationType) {
-		this.implementationType = implementationType;
-	}
-
-	public StringBuffer getMethodBody() {
+	public String getMethodBody() {
 		return methodBody;
 	}
 
-	public void setMethodBody(StringBuffer methodBody) {
+	public void setMethodBody(String methodBody) {
 		this.methodBody = methodBody;
 	}
 
