@@ -76,7 +76,8 @@ public class CodeSnippetFactoryTest {
 
 	@Test
 	public void test() {
-		CodeSnippetFactory factory = new CodeSnippetFactory("../sample/SimpleSampleCode");
+		CodeSnippetFactory factory = new CodeSnippetFactory(
+				"C:/Users/Danilo/Documents/GitHub/crowd-debug-firefly/src/sample/JustOneSample");
 		ArrayList<CodeSnippet> list = factory.generateSnippets();
 		if((list ==null ) || (list.size()!=2))
 			Assert.fail("Null list of snippets or file does not match test data");

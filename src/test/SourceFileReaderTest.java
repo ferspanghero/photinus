@@ -11,8 +11,10 @@ public class SourceFileReaderTest {
 
 	public static void main(String args[]) throws IOException{
 		CodeSnippetFactory codeSnippets = new CodeSnippetFactory
-				("C:/Users/Danilo/Documents/GitHub/crowd-debug-firefly/src/sample/");
+				("C:/Users/Danilo/Documents/GitHub/crowd-debug-firefly/src/sample/JustOneSample");
 		codeSnippets.generateSnippets();
+		System.out.println();
+		System.out.println("********************************");
 		codeSnippets.printAll();
 	} 
 
