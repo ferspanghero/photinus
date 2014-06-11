@@ -11,7 +11,7 @@ public class CodeSnippet
 	protected Boolean returnStatement;				// true if there is a return value
 	protected MethodSignature methodSignature;		// parsed method declaration
 	protected ArrayList<CodeElement> statements;	// list of statements
-	
+	private final static String newline = System.getProperty("line.separator");	// Just to jump line @toString
 	
 	public CodeSnippet(String packageName, String className, 
 			String methodBody, Boolean returnStatement, 
@@ -43,11 +43,13 @@ public class CodeSnippet
 
 	@Override
 	public String toString() {
-		return "CodeSnippet [package name=" + packageName + "className="+ className+ 
-//				" methodName= "+methodName +", implementationType=" + implementationType
-				 ", methodBody=" + methodBody + ", returnStatment=" + returnStatement
-				+ ", methodSignature=" + methodSignature + ", statements="
-				+ statements + "]";
+		return "CodeSnippet" 
+				+ newline + "package name: " + packageName 
+				+ newline + "className: " + className 
+				+ newline + "methodSignature: " + methodSignature 
+				+ newline + "returnStatment: " + returnStatement 
+				+ newline + "methodBody: " + newline + methodBody
+				+ "statements = "	+ statements;
 	}
 
 	

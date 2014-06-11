@@ -48,6 +48,7 @@ public class CodeSnippetFactory {
 		System.out.println("Printing all methods");
 		for (CodeSnippet method : codeSnippetList)
 		{
+			System.out.println("--");
 			System.out.println(method);
 		}
 	}
@@ -61,12 +62,14 @@ public class CodeSnippetFactory {
 		File root = new File(this.folderPath);
 		File[] files = root.listFiles ( );
 		String filePath = null;
-
-		for (File f : files ) {
-			filePath = f.getAbsolutePath();
-			if(f.isFile()){
-				@SuppressWarnings("unused")
-				JavaParser parser = new JavaParser(SourceFileReaderTest.readFileToString(filePath));
+		if( files != null)
+		{
+			for (File f : files ) {
+				filePath = f.getAbsolutePath();
+				if(f.isFile()){
+					@SuppressWarnings("unused")
+					JavaParser parser = new JavaParser(SourceFileReaderTest.readFileToString(filePath));
+				}
 			}
 		}
 	}

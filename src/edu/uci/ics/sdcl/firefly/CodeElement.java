@@ -34,7 +34,10 @@ public class CodeElement {
 	public void setLineNumber(Integer lineNumber) {
 		LineNumber = lineNumber;
 	}
-
 	
-	
+	@Override
+	public String toString()
+	{
+		return this.getType() + " @ line " + this.getLineNumber().toString();
+	}
 }
