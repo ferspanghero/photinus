@@ -41,8 +41,8 @@ public class CodeSnippetFactoryTest {
 		buffer.append("\n");
 		buffer.append("}");
 		
-		this.codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode",signature.getName(),"concrete", 
-				 buffer, new Boolean (true), signature);
+		this.codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer, 
+				new Boolean (true), signature);
 		
 		CodeElement element = new CodeElement(CodeElement.METHOD_NAME,new Integer(12));
 		codeSnippetFactorial.addElement(element);
@@ -66,8 +66,8 @@ public class CodeSnippetFactoryTest {
 		buffer.append("\n");
 		buffer.append("}");
 		
-		this.codeSnippetConstructor=new CodeSnippet("sample","SimpleSampleCode",signature.getName(),"concrete", 
-				 buffer, new Boolean (true), signature);
+		this.codeSnippetConstructor=new CodeSnippet("sample","SimpleSampleCode",buffer,
+				new Boolean (true), signature);
 		
 		element = new CodeElement(CodeElement.METHOD_NAME,new Integer(7));
 		codeSnippetConstructor.addElement(element);
@@ -76,8 +76,8 @@ public class CodeSnippetFactoryTest {
 
 	@Test
 	public void test() {
-		CodeSnippetFactory factory = new CodeSnippetFactory();
-		ArrayList<CodeSnippet> list = factory.generateSnippets("../sample/SimpleSampleCode");
+		CodeSnippetFactory factory = new CodeSnippetFactory("../sample/SimpleSampleCode");
+		ArrayList<CodeSnippet> list = factory.generateSnippets();
 		if((list ==null ) || (list.size()!=2))
 			Assert.fail("Null list of snippets or file does not match test data");
 		else{

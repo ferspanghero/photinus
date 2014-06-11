@@ -13,7 +13,7 @@ public class CodeSnippet
 	protected ArrayList<CodeElement> statements;	// list of statements
 	
 	
-	public CodeSnippet(String packageName, String className, String methodName,String implementationType, 
+	public CodeSnippet(String packageName, String className, 
 			String methodBody, Boolean returnStatement, 
 			MethodSignature methodSignature)
 	{
@@ -27,8 +27,8 @@ public class CodeSnippet
 		this.statements = new ArrayList<CodeElement>();
 	}
 	
-	public CodeSnippet(String packageName2, String className2, String name,
-			String implementationType, StringBuffer buffer,
+	public CodeSnippet(String packageName2, String className2,
+			StringBuffer buffer,
 			Boolean returnStatement2, MethodSignature signature)
 	{
 		this.packageName = packageName2;

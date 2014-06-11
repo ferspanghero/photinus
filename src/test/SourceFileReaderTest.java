@@ -1,18 +1,19 @@
 package test;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
-
 
 import java.io.IOException;
 
-import edu.uci.ics.sdcl.firefly.JavaParser;
+import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 
 public class SourceFileReaderTest {
 
 	public static void main(String args[]) throws IOException{
-		ParseFilesInDir();
+		CodeSnippetFactory codeSnippets = new CodeSnippetFactory
+				("C:/Users/Danilo/Documents/GitHub/crowd-debug-firefly/src/sample/");
+		codeSnippets.generateSnippets();
+		codeSnippets.printAll();
 	} 
 
 	public SourceFileReaderTest() {}
@@ -37,25 +38,6 @@ public class SourceFileReaderTest {
 			reader.close();
 	 
 			return  fileData.toString();	
-		}
-	 
-		//loop directory to get file list
-		public static void ParseFilesInDir() throws IOException{
-//			File dirs = new File("."); 				// For files under this folder
-//			String dirPath = dirs.getCanonicalPath() + File.separator+"src"+File.separator;
-			String dirPath = "C:/Users/Danilo/Documents/GitHub/crowd-debug-firefly/src/sample/";
-//			System.out.println(dirPath);
-			File root = new File(dirPath);
-			File[] files = root.listFiles ( );
-			String filePath = null;
-	 
-			 for (File f : files ) {
-				 filePath = f.getAbsolutePath();
-				 if(f.isFile()){
-					 @SuppressWarnings("unused")
-					JavaParser parser = new JavaParser(readFileToString(filePath));
-				 }
-			 }
 		}
 }
 
