@@ -3,7 +3,6 @@ package edu.uci.ics.sdcl.firefly;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import test.SourceFileReaderTest;
 
 public class CodeSnippetFactory {
 	private String folderPath;
@@ -68,7 +67,7 @@ public class CodeSnippetFactory {
 				filePath = f.getAbsolutePath();
 				if(f.isFile()){
 					@SuppressWarnings("unused")
-					JavaParser parser = new JavaParser(SourceFileReaderTest.readFileToString(filePath));
+					JavaParser parser = new JavaParser(SourceFileReader.readFileToString(filePath));
 				}
 			}
 		}

@@ -3,14 +3,14 @@ package sample;
 public class SimpleSampleCode {
 
 	Integer SeedLimit = null;
-	
-	public SimpleSampleCode() {
+
+	public SimpleSampleCode(Integer seedValue) {
 		if(SeedLimit == null)
-			this.SeedLimit = new Integer(10);
+			this.SeedLimit = new Integer(seedValue);
 	}
-	
+
 	public Integer factorial(Integer Seed, Integer Iterations){
-		
+
 		if(Seed!=null){
 			int aux=1;
 			for (int i=0;i<Iterations.intValue();i++){
@@ -20,5 +20,5 @@ public class SimpleSampleCode {
 		}
 		else return null;
 	}
-	
+
 }

@@ -9,6 +9,7 @@ import org.junit.Test;
 import edu.uci.ics.sdcl.firefly.CodeElement;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
+import edu.uci.ics.sdcl.firefly.MethodParameter;
 import edu.uci.ics.sdcl.firefly.MethodSignature;
 
 public class CodeSnippetFactoryTest {
@@ -20,6 +21,11 @@ public class CodeSnippetFactoryTest {
 	public void setUp()  {
 					
 		MethodSignature signature = new MethodSignature("factorial", "public", new Integer(12));
+		MethodParameter arg1, arg2;
+		arg1 = new MethodParameter("Integer", "Seed");
+		arg2 = new MethodParameter("Integer", "Iterations");
+		signature.addMethodParameters(arg1);
+		signature.addMethodParameters(arg2);
 			
 		StringBuffer buffer = new StringBuffer("public Integer factorial(Integer Seed, Integer Iterations){");
 		buffer.append("\n");
@@ -57,19 +63,21 @@ public class CodeSnippetFactoryTest {
 		
 		//Second CodeSnippet
 		signature = new MethodSignature("SimpleSampleCode", "public", new Integer(7));
+		arg1 = new MethodParameter("Integer", "seedValue");
+		signature.addMethodParameters(arg1);
 		
-		buffer = new StringBuffer("public SimpleSampleCode() {");
+		buffer = new StringBuffer("public SimpleSampleCode(Integer seedValue) {");
 		buffer.append("\n");
 		buffer.append("if(SeedLimit == null)");
 		buffer.append("\n");
-		buffer.append("this.SeedLimit = new Integer(10);");
+		buffer.append("this.SeedLimit = new Integer(seedValue);");
 		buffer.append("\n");
 		buffer.append("}");
 		
-		this.codeSnippetConstructor=new CodeSnippet("sample","SimpleSampleCode",buffer,
-				new Boolean (true), signature);
+		this.codeSnippetConstructor=new CodeSnippet("sample", "SimpleSampleCode", buffer,
+				new Boolean(false), signature);
 		
-		element = new CodeElement(CodeElement.METHOD_NAME,new Integer(7));
+		element = new CodeElement(CodeElement.METHOD_NAME, new Integer(7));
 		codeSnippetConstructor.addElement(element);
 		
 	}

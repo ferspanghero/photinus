@@ -15,8 +15,8 @@ public class MethodSignatureTest{
 	@Before
 	public void setUp() throws Exception {
 		signatureOne = new MethodSignature("factorial", "public", new Integer (12));
-		signatureOne.addMethodParameters(new MethodParameter("Integer","Seed"));
-		signatureOne.addMethodParameters(new MethodParameter("Integer","Iterations"));
+		signatureOne.addMethodParameters(new MethodParameter("Integer", "Seed"));
+		signatureOne.addMethodParameters(new MethodParameter("Integer", "Iterations"));
 		
 		signatureTwo = new MethodSignature("factorial", "public", new Integer (12));
 		signatureTwo.addMethodParameters(new MethodParameter("Integer","Seed"));
