@@ -5,9 +5,12 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.DoStatement;
+import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -129,26 +132,17 @@ public class MyVisitor extends ASTVisitor {
 	public boolean visit(IfStatement node)
 	{
 		System.out.println("If at line: " + cu.getLineNumber(node.getStartPosition()));	
+		String str = new String(node.getThenStatement().toString());
+		String[] lines = str.split("\r\n|\r|\n");
+		Integer length = lines.length;
+		if (null != node.getElseStatement())
+		{	
+			str = new String(node.getElseStatement().toString());
+			String[] lines2 = str.split("\r\n|\r|\n");
+			length += lines2.length;
+		}
 		CodeElement element = new CodeElement(CodeElement.IF_CONDITIONAL, 
-				cu.getLineNumber(node.getStartPosition()));
-		newMethod.addElement(element);
-		return true;
-	}
-	
-	public boolean visit(WhileStatement node)
-	{
-		System.out.println("While at line: " + cu.getLineNumber(node.getStartPosition()));
-		CodeElement element = new CodeElement(CodeElement.WHILE_LOOP, 
-				cu.getLineNumber(node.getStartPosition()));
-		newMethod.addElement(element);
-		return true;
-	}
-	
-	public boolean visit(ForStatement node)
-	{
-		System.out.println("For at line: " + cu.getLineNumber(node.getStartPosition()));
-		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
-				cu.getLineNumber(node.getStartPosition()));
+				cu.getLineNumber(node.getStartPosition()), length);
 		newMethod.addElement(element);
 		return true;
 	}
@@ -161,4 +155,61 @@ public class MyVisitor extends ASTVisitor {
 		newMethod.addElement(element);
 		return true;
 	}
+	
+	public boolean visit(ForStatement node)
+	{
+		System.out.println("For at line: " + cu.getLineNumber(node.getStartPosition()));
+		String str = node.getBody().toString();
+		String[] lines = str.split("\r\n|\r|\n");
+//		System.out.println(lines.length);
+		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
+				cu.getLineNumber(node.getStartPosition()), lines.length);
+		newMethod.addElement(element);
+		return true;
+	}
+	
+	public boolean visit(EnhancedForStatement node)
+	{
+		System.out.println("ForEach at line: " + cu.getLineNumber(node.getStartPosition()));
+		String str = node.getBody().toString();
+		String[] lines = str.split("\r\n|\r|\n");
+//		System.out.println(lines.length);
+		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
+				cu.getLineNumber(node.getStartPosition()), lines.length);
+		newMethod.addElement(element);
+		return true;
+	}
+	
+	public boolean visit(DoStatement node)
+	{
+		System.out.println("Do-While at line: " + cu.getLineNumber(node.getStartPosition()));
+		String str = node.getBody().toString();
+		String[] lines = str.split("\r\n|\r|\n");
+		CodeElement element = new CodeElement(CodeElement.DO_LOOP, 
+				cu.getLineNumber(node.getStartPosition()), lines.length);
+		newMethod.addElement(element);
+		return true;
+	}
+	
+	public boolean visit(WhileStatement node)
+	{
+		System.out.println("While at line: " + cu.getLineNumber(node.getStartPosition()));
+		String str = node.getBody().toString();
+		String[] lines = str.split("\r\n|\r|\n");
+		CodeElement element = new CodeElement(CodeElement.WHILE_LOOP, 
+				cu.getLineNumber(node.getStartPosition()), lines.length);
+		newMethod.addElement(element);
+		return true;
+	}
+	
+	public boolean visit(ReturnStatement node)
+	{
+		System.out.println("Return at line: " + cu.getLineNumber(node.getStartPosition()));
+		CodeElement element = new CodeElement(CodeElement.RETURN_STATEMENT, 
+				cu.getLineNumber(node.getStartPosition()));
+		newMethod.addElement(element);
+		return true;
+	}
+	
+	
 }

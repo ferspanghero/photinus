@@ -4,6 +4,7 @@ public class CodeElement {
 
 	public final static String FOR_LOOP = "FOR_LOOP"; 
 	public final static String WHILE_LOOP = "WHILE_LOOP"; 
+	public final static String DO_LOOP = "DO_LOOP";
 	public final static String IF_CONDITIONAL = "IF_CONDITIONAL"; 
 	public final static String SWITCH_CONDITIONAL = "SWITCH_CONDITIONAL"; 
 	public final static String METHOD_CALL = "METHOD_CALL"; 
@@ -13,10 +14,18 @@ public class CodeElement {
 
 	private String Type;
 	private Integer LineNumber;
+	private Integer lengthInLines;
 	
 	public CodeElement(String Type, Integer LineNumber){
 		this.Type = Type;
 		this.LineNumber = LineNumber;
+		setLengthInLines(1);
+	}
+	
+	public CodeElement(String Type, Integer LineNumber, Integer numberOfLines){
+		this.Type = Type;
+		this.LineNumber = LineNumber;
+		setLengthInLines(numberOfLines);
 	}
 
 	public String getType() {
@@ -39,5 +48,15 @@ public class CodeElement {
 	public String toString()
 	{
 		return this.getType() + " @ line " + this.getLineNumber().toString();
+	}
+
+	public Integer getLengthInLines()
+	{
+		return lengthInLines;
+	}
+
+	public void setLengthInLines(Integer lengthInLines)
+	{
+		this.lengthInLines = lengthInLines;
 	}
 }
