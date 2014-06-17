@@ -44,17 +44,17 @@ public class QuestionFactory {
 				"to be executed (e.g., enter the wrong branch, makes a call to a null pointer, " +
 				"calls a wrong type, etc.)?");
 		/* Loops */
-		templateFor.add("Is there maybe something wrong with the structure of the loop at line <#1> (e.g., " +
+		templateFor.add("Is there maybe something wrong with the structure of the '<L>-loop' at line <#1> (e.g., " +
 				"incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
-		templateFor.add("Is the code executed by the loop between lines <#1> and <#2> possibly not producing what it is supposed to (e.g., does not " +
+		templateFor.add("Is the code executed by the '<L>-loop' between lines <#1> and <#2> possibly not producing what it is supposed to (e.g., does not " +
 				"generate the expected result from iteration, does not exit at the expected iteration, etc.)?");
-		templateDo.add("Is there maybe something wrong with the structure of the loop at line <#1> (e.g., " +
+		templateDo.add("Is there maybe something wrong with the structure of the '<L>-loop' at line <#1> (e.g., " +
 				"incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
-		templateDo.add("Is the code executed by the loop between lines <#1> and <#2>  possibly not producing what it is supposed to (e.g., does not " +
+		templateDo.add("Is the code executed by the '<L>-loop' between lines <#1> and <#2>  possibly not producing what it is supposed to (e.g., does not " +
 				"generate the expected result from iteration, does not exit at the expected iteration, etc.)?");
-		templateWhile.add("Is there maybe something wrong with the structure of the loop at line <#1> (e.g., " +
+		templateWhile.add("Is there maybe something wrong with the structure of the '<L>-loop' at line <#1> (e.g., " +
 				"incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
-		templateWhile.add("Is the code executed by the loop between lines <#1> and <#2>  possibly not producing what it is supposed to (e.g., does not " +
+		templateWhile.add("Is the code executed by the '<L>-loop' between lines <#1> and <#2>  possibly not producing what it is supposed to (e.g., does not " +
 				"generate the expected result from iteration, does not exit at the expected iteration, etc.)?");
 	}
 	
@@ -71,38 +71,34 @@ public class QuestionFactory {
 			{
 				switch (element.getType())
 				{
-				case CodeElement.IF_CONDITIONAL:
-					for (String templateForQuestion : templateIf)
-					{
-						questionPrompt = new String(templateForQuestion);
-						Integer statementNumber = statements.get(statements.indexOf(element)).getLineNumber();
-						questionPrompt = questionPrompt.replaceAll("<#1>", statementNumber.toString());
-						Integer numberOfLines = statements.get(statements.indexOf(element)).getLengthInLines();
-						questionPrompt = questionPrompt.replaceAll("<#2>", Integer.toString(statementNumber + numberOfLines));
-						question = new ConcreteQuestion(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt);
-						this.concreteQuestions.add(question);	// now getting the question for the statements
-					}
-					break;
-					
-				case CodeElement.SWITCH_CONDITIONAL:
-					for (String templateForQuestion : templateSwitch)
-					{
-						questionPrompt = new String(templateForQuestion);
-						questionPrompt = questionPrompt.replaceAll("<#>", statements.get(statements.indexOf(element)).
-								getLineNumber().toString());
-						question = new ConcreteQuestion(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt);
-						this.concreteQuestions.add(question);	// now getting the question for the statements
-					}
-					break;
+//				case CodeElement.IF_CONDITIONAL:
+//					for (String templateForQuestion : templateIf)
+//					{
+//						questionPrompt = new String(templateForQuestion);
+//						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
+//						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
+//						question = new ConcreteQuestion(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt);
+//						this.concreteQuestions.add(question);	// now getting the question for the statements
+//					}
+//					break;
+//					
+//				case CodeElement.SWITCH_CONDITIONAL:
+//					for (String templateForQuestion : templateSwitch)
+//					{
+//						questionPrompt = new String(templateForQuestion);
+//						questionPrompt = questionPrompt.replaceAll("<#>", element.getStartPosition().toString());
+//						question = new ConcreteQuestion(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt);
+//						this.concreteQuestions.add(question);	// now getting the question for the statements
+//					}
+//					break;
 					
 				case CodeElement.FOR_LOOP:
 					for (String templateForQuestion : templateFor)
 					{
 						questionPrompt = new String(templateForQuestion);
-						Integer statementNumber = statements.get(statements.indexOf(element)).getLineNumber();
-						questionPrompt = questionPrompt.replaceAll("<#1>", statementNumber.toString());
-						Integer numberOfLines = statements.get(statements.indexOf(element)).getLengthInLines();
-						questionPrompt = questionPrompt.replaceAll("<#2>", Integer.toString(statementNumber + numberOfLines));
+						questionPrompt = questionPrompt.replaceAll("<L>", "For");
+						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
 						question = new ConcreteQuestion(CodeElement.FOR_LOOP, codeSnippet, questionPrompt);
 						this.concreteQuestions.add(question);	// now getting the question for the statements
 					}
@@ -112,10 +108,9 @@ public class QuestionFactory {
 					for (String templateForQuestion : templateDo)
 					{
 						questionPrompt = new String(templateForQuestion);
-						Integer statementNumber = statements.get(statements.indexOf(element)).getLineNumber();
-						questionPrompt = questionPrompt.replaceAll("<#1>", statementNumber.toString());
-						Integer numberOfLines = statements.get(statements.indexOf(element)).getLengthInLines();
-						questionPrompt = questionPrompt.replaceAll("<#2>", Integer.toString(statementNumber + numberOfLines));
+						questionPrompt = questionPrompt.replaceAll("<L>", "Do-While");
+						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
 						question = new ConcreteQuestion(CodeElement.DO_LOOP, codeSnippet, questionPrompt);
 						this.concreteQuestions.add(question);	// now getting the question for the statements
 					}
@@ -125,10 +120,9 @@ public class QuestionFactory {
 					for (String templateForQuestion : templateWhile)
 					{
 						questionPrompt = new String(templateForQuestion);
-						Integer statementNumber = statements.get(statements.indexOf(element)).getLineNumber();
-						questionPrompt = questionPrompt.replaceAll("<#1>", statementNumber.toString());
-						Integer numberOfLines = statements.get(statements.indexOf(element)).getLengthInLines();
-						questionPrompt = questionPrompt.replaceAll("<#2>", Integer.toString(statementNumber + numberOfLines));
+						questionPrompt = questionPrompt.replaceAll("<L>", "While");
+						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
 						question = new ConcreteQuestion(CodeElement.WHILE_LOOP, codeSnippet, questionPrompt);
 						this.concreteQuestions.add(question);	// now getting the question for the statements
 					}
@@ -136,9 +130,9 @@ public class QuestionFactory {
 					// Add more cases here 
 					
 				default:
-					System.out.println("!!! Type of element did not matched: " + element.getType() + "!!!");
-					break;
-				}
+						System.out.println("!!! Type of element did not matched: " + element.getType() + " !!!");
+						break;
+				} 
 			}
 		}
 		return concreteQuestions;

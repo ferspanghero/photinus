@@ -7,13 +7,20 @@ public class SimpleSampleCode {
 	public SimpleSampleCode(Integer seedValue) {
 		if(SeedLimit == null)
 			this.SeedLimit = new Integer(seedValue);
+        Integer testes = 3;
+        if(testes == 5) this.SeedLimit = new Integer(testes);
+        if(testes == 8) { this.SeedLimit = new Integer(testes); } // If with curly braces at the same line
+        if(testes == 10) {
+
+                this.SeedLimit = new Integer(testes); // If with curly braces
+        }
 	}
 
 	public Integer factorial(Integer Seed, Integer Iterations){
 
 		if(Seed!=null){
 			int aux=1;
-			for (int i=0;i<Iterations.intValue();i++)
+			for (int i=0;i<Iterations.intValue();i++)   // for with standard curly braces
             {
 				aux =  aux * Seed;
 			}
@@ -44,40 +51,61 @@ public class SimpleSampleCode {
 
 
         Integer myArray[] = {0, 1, 2};
-        for (Integer numero : myArray)
-        {
+        for (Integer numero : myArray)  // For without curly braces
             System.out.println(numero.toString());
-        }
 
         Integer i = 0;
-        for (; i < 3; i++)
-            {
+        for (; i < 3; i++) {        // For with curly braces at the same starting line
             System.out.println(numero[i]);
             System.out.println(numero[i]);
             System.out.println(numero[i]);
             if (1 == cases)
             {
-                if (2 == MyArray[i])
-                {
+                if (2 == MyArray[i]) {      // If with curly braces at the same starting line
                     for (Integer j = 1;;)
                     {
                         j++;
                         break;
                     }
                 }
-                else if (3 == MyArray[i])
-                    break;
                 else
-                    cases = 1;
+                    if (3 == MyArray[i])         break;
+                else  cases = 1;
             }
             else if (2 == cases)
+            {
                 break;
+            }
         }
 
+        Integer j = 0;
 	    do
         {
             System.out.println("Do While here");
-        } while (true);
+            j = this.factorial(j,j);
+            j++;
+        } while (j < 3);
+
+        do{
+            System.out.println("Do While here");
+            j++;
+        } while (j < 5);
+
+        do{ System.out.println("Do While here");
+            j++;
+        } while (j < 7);
+
+        if (j == 11){
+            j--;
+            System.out.println("Another if teste");
+        }
+
+        if (j == 10){
+            j--;
+            System.out.println("Another if teste");
+        } else {
+            j++;
+            System.out.println("Another if teste");}
 	}
 
 }

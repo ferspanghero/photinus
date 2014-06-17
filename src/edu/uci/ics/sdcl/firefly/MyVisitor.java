@@ -10,8 +10,10 @@ import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.SwitchCase;
 import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.WhileStatement;
@@ -23,6 +25,8 @@ public class MyVisitor extends ASTVisitor {
 	private String packageName;
 //	private Integer methodIndex;
 	private CodeSnippet newMethod;
+//	private SwitchStatement lastSwitchVisited;
+//	private SwitchCase lastCaseVisited;
 	
 	public MyVisitor(CompilationUnit cuArg)
 	{
@@ -128,31 +132,55 @@ public class MyVisitor extends ASTVisitor {
 		return true;
 	}
 	
+	/* Method Calls */
+	public boolean visit(MethodInvocation node)
+	{
+		System.out.println("Method invocation at line: " + cu.getLineNumber(node.getStartPosition()));	
+		System.out.println("Method name: " + node.getName().toString());
+		System.out.println("Method expression: " + node.getExpression().toString());
+		System.out.println("Method parameters " + node.arguments());	
+		CodeElement element = new CodeElement(CodeElement.METHOD_CALL, 
+				cu.getLineNumber(node.getStartPosition()));
+		newMethod.addElement(element);
+		return true;
+	}
+	
 	/*Statements */
 	public boolean visit(IfStatement node)
 	{
 		System.out.println("If at line: " + cu.getLineNumber(node.getStartPosition()));	
 		String str = new String(node.getThenStatement().toString());
 		String[] lines = str.split("\r\n|\r|\n");
-		Integer length = lines.length;
+		Integer endPosition =  cu.getLineNumber(node.getThenStatement().getStartPosition()) + lines.length -1;
+//		System.out.println("Then statement: " + node.getThenStatement().toString());
 		if (null != node.getElseStatement())
 		{	
+//			System.out.println("---> Start for the else estatement " + cu.getLineNumber((node.getElseStatement().getStartPosition())));
 			str = new String(node.getElseStatement().toString());
 			String[] lines2 = str.split("\r\n|\r|\n");
-			length += lines2.length;
+			endPosition = cu.getLineNumber(node.getElseStatement().getStartPosition()) + lines2.length -1;
+//			System.out.println("Else statement: " + node.getElseStatement().toString());
 		}
 		CodeElement element = new CodeElement(CodeElement.IF_CONDITIONAL, 
-				cu.getLineNumber(node.getStartPosition()), length);
+				cu.getLineNumber(node.getStartPosition()), endPosition);
 		newMethod.addElement(element);
 		return true;
 	}
 	
 	public boolean visit(SwitchStatement node)
 	{
+//		this.lastSwitchVisited = node;
 		System.out.println("Switch at line: " + cu.getLineNumber(node.getStartPosition()));	
 		CodeElement element = new CodeElement(CodeElement.SWITCH_CONDITIONAL, 
 				cu.getLineNumber(node.getStartPosition()));
 		newMethod.addElement(element);
+		return true;
+	}
+	
+	public boolean visit(SwitchCase node)
+	{
+//		this.lastCaseVisited = node;
+		System.out.println("Case at line: " + cu.getLineNumber(node.getStartPosition()));	
 		return true;
 	}
 	
@@ -161,10 +189,11 @@ public class MyVisitor extends ASTVisitor {
 		System.out.println("For at line: " + cu.getLineNumber(node.getStartPosition()));
 		String str = node.getBody().toString();
 		String[] lines = str.split("\r\n|\r|\n");
-//		System.out.println(lines.length);
+		Integer endPosition = cu.getLineNumber(node.getBody().getStartPosition()) + lines.length -1;
 		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
-				cu.getLineNumber(node.getStartPosition()), lines.length);
+				cu.getLineNumber(node.getStartPosition()), endPosition);
 		newMethod.addElement(element);
+		System.out.println("For statement: " + node.getBody().toString());
 		return true;
 	}
 	
@@ -173,10 +202,11 @@ public class MyVisitor extends ASTVisitor {
 		System.out.println("ForEach at line: " + cu.getLineNumber(node.getStartPosition()));
 		String str = node.getBody().toString();
 		String[] lines = str.split("\r\n|\r|\n");
-//		System.out.println(lines.length);
+		Integer endPosition = cu.getLineNumber(node.getBody().getStartPosition()) + lines.length -1;
 		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
-				cu.getLineNumber(node.getStartPosition()), lines.length);
+				cu.getLineNumber(node.getStartPosition()), endPosition);
 		newMethod.addElement(element);
+		System.out.println("For statement: " + node.getBody().toString());
 		return true;
 	}
 	
@@ -185,9 +215,11 @@ public class MyVisitor extends ASTVisitor {
 		System.out.println("Do-While at line: " + cu.getLineNumber(node.getStartPosition()));
 		String str = node.getBody().toString();
 		String[] lines = str.split("\r\n|\r|\n");
+		Integer endPosition = cu.getLineNumber(node.getBody().getStartPosition()) + lines.length -1;
 		CodeElement element = new CodeElement(CodeElement.DO_LOOP, 
-				cu.getLineNumber(node.getStartPosition()), lines.length);
+				cu.getLineNumber(node.getStartPosition()), endPosition);
 		newMethod.addElement(element);
+		System.out.println("Do-While statement: " + node.getBody().toString());
 		return true;
 	}
 	
@@ -196,9 +228,11 @@ public class MyVisitor extends ASTVisitor {
 		System.out.println("While at line: " + cu.getLineNumber(node.getStartPosition()));
 		String str = node.getBody().toString();
 		String[] lines = str.split("\r\n|\r|\n");
+		Integer endPosition = cu.getLineNumber(node.getBody().getStartPosition()) + lines.length -1;
 		CodeElement element = new CodeElement(CodeElement.WHILE_LOOP, 
-				cu.getLineNumber(node.getStartPosition()), lines.length);
+				cu.getLineNumber(node.getStartPosition()), endPosition);
 		newMethod.addElement(element);
+		System.out.println("While statement: " + node.getBody().toString());
 		return true;
 	}
 	
@@ -210,6 +244,5 @@ public class MyVisitor extends ASTVisitor {
 		newMethod.addElement(element);
 		return true;
 	}
-	
 	
 }

@@ -13,19 +13,19 @@ public class CodeElement {
 	public static final String RETURN_STATEMENT = "RETURN_STATEMENT";
 
 	private String Type;
-	private Integer LineNumber;
-	private Integer lengthInLines;
+	private Integer startPosition;
+	private Integer endPosition;
 	
 	public CodeElement(String Type, Integer LineNumber){
 		this.Type = Type;
-		this.LineNumber = LineNumber;
-		setLengthInLines(1);
+		this.startPosition = LineNumber;
+		this.endPosition = LineNumber;
 	}
 	
-	public CodeElement(String Type, Integer LineNumber, Integer numberOfLines){
+	public CodeElement(String Type, Integer LineNumber, Integer endPositionArg){
 		this.Type = Type;
-		this.LineNumber = LineNumber;
-		setLengthInLines(numberOfLines);
+		this.startPosition = LineNumber;
+		this.endPosition = endPositionArg;
 	}
 
 	public String getType() {
@@ -35,28 +35,30 @@ public class CodeElement {
 	public void setType(String type) {
 		Type = type;
 	}
-
-	public Integer getLineNumber() {
-		return LineNumber;
-	}
-
-	public void setLineNumber(Integer lineNumber) {
-		LineNumber = lineNumber;
-	}
 	
 	@Override
 	public String toString()
 	{
-		return this.getType() + " @ line " + this.getLineNumber().toString();
+		return this.getType() + " @ line " + this.startPosition.toString();
 	}
 
-	public Integer getLengthInLines()
+	public Integer getStartPosition()
 	{
-		return lengthInLines;
+		return startPosition;
 	}
 
-	public void setLengthInLines(Integer lengthInLines)
+	public void setStartPosition(Integer startPosition)
 	{
-		this.lengthInLines = lengthInLines;
+		this.startPosition = startPosition;
+	}
+
+	public Integer getEndPosition()
+	{
+		return endPosition;
+	}
+
+	public void setEndPosition(Integer endPosition)
+	{
+		this.endPosition = endPosition;
 	}
 }
