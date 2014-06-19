@@ -17,16 +17,10 @@ public class SourceFileReader {
 		QuestionFactory questionFactory = new QuestionFactory();
 		System.out.println("----------Printing Concrete Questions-------------");
 		ArrayList<ConcreteQuestion> concreteQuestionsMade = questionFactory.generateQuestions(methodsParsed);
-		Integer j = 0;
 		for (ConcreteQuestion concreteQuestionMade : concreteQuestionsMade)
 		{
-			j++;
-			System.out.println(j + ". " + concreteQuestionMade.getQuestion());
+			System.out.println("-> " + concreteQuestionMade.getQuestion());
 		}
-		System.out.println();
-		System.out.println("~~~~~~~~~~~~~Reports~~~~~~~~~~~~~~~~");
-		System.out.println("Number of Snippets: " + methodsParsed.size());
-		System.out.println("Number of questions: " + concreteQuestionsMade.size());
 	} 
 
 	public SourceFileReader() {}
