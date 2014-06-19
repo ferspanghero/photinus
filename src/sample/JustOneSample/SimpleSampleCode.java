@@ -1,4 +1,4 @@
-package sample;
+package sample.JustOneSample;
 
 public class SimpleSampleCode {
 
@@ -56,12 +56,12 @@ public class SimpleSampleCode {
 
         Integer i = 0;
         for (; i < 3; i++) {        // For with curly braces at the same starting line
-            System.out.println(numero[i]);
-            System.out.println(numero[i]);
-            System.out.println(numero[i]);
+            System.out.println(myArray[i]);
+            System.out.println(myArray[i]);
+            System.out.println(myArray[i]);
             if (1 == cases)
             {
-                if (2 == MyArray[i]) {      // If with curly braces at the same starting line
+                if (2 == myArray[i]) {      // If with curly braces at the same starting line
                     for (Integer j = 1;;)
                     {
                         j++;
@@ -69,7 +69,7 @@ public class SimpleSampleCode {
                     }
                 }
                 else
-                    if (3 == MyArray[i])         break;
+                    if (3 == myArray[i])         break;
                 else  cases = 1;
             }
             else if (2 == cases)
