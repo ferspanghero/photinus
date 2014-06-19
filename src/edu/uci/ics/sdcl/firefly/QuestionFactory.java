@@ -25,39 +25,38 @@ public class QuestionFactory {
 	public QuestionFactory()
 	{
 		this.concreteQuestions = new ArrayList<ConcreteQuestion>();
-		/* Method Calls */
-		templateMethodCall.add("Is there perhaps something wrong with the parameters received "
-				+ "by function '<F>' when called by function '<G>' at line <#> (e.g., wrong order, missing parameter, wrong type of parameter, "
-				+ "parameters that are not checked, etc.)?");
-		templateMethodCall.add("Is there maybe something wrong in how the function '<F>' at line <#> is declared " 
-				+ "(e.g., requires a parameter that is not provided, needs different parameters to produce the correct result, etc.)?");
-		/* Return statement */
+		/* Method Calls - Method Declaration*/
+		templateMethodCall.add("Is there perhaps something wrong with the values of the parameters received "
+				+ "by function '<F>' when called by function '<G>' at line <#> (e.g., wrong variables used as "
+				+ "parameters, wrong order, missing or wrong type of parameter, values of the parameters are not checked, etc .)?");
+		templateMethodCall.add("Is there maybe something wrong in the declaration of function'<F>' at line <#> " 
+				+ "<#> (e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?");
+		/* Return statement - Method invocation*/
 		templateReturn.add("Does caller function '<F>' produce an incorrect return value at line <#> "
 				+ "(e.g., called function produces an incorrect value, called function returns the wrong variable, "
 				+ "caller function reads the wrong field from the return value, etc.)?");
 		/* Conditional */
-		templateIf.add("Is it possible that the structure of the conditional clause at line <#1> has "
-				+ "any problems (e.g., wrong boolean operator, wrong comparison, misplaced parentheses, etc.)?");
-		templateIf.add("Is there maybe something wrong with the code executed by the conditional clause between lines <#1> and <#2> "
-				+ "(e.g., enter the wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?");
-		templateSwitch.add("Is it possible that the structure of the conditional clause at line <#> has "
-				+ "any problems (e.g., wrong boolean operator, wrong comparison, misplaced parentheses, etc.)?");
-		templateSwitch.add("Is it possible that the conditional clause at line <#> is causing the wrong code " + 
-				"to be executed (e.g., enter the wrong branch, makes a call to a null pointer, " +
-				"calls a wrong type, etc.)?");
+		templateIf.add("Is it possible that the conditional clause at line <#1> has "
+				+ "problems (e.g., wrong Boolean operator, wrong comparison, misplaced parentheses, etc.)?");
+		templateIf.add("Is there maybe something wrong with the body of the conditional clause between lines <#1> and <#2> "
+				+ "(e.g., enters the wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?");
+		templateSwitch.add("Is it possible that the conditional clause at line <#1> has "
+				+ "problems (e.g., wrong Boolean operator, wrong comparison, misplaced parentheses, etc.)?");
+		templateSwitch.add("Is there maybe something wrong with the body of the conditional clause between lines <#1> and <#2> "
+				+ "(e.g., enters the wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?");
 		/* Loops */
-		templateFor.add("Is there maybe something wrong with the structure of the '<L>-loop' at line <#1> (e.g., " +
-				"incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
-		templateFor.add("Is the code executed by the '<L>-loop' between lines <#1> and <#2> possibly not producing what it is supposed to (e.g., does not " +
-				"generate the expected result from iteration, does not exit at the expected iteration, etc.)?");
-		templateDo.add("Is there maybe something wrong with the structure of the '<L>-loop' at line <#1> (e.g., " +
-				"incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
-		templateDo.add("Is the code executed by the '<L>-loop' between lines <#1> and <#2>  possibly not producing what it is supposed to (e.g., does not " +
-				"generate the expected result from iteration, does not exit at the expected iteration, etc.)?");
-		templateWhile.add("Is there maybe something wrong with the structure of the '<L>-loop' at line <#1> (e.g., " +
-				"incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
-		templateWhile.add("Is the code executed by the '<L>-loop' between lines <#1> and <#2>  possibly not producing what it is supposed to (e.g., does not " +
-				"generate the expected result from iteration, does not exit at the expected iteration, etc.)?");
+		templateFor.add("Is there maybe something wrong with the '<L>-loop' construct at line <#1> "
+				+ "(e.g., incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
+		templateFor.add("Is the body of the '<L>-loop' between lines <#1> and <#2> "
+				+ "possibly not producing what it is supposed to (e.g., does not compute the expected result, does not exit at the expected iteration, etc.)?");
+		templateDo.add("Is there maybe something wrong with the '<L>-loop' construct at line <#1> "
+				+ "(e.g., incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
+		templateDo.add("Is the body of the '<L>-loop' between lines <#1> and <#2> "
+				+ "possibly not producing what it is supposed to (e.g., does not compute the expected result, does not exit at the expected iteration, etc.)?");
+		templateWhile.add("Is there maybe something wrong with the '<L>-loop' construct at line <#1> "
+				+ "(e.g., incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
+		templateWhile.add("Is the body of the '<L>-loop' between lines <#1> and <#2> "
+				+ "possibly not producing what it is supposed to (e.g., does not compute the expected result, does not exit at the expected iteration, etc.)?");
 	}
 	
 	public ArrayList<ConcreteQuestion> generateQuestions(ArrayList<CodeSnippet> methodsArg)
@@ -71,6 +70,15 @@ public class QuestionFactory {
 			ConcreteQuestion question = new ConcreteQuestion(CodeElement.METHOD_CALL, codeSnippet, questionPrompt);
 			this.concreteQuestions.add(question);	// now getting the question for the statements
 			ArrayList<CodeElement> statements = codeSnippet.getStatements();
+			
+			//Method Declaration
+			
+			
+			
+			//Method Body
+			
+			
+			
 			for (CodeElement element : statements)
 			{
 				switch (element.getType())
