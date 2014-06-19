@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class MethodSignature {
 
 	protected String Name;
-	protected String Modifier;							//Visibility 
+	protected String Modifier;							//Visibility
 	protected ArrayList<MethodParameter> ParameterList;
 	protected Integer LineNumber;
 

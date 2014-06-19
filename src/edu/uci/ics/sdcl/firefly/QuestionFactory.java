@@ -27,10 +27,12 @@ public class QuestionFactory {
 		this.concreteQuestions = new ArrayList<ConcreteQuestion>();
 		/* Method Calls */
 		templateMethodCall.add("Is there perhaps something wrong with the parameters received "
-				+ "by function <F> (e.g., wrong order, missing parameter, wrong type of parameter, "
+				+ "by function '<F>' when called by function '<G>' at line <#> (e.g., wrong order, missing parameter, wrong type of parameter, "
 				+ "parameters that are not checked, etc.)?");
+		templateMethodCall.add("Is there maybe something wrong in how the function '<F>' at line <#> is declared " 
+				+ "(e.g., requires a parameter that is not provided, needs different parameters to produce the correct result, etc.)?");
 		/* Return statement */
-		templateReturn.add("Does caller function <F> receive an incorrect return value at line <#> "
+		templateReturn.add("Does caller function '<F>' produce an incorrect return value at line <#> "
 				+ "(e.g., called function produces an incorrect value, called function returns the wrong variable, "
 				+ "caller function reads the wrong field from the return value, etc.)?");
 		/* Conditional */
@@ -62,8 +64,10 @@ public class QuestionFactory {
 	{
 		for (CodeSnippet codeSnippet : methodsArg)
 		{
-			String questionPrompt = new String(templateMethodCall.get(0)); // 0 = first question of this template
-			questionPrompt = questionPrompt.replaceAll("<F>", "'" + codeSnippet.getMethodSignature().getName() + "'");
+			String questionPrompt = new String("Is there perhaps something wrong with the parameters received "
+					+ "by function '" + codeSnippet.getMethodSignature().getName() + "' at line " + codeSnippet.getMethodSignature().getLineNumber().toString()
+					+ " (e.g., wrong order, missing parameter, wrong type of parameter, parameters that are not checked, etc.)?");
+			questionPrompt = questionPrompt.replaceAll("<F>", codeSnippet.getMethodSignature().getName());
 			ConcreteQuestion question = new ConcreteQuestion(CodeElement.METHOD_CALL, codeSnippet, questionPrompt);
 			this.concreteQuestions.add(question);	// now getting the question for the statements
 			ArrayList<CodeElement> statements = codeSnippet.getStatements();
@@ -71,26 +75,48 @@ public class QuestionFactory {
 			{
 				switch (element.getType())
 				{
-//				case CodeElement.IF_CONDITIONAL:
-//					for (String templateForQuestion : templateIf)
-//					{
-//						questionPrompt = new String(templateForQuestion);
-//						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
-//						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
-//						question = new ConcreteQuestion(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt);
-//						this.concreteQuestions.add(question);	// now getting the question for the statements
-//					}
-//					break;
-//					
-//				case CodeElement.SWITCH_CONDITIONAL:
-//					for (String templateForQuestion : templateSwitch)
-//					{
-//						questionPrompt = new String(templateForQuestion);
-//						questionPrompt = questionPrompt.replaceAll("<#>", element.getStartPosition().toString());
-//						question = new ConcreteQuestion(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt);
-//						this.concreteQuestions.add(question);	// now getting the question for the statements
-//					}
-//					break;
+				case CodeElement.METHOD_CALL:
+					for (String templateForQuestion : templateMethodCall)
+					{
+						myMethodCall elementCall = (myMethodCall)element;
+						questionPrompt = new String(templateForQuestion);
+						questionPrompt = questionPrompt.replaceAll("<F>", elementCall.getName());
+						questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
+						questionPrompt = questionPrompt.replaceAll("<#>", elementCall.getStartPosition().toString());
+						question = new ConcreteQuestion(CodeElement.METHOD_CALL, codeSnippet, questionPrompt);
+						this.concreteQuestions.add(question);	// now getting the question for the statements
+					}
+					break;
+				case CodeElement.RETURN_STATEMENT:
+					for (String templateForQuestion : templateReturn)
+					{
+						questionPrompt = new String(templateForQuestion);
+						questionPrompt = questionPrompt.replaceAll("<F>", codeSnippet.getMethodSignature().getName());
+						questionPrompt = questionPrompt.replaceAll("<#>", element.getStartPosition().toString());
+						question = new ConcreteQuestion(CodeElement.WHILE_LOOP, codeSnippet, questionPrompt);
+						this.concreteQuestions.add(question);	// now getting the question for the statements
+					}
+					break;
+				case CodeElement.IF_CONDITIONAL:
+					for (String templateForQuestion : templateIf)
+					{
+						questionPrompt = new String(templateForQuestion);
+						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
+						question = new ConcreteQuestion(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt);
+						this.concreteQuestions.add(question);	// now getting the question for the statements
+					}
+					break;
+					
+				case CodeElement.SWITCH_CONDITIONAL:
+					for (String templateForQuestion : templateSwitch)
+					{
+						questionPrompt = new String(templateForQuestion);
+						questionPrompt = questionPrompt.replaceAll("<#>", element.getStartPosition().toString());
+						question = new ConcreteQuestion(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt);
+						this.concreteQuestions.add(question);	// now getting the question for the statements
+					}
+					break;
 					
 				case CodeElement.FOR_LOOP:
 					for (String templateForQuestion : templateFor)

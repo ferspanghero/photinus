@@ -135,13 +135,17 @@ public class MyVisitor extends ASTVisitor {
 	/* Method Calls */
 	public boolean visit(MethodInvocation node)
 	{
-		System.out.println("Method invocation at line: " + cu.getLineNumber(node.getStartPosition()));	
-		System.out.println("Method name: " + node.getName().toString());
-		System.out.println("Method expression: " + node.getExpression().toString());
-		System.out.println("Method parameters " + node.arguments());	
-		CodeElement element = new CodeElement(CodeElement.METHOD_CALL, 
-				cu.getLineNumber(node.getStartPosition()));
-		newMethod.addElement(element);
+		if (!node.getExpression().toString().equalsIgnoreCase("System.out"))	// ignoring System.out calls
+		{
+			System.out.println("Method invocation at line: " + cu.getLineNumber(node.getStartPosition()));	
+			System.out.println("Method name: " + node.getName().toString());
+			System.out.println("Method expression: " + node.getExpression().toString());
+			System.out.println("Method parameters " + node.arguments());	
+			@SuppressWarnings("unchecked")
+			myMethodCall methodCall = new myMethodCall(node.getName().toString(), node.getExpression().toString(),
+					node.arguments(), cu.getLineNumber(node.getStartPosition()));
+			newMethod.addElement(methodCall);
+		}
 		return true;
 	}
 	
