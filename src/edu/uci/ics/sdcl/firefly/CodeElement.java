@@ -7,10 +7,12 @@ public class CodeElement {
 	public final static String DO_LOOP = "DO_LOOP";
 	public final static String IF_CONDITIONAL = "IF_CONDITIONAL"; 
 	public final static String SWITCH_CONDITIONAL = "SWITCH_CONDITIONAL"; 
-	public final static String METHOD_CALL = "METHOD_CALL"; 
-	public final static String METHOD_PARAMETERS = "METHOD_PARAMETERS"; 
-	public final static String METHOD_NAME = "METHOD_NAME";
-	public static final String RETURN_STATEMENT = "RETURN_STATEMENT";
+//	public final static String METHOD_CALL = "METHOD_CALL"; 
+	public final static String METHOD_DECLARARION = "METHOD_DECLARATION"; 
+	public final static String METHOD_INVOCATION = "METHOD_INVOCATION"; 
+//	public final static String METHOD_PARAMETERS = "METHOD_PARAMETERS"; 
+//	public final static String METHOD_NAME = "METHOD_NAME";
+//	public static final String RETURN_STATEMENT = "RETURN_STATEMENT";
 	public static final String COMMENT_STATEMENT = "COMMENT_STATEMENT";
 
 	private String Type;

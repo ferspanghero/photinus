@@ -4,7 +4,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
@@ -12,7 +11,6 @@ import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.SwitchCase;
 import org.eclipse.jdt.core.dom.SwitchStatement;
@@ -241,13 +239,13 @@ public class MyVisitor extends ASTVisitor {
 		return true;
 	}
 	
-	public boolean visit(ReturnStatement node)
+	/* public boolean visit(ReturnStatement node)
 	{
 		System.out.println("Return at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.RETURN_STATEMENT, 
 				cu.getLineNumber(node.getStartPosition()));
 		newMethod.addElement(element);
 		return true;
-	}
+	} */
 	
 }

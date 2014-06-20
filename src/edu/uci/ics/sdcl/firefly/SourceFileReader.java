@@ -4,6 +4,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class SourceFileReader {
 
@@ -16,13 +21,15 @@ public class SourceFileReader {
 		codeSnippets.printAll();
 		QuestionFactory questionFactory = new QuestionFactory();
 		System.out.println("----------Printing Concrete Questions-------------");
-		ArrayList<ConcreteQuestion> concreteQuestionsMade = questionFactory.generateQuestions(methodsParsed);
-		Integer j = 0;
-		for (ConcreteQuestion concreteQuestionMade : concreteQuestionsMade)
+		HashMap<Integer, ConcreteQuestion> concreteQuestionsMade = questionFactory.generateQuestions(methodsParsed);
+		Set<Map.Entry<Integer, ConcreteQuestion>> set = concreteQuestionsMade.entrySet();
+		Iterator<Entry<Integer, ConcreteQuestion>> i = set.iterator();
+		while(i.hasNext()) 
 		{
-			j++;
-			System.out.println(j + ". [ID = "+ concreteQuestionMade.getID() +"] "+ concreteQuestionMade.getQuestion());
-		}
+	         Map.Entry<Integer, ConcreteQuestion> me = (Map.Entry<Integer, ConcreteQuestion>)i.next();
+	         System.out.print("ID = " + me.getKey() + ": ");
+	         System.out.println(me.getValue().getQuestion());
+	    }
 		System.out.println();
 		System.out.println("~~~~~~~~~~~~~Reports~~~~~~~~~~~~~~~~");
 		System.out.println("Number of Snippets: " + methodsParsed.size());

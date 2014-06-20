@@ -12,7 +12,7 @@ public class myMethodCall extends CodeElement
 	
 	public myMethodCall(String nameArg, String expressionArg, List<Expression> parametersArg, Integer LineNumber)
 	{
-		super(CodeElement.METHOD_CALL, LineNumber);
+		super(CodeElement.METHOD_INVOCATION, LineNumber);
 		this.setName(nameArg);
 		this.setExpression(expressionArg);
 		this.setParameterList(parametersArg);
