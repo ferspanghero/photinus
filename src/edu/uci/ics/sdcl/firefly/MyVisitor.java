@@ -134,8 +134,9 @@ public class MyVisitor extends ASTVisitor {
 	/* Method Calls */
 	public boolean visit(MethodInvocation node)
 	{
-		if (!node.getExpression().toString().equalsIgnoreCase("System.out"))	// ignoring System.out calls
-		{
+		if(!invalidCall(node)) 
+			return true;
+		else{
 			System.out.println("Method invocation at line: " + cu.getLineNumber(node.getStartPosition()));	
 			System.out.println("Method name: " + node.getName().toString());
 			System.out.println("Method expression: " + node.getExpression().toString());
@@ -247,5 +248,21 @@ public class MyVisitor extends ASTVisitor {
 		newMethod.addElement(element);
 		return true;
 	} */
+	
+	/**
+	 * Check whether a method invocation is an invalid method call. Two types of invalid calls, 
+	 * when the node is null or it is an API call.
+	 * @param node
+	 * @return true if calls System.out, otherwise false. Also returns false if a null pointer is provided
+	 */
+	private boolean invalidCall(MethodInvocation node){
+		if((node==null))
+			return true;
+		else
+			if((node.getExpression()!=null) && (node.getExpression().toString().equalsIgnoreCase("System.out")))	// ignoring System.out calls
+					return true;
+			else 
+				return false;
+	}
 	
 }
