@@ -8,12 +8,15 @@ public class ConcreteQuestion
 	private CodeSnippet method;
 	private String questionType;
 	private ArrayList<String> answer;
+	private final Integer ID;
 	
-	public ConcreteQuestion(String questionTypeArg, CodeSnippet methodArg, String questionArg)
+	public ConcreteQuestion(Integer IDArg, String questionTypeArg, CodeSnippet methodArg, String questionArg)
 	{
+		this.ID = IDArg;
 		this.setMethod(methodArg);
 		this.setQuestion(questionArg);
 		this.setQuestionType(questionTypeArg);
+		QuestionFactory.concreteQuestionID++;
 	}
 
 	public String getQuestion()
@@ -54,6 +57,10 @@ public class ConcreteQuestion
 	public void setAnswer(ArrayList<String> answer)
 	{
 		this.answer = answer;
+	}
+
+	public Integer getID() {
+		return ID;
 	}
 	
 }

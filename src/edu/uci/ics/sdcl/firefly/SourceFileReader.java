@@ -9,7 +9,7 @@ public class SourceFileReader {
 
 	public static void main(String args[]) throws IOException{
 		CodeSnippetFactory codeSnippets = new CodeSnippetFactory
-				("C:/Users/Danilo/Documents/GitHub/crowd-debug-firefly/src/sample/JustOneSample");
+				("/home/danilo/EclipseWorkspace/SnippetFactory/src/sample/JustOneSample");
 		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippets();
 		System.out.println();
 		System.out.println("********************************");
@@ -21,12 +21,13 @@ public class SourceFileReader {
 		for (ConcreteQuestion concreteQuestionMade : concreteQuestionsMade)
 		{
 			j++;
-			System.out.println(j + ". " + concreteQuestionMade.getQuestion());
+			System.out.println(j + ". [ID = "+ concreteQuestionMade.getID() +"] "+ concreteQuestionMade.getQuestion());
 		}
 		System.out.println();
 		System.out.println("~~~~~~~~~~~~~Reports~~~~~~~~~~~~~~~~");
 		System.out.println("Number of Snippets: " + methodsParsed.size());
 		System.out.println("Number of questions: " + concreteQuestionsMade.size());
+		System.out.println("Number of statements: " + questionFactory.getNumberOfStatements());
 	} 
 
 	public SourceFileReader() {}

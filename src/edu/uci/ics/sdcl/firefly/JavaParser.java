@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly;
 //package edu.uci.ics.sdcl.firefly;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.core.*;
@@ -19,7 +20,7 @@ public class JavaParser {
 	//private ReturnVisitor returnVisitor = null; // 
 	//private MethodInvocationVisitor methodInvocationVisitor = null; //See org.eclipse.jdt.core.dom.MethodInvocation
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public JavaParser(String SourcePath) {
 
 		char[] source = SourcePath.toCharArray(); // obtain an array of char from the source file = ...;
@@ -35,7 +36,10 @@ public class JavaParser {
 		//Add a Method Visitor
 //		this.methodVisitor
 		this.unit.accept(new MyVisitor(this.unit));
-	
+		List<Comment> commentsList = (List<Comment>)this.unit.getCommentList();
+		for (Comment comment : commentsList) {
+			comment.accept(new CommentVisitor(this.unit, SourcePath.split("\n")));
+		}
 	}
 
 /*

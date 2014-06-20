@@ -11,6 +11,7 @@ public class CodeElement {
 	public final static String METHOD_PARAMETERS = "METHOD_PARAMETERS"; 
 	public final static String METHOD_NAME = "METHOD_NAME";
 	public static final String RETURN_STATEMENT = "RETURN_STATEMENT";
+	public static final String COMMENT_STATEMENT = "COMMENT_STATEMENT";
 
 	private String Type;
 	private Integer startPosition;

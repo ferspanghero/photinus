@@ -20,10 +20,15 @@ public class QuestionFactory {
 	public static ArrayList<String> templateWhile = new ArrayList<String>();
 	public static ArrayList<String> templateReturn = new ArrayList<String>();
 	
+	public Integer numberOfStatements; 
+	public static Integer concreteQuestionID;
+	
 	private ArrayList<ConcreteQuestion> concreteQuestions;
 	
 	public QuestionFactory()
 	{
+		this.numberOfStatements = 0;
+		concreteQuestionID = 11;
 		this.concreteQuestions = new ArrayList<ConcreteQuestion>();
 		/* Method Calls */
 		templateMethodCall.add("Is there perhaps something wrong with the parameters received "
@@ -60,6 +65,11 @@ public class QuestionFactory {
 				"generate the expected result from iteration, does not exit at the expected iteration, etc.)?");
 	}
 	
+	public Integer getNumberOfStatements()
+	{
+		return this.numberOfStatements;
+	}
+	
 	public ArrayList<ConcreteQuestion> generateQuestions(ArrayList<CodeSnippet> methodsArg)
 	{
 		for (CodeSnippet codeSnippet : methodsArg)
@@ -68,11 +78,12 @@ public class QuestionFactory {
 					+ "by function '" + codeSnippet.getMethodSignature().getName() + "' at line " + codeSnippet.getMethodSignature().getLineNumber().toString()
 					+ " (e.g., wrong order, missing parameter, wrong type of parameter, parameters that are not checked, etc.)?");
 			questionPrompt = questionPrompt.replaceAll("<F>", codeSnippet.getMethodSignature().getName());
-			ConcreteQuestion question = new ConcreteQuestion(CodeElement.METHOD_CALL, codeSnippet, questionPrompt);
+			ConcreteQuestion question = new ConcreteQuestion(concreteQuestionID, CodeElement.METHOD_CALL, codeSnippet, questionPrompt);
 			this.concreteQuestions.add(question);	// now getting the question for the statements
 			ArrayList<CodeElement> statements = codeSnippet.getStatements();
 			for (CodeElement element : statements)
 			{
+				this.numberOfStatements++;
 				switch (element.getType())
 				{
 				case CodeElement.METHOD_CALL:
@@ -83,7 +94,7 @@ public class QuestionFactory {
 						questionPrompt = questionPrompt.replaceAll("<F>", elementCall.getName());
 						questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
 						questionPrompt = questionPrompt.replaceAll("<#>", elementCall.getStartPosition().toString());
-						question = new ConcreteQuestion(CodeElement.METHOD_CALL, codeSnippet, questionPrompt);
+						question = new ConcreteQuestion(concreteQuestionID, CodeElement.METHOD_CALL, codeSnippet, questionPrompt);
 						this.concreteQuestions.add(question);	// now getting the question for the statements
 					}
 					break;
@@ -93,7 +104,7 @@ public class QuestionFactory {
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = questionPrompt.replaceAll("<F>", codeSnippet.getMethodSignature().getName());
 						questionPrompt = questionPrompt.replaceAll("<#>", element.getStartPosition().toString());
-						question = new ConcreteQuestion(CodeElement.WHILE_LOOP, codeSnippet, questionPrompt);
+						question = new ConcreteQuestion(concreteQuestionID, CodeElement.WHILE_LOOP, codeSnippet, questionPrompt);
 						this.concreteQuestions.add(question);	// now getting the question for the statements
 					}
 					break;
@@ -103,7 +114,7 @@ public class QuestionFactory {
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
 						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
-						question = new ConcreteQuestion(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt);
+						question = new ConcreteQuestion(concreteQuestionID, CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt);
 						this.concreteQuestions.add(question);	// now getting the question for the statements
 					}
 					break;
@@ -113,7 +124,7 @@ public class QuestionFactory {
 					{
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = questionPrompt.replaceAll("<#>", element.getStartPosition().toString());
-						question = new ConcreteQuestion(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt);
+						question = new ConcreteQuestion(concreteQuestionID, CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt);
 						this.concreteQuestions.add(question);	// now getting the question for the statements
 					}
 					break;
@@ -125,7 +136,7 @@ public class QuestionFactory {
 						questionPrompt = questionPrompt.replaceAll("<L>", "For");
 						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
 						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
-						question = new ConcreteQuestion(CodeElement.FOR_LOOP, codeSnippet, questionPrompt);
+						question = new ConcreteQuestion(concreteQuestionID, CodeElement.FOR_LOOP, codeSnippet, questionPrompt);
 						this.concreteQuestions.add(question);	// now getting the question for the statements
 					}
 					break;
@@ -137,7 +148,7 @@ public class QuestionFactory {
 						questionPrompt = questionPrompt.replaceAll("<L>", "Do-While");
 						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
 						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
-						question = new ConcreteQuestion(CodeElement.DO_LOOP, codeSnippet, questionPrompt);
+						question = new ConcreteQuestion(concreteQuestionID, CodeElement.DO_LOOP, codeSnippet, questionPrompt);
 						this.concreteQuestions.add(question);	// now getting the question for the statements
 					}
 					break;
@@ -149,7 +160,7 @@ public class QuestionFactory {
 						questionPrompt = questionPrompt.replaceAll("<L>", "While");
 						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
 						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
-						question = new ConcreteQuestion(CodeElement.WHILE_LOOP, codeSnippet, questionPrompt);
+						question = new ConcreteQuestion(concreteQuestionID, CodeElement.WHILE_LOOP, codeSnippet, questionPrompt);
 						this.concreteQuestions.add(question);	// now getting the question for the statements
 					}
 					break;
