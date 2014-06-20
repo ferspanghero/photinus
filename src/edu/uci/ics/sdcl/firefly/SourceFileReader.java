@@ -14,7 +14,7 @@ public class SourceFileReader {
 
 	public static void main(String args[]) throws IOException{
 		CodeSnippetFactory codeSnippets = new CodeSnippetFactory
-				("/home/danilo/EclipseWorkspace/SnippetFactory/src/sample/JustOneSample");
+				(args[0]);
 		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippets();
 		System.out.println();
 		System.out.println("********************************");
