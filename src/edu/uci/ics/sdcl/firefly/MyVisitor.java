@@ -134,7 +134,7 @@ public class MyVisitor extends ASTVisitor {
 	/* Method Calls */
 	public boolean visit(MethodInvocation node)
 	{
-		if(!invalidCall(node)) 
+		if(invalidCall(node)) 
 			return true;
 		else{
 			System.out.println("Method invocation at line: " + cu.getLineNumber(node.getStartPosition()));	

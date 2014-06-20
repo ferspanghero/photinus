@@ -8,6 +8,8 @@ public class CodeSnippet
 //	protected String methodName; 					// name of method
 //	protected String implementationType; 			// concrete or abstract
 	protected String methodBody;					// whole content of method
+	protected Integer bodyStartsAt;					// line where body starts
+	protected Integer bodyEndsAt;					// line where body ends
 	protected Boolean returnStatement;				// true if there is a return value
 	protected MethodSignature methodSignature;		// parsed method declaration
 	protected ArrayList<CodeElement> statements;	// list of statements
@@ -25,6 +27,15 @@ public class CodeSnippet
 		this.methodBody = methodBody;
 		this.returnStatement = returnStatement;
 		this.methodSignature = methodSignature;
+		if (null != this.methodBody)
+		{
+			this.bodyStartsAt = methodSignature.getLineNumber()+1;		// assuming standard format
+			String str = new String(this.methodBody);
+			String[] lines = str.split("\r\n|\r|\n");
+			this.bodyEndsAt =  this.bodyStartsAt + lines.length -1;
+		}
+		else
+			this.bodyEndsAt = this.bodyStartsAt = methodSignature.getLineNumber();
 		this.statements = new ArrayList<CodeElement>();
 		this.methodCalss = new ArrayList<MethodSignature>();
 	}
@@ -126,5 +137,19 @@ public class CodeSnippet
 
 	public void setStatements(ArrayList<CodeElement> statements) {
 		this.statements = statements;
+	}
+	public Integer getBodyStartsAt() {
+		return bodyStartsAt;
+	}
+
+	public void setBodyStartsAt(Integer bodyStartsAt) {
+		this.bodyStartsAt = bodyStartsAt;
+	}
+	public Integer getBodyEndsAt() {
+		return bodyEndsAt;
+	}
+
+	public void setBodyEndsAt(Integer bodyEndsAt) {
+		this.bodyEndsAt = bodyEndsAt;
 	}
 }

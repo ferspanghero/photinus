@@ -13,8 +13,7 @@ import java.util.Set;
 public class SourceFileReader {
 
 	public static void main(String args[]) throws IOException{
-		CodeSnippetFactory codeSnippets = new CodeSnippetFactory
-				(args[0]);
+		CodeSnippetFactory codeSnippets = new CodeSnippetFactory(args[0]);
 		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippets();
 		System.out.println();
 		System.out.println("********************************");
