@@ -17,9 +17,7 @@ public class QuestionFactory {
 	public static ArrayList<String> templateMethodInvocation = new ArrayList<String>();
 	public static ArrayList<String> templateIf = new ArrayList<String>();
 	public static ArrayList<String> templateSwitch = new ArrayList<String>();
-	public static ArrayList<String> templateFor = new ArrayList<String>();
-	public static ArrayList<String> templateDo = new ArrayList<String>();
-	public static ArrayList<String> templateWhile = new ArrayList<String>();
+	public static ArrayList<String> templateLoop = new ArrayList<String>();
 	
 	public Integer numberOfStatements; 
 	public static Integer concreteQuestionID;
@@ -53,17 +51,9 @@ public class QuestionFactory {
 		templateSwitch.add("Is there maybe something wrong with the body of the conditional clause between lines <#1> and <#2> "
 				+ "(e.g., enters the wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?");
 		/* Loops */
-		templateFor.add("Is there maybe something wrong with the '<L>-loop' construct at line <#1> "
+		templateLoop.add("Is there maybe something wrong with the '<L>-loop' construct at line <#1> "
 				+ "(e.g., incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
-		templateFor.add("Is the body of the '<L>-loop' between lines <#1> and <#2> "
-				+ "possibly not producing what it is supposed to (e.g., does not compute the expected result, does not exit at the expected iteration, etc.)?");
-		templateDo.add("Is there maybe something wrong with the '<L>-loop' construct at line <#1> "
-				+ "(e.g., incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
-		templateDo.add("Is the body of the '<L>-loop' between lines <#1> and <#2> "
-				+ "possibly not producing what it is supposed to (e.g., does not compute the expected result, does not exit at the expected iteration, etc.)?");
-		templateWhile.add("Is there maybe something wrong with the '<L>-loop' construct at line <#1> "
-				+ "(e.g., incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
-		templateWhile.add("Is the body of the '<L>-loop' between lines <#1> and <#2> "
+		templateLoop.add("Is the body of the '<L>-loop' between lines <#1> and <#2> "
 				+ "possibly not producing what it is supposed to (e.g., does not compute the expected result, does not exit at the expected iteration, etc.)?");
 	}
 	
@@ -143,38 +133,28 @@ public class QuestionFactory {
 					break;
 					
 				case CodeElement.FOR_LOOP:
-					for (String templateForQuestion : templateFor)
-					{
-						questionPrompt = new String(templateForQuestion);
-						questionPrompt = questionPrompt.replaceAll("<L>", "For");
-						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
-						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
-						question = new ConcreteQuestion(CodeElement.FOR_LOOP, codeSnippet, questionPrompt);
-						this.concreteQuestions.put(new Integer(concreteQuestionID), question);;	// now getting the question for the statements
-					}
-					break;
-					
 				case CodeElement.DO_LOOP:
-					for (String templateForQuestion : templateDo)
-					{
-						questionPrompt = new String(templateForQuestion);
-						questionPrompt = questionPrompt.replaceAll("<L>", "Do-While");
-						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
-						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
-						question = new ConcreteQuestion(CodeElement.DO_LOOP, codeSnippet, questionPrompt);
-						this.concreteQuestions.put(new Integer(concreteQuestionID), question);;	// now getting the question for the statements
-					}
-					break;
-					
 				case CodeElement.WHILE_LOOP:
-					for (String templateForQuestion : templateWhile)
+					for (String templateLoopQuestion : templateLoop)
 					{
-						questionPrompt = new String(templateForQuestion);
-						questionPrompt = questionPrompt.replaceAll("<L>", "While");
+						questionPrompt = new String(templateLoopQuestion);
 						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
 						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
-						question = new ConcreteQuestion(CodeElement.WHILE_LOOP, codeSnippet, questionPrompt);
-						this.concreteQuestions.put(new Integer(concreteQuestionID), question);;	// now getting the question for the statements
+						switch (element.getType()) {
+						case CodeElement.FOR_LOOP:
+							questionPrompt = questionPrompt.replaceAll("<L>", "For");
+							question = new ConcreteQuestion(CodeElement.FOR_LOOP, codeSnippet, questionPrompt);
+							break;
+						case CodeElement.DO_LOOP:
+							questionPrompt = questionPrompt.replaceAll("<L>", "Do");
+							question = new ConcreteQuestion(CodeElement.DO_LOOP, codeSnippet, questionPrompt);
+							break;
+						case CodeElement.WHILE_LOOP:
+							questionPrompt = questionPrompt.replaceAll("<L>", "While");
+							question = new ConcreteQuestion(CodeElement.WHILE_LOOP, codeSnippet, questionPrompt);
+							break;
+						}
+						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 					}
 					break;
 					// Add more cases here 
