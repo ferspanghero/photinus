@@ -35,7 +35,7 @@ public class QuestionFactory {
 		concreteQuestionID = 0;
 		this.concreteQuestions = new HashMap<Integer, ConcreteQuestion>();
 		/* Method Declaration */
-		templateMethodDeclaration.add("Is there maybe something wrong in the declaration of function'<F>' at line <#1> " 
+		templateMethodDeclaration.add("Is there maybe something wrong in the declaration of function '<F>' at line <#1> " 
 				+ "(e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?");
 		templateMethodDeclaration.add("Is there possibly something wrong with the body of function '<F>' between lines "
 				+ "<#1> and <#2> (e.g., function produces an incorrect return value, return statement is at the wrong place, does not properly handle error situations, etc.)?");
