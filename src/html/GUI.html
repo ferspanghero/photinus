@@ -1,19 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="http://jashkenas.github.com/coffee-script/extras/coffee-script.js"></script>
 <meta charset=utf-8 />
-<title>Welcome to JS Bin</title>
-<meta name="viewport" content="width=device-width">
-<link href='http://fonts.googleapis.com/css?family=Doppio+One' rel='stylesheet' type='text/css'>
-<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<title>GUI</title>
   <style type="text/css" media="screen">
   #editor {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    position: relative;
+    height: 300px;
+    weight: 400px;
   }
   .foo{
     position: absolute;
@@ -28,7 +22,10 @@
   </style>
 </head>
   
-<body>
+<body bgcolor="#F0F8FF">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
+  <div style="position:relative">
   <h1>Question</h1>
   <h2>1. Is there perhaps something wrong with the parameters received by function 'factorial' when called by function 'newCase' at line 29 (e.g., wrong order, missing parameter, wrong type of parameter, parameters that are not checked, etc.)?</h2>
   
@@ -42,7 +39,62 @@
     <textarea rows="4" cols="80">Firefly</textarea>
   </p>
 </form>  
+  </div>
   
+   <div id="editor">
+    /*
+Syntax highlighting with language autodetection.
+http://softwaremaniacs.org/soft/highlight/
+*/
+
+function() {
+
+  /* Utility functions */
+
+  function escape(value) {
+    return value.replace(/&/gm, '&amp;').replace(/</gm, '&lt;').replace(/>/gm, '&gt;');
+  }
+
+  function findCode(pre) {
+    for (var node = pre.firstChild; node; node = node.nextSibling) {
+      if (node.nodeName == 'CODE')
+        return node;
+      if (!(node.nodeType == 3 && node.nodeValue.match(/\s+/)))
+        break;
+    }
+  }
+
+  function blockText(block, ignoreNewLines) {
+    return Array.prototype.map.call(block.childNodes, function(node) {
+      if (node.nodeType == 3) {
+        return ignoreNewLines ? node.nodeValue.replace(/\n/g, '') : node.nodeValue;
+      }
+      if (node.nodeName == 'BR') {
+        return '\n';
+      }
+      return blockText(node, ignoreNewLines);
+    }).join('');
+  }
+  </div>
+<br>
+  <script>
+    var editor = ace.edit('editor');
+    //var textarea = $('textarea[name="editor"]').hide();
+    var Range = ace.require('ace/range').Range;
+    editor.setReadOnly(true);
+    editor.setTheme("ace/theme/github");
+    editor.getSession().setMode("ace/mode/javascript");
+    setTimeout(function() {
+      //editor.gotoLine(30);
+      editor.session.addMarker(new Range(3, 0, 15, 0), "ace_active-line", "fullLine");
+      editor.session.addMarker(new Range(4, 5, 8, 5), "foo", "line");
+       editor.session.addMarker(new Range(17, 5, 19, 8), "bar", "text");
+    }, 100);
+
+  </script>
+  
+
+  <div style="position:relative">
 <TABLE BORDER="0">
   <TR>
 
@@ -57,6 +109,6 @@
 
   </TR>
 </TABLE>
-  
+  </div>
 </body>
 </html>
