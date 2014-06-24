@@ -92,54 +92,39 @@ public class WorldStats
 	{
 		return numChunks;
 	}
-	
-	public void outputBlockStats(File statsFile, String varNamePrefix, BlockTypeRegistry registry)
-	{
+	public void outputBlockStats(File statsFile, String varNamePrefix, BlockTypeRegistry registry){
 		if (statsFile.exists())
-			statsFile.delete();
-		
+			statsFile.delete();		
 		System.out.println("Outputting block stats to "+statsFile.getAbsolutePath());
-		
-		// First merge with block id names (so that 'flowing lava' and 'stationary lava' becomes 'lava'
+		// First merge with block id names (so that 'flowing lava' becomes 'lava'
 		Map<String, Long> nameCounts = new HashMap<String, Long>();
 		Map<IdDataPair, Boolean> unknownBlockIds = new HashMap<IdDataPair, Boolean>();
-		for (IdDataPair id : blockIdCounts.keySet())
-		{
+		for (IdDataPair id : blockIdCounts.keySet()){
 			// Find the name
 			BlockType type = registry.find(id.id, id.data);
-			if (type != null)
-			{
+			if (type != null){
 				String name = type.getName();
-				
 				// Ensure it exists
 				if (!nameCounts.containsKey(name))
 					nameCounts.put(name, 0L);
-				
 				// Get the existing count
 				long count = nameCounts.get(name);
 				count += blockIdCounts.get(id);
-				
 				// Update the count
 				nameCounts.put(name, count);
 			}
-			else
-			{
+			else 
 				if (!unknownBlockIds.containsKey(id))
 					unknownBlockIds.put(id, true);
-			}
 		}
-		
 		JsArrayWriter jsWriter = null;
-		try
-		{
+		try{
 			jsWriter = new JsArrayWriter(statsFile, varNamePrefix+"_blockStats");
-			
 			// Get the names and sort them so they're output in alphabetical order
 			ArrayList<String> names = new ArrayList<String>( nameCounts.keySet() );
 			Collections.sort(names);
 			
-			for (String key : names)
-			{
+			for (String key : names){
 				final long count = nameCounts.get(key);
 				
 				HashMap<String, String> args = new HashMap<String, String>();
@@ -147,25 +132,18 @@ public class WorldStats
 				args.put("name", "\""+key+"\"");
 				
 				String countStr = NumberFormat.getInstance().format(count);
-				args.put("count", "\""+countStr+"\"");
+				args.put("count", "'"+countStr+"'");
 				
 				jsWriter.write(args);
 			}
 		}
-		catch (Exception e)
-		{
+		catch (Exception e){
 			e.printStackTrace();
-		}
-		finally
-		{
+		}finally{
 			if (jsWriter != null)
 				jsWriter.close();
 		}
-		
-		System.out.println("Outputted "+nameCounts.size()+" block counts");
-		
-		if (!unknownBlockIds.isEmpty())
-		{
+		if (!unknownBlockIds.isEmpty())	{
 			System.out.println("Unknown block types:");
 			for (IdDataPair id : unknownBlockIds.keySet())
 				System.out.println("\t" + id.id + ":" + id.data);

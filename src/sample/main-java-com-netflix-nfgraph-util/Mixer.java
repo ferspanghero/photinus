@@ -18,7 +18,6 @@
 package com.netflix.nfgraph.util;
 
 public class Mixer {
-
     /**
      * Thomas Wang's commonly used 32 bit mix function. 
      */
@@ -31,5 +30,4 @@ public class Mixer {
 		key = key ^ (key >>> 16);
 		return key & Integer.MAX_VALUE;
 	}
-
 }
