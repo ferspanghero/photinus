@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE html
+   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>
+      Suspect Files Uploader
+    </title>
+  <script language="JavaScript" src="./js/gen_validatorv4.js"
+    type="text/javascript" xml:space="preserve"></script>
+
+  </head>
+
+<body>
+  <h1>Upload the Suspected Files</h1>
+  <ul>
+     <li>The file upload is a mandatory field</li>
+     <li>Allowed file types are: .java</li>
+  </ul>
+  
+  <form action="" name="fileUploadForm" id="fileUploadForm">
+      <table cellspacing="2" cellpadding="2" border="0">
+		<tr>
+          <td align="right">
+            Debugging Session Name:
+          </td>
+          <td>
+            <input type='text' name='DebuggingSessionName' id='DebuggingSessionName' size='20'/>
+          </td>
+        </tr>      
+        
+        <tr>
+          <td align="right">
+            Attachment
+          </td>
+          <td>
+            <input type='file' name='Attachment' id='Attachment' size='20'/>
+          </td>
+        </tr>      
+        <tr>
+          <td align="right"></td>
+          <td>
+            <div id="fileUploadForm_errorloc">
+            </div>
+          </td>
+        </tr>        
+        <tr>
+          <td align="right"></td>
+          <td>
+            <input type="submit" value="Submit" />
+          </td>
+        </tr>
+      </table>
+    </form>
+  
+ 
+ <!-- Validates the file extensions and required fields />
+<script language="JavaScript" type="text/javascript"
+    xml:space="preserve">//<![CDATA[
+  var frmvalidator  = new Validator("fileUploadForm");
+  frmvalidator.EnableOnPageErrorDisplaySingleBox();
+  frmvalidator.EnableMsgsTogether();
+  
+  frmvalidator.addValidation("Attachment","file_extn=java","Allowed files types are: .java");
+  frmvalidator.addValidation("Attachment","req_file","File name is required");
+  frmvalidator.addValidation("DebuggingSessionName","req","Name of debugging session is required");
+
+//]]></script>
+
+
+</body>
+</html>
