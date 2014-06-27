@@ -18,7 +18,7 @@ public class ConcreteQuestion
 		this.setQuestion(questionArg);
 		this.setQuestionType(questionTypeArg);
 		this.lineNumber1 = startingLineNumber;
-		this.lineNumber2 = null;
+		this.lineNumber2 = startingLineNumber;
 		QuestionFactory.concreteQuestionID++;
 	}
 	

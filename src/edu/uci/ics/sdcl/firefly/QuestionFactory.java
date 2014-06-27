@@ -68,11 +68,12 @@ public class QuestionFactory {
 		{
 			for (String templateForQuestion : templateMethodDeclaration)
 			{
-				Integer lineNumber1, lineNumber2 = null;
+				Integer lineNumber1, lineNumber2;
 				questionPrompt = new String(templateForQuestion);
 				questionPrompt = questionPrompt.replaceAll("<F>", codeSnippet.getMethodSignature().getName());
 				questionPrompt = questionPrompt.replaceAll("<#>", codeSnippet.getMethodSignature().getLineNumber().toString());
 				lineNumber1 = codeSnippet.getMethodSignature().getLineNumber();
+				lineNumber2 = lineNumber1;
 				if (questionPrompt.indexOf("<#1>") > 0)	//it means it will ask about the body
 				{
 					lineNumber1 = codeSnippet.getBodyStartsAt();
