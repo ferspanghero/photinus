@@ -10,18 +10,17 @@ public class SimpleSampleCode {
 		Integer testes = 3;
 		if (testes == 5)
 			this.SeedLimit = new Integer(testes);
-		if (testes == 8) {
-			this.SeedLimit = new Integer(testes);
-		} // If with curly braces at the same line
-		if (testes == 10) {
+		if (testes == 8) {this.SeedLimit = new Integer(testes);	} // If with curly braces at the same line
+		if (testes == 10) 
+		{
 
 			this.SeedLimit = new Integer(testes); // If with curly braces
 		}
 	}
 
 	public Integer factorial(Integer Seed, Integer Iterations) {
-		if (Seed != null) {
-			int aux = 1;
+		if (Seed != null) 
+		{	int aux = 1;
 			for (int i = 0; i < Iterations.intValue(); i++) {
 				aux = aux * Seed;
 			}
