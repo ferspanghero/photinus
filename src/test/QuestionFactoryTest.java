@@ -1,6 +1,8 @@
 package test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,15 +62,15 @@ public class QuestionFactoryTest
 		this.codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer, 
 				new Boolean (true), signature);
 		
-		CodeElement element = new CodeElement(CodeElement.METHOD_NAME,new Integer(12));
+		CodeElement element = new CodeElement(CodeElement.METHOD_DECLARARION,new Integer(12));
 		codeSnippetFactorial.addElement(element);
 		element = new CodeElement(CodeElement.IF_CONDITIONAL,new Integer(14));
 		codeSnippetFactorial.addElement(element);
 		element = new CodeElement(CodeElement.FOR_LOOP,new Integer(16));
 		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.RETURN_STATEMENT,new Integer(19));
+		element = new CodeElement(CodeElement.METHOD_INVOCATION,new Integer(19));
 		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.RETURN_STATEMENT,new Integer(21));
+		element = new CodeElement(CodeElement.METHOD_INVOCATION,new Integer(21));
 		codeSnippetFactorial.addElement(element);
 		
 		//Second CodeSnippet
@@ -87,12 +89,12 @@ public class QuestionFactoryTest
 		this.codeSnippetConstructor=new CodeSnippet("sample", "SimpleSampleCode", buffer,
 				new Boolean(false), signature);
 		
-		element = new CodeElement(CodeElement.METHOD_NAME, new Integer(7));
+		element = new CodeElement(CodeElement.METHOD_DECLARARION, new Integer(7));
 		codeSnippetConstructor.addElement(element);
 		
 		this.questionFactory = new QuestionFactory();
 		
-		questionMethodCallConstructor = new ConcreteQuestion(CodeElement.METHOD_CALL, 
+		questionMethodCallConstructor = new ConcreteQuestion(CodeElement.METHOD_INVOCATION, 
 				this.codeSnippetConstructor, "Is there perhaps something wrong with the parameters received "
 				+ "by function 'SimpleSampleCode' (e.g. wrong order, missing parameter, wrong type of parameter, "
 						+ "parameters that are not checked, etc.)?");
@@ -109,7 +111,7 @@ public class QuestionFactoryTest
 				"calls a wrong type, etc.)?");
 		this.questionFactory.addConcreteQuestion(questionIf12, this.codeSnippetConstructor);
 		
-		questionMethodCallFactorial = new ConcreteQuestion(CodeElement.METHOD_CALL, 
+		questionMethodCallFactorial = new ConcreteQuestion(CodeElement.METHOD_INVOCATION, 
 				this.codeSnippetFactorial, "Is there perhaps something wrong with the parameters received "
 				+ "by function 'factorial' (e.g. wrong order, missing parameter, wrong type of parameter, "
 						+ "parameters that are not checked, etc.)?");
@@ -152,14 +154,16 @@ public class QuestionFactoryTest
 			if((snippet1.isEqualTo(codeSnippetConstructor)) || (snippet1.isEqualTo(codeSnippetFactorial)) && 
 				(snippet2.isEqualTo(codeSnippetConstructor)) || (snippet2.isEqualTo(codeSnippetFactorial))){
 					/* Methods OK, now checking questions */
-					ArrayList<ConcreteQuestion> allQuestions = this.questionFactory.generateQuestions(list);
+					HashMap<Integer, ConcreteQuestion> allQuestions = this.questionFactory.generateQuestions(list);
 					if( (null == allQuestions) || (allQuestions.size()!= 8) )
 						Assert.fail("Null list of questions or questions do not match test data");
 					else
 					{
 						match = true;			// Assuming is true and testing for a false scenario
-						for (ConcreteQuestion concreteQuestion : allQuestions)
+						Set<Integer> keySet = allQuestions.keySet();
+						for (Integer key: keySet)
 						{
+							ConcreteQuestion concreteQuestion = allQuestions.get(key);
 //							System.out.println(concreteQuestion.getQuestion());
 							if ( !concreteQuestion.getQuestion().equalsIgnoreCase(questionIf11.getQuestion())
 								&& !concreteQuestion.getQuestion().equalsIgnoreCase(questionIf12.getQuestion())

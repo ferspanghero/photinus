@@ -50,15 +50,15 @@ public class CodeSnippetFactoryTest {
 		this.codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer, 
 				new Boolean (true), signature);
 		
-		CodeElement element = new CodeElement(CodeElement.METHOD_NAME,new Integer(12));
+		CodeElement element = new CodeElement(CodeElement.METHOD_DECLARARION,new Integer(12));
 		codeSnippetFactorial.addElement(element);
 		element = new CodeElement(CodeElement.IF_CONDITIONAL,new Integer(14));
 		codeSnippetFactorial.addElement(element);
 		element = new CodeElement(CodeElement.FOR_LOOP,new Integer(16));
 		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.RETURN_STATEMENT,new Integer(19));
+		element = new CodeElement(CodeElement.METHOD_INVOCATION,new Integer(19));
 		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.RETURN_STATEMENT,new Integer(21));
+		element = new CodeElement(CodeElement.METHOD_INVOCATION,new Integer(21));
 		codeSnippetFactorial.addElement(element);
 		
 		//Second CodeSnippet
@@ -77,7 +77,7 @@ public class CodeSnippetFactoryTest {
 		this.codeSnippetConstructor=new CodeSnippet("sample", "SimpleSampleCode", buffer,
 				new Boolean(false), signature);
 		
-		element = new CodeElement(CodeElement.METHOD_NAME, new Integer(7));
+		element = new CodeElement(CodeElement.METHOD_DECLARARION, new Integer(7));
 		codeSnippetConstructor.addElement(element);
 		
 	}
