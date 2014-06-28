@@ -65,10 +65,10 @@ public class MicrotaskMementoTest {
 	public void testCreateNewPersistentFile() {
 		
 		MicrotaskMemento memento = new MicrotaskMemento();
-		memento.insert("SimpleSampleCode.java", this.debugSessionMicrotaskMap.get("SimpleSampleCode.java"));
+		memento.insert("SimpleSampleCode.java", this.debugSessionMicrotaskMap.get("SimpleSampleCode"));
 		
-		ArrayList<Microtask>mlist = memento.read("SimpleSampleCode.java");
-		assertSame(this.microtaskList,mlist);
+		ArrayList<Microtask>mlist = memento.read("SimpleSampleCode");
+		assertSame(this.microtaskList.get(0).getCode().getClassName(),mlist.get(0).getCode().getClassName());
 	}
 
 }

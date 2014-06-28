@@ -1,5 +1,6 @@
 package edu.uci.ics.sdcl.firefly;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /** Represents a microtask in the system.
@@ -7,15 +8,16 @@ import java.util.ArrayList;
  * @author Christian Adriano
  *
  */
-public class Microtask {
+public class Microtask implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	private Question question;
 	private CodeSnippet code;
 	private ArrayList<Answer> answerList;
 	
 	
-	public Microtask(Question question, CodeSnippet code) {
-		super();
+	public Microtask(Question question, CodeSnippet code) { 
 		this.question = question;
 		this.code = code;
 	}
@@ -32,9 +34,6 @@ public class Microtask {
 	}
 	public ArrayList<Answer> getAnswerList() {
 		return answerList;
-	}
-	
-	
-	
+	}	
 	
 }

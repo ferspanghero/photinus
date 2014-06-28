@@ -1,12 +1,10 @@
 package edu.uci.ics.sdcl.firefly;
 import java.util.ArrayList;
 
-public class CodeSnippet
-{
+public class CodeSnippet implements java.io.Serializable{
+	
 	protected String packageName;					// package name
 	protected String className; 					// file
-//	protected String methodName; 					// name of method
-//	protected String implementationType; 			// concrete or abstract
 	protected String methodBody;					// whole content of method
 	protected Integer bodyStartsAt;					// line where body starts
 	protected Integer bodyEndsAt;					// line where body ends
@@ -14,7 +12,7 @@ public class CodeSnippet
 	protected MethodSignature methodSignature;		// parsed method declaration
 	protected ArrayList<CodeElement> statements;	// list of statements
 	protected ArrayList<MethodSignature> methodCalss;	// list of method calls
-	private final static String newline = System.getProperty("line.separator");	// Just to jump line @toString
+	private static String newline = System.getProperty("line.separator");	// Just to jump line @toString
 	
 	public CodeSnippet(String packageName, String className, 
 			String methodBody, Boolean returnStatement, 
@@ -22,8 +20,6 @@ public class CodeSnippet
 	{
 		this.packageName = packageName;
 		this.className = className;
-//		this.methodName = methodName;
-//		this.implementationType = implementationType;
 		this.methodBody = methodBody;
 		this.returnStatement = returnStatement;
 		this.methodSignature = methodSignature;
@@ -46,8 +42,6 @@ public class CodeSnippet
 	{
 		this.packageName = packageName2;
 		this.className = className2;
-//		this.methodName = name;
-//		this.implementationType = implementationType;
 		this.methodBody = buffer.toString();
 		this.returnStatement = returnStatement2;
 		this.methodSignature = signature;
@@ -90,22 +84,6 @@ public class CodeSnippet
 	public void setClassName(String className) {
 		this.className = className;
 	}
-
-//	public String getMethodName() {
-//		return methodName;
-//	}
-//
-//	public void setMethodName(String methodName) {
-//		this.methodName = methodName;
-//	}
-
-//	public String getImplementationType() {
-//		return implementationType;
-//	}
-//
-//	public void setImplementationType(String implementationType) {
-//		this.implementationType = implementationType;
-//	}
 
 	public String getMethodBody() {
 		return methodBody;

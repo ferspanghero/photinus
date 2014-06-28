@@ -2,7 +2,6 @@ package edu.uci.ics.sdcl.firefly.memento;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,34 +24,23 @@ public class MicrotaskMemento {
 	private HashMap<String,ArrayList<Microtask>> debugSessionMicrotaskMap;
 
 	private String persistentFileName = "c:/Users/Christian Adriano/My Documents/microtasks.ser";
-	
+
 	private File file;
 
 	public MicrotaskMemento(){
 
-		/*try{
-			
-			//Check if the files exists
-			file = new File(this.persistentFileName);
-			
-		}
-		catch(FileNotFoundException exception){
-			
-		}*/
-		
 		try{
 			file = new File(this.persistentFileName);
 			if(file.exists() && !file.isDirectory()){
-				
-			//Try to retrieve an existing file.
-			ObjectInputStream objInputStream = new ObjectInputStream( 
-					// By using "FileOutputStream" we will 
-					// Read it from a File in the file system
-					new FileInputStream(file));
 
-			this.debugSessionMicrotaskMap = (HashMap<String,ArrayList<Microtask>>) objInputStream.readObject();
+				//Try to retrieve an existing file.
+				ObjectInputStream objInputStream = new ObjectInputStream( 
+						// By using "FileOutputStream" we will 
+						// Read it from a File in the file system
+						new FileInputStream(file));
 
-			 ((ObjectOutput) objInputStream).writeObject( debugSessionMicrotaskMap );
+				this.debugSessionMicrotaskMap = (HashMap<String,ArrayList<Microtask>>) objInputStream.readObject();
+
 				objInputStream.close();
 			}
 			// No files has been created yet. 
@@ -71,10 +59,10 @@ public class MicrotaskMemento {
 
 		}
 		catch(IOException exception){
-			 exception.printStackTrace();
+			exception.printStackTrace();
 		}
 		catch(Exception exception){
-			 exception.printStackTrace();
+			exception.printStackTrace();
 		}
 	}
 
@@ -84,7 +72,7 @@ public class MicrotaskMemento {
 	 * @return
 	 */
 	public ArrayList<Microtask> read(String fileName){
-		
+
 		try{	
 			ObjectInputStream objInputStream = new ObjectInputStream( 
 					// By using "FileOutputStream" we will 
@@ -93,7 +81,7 @@ public class MicrotaskMemento {
 
 			this.debugSessionMicrotaskMap = (HashMap<String,ArrayList<Microtask>>) objInputStream.readObject();
 			objInputStream.close();
-			
+
 			return this.debugSessionMicrotaskMap.get(fileName);
 		}
 		catch(IOException exception){
