@@ -20,12 +20,12 @@ public class SourceFileReader {
 		codeSnippets.printAll();
 		QuestionFactory questionFactory = new QuestionFactory();
 		System.out.println("----------Printing Concrete Questions-------------");
-		HashMap<Integer, ConcreteQuestion> concreteQuestionsMade = questionFactory.generateQuestions(methodsParsed);
-		Set<Map.Entry<Integer, ConcreteQuestion>> set = concreteQuestionsMade.entrySet();
-		Iterator<Entry<Integer, ConcreteQuestion>> i = set.iterator();
+		HashMap<Integer, Microtask> concreteQuestionsMade = questionFactory.generateQuestions(methodsParsed);
+		Set<Map.Entry<Integer, Microtask>> set = concreteQuestionsMade.entrySet();
+		Iterator<Entry<Integer, Microtask>> i = set.iterator();
 		while(i.hasNext()) 
 		{
-	         Map.Entry<Integer, ConcreteQuestion> me = (Map.Entry<Integer, ConcreteQuestion>)i.next();
+	         Map.Entry<Integer, Microtask> me = (Map.Entry<Integer, Microtask>)i.next();
 	         System.out.print("ID = " + me.getKey() + ": ");
 	         System.out.println(me.getValue().getQuestion());
 	    }

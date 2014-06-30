@@ -6,12 +6,16 @@ import java.util.ArrayList;
 
 public class CodeSnippetFactory {
 	private String folderPath;
+	private static String fileContent;
+	private static String[] fileContentePerLine;
 	private static ArrayList<CodeSnippet> codeSnippetList;
 	
 	public CodeSnippetFactory(String folderPathArg)
 	{
 		this.folderPath = folderPathArg;
 		CodeSnippetFactory.codeSnippetList = new ArrayList<CodeSnippet>();
+		fileContent = null;
+		fileContentePerLine = null;
 	}
 	
 	public ArrayList<CodeSnippet> getCodeSnippetList()
@@ -66,10 +70,21 @@ public class CodeSnippetFactory {
 			for (File f : files ) {
 				filePath = f.getAbsolutePath();
 				if(f.isFile()){
+		/* this implementation require endLine to be update by its codeSnippet constructor */
+					fileContent = SourceFileReader.readFileToString(filePath);
+					fileContentePerLine = fileContent.split("\r\n|\r|\n");
 					@SuppressWarnings("unused")
-					JavaParser parser = new JavaParser(SourceFileReader.readFileToString(filePath));
+					JavaParser parser = new JavaParser(fileContent);
 				}
 			}
 		}
+	}
+
+	public static String getFileContent() {
+		return fileContent;
+	}
+
+	public static String[] getFileContentePerLine() {
+		return fileContentePerLine;
 	}
 }

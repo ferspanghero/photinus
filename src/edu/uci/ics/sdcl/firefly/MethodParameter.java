@@ -1,6 +1,6 @@
 package edu.uci.ics.sdcl.firefly;
 
-public class MethodParameter implements java.io.Serializable{
+public class MethodParameter {
 
 	private String TypeName;
 	private String Name;

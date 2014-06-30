@@ -33,7 +33,8 @@ public class SimpleSampleCode {
 	public void newCases() {
 		Integer cases = 2;
 		cases -= 1;
-		switch (cases) {
+		switch (cases) 
+		{
 		case 1:
 			System.out.println("1");
 			break;

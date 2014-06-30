@@ -22,16 +22,16 @@ public class QuestionFactory {
 	public Integer numberOfStatements; 
 	public static Integer concreteQuestionID;
 	private String questionPrompt;
-	private ConcreteQuestion question;
+	private Microtask question;
 	
 //	private ArrayList<ConcreteQuestion> concreteQuestions;
-	private HashMap<Integer, ConcreteQuestion> concreteQuestions;
+	private HashMap<Integer, Microtask> concreteQuestions;
 	
 	public QuestionFactory()
 	{
 		this.numberOfStatements = 0;
 		concreteQuestionID = 0;
-		this.concreteQuestions = new HashMap<Integer, ConcreteQuestion>();
+		this.concreteQuestions = new HashMap<Integer, Microtask>();
 		/* Method Declaration */
 		templateMethodDeclaration.add("Is there maybe something wrong in the declaration of function '<F>' at line <#> " 
 				+ "(e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?");
@@ -42,16 +42,16 @@ public class QuestionFactory {
 				+ "by function '<F>' when called by function '<G>' at line <#> (e.g., wrong variables used as "
 				+ "parameters, wrong order, missing or wrong type of parameter, values of the parameters are not checked, etc .)?");
 		/* Conditional */
-		templateIf.add("Is it possible that the conditional clause at line <#1> has "
+		templateIf.add("Is it possible that the conditional clause at line <#> has "
 				+ "problems (e.g., wrong Boolean operator, wrong comparison, misplaced parentheses, etc.)?");
 		templateIf.add("Is there maybe something wrong with the body of the conditional clause between lines <#1> and <#2> "
 				+ "(e.g., enters the wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?");
-		templateSwitch.add("Is it possible that the conditional clause at line <#1> has "
+		templateSwitch.add("Is it possible that the conditional clause at line <#> has "
 				+ "problems (e.g., wrong Boolean operator, wrong comparison, misplaced parentheses, etc.)?");
 		templateSwitch.add("Is there maybe something wrong with the body of the conditional clause between lines <#1> and <#2> "
 				+ "(e.g., enters the wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?");
 		/* Loops */
-		templateLoop.add("Is there maybe something wrong with the '<L>-loop' construct at line <#1> "
+		templateLoop.add("Is there maybe something wrong with the '<L>-loop' construct at line <#> "
 				+ "(e.g., incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
 		templateLoop.add("Is the body of the '<L>-loop' between lines <#1> and <#2> "
 				+ "possibly not producing what it is supposed to (e.g., does not compute the expected result, does not exit at the expected iteration, etc.)?");
@@ -62,7 +62,7 @@ public class QuestionFactory {
 		return this.numberOfStatements;
 	}
 	
-	public HashMap<Integer, ConcreteQuestion> generateQuestions(ArrayList<CodeSnippet> methodsArg)
+	public HashMap<Integer, Microtask> generateQuestions(ArrayList<CodeSnippet> methodsArg)
 	{
 		for (CodeSnippet codeSnippet : methodsArg)
 		{
@@ -81,8 +81,8 @@ public class QuestionFactory {
 					questionPrompt = questionPrompt.replaceAll("<#1>", lineNumber1.toString());
 					questionPrompt = questionPrompt.replaceAll("<#2>", lineNumber2.toString());
 				}
-				question = new ConcreteQuestion(CodeElement.METHOD_DECLARARION, codeSnippet, 
-						questionPrompt, lineNumber1, lineNumber2);
+				question = new Microtask(CodeElement.METHOD_DECLARARION, codeSnippet, 
+						questionPrompt, codeSnippet.getMethodSignature().getLineNumber(), lineNumber1, lineNumber2);
 				this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 			}
 //			this.concreteQuestions.put(new Integer(concreteQuestionID), question);	// now getting the question for the statements
@@ -115,8 +115,9 @@ public class QuestionFactory {
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = questionPrompt.replaceAll("<F>", elementCall.getName());
 						questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
-						questionPrompt = questionPrompt.replaceAll("<#>", elementCall.getStartPosition().toString());
-						question = new ConcreteQuestion(CodeElement.METHOD_INVOCATION, codeSnippet, questionPrompt, elementCall.getStartPosition());
+						questionPrompt = questionPrompt.replaceAll("<#>", elementCall.getElementStartPosition().toString());
+						question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, questionPrompt, 
+								elementCall.getElementStartPosition());
 						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 					}
 					break;
@@ -124,10 +125,11 @@ public class QuestionFactory {
 					for (String templateForQuestion : templateIf)
 					{
 						questionPrompt = new String(templateForQuestion);
-						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
-						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
-						question = new ConcreteQuestion(CodeElement.IF_CONDITIONAL, codeSnippet, 
-								questionPrompt, element.getStartPosition(), element.getEndPosition());
+						questionPrompt = questionPrompt.replaceAll("<#>", element.getElementStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#1>", element.getElementStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#2>", element.getBodyEndPosition().toString());
+						question = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt, 
+								element.getElementStartPosition(), element.getElementStartPosition(), element.getBodyEndPosition());
 						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 					}
 					break;
@@ -136,8 +138,11 @@ public class QuestionFactory {
 					for (String templateForQuestion : templateSwitch)
 					{
 						questionPrompt = new String(templateForQuestion);
-						questionPrompt = questionPrompt.replaceAll("<#>", element.getStartPosition().toString());
-						question = new ConcreteQuestion(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt, element.getStartPosition());
+						questionPrompt = questionPrompt.replaceAll("<#>", element.getElementStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#1>", element.getBodyStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#2>", element.getBodyEndPosition().toString());
+						question = new Microtask(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt, 
+								element.getElementStartPosition(), element.getBodyStartPosition(), element.getBodyEndPosition());
 						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 					}
 					break;
@@ -148,23 +153,24 @@ public class QuestionFactory {
 					for (String templateLoopQuestion : templateLoop)
 					{
 						questionPrompt = new String(templateLoopQuestion);
-						questionPrompt = questionPrompt.replaceAll("<#1>", element.getStartPosition().toString());
-						questionPrompt = questionPrompt.replaceAll("<#2>", element.getEndPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#>", element.getElementStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#1>", element.getBodyStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#2>", element.getBodyEndPosition().toString());
 						switch (element.getType()) {
 						case CodeElement.FOR_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "For");
-							question = new ConcreteQuestion(CodeElement.FOR_LOOP, codeSnippet, 
-									questionPrompt, element.getStartPosition(), element.getEndPosition());
+							question = new Microtask(CodeElement.FOR_LOOP, codeSnippet, questionPrompt, 
+									element.getElementStartPosition(), element.getBodyStartPosition(), element.getBodyEndPosition());
 							break;
 						case CodeElement.DO_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "Do");
-							question = new ConcreteQuestion(CodeElement.DO_LOOP, codeSnippet, 
-									questionPrompt, element.getStartPosition(), element.getEndPosition());
+							question = new Microtask(CodeElement.DO_LOOP, codeSnippet, questionPrompt, 
+									element.getElementStartPosition(), element.getBodyStartPosition(), element.getBodyEndPosition());
 							break;
 						case CodeElement.WHILE_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "While");
-							question = new ConcreteQuestion(CodeElement.WHILE_LOOP, codeSnippet,
-									questionPrompt, element.getStartPosition(), element.getEndPosition());
+							question = new Microtask(CodeElement.WHILE_LOOP, codeSnippet, questionPrompt, 
+									element.getElementStartPosition(), element.getBodyStartPosition(), element.getBodyEndPosition());
 							break;
 						}
 						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
@@ -181,7 +187,7 @@ public class QuestionFactory {
 		return concreteQuestions;
 	}
 	
-	public void addConcreteQuestion(ConcreteQuestion question, CodeSnippet method)
+	public void addConcreteQuestion(Microtask question, CodeSnippet method)
 	{
 		//TO DO
 	}

@@ -1,10 +1,12 @@
 package edu.uci.ics.sdcl.firefly;
 import java.util.ArrayList;
 
-public class CodeSnippet implements java.io.Serializable{
-	
+public class CodeSnippet
+{
 	protected String packageName;					// package name
 	protected String className; 					// file
+//	protected String methodName; 					// name of method
+//	protected String implementationType; 			// concrete or abstract
 	protected String methodBody;					// whole content of method
 	protected Integer bodyStartsAt;					// line where body starts
 	protected Integer bodyEndsAt;					// line where body ends
@@ -12,40 +14,49 @@ public class CodeSnippet implements java.io.Serializable{
 	protected MethodSignature methodSignature;		// parsed method declaration
 	protected ArrayList<CodeElement> statements;	// list of statements
 	protected ArrayList<MethodSignature> methodCalss;	// list of method calls
-	private static String newline = System.getProperty("line.separator");	// Just to jump line @toString
+	private final static String newline = System.getProperty("line.separator");	// Just to jump line @toString
 	
 	public CodeSnippet(String packageName, String className, 
-			String methodBody, Boolean returnStatement, 
+			String methodBody, Integer bodyStartingLine, Boolean returnStatement, 
 			MethodSignature methodSignature)
 	{
 		this.packageName = packageName;
 		this.className = className;
+		this.bodyStartsAt = bodyStartingLine;
+//		this.methodName = methodName;
+//		this.implementationType = implementationType;
 		this.methodBody = methodBody;
 		this.returnStatement = returnStatement;
 		this.methodSignature = methodSignature;
 		if (null != this.methodBody)
 		{
-			this.bodyStartsAt = methodSignature.getLineNumber()+1;		// assuming standard format
-			String str = new String(this.methodBody);
-			String[] lines = str.split("\r\n|\r|\n");
-			this.bodyEndsAt =  this.bodyStartsAt + lines.length -1;
+			String contentPerLines[] = CodeSnippetFactory.getFileContentePerLine();
+			Integer curlyBracesTrack = 0;	// reference to find the end of the body
+			int currentLine = (this.bodyStartsAt -1);
+			do {	// looping lines to find and of body
+				for (int i=0; i < contentPerLines[currentLine].length(); i++) // looping chars to find brackets 
+				{
+					System.out.println("  -- Linha atual: " + contentPerLines[currentLine]);
+					switch ( contentPerLines[currentLine].charAt(i) ) {
+					case '{':
+						System.out.println("FOUND A BRACKET!");
+						curlyBracesTrack++;
+						break;
+					case '}':
+						curlyBracesTrack--;
+						break;	
+					}
+				}
+				currentLine++;
+			}
+			while (0 < curlyBracesTrack);
+			
+			this.bodyEndsAt = currentLine;
 		}
 		else
-			this.bodyEndsAt = this.bodyStartsAt = methodSignature.getLineNumber();
+			this.bodyEndsAt = this.bodyStartsAt;
 		this.statements = new ArrayList<CodeElement>();
 		this.methodCalss = new ArrayList<MethodSignature>();
-	}
-	
-	public CodeSnippet(String packageName2, String className2,
-			StringBuffer buffer,
-			Boolean returnStatement2, MethodSignature signature)
-	{
-		this.packageName = packageName2;
-		this.className = className2;
-		this.methodBody = buffer.toString();
-		this.returnStatement = returnStatement2;
-		this.methodSignature = signature;
-		this.statements = new ArrayList<CodeElement>();
 	}
 
 	@Override
@@ -84,6 +95,22 @@ public class CodeSnippet implements java.io.Serializable{
 	public void setClassName(String className) {
 		this.className = className;
 	}
+
+//	public String getMethodName() {
+//		return methodName;
+//	}
+//
+//	public void setMethodName(String methodName) {
+//		this.methodName = methodName;
+//	}
+
+//	public String getImplementationType() {
+//		return implementationType;
+//	}
+//
+//	public void setImplementationType(String implementationType) {
+//		this.implementationType = implementationType;
+//	}
 
 	public String getMethodBody() {
 		return methodBody;
