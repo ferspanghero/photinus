@@ -1,16 +1,19 @@
 package edu.uci.ics.sdcl.firefly;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Microtask
+public class Microtask implements Serializable
 {	
 	private String question;
 	private CodeSnippet method;
 	private String questionType;
-	private ArrayList<String> answer;
+	private ArrayList<Answer> answerList;
 	private Integer statementStartsAt;
 	private Integer bodyStartsAt;
 	private Integer bodyEndsAt;
+	private Integer bodyStartingColumn;
+	private Integer bodyEndingColumn;
 	
 	public Microtask(String questionTypeArg, CodeSnippet methodArg, String questionArg, 
 			Integer startingLineNumber)
@@ -21,6 +24,8 @@ public class Microtask
 		this.statementStartsAt = startingLineNumber;
 		this.bodyStartsAt = startingLineNumber;
 		this.bodyEndsAt = startingLineNumber;
+		this.bodyStartingColumn = 0;
+		this.bodyEndingColumn = 0;
 		QuestionFactory.concreteQuestionID++;
 	}
 	
@@ -66,14 +71,14 @@ public class Microtask
 		this.method = method;
 	}
 
-	public ArrayList<String> getAnswer()
+	public ArrayList<Answer> getAnswerList()
 	{
-		return answer;
+		return answerList;
 	}
 
-	public void setAnswer(ArrayList<String> answer)
+	public void setAnswer(ArrayList<Answer> answerList)
 	{
-		this.answer = answer;
+		this.answerList = answerList;
 	}
 
 	public Integer getStatementStartsAt() {
@@ -98,6 +103,22 @@ public class Microtask
 
 	public void setBodyEndsAt(Integer bodyEndsAt) {
 		this.bodyEndsAt = bodyEndsAt;
+	}
+
+	public Integer getBodyStartingColumn() {
+		return bodyStartingColumn;
+	}
+
+	public void setBodyStartingColumn(Integer bodyColumnStart) {
+		this.bodyStartingColumn = bodyColumnStart;
+	}
+
+	public Integer getBodyEndingColumn() {
+		return bodyEndingColumn;
+	}
+
+	public void setBodyEndingColumn(Integer bodyColumnEnd) {
+		this.bodyEndingColumn = bodyColumnEnd;
 	}
 	
 }

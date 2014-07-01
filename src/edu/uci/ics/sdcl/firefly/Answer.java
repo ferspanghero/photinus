@@ -1,5 +1,7 @@
 package edu.uci.ics.sdcl.firefly;
 
-public class Answer {
+import java.io.Serializable;
+
+public class Answer implements Serializable{
 
 }

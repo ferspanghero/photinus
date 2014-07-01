@@ -1,8 +1,9 @@
 package edu.uci.ics.sdcl.firefly;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MethodSignature {
+public class MethodSignature implements Serializable{
 
 	protected String Name;
 	protected String Modifier;							//Visibility

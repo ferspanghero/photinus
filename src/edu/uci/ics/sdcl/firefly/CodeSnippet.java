@@ -1,7 +1,8 @@
 package edu.uci.ics.sdcl.firefly;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CodeSnippet
+public class CodeSnippet implements Serializable
 {
 	protected String packageName;					// package name
 	protected String className; 					// file
@@ -10,6 +11,8 @@ public class CodeSnippet
 	protected String methodBody;					// whole content of method
 	protected Integer bodyStartsAt;					// line where body starts
 	protected Integer bodyEndsAt;					// line where body ends
+	protected Integer bodyStartingColumn;			// column where body starts
+	protected Integer bodyEndingColumn;				// column where body ends
 	protected Boolean returnStatement;				// true if there is a return value
 	protected MethodSignature methodSignature;		// parsed method declaration
 	protected ArrayList<CodeElement> statements;	// list of statements
@@ -23,6 +26,8 @@ public class CodeSnippet
 		this.packageName = packageName;
 		this.className = className;
 		this.bodyStartsAt = bodyStartingLine;
+		this.bodyStartingColumn = 0;
+		this.bodyEndingColumn = 2000;
 //		this.methodName = methodName;
 //		this.implementationType = implementationType;
 		this.methodBody = methodBody;
@@ -33,10 +38,9 @@ public class CodeSnippet
 			String contentPerLines[] = CodeSnippetFactory.getFileContentePerLine();
 			Integer curlyBracesTrack = 0;	// reference to find the end of the body
 			int currentLine = (this.bodyStartsAt -1);
-			do {	// looping lines to find and of body
+			do {	// looping lines to find the end of the body
 				for (int i=0; i < contentPerLines[currentLine].length(); i++) // looping chars to find brackets 
 				{
-					System.out.println("  -- Linha atual: " + contentPerLines[currentLine]);
 					switch ( contentPerLines[currentLine].charAt(i) ) {
 					case '{':
 						System.out.println("FOUND A BRACKET!");
@@ -52,6 +56,7 @@ public class CodeSnippet
 			while (0 < curlyBracesTrack);
 			
 			this.bodyEndsAt = currentLine;
+			this.bodyEndingColumn = contentPerLines[currentLine].length() + 2; // to highlight the last char
 		}
 		else
 			this.bodyEndsAt = this.bodyStartsAt;
@@ -157,4 +162,19 @@ public class CodeSnippet
 	public void setBodyEndsAt(Integer bodyEndsAt) {
 		this.bodyEndsAt = bodyEndsAt;
 	}
+	public Integer getBodyStartingColumn() {
+		return bodyStartingColumn;
+	}
+
+	public void setBodyStartingColumn(Integer bodyStartingColumn) {
+		this.bodyStartingColumn = bodyStartingColumn;
+	}
+	public Integer getBodyEndingColumn() {
+		return bodyEndingColumn;
+	}
+
+	public void setBodyEndingColumn(Integer bodyEndingColumn) {
+		this.bodyEndingColumn = bodyEndingColumn;
+	}
+
 }

@@ -119,22 +119,26 @@ public class MyVisitor extends ASTVisitor {
 		System.out.println("Parameters: " + parameters);
 		
 		Integer bodyStartingLineNumber;
+		Integer bodyColumnStartNumber;
 		if (null == node.getBody())
 		{
 			body = null;
 			bodyStartingLineNumber = lnNumber;
+			bodyColumnStartNumber = cu.getColumnNumber(node.getBody().getStartPosition());
 		}
 			
 		else
 		{
 			body = node.getBody().toString();
 			bodyStartingLineNumber = cu.getLineNumber(node.getBody().getStartPosition());
+			bodyColumnStartNumber = cu.getColumnNumber(node.getBody().getStartPosition());
 		}
 			
-		System.out.println("Body: " + body);
+//		System.out.println("Body: " + body);
 		/* Creating new object */
 		newMethod = new CodeSnippet(this.packageName, this.className, body, bodyStartingLineNumber,
 				hasReturnStatement, signature);
+		newMethod.setBodyStartingColumn(bodyColumnStartNumber);
 		CodeSnippetFactory.addToCodeSnippetList(newMethod);
 //		this.methodIndex = CodeSnippetFactory.getIndexCSList(newMethod);
 		return true;
@@ -167,7 +171,10 @@ public class MyVisitor extends ASTVisitor {
 			bodyStartingLine = cu.getLineNumber(node.getElseStatement().getStartPosition());
 		CodeElement element = new CodeElement(CodeElement.IF_CONDITIONAL, 
 				cu.getLineNumber(node.getStartPosition()), bodyStartingLine);
+		element.setColumnStart(cu.getColumnNumber(node.getThenStatement().getStartPosition()));
 		newMethod.addElement(element);
+//		System.out.println(" $$$ CS = " + element.getColumnStart());
+//		System.out.println(" $$$ CE = " + element.getColumnEnd());
 		return true;
 	}
 	
@@ -193,7 +200,10 @@ public class MyVisitor extends ASTVisitor {
 		System.out.println("For at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
 				cu.getLineNumber(node.getStartPosition()), cu.getLineNumber(node.getBody().getStartPosition()));
+		element.setColumnStart(cu.getColumnNumber(node.getBody().getStartPosition()));
+//		System.out.println("For-body column starting point: " + element.getColumnStart());
 		newMethod.addElement(element);
+		
 //		System.out.println("For statement: " + node.getBody().toString());
 		return true;
 	}
@@ -203,6 +213,7 @@ public class MyVisitor extends ASTVisitor {
 		System.out.println("ForEach at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
 				cu.getLineNumber(node.getStartPosition()), cu.getLineNumber(node.getBody().getStartPosition()));
+		element.setColumnStart(cu.getColumnNumber(node.getBody().getStartPosition()));
 		newMethod.addElement(element);
 //		System.out.println("For statement: " + node.getBody().toString());
 		return true;
@@ -213,6 +224,7 @@ public class MyVisitor extends ASTVisitor {
 		System.out.println("Do-While at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.DO_LOOP, 
 				cu.getLineNumber(node.getStartPosition()), cu.getLineNumber(node.getBody().getStartPosition()));
+		element.setColumnStart(cu.getColumnNumber(node.getBody().getStartPosition()));
 		newMethod.addElement(element);
 //		System.out.println("Do-While statement: " + node.getBody().toString());
 		return true;
@@ -223,6 +235,7 @@ public class MyVisitor extends ASTVisitor {
 		System.out.println("While at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.WHILE_LOOP, 
 				cu.getLineNumber(node.getStartPosition()), cu.getLineNumber(node.getBody().getStartPosition()));
+		element.setColumnStart(cu.getColumnNumber(node.getBody().getStartPosition()));
 		newMethod.addElement(element);
 //		System.out.println("While statement: " + node.getBody().toString());
 		return true;

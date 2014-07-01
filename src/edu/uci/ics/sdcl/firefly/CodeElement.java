@@ -1,6 +1,8 @@
 package edu.uci.ics.sdcl.firefly;
 
-public class CodeElement {
+import java.io.Serializable;
+
+public class CodeElement implements Serializable {
 
 	public final static String FOR_LOOP = "FOR_LOOP"; 
 	public final static String WHILE_LOOP = "WHILE_LOOP"; 
@@ -19,6 +21,8 @@ public class CodeElement {
 	private Integer elementStartPosition;
 	private Integer bodyStartPosition;
 	private Integer bodyEndPosition;
+	private Integer columnStart;
+	private Integer columnEnd;
 	
 	/* constructor for elements without body */
 	public CodeElement(String Type, Integer statementLine){
@@ -26,12 +30,16 @@ public class CodeElement {
 		this.elementStartPosition = statementLine;
 		this.bodyStartPosition = statementLine;
 		this.bodyStartPosition = statementLine;
+		this.columnStart = 0;
+		this.columnEnd = 2000;
 	}
 	/* constructor for elements with body */
 	public CodeElement(String Type, Integer statementLine, Integer bodyStartingAt){
 		this.Type = Type;
 		this.elementStartPosition = statementLine;
 		this.bodyStartPosition = bodyStartingAt;
+		this.columnStart = 0;
+		this.columnEnd = 2000;
 		/* finding the end of the body */
 		String contentPerLines[] = CodeSnippetFactory.getFileContentePerLine();
 		Integer curlyBracesTrack = 0;	// reference to find the end of the body
@@ -40,12 +48,11 @@ public class CodeElement {
 		do {	// looping lines to find and of body
 			for (int i=0; i < contentPerLines[currentLine].length(); i++) // looping chars to find brackets 
 			{
-//				System.out.println("  -- Linha atual: " + contentPerLines[currentLine]);
 				switch ( contentPerLines[currentLine].charAt(i) ) {
 				case '{':
-					System.out.println("FOUND A BRACKET!");
 					curlyBracesTrack++;
 					openBracketNotFound = false;
+					if (SWITCH_CONDITIONAL == this.Type) this.columnStart = currentLine++;
 					break;
 				case '}':
 					curlyBracesTrack--;
@@ -57,6 +64,7 @@ public class CodeElement {
 		while ( (0 < curlyBracesTrack) || (openBracketNotFound && (SWITCH_CONDITIONAL == this.Type)) );
 		
 		this.bodyEndPosition = currentLine;
+		this.columnEnd = contentPerLines[currentLine].length() + 2; // to highlight the last char
 	}
 
 	public String getType() {
@@ -99,5 +107,17 @@ public class CodeElement {
 
 	public void setElementStartPosition(Integer elementStartPosition) {
 		this.elementStartPosition = elementStartPosition;
+	}
+	public Integer getColumnStart() {
+		return columnStart;
+	}
+	public void setColumnStart(Integer columnStart) {
+		this.columnStart = columnStart;
+	}
+	public Integer getColumnEnd() {
+		return columnEnd;
+	}
+	public void setColumnEnd(Integer columnEnd) {
+		this.columnEnd = columnEnd;
 	}
 }
