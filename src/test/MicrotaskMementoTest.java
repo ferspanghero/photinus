@@ -2,27 +2,25 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.uci.ics.sdcl.firefly.CodeElement;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.MethodParameter;
 import edu.uci.ics.sdcl.firefly.MethodSignature;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.Question;
 import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
 
 public class MicrotaskMementoTest {
 
-	private  HashMap<String,ArrayList<Microtask>> debugSessionMicrotaskMap = new HashMap<String, ArrayList<Microtask>>();
-	private ArrayList<Microtask> microtaskList;
+	private  HashMap<String, HashMap<Integer, Microtask>> debugSessionMicrotaskMap = new HashMap<String, HashMap<Integer,Microtask>>();
+	private HashMap<Integer, Microtask> microtaskMap;
 
 	@Before
 	public void setUp() throws Exception {
-		Question question = new Question();
 		MethodSignature signature = new MethodSignature("factorial", "public", new Integer(12));
 		MethodParameter arg1, arg2;
 		arg1 = new MethodParameter("Integer", "Seed");
@@ -50,15 +48,18 @@ public class MicrotaskMementoTest {
 		buffer.append("\n");
 		buffer.append("}");
 
-		CodeSnippet codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer, 
+		String questionArg = "Is there maybe something wrong in the declaration of function 'factorial' at line 12 " 
+				+ "(e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?";
+		
+		CodeSnippet codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer (12),
 				new Boolean (true), signature);
-		Microtask mtask = new Microtask(question, codeSnippetFactorial);
+		Microtask mtask = new Microtask(CodeElement.METHOD_DECLARARION, codeSnippetFactorial, questionArg, new Integer(12));
 
 		//Create the data structure
-		this.microtaskList =  new ArrayList<Microtask>();
-		microtaskList.add(mtask);
+		this.microtaskMap =  new HashMap<Integer,Microtask>();
+		microtaskMap.put(new Integer(1),mtask);
 
-		this.debugSessionMicrotaskMap.put("SimpleSampleCode.java", microtaskList);
+		this.debugSessionMicrotaskMap.put("SimpleSampleCode.java", microtaskMap);
 	}
 
 	@Test
@@ -67,9 +68,14 @@ public class MicrotaskMementoTest {
 		MicrotaskMemento memento = new MicrotaskMemento();
 		memento.insert("SimpleSampleCode.java", this.debugSessionMicrotaskMap.get("SimpleSampleCode.java"));
 
-		ArrayList<Microtask>mlist = memento.read("SimpleSampleCode.java");
-		if (mlist!=null)
-			assertEquals(this.microtaskList.get(0).getCode().getClassName().toString(),mlist.get(0).getCode().getClassName().toString());
+		HashMap<Integer, Microtask> mMap = memento.read("SimpleSampleCode.java");
+		if (mMap!=null){
+			Integer key = new Integer (1);
+			Microtask expectedTask = this.microtaskMap.get(key);
+			Microtask actualTask = this.microtaskMap.get(key);
+			
+			assertEquals(expectedTask.getMethod().getClassName(),actualTask.getMethod().getClassName().toString());
+		}
 		else
 			fail("review test setup");
 	}

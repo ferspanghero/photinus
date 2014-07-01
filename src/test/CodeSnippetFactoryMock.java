@@ -35,7 +35,7 @@ public class CodeSnippetFactoryMock {
 		buffer.append("\n");
 		buffer.append("}");
 		
-		this.codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer, 
+		this.codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer(12),
 				new Boolean (true), signature);
 		
 		CodeElement element = new CodeElement(CodeElement.METHOD_DECLARARION,new Integer(12));
@@ -62,7 +62,7 @@ public class CodeSnippetFactoryMock {
 		buffer.append("\n");
 		buffer.append("}");
 		
-		this.codeSnippetConstructor=new CodeSnippet("sample","SimpleSampleCode", buffer, 
+		this.codeSnippetConstructor=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer(7), 
 				new Boolean (true), signature);
 		
 		element = new CodeElement(CodeElement.METHOD_DECLARARION,new Integer(7));

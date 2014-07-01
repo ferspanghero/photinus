@@ -19,14 +19,14 @@ public class QuestionFactoryTest
 	private ArrayList<String> templateMethodCall = new ArrayList<String>(); */
 	private CodeSnippet codeSnippetFactorial;
 	private CodeSnippet codeSnippetConstructor;
-	private ConcreteQuestion questionIf11;
-	private ConcreteQuestion questionIf12;
-	private ConcreteQuestion questionIf21;
-	private ConcreteQuestion questionIf22;
-	private ConcreteQuestion questionFor1;
-	private ConcreteQuestion questionFor2;
-	private ConcreteQuestion questionMethodCallFactorial;
-	private ConcreteQuestion questionMethodCallConstructor;
+	private Microtask questionIf11;
+	private Microtask questionIf12;
+	private Microtask questionIf21;
+	private Microtask questionIf22;
+	private Microtask questionFor1;
+	private Microtask questionFor2;
+	private Microtask questionMethodCallFactorial;
+	private Microtask questionMethodCallConstructor;
 	private QuestionFactory questionFactory;
 	
 	@Before
@@ -59,7 +59,7 @@ public class QuestionFactoryTest
 		buffer.append("\n");
 		buffer.append("}");
 		
-		this.codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer, 
+		this.codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer(12), 
 				new Boolean (true), signature);
 		
 		CodeElement element = new CodeElement(CodeElement.METHOD_DECLARARION,new Integer(12));
@@ -86,7 +86,7 @@ public class QuestionFactoryTest
 		buffer.append("\n");
 		buffer.append("}");
 		
-		this.codeSnippetConstructor=new CodeSnippet("sample", "SimpleSampleCode", buffer,
+		this.codeSnippetConstructor=new CodeSnippet("sample", "SimpleSampleCode", buffer.toString(), new Integer(7),
 				new Boolean(false), signature);
 		
 		element = new CodeElement(CodeElement.METHOD_DECLARARION, new Integer(7));
@@ -94,48 +94,48 @@ public class QuestionFactoryTest
 		
 		this.questionFactory = new QuestionFactory();
 		
-		questionMethodCallConstructor = new ConcreteQuestion(CodeElement.METHOD_INVOCATION, 
+		questionMethodCallConstructor = new Microtask(CodeElement.METHOD_INVOCATION, 
 				this.codeSnippetConstructor, "Is there perhaps something wrong with the parameters received "
 				+ "by function 'SimpleSampleCode' (e.g. wrong order, missing parameter, wrong type of parameter, "
-						+ "parameters that are not checked, etc.)?");
+						+ "parameters that are not checked, etc.)?",new Integer(7));
 		this.questionFactory.addConcreteQuestion(questionMethodCallConstructor, this.codeSnippetConstructor);
 		
-		questionIf11 = new ConcreteQuestion(CodeElement.IF_CONDITIONAL, this.codeSnippetConstructor, 
+		questionIf11 = new Microtask(CodeElement.IF_CONDITIONAL, this.codeSnippetConstructor, 
 				"Is if possible that the construct of the conditional clause at line 8 has any problems"
-				+ " (e.g., wrong boolean operator, wrong comparison, misplaced parentheses, etc.)?");
+				+ " (e.g., wrong boolean operator, wrong comparison, misplaced parentheses, etc.)?", new Integer(8));
 		this.questionFactory.addConcreteQuestion(questionIf11, this.codeSnippetConstructor);
 		
-		questionIf12 = new ConcreteQuestion(CodeElement.IF_CONDITIONAL, this.codeSnippetConstructor, 
+		questionIf12 = new Microtask(CodeElement.IF_CONDITIONAL, this.codeSnippetConstructor, 
 				"Is it possible that the conditional clause at line 8 is causing the wrong code " + 
 				"to be executed (e.g. enter the wrong branch, makes a call to a null pointer, " +
-				"calls a wrong type, etc.)?");
+				"calls a wrong type, etc.)?", new Integer(8));
 		this.questionFactory.addConcreteQuestion(questionIf12, this.codeSnippetConstructor);
 		
-		questionMethodCallFactorial = new ConcreteQuestion(CodeElement.METHOD_INVOCATION, 
+		questionMethodCallFactorial = new Microtask(CodeElement.METHOD_INVOCATION, 
 				this.codeSnippetFactorial, "Is there perhaps something wrong with the parameters received "
 				+ "by function 'factorial' (e.g. wrong order, missing parameter, wrong type of parameter, "
-						+ "parameters that are not checked, etc.)?");
+						+ "parameters that are not checked, etc.)?", new Integer(7));
 		this.questionFactory.addConcreteQuestion(questionMethodCallFactorial, this.codeSnippetFactorial);
 		
-		questionIf21 = new ConcreteQuestion(CodeElement.IF_CONDITIONAL, this.codeSnippetFactorial, 
+		questionIf21 = new Microtask(CodeElement.IF_CONDITIONAL, this.codeSnippetFactorial, 
 				"Is if possible that the construct of the conditional clause at line 14 has any problems"
-				+ " (e.g., wrong boolean operator, wrong comparison, misplaced parentheses, etc.)?");
+				+ " (e.g., wrong boolean operator, wrong comparison, misplaced parentheses, etc.)?", new Integer(14));
 		this.questionFactory.addConcreteQuestion(questionIf21, this.codeSnippetFactorial);
 		
-		questionIf22 = new ConcreteQuestion(CodeElement.IF_CONDITIONAL, this.codeSnippetFactorial, 
+		questionIf22 = new Microtask(CodeElement.IF_CONDITIONAL, this.codeSnippetFactorial, 
 				"Is it possible that the conditional clause at line 14 is causing the wrong code " + 
 				"to be executed (e.g. enter the wrong branch, makes a call to a null pointer, " +
-				"calls a wrong type, etc.)?");
+				"calls a wrong type, etc.)?", new Integer(14));
 		this.questionFactory.addConcreteQuestion(questionIf22, this.codeSnippetFactorial);
 		
-		questionFor1 = new ConcreteQuestion(CodeElement.FOR_LOOP, this.codeSnippetFactorial, 
+		questionFor1 = new Microtask(CodeElement.FOR_LOOP, this.codeSnippetFactorial, 
 				"Is there maybe something wrong with the construct of the loop at line 16 (e.g. " +
-				"incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
+				"incorrect initialization, wrong counter increment, wrong exit condition, etc.)?", new Integer(16));
 		this.questionFactory.addConcreteQuestion(questionFor1, this.codeSnippetFactorial);
 		
-		questionFor2 = new ConcreteQuestion(CodeElement.FOR_LOOP, this.codeSnippetFactorial, 
+		questionFor2 = new Microtask(CodeElement.FOR_LOOP, this.codeSnippetFactorial, 
 				"Is the loop at line 16 possibly not producing what it is supposed to (e.g. does not " +
-				"generate the expected result from iteration, does not exit at the expected iteration, etc.)?");
+				"generate the expected result from iteration, does not exit at the expected iteration, etc.)?", new Integer(16));
 		this.questionFactory.addConcreteQuestion(questionFor2, this.codeSnippetFactorial);
 	
 	}
@@ -154,7 +154,7 @@ public class QuestionFactoryTest
 			if((snippet1.isEqualTo(codeSnippetConstructor)) || (snippet1.isEqualTo(codeSnippetFactorial)) && 
 				(snippet2.isEqualTo(codeSnippetConstructor)) || (snippet2.isEqualTo(codeSnippetFactorial))){
 					/* Methods OK, now checking questions */
-					HashMap<Integer, ConcreteQuestion> allQuestions = this.questionFactory.generateQuestions(list);
+					HashMap<Integer, Microtask> allQuestions = this.questionFactory.generateQuestions(list);
 					if( (null == allQuestions) || (allQuestions.size()!= 8) )
 						Assert.fail("Null list of questions or questions do not match test data");
 					else
@@ -163,16 +163,16 @@ public class QuestionFactoryTest
 						Set<Integer> keySet = allQuestions.keySet();
 						for (Integer key: keySet)
 						{
-							ConcreteQuestion concreteQuestion = allQuestions.get(key);
+							Microtask microtask = allQuestions.get(key);
 //							System.out.println(concreteQuestion.getQuestion());
-							if ( !concreteQuestion.getQuestion().equalsIgnoreCase(questionIf11.getQuestion())
-								&& !concreteQuestion.getQuestion().equalsIgnoreCase(questionIf12.getQuestion())
-								&& !concreteQuestion.getQuestion().equalsIgnoreCase(questionIf21.getQuestion()) 
-								&& !concreteQuestion.getQuestion().equalsIgnoreCase(questionIf22.getQuestion())
-								&& !concreteQuestion.getQuestion().equalsIgnoreCase(questionFor1.getQuestion()) 
-								&& !concreteQuestion.getQuestion().equalsIgnoreCase(questionFor2.getQuestion()) 
-								&& !concreteQuestion.getQuestion().equalsIgnoreCase(questionMethodCallConstructor.getQuestion()) 
-								&& !concreteQuestion.getQuestion().equalsIgnoreCase(questionMethodCallFactorial.getQuestion())
+							if ( !microtask.getQuestion().equalsIgnoreCase(questionIf11.getQuestion())
+								&& !microtask.getQuestion().equalsIgnoreCase(questionIf12.getQuestion())
+								&& !microtask.getQuestion().equalsIgnoreCase(questionIf21.getQuestion()) 
+								&& !microtask.getQuestion().equalsIgnoreCase(questionIf22.getQuestion())
+								&& !microtask.getQuestion().equalsIgnoreCase(questionFor1.getQuestion()) 
+								&& !microtask.getQuestion().equalsIgnoreCase(questionFor2.getQuestion()) 
+								&& !microtask.getQuestion().equalsIgnoreCase(questionMethodCallConstructor.getQuestion()) 
+								&& !microtask.getQuestion().equalsIgnoreCase(questionMethodCallFactorial.getQuestion())
 									)
 							{
 								match = false;

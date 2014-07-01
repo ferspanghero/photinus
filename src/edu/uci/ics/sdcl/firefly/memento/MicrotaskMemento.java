@@ -21,9 +21,9 @@ public class MicrotaskMemento {
 
 	/** Holds the list of microtasks for all files. 
 	 * String key = file name, ArrayList is the list of microtasks*/
-	private HashMap<String,ArrayList<Microtask>> debugSessionMicrotaskMap;
+	private HashMap<String,HashMap<Integer, Microtask>> debugSessionMicrotaskMap;
 
-	private String persistentFileName = "c:/Users/Christian Adriano/My Documents/microtasks.ser";
+	private String persistentFileName = "../microtasks.ser";
 
 	private File file;
 
@@ -39,14 +39,14 @@ public class MicrotaskMemento {
 						// Read it from a File in the file system
 						new FileInputStream(file));
 
-				this.debugSessionMicrotaskMap = (HashMap<String,ArrayList<Microtask>>) objInputStream.readObject();
+				this.debugSessionMicrotaskMap = (HashMap<String,HashMap<Integer,Microtask>>) objInputStream.readObject();
 
 				objInputStream.close();
 			}
 			// No files has been created yet. 
 			else{
 				// Create a sample object, that contains the default values.
-				this.debugSessionMicrotaskMap = new HashMap<String,ArrayList<Microtask>>();
+				this.debugSessionMicrotaskMap = new HashMap<String,HashMap<Integer,Microtask>>();
 
 				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 						// By using "FileOutputStream" we will 
@@ -71,7 +71,7 @@ public class MicrotaskMemento {
 	 * @param fileName
 	 * @return
 	 */
-	public ArrayList<Microtask> read(String fileName){
+	public HashMap<Integer,Microtask> read(String fileName){
 
 		try{	
 			ObjectInputStream objInputStream = new ObjectInputStream( 
@@ -79,7 +79,7 @@ public class MicrotaskMemento {
 					// Read it to a File in the file system
 					new FileInputStream(new File(this.persistentFileName)));
 
-			this.debugSessionMicrotaskMap = (HashMap<String,ArrayList<Microtask>>) objInputStream.readObject();
+			this.debugSessionMicrotaskMap = (HashMap<String,HashMap<Integer,Microtask>>) objInputStream.readObject();
 			objInputStream.close();
 
 			return this.debugSessionMicrotaskMap.get(fileName);
@@ -103,10 +103,10 @@ public class MicrotaskMemento {
 	 * @param fileName
 	 * @param microtaskList
 	 */
-	public void insert(String fileName, ArrayList <Microtask> microtaskList){
+	public void insert(String fileName, HashMap <Integer, Microtask> microtaskMap){
 		try{
 
-			this.debugSessionMicrotaskMap.put(fileName, microtaskList);
+			this.debugSessionMicrotaskMap.put(fileName, microtaskMap);
 
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					// By using "FileOutputStream" we will 

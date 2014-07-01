@@ -79,7 +79,7 @@
 
 	<br>
  
-	<form method="POST" action='FileUploadController' name="openMicrotask">
+	<form method="POST" action='MicrotaskController' name="openMicrotask">
 		<input type="submit" name="Give me a Microtask!" value="openMicrotask">
 		
 	</form>
