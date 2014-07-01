@@ -27,6 +27,7 @@ public class MyVisitor extends ASTVisitor {
 //	private SwitchStatement lastSwitchVisited;
 //	private SwitchCase lastCaseVisited;
 	
+	
 	public MyVisitor(CompilationUnit cuArg)
 	{
 		this.cu = cuArg;

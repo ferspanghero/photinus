@@ -40,7 +40,7 @@ public class CodeElement {
 		do {	// looping lines to find and of body
 			for (int i=0; i < contentPerLines[currentLine].length(); i++) // looping chars to find brackets 
 			{
-				System.out.println("  -- Linha atual: " + contentPerLines[currentLine]);
+//				System.out.println("  -- Linha atual: " + contentPerLines[currentLine]);
 				switch ( contentPerLines[currentLine].charAt(i) ) {
 				case '{':
 					System.out.println("FOUND A BRACKET!");
@@ -54,7 +54,7 @@ public class CodeElement {
 			}
 			currentLine++;
 		}
-		while ( (0 < curlyBracesTrack) || openBracketNotFound );
+		while ( (0 < curlyBracesTrack) || (openBracketNotFound && (SWITCH_CONDITIONAL == this.Type)) );
 		
 		this.bodyEndPosition = currentLine;
 	}
