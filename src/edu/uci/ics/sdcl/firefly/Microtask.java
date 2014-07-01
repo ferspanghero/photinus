@@ -76,19 +76,19 @@ public class Microtask
 		this.answer = answer;
 	}
 
-	public Integer getLineNumber1() {
+	public Integer getStatementStartsAt() {
 		return statementStartsAt;
 	}
 
-	public void setLineNumber1(Integer lineNumber1) {
+	public void setStatementStartsAt(Integer lineNumber1) {
 		this.statementStartsAt = lineNumber1;
 	}
 
-	public Integer getLineNumber2() {
+	public Integer getBodyStartsAt() {
 		return bodyStartsAt;
 	}
 
-	public void setLineNumber2(Integer lineNumber2) {
+	public void setBodyStartsAt(Integer lineNumber2) {
 		this.bodyStartsAt = lineNumber2;
 	}
 
