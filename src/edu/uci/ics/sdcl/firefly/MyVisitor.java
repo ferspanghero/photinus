@@ -157,6 +157,7 @@ public class MyVisitor extends ASTVisitor {
 			@SuppressWarnings("unchecked")
 			myMethodCall methodCall = new myMethodCall(node.getName().toString(), node.getExpression().toString(),
 					node.arguments(), cu.getLineNumber(node.getStartPosition()));
+			methodCall.setColumnStart(cu.getColumnNumber(node.getStartPosition()));
 			newMethod.addElement(methodCall);
 		}
 		return true;
@@ -166,15 +167,15 @@ public class MyVisitor extends ASTVisitor {
 	public boolean visit(IfStatement node)
 	{
 		System.out.println("If at line: " + cu.getLineNumber(node.getStartPosition()));	
-		int bodyStartingLine = cu.getLineNumber(node.getThenStatement().getStartPosition());
+		int elseStartingLine = MyIfStatement.NO_ELSE_STATEMENT;
 		if (null != node.getElseStatement())
-			bodyStartingLine = cu.getLineNumber(node.getElseStatement().getStartPosition());
-		CodeElement element = new CodeElement(CodeElement.IF_CONDITIONAL, 
-				cu.getLineNumber(node.getStartPosition()), bodyStartingLine);
+			elseStartingLine = cu.getLineNumber(node.getElseStatement().getStartPosition());
+		MyIfStatement element = new MyIfStatement(cu.getLineNumber(node.getStartPosition()), 
+			cu.getLineNumber(node.getThenStatement().getStartPosition()), elseStartingLine);
 		element.setColumnStart(cu.getColumnNumber(node.getThenStatement().getStartPosition()));
 		newMethod.addElement(element);
 //		System.out.println(" $$$ CS = " + element.getColumnStart());
-//		System.out.println(" $$$ CE = " + element.getColumnEnd());
+		System.out.println(" $$$ CE = " + element.getColumnEnd());
 		return true;
 	}
 	

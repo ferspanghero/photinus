@@ -25,7 +25,7 @@ public class Microtask implements Serializable
 		this.bodyStartsAt = startingLineNumber;
 		this.bodyEndsAt = startingLineNumber;
 		this.bodyStartingColumn = 0;
-		this.bodyEndingColumn = 0;
+		this.bodyEndingColumn = 2000;
 		QuestionFactory.concreteQuestionID++;
 	}
 	

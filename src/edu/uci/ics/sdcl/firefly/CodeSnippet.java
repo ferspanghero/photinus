@@ -11,6 +11,7 @@ public class CodeSnippet implements Serializable
 	protected String methodBody;					// whole content of method
 	protected Integer bodyStartsAt;					// line where body starts
 	protected Integer bodyEndsAt;					// line where body ends
+	protected Integer elseStartingLine;				// else startingLine case if statement
 	protected Integer bodyStartingColumn;			// column where body starts
 	protected Integer bodyEndingColumn;				// column where body ends
 	protected Boolean returnStatement;				// true if there is a return value
@@ -43,7 +44,7 @@ public class CodeSnippet implements Serializable
 				{
 					switch ( contentPerLines[currentLine].charAt(i) ) {
 					case '{':
-						System.out.println("FOUND A BRACKET!");
+//						System.out.println("FOUND A BRACKET!");
 						curlyBracesTrack++;
 						break;
 					case '}':
@@ -56,7 +57,7 @@ public class CodeSnippet implements Serializable
 			while (0 < curlyBracesTrack);
 			
 			this.bodyEndsAt = currentLine;
-			this.bodyEndingColumn = contentPerLines[currentLine].length() + 2; // to highlight the last char
+			this.bodyEndingColumn = contentPerLines[currentLine-1].length() + 2; // to highlight the last char
 		}
 		else
 			this.bodyEndsAt = this.bodyStartsAt;

@@ -64,7 +64,8 @@ public class CodeElement implements Serializable {
 		while ( (0 < curlyBracesTrack) || (openBracketNotFound && (SWITCH_CONDITIONAL == this.Type)) );
 		
 		this.bodyEndPosition = currentLine;
-		this.columnEnd = contentPerLines[currentLine].length() + 2; // to highlight the last char
+		this.columnEnd = contentPerLines[currentLine-1].length() + 2; // to highlight the last char
+		System.out.println("body ends at: " + contentPerLines[currentLine-1]);
 	}
 
 	public String getType() {
