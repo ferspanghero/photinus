@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Iterator;
 
+import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
 
@@ -29,8 +30,13 @@ public class MicrotaskSelector {
 
 	public void incrementSelector(String fileName, int numberOfAnswers){
 		Integer maxAnswer= this.answerCountMap.get(fileName);
-		if(maxAnswer!=null && maxAnswer.intValue()<numberOfAnswers)
-			answerCountMap.put(fileName, new Integer(numberOfAnswers));	
+		if(maxAnswer!=null)
+			if(maxAnswer.intValue()<numberOfAnswers)
+				answerCountMap.put(fileName, new Integer(numberOfAnswers));
+			else{}
+				//ignore it, because there is a microtask with more answers than that.
+		else//initialize the vector with the first entry.
+			answerCountMap.put(fileName, new Integer(numberOfAnswers));
 	}
 
 	public Microtask selectMicrotask(String fileName){
@@ -57,7 +63,7 @@ public class MicrotaskSelector {
 				while(!found && iter.hasNext()){
 					key = iter.next();
 					task = map.get(key);
-					ArrayList<String> answers = task.getAnswer();
+					ArrayList<Answer> answers = task.getAnswerList();
 					if(answers!=null && answers.size()<maxAnswers)
 						found=true;
 				}
@@ -67,4 +73,17 @@ public class MicrotaskSelector {
 		}//else
 	}//selectMicrotask
 	
+	/** 
+	 * 
+	 * @param fileName
+	 * @return the maximum number of answers received for microtasks on code snippets from a given file
+	 */
+	public int getMaxNumberOfAnswers(String fileName){
+		
+		Integer maxObj = this.answerCountMap.get(fileName);
+		if (maxObj==null)
+				return 0;
+		else
+			return maxObj.intValue();
+	}
 }
