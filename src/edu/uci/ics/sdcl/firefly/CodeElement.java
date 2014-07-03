@@ -16,56 +16,55 @@ public class CodeElement implements Serializable {
 //	public final static String METHOD_NAME = "METHOD_NAME";
 //	public static final String RETURN_STATEMENT = "RETURN_STATEMENT";
 	public static final String COMMENT_STATEMENT = "COMMENT_STATEMENT";
+	public static final Integer NO_NUMBER_ASSOCIATED = -1;
 
-	private String Type;
-	private Integer elementStartPosition;
-	private Integer bodyStartPosition;
-	private Integer bodyEndPosition;
-	private Integer columnStart;
-	private Integer columnEnd;
+	protected String Type;
+	/* finding starting and ending position */
+	/* Element position */
+	protected Integer elementStartingLine;	// line number for the element beginning (not the body)
+	protected Integer elementStartingColumn;// column number for the element beginning
+	protected Integer elementEndingLine;	// line number for the element ending
+	protected Integer elementEndingColumn;	// column number for the element ending
+	/* Body position */
+	protected Integer bodyStartingLine;		// line number for the beginning of body
+	protected Integer bodyStartingColumn;	// column number for the body (of element in case of method invocation)
+	protected Integer bodyEndingLine;		// line number for the end of the body
+	protected Integer bodyEndingColumn;		// column number for the end of the body
+	
 	
 	/* constructor for elements without body */
-	public CodeElement(String Type, Integer statementLine){
+	public CodeElement(String Type, 
+			Integer elementStartingLineArg, Integer elementStartingColumnArg, 
+			Integer elementEndingLineArg, Integer elementEndingColumnArg){
 		this.Type = Type;
-		this.elementStartPosition = statementLine;
-		this.bodyStartPosition = statementLine;
-		this.bodyStartPosition = statementLine;
-		this.columnStart = 0;
-		this.columnEnd = 2000;
+		/* setting element position */
+		this.elementStartingLine = elementStartingLineArg;
+		this.elementStartingColumn = elementStartingColumnArg;
+		this.elementEndingLine = elementEndingLineArg;
+		this.elementEndingColumn = elementEndingColumnArg;
+		/* setting body position */
+		this.bodyStartingLine = CodeElement.NO_NUMBER_ASSOCIATED;		
+		this.bodyStartingColumn = CodeElement.NO_NUMBER_ASSOCIATED;	
+		this.bodyEndingLine = CodeElement.NO_NUMBER_ASSOCIATED;		
+		this.bodyEndingColumn = CodeElement.NO_NUMBER_ASSOCIATED;		
 	}
 	/* constructor for elements with body */
-	public CodeElement(String Type, Integer statementLine, Integer bodyStartingAt){
+	public CodeElement(String Type, 
+			Integer elementStartingLineArg, Integer elementStartingColumnArg, 
+			Integer elementEndingLineArg, Integer elementEndingColumnArg,
+			Integer bodyStartingLineArg, Integer bodyStartingColumnArg,
+			Integer bodyEndingLineArg, Integer bodyEndingColumnArg){
 		this.Type = Type;
-		this.elementStartPosition = statementLine;
-		this.bodyStartPosition = bodyStartingAt;
-		this.columnStart = 0;
-		this.columnEnd = 2000;
-		/* finding the end of the body */
-		String contentPerLines[] = CodeSnippetFactory.getFileContentePerLine();
-		Integer curlyBracesTrack = 0;	// reference to find the end of the body
-		int currentLine = (this.bodyStartPosition-1);
-		boolean openBracketNotFound = true;				// assuming the OPEN bracket was not yet found
-		do {	// looping lines to find and of body
-			for (int i=0; i < contentPerLines[currentLine].length(); i++) // looping chars to find brackets 
-			{
-				switch ( contentPerLines[currentLine].charAt(i) ) {
-				case '{':
-					curlyBracesTrack++;
-					openBracketNotFound = false;
-					if (SWITCH_CONDITIONAL == this.Type) this.columnStart = currentLine++;
-					break;
-				case '}':
-					curlyBracesTrack--;
-					break;	
-				}
-			}
-			currentLine++;
-		}
-		while ( (0 < curlyBracesTrack) || (openBracketNotFound && (SWITCH_CONDITIONAL == this.Type)) );
-		
-		this.bodyEndPosition = currentLine;
-		this.columnEnd = contentPerLines[currentLine-1].length() + 2; // to highlight the last char
-		System.out.println("body ends at: " + contentPerLines[currentLine-1]);
+		/* setting element position */
+		this.elementStartingLine = elementStartingLineArg;
+		this.elementStartingColumn = elementStartingColumnArg;
+		this.elementEndingLine = elementEndingLineArg;
+		this.elementEndingColumn = elementEndingColumnArg;
+		/* setting body position */
+		this.bodyStartingLine = bodyStartingLineArg;		
+		this.bodyStartingColumn = bodyStartingColumnArg;	
+		this.bodyEndingLine = bodyEndingLineArg;		
+		this.bodyEndingColumn = bodyEndingColumnArg;	
 	}
 
 	public String getType() {
@@ -79,46 +78,31 @@ public class CodeElement implements Serializable {
 	@Override
 	public String toString()
 	{
-		return this.getType() + " @ line " + this.bodyStartPosition.toString();
+		return this.getType() + " @ line " + this.bodyStartingLine.toString();
 	}
-
-	public Integer getBodyStartPosition()
-	{
-		return bodyStartPosition;
+	/* getting positions */
+	public Integer getElementStartingLine() {
+		return elementStartingLine;
 	}
-
-	public void setBodyStartPosition(Integer startPosition)
-	{
-		this.bodyStartPosition = startPosition;
+	public Integer getElementStartingColumn() {
+		return elementStartingColumn;
 	}
-
-	public Integer getBodyEndPosition()
-	{
-		return bodyEndPosition;
+	public Integer getElementEndingLine() {
+		return elementEndingLine;
 	}
-
-	public void setBodyEndPosition(Integer endPosition)
-	{
-		this.bodyEndPosition = endPosition;
+	public Integer getElementEndingColumn() {
+		return elementEndingColumn;
 	}
-
-	public Integer getElementStartPosition() {
-		return elementStartPosition;
+	public Integer getBodyStartingLine() {
+		return bodyStartingLine;
 	}
-
-	public void setElementStartPosition(Integer elementStartPosition) {
-		this.elementStartPosition = elementStartPosition;
+	public Integer getBodyStartingColumn() {
+		return bodyStartingColumn;
 	}
-	public Integer getColumnStart() {
-		return columnStart;
+	public Integer getBodyEndingLine() {
+		return bodyEndingLine;
 	}
-	public void setColumnStart(Integer columnStart) {
-		this.columnStart = columnStart;
-	}
-	public Integer getColumnEnd() {
-		return columnEnd;
-	}
-	public void setColumnEnd(Integer columnEnd) {
-		this.columnEnd = columnEnd;
+	public Integer getBodyEndingColumn() {
+		return bodyEndingColumn;
 	}
 }

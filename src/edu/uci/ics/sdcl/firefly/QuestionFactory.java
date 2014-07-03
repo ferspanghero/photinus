@@ -20,10 +20,15 @@ public class QuestionFactory {
 	public static ArrayList<String> templateLoop = new ArrayList<String>();
 	
 	public Integer numberOfStatements; 
-	private Integer lineNumber1, lineNumber2, col1, col2;
-	public static Integer concreteQuestionID;
+	public static Integer concreteQuestionID = 0;
 	private String questionPrompt;
 	private Microtask question;
+	
+	/* for the Range-values (ACE Editor) */
+	private Integer startingLine;
+	private Integer startingColumn;
+	private Integer endingLine;
+	private Integer endingColumn;
 	
 //	private ArrayList<ConcreteQuestion> concreteQuestions;
 	private HashMap<Integer, Microtask> concreteQuestions;
@@ -65,62 +70,48 @@ public class QuestionFactory {
 	
 	public HashMap<Integer, Microtask> generateQuestions(ArrayList<CodeSnippet> methodsArg)
 	{
+		this.numberOfStatements = 0;	// initializing variable
 		for (CodeSnippet codeSnippet : methodsArg)
 		{
 			for (String templateForQuestion : templateMethodDeclaration)
 			{
 				questionPrompt = new String(templateForQuestion);
 				questionPrompt = questionPrompt.replaceAll("<F>", codeSnippet.getMethodSignature().getName());
-				/* assuming it will talk just about the construct */
-				lineNumber1 = codeSnippet.getMethodSignature().getLineNumber();
-				lineNumber2 = lineNumber1;
-				col1 = 0;
-				col2 = 2000;
+
 				if (questionPrompt.indexOf("<#1>") > 0)	//it means it will ask about the body
 				{
-					lineNumber1 = codeSnippet.getBodyStartsAt();
-					lineNumber2 = codeSnippet.getBodyEndsAt();
-					col1 = codeSnippet.getBodyStartingColumn();
-					col2 = codeSnippet.getBodyEndingColumn();
-					questionPrompt = questionPrompt.replaceAll("<#1>", lineNumber1.toString());
-					questionPrompt = questionPrompt.replaceAll("<#2>", lineNumber2.toString());
-				} else {
-					questionPrompt = questionPrompt.replaceAll("<#>", codeSnippet.getMethodSignature().getLineNumber().toString());
-					if (codeSnippet.getBodyStartsAt() == lineNumber1) //if body starts at the constructor line
-						this.col2 = codeSnippet.getBodyStartingColumn();
+					/* setting up the position for the body */
+					this.startingLine = codeSnippet.getBodyStartingLine();
+					this.startingColumn = codeSnippet.getBodyStartingColumn();
+					this.endingLine = codeSnippet.getBodyEndingLine();
+					this.endingColumn = codeSnippet.getBodyEndingColumn();
+					
+					questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
+					questionPrompt = questionPrompt.replaceAll("<#2>", this.endingLine.toString());
+				} else
+				{
+					/* setting up the position for the element */
+					this.startingLine = codeSnippet.getElementStartingLine();
+					this.startingColumn = codeSnippet.getElementStartingColumn();
+					this.endingLine = codeSnippet.getElementEndingLine();
+					this.endingColumn = codeSnippet.getElementEndingColumn();
+					
+					questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 				}
-				question = new Microtask(CodeElement.METHOD_DECLARARION, codeSnippet, 
-						questionPrompt, codeSnippet.getMethodSignature().getLineNumber(), lineNumber1, lineNumber2);
-				question.setBodyStartingColumn(col1);
-				question.setBodyEndingColumn(col2);
+				/* setting and adding a concrete question */
+				question = new Microtask(CodeElement.METHOD_DECLARARION, codeSnippet, questionPrompt,
+						this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
 				this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 			}
-//			this.concreteQuestions.put(new Integer(concreteQuestionID), question);	// now getting the question for the statements
-//			String questionPrompt = new String("Is there maybe something wrong in the declaration of function '"
-//					+ codeSnippet.getMethodSignature().getName() + "' at line " + codeSnippet.getMethodSignature().getLineNumber().toString()
-//					+ " (e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?");
-//			questionPrompt = questionPrompt.replaceAll("<F>", codeSnippet.getMethodSignature().getName());
-//			ConcreteQuestion question = new ConcreteQuestion(CodeElement.METHOD_DECLARARION, codeSnippet, questionPrompt);
-//			this.concreteQuestions.put(new Integer(concreteQuestionID), question);	
 			
 			ArrayList<CodeElement> statements = codeSnippet.getStatements();	// now getting the question for the statements
 			
 			//Method Declaration
 			
-			
-			
 			//Method Body
-			
-			
 			
 			for (CodeElement element : statements)
 			{
-				/* assuming it will ask just about the construct */
-				lineNumber1 = element.getElementStartPosition();
-				lineNumber2 = lineNumber1;
-				col1 = 0;
-				col2 = 2000;
-				
 				this.numberOfStatements++;
 				switch (element.getType())
 				{
@@ -128,23 +119,58 @@ public class QuestionFactory {
 					for (String templateForQuestion : templateMethodInvocation)
 					{
 						myMethodCall elementCall = (myMethodCall)element;
+						/* setting up the position for the element */
+						this.startingLine = elementCall.getElementStartingLine();
+						this.startingColumn = elementCall.getElementStartingColumn();
+						this.endingLine = elementCall.getElementEndingLine();
+						this.endingColumn = elementCall.getElementEndingColumn();
+						
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = questionPrompt.replaceAll("<F>", elementCall.getName());
 						questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
-						questionPrompt = questionPrompt.replaceAll("<#>", elementCall.getElementStartPosition().toString());
+						questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
+						
 						question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, questionPrompt, 
-								lineNumber1);
+								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
 						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 					}
 					break;
+					
 				case CodeElement.IF_CONDITIONAL:
 					for (String templateForQuestion : templateIf)
 					{
+						MyIfStatement elementIf = (MyIfStatement)element;
 						questionPrompt = new String(templateForQuestion);
-						questionPrompt = this.setUpQuestionPrompt(questionPrompt, element);
+						/* setting up question prompt */
+						if (questionPrompt.indexOf("<#1>") > 0)	//it means it will ask about the body
+						{
+							// the starting line of the body
+							this.startingLine = elementIf.getBodyStartingLine();
+							this.startingColumn = elementIf.getBodyStartingColumn();
+							if (elementIf.isThereIsElse())
+							{	// get Else statement end
+								this.endingLine = elementIf.getElseEndingLine();
+								this.endingColumn = elementIf.getElseEndingColumn();
+							} else 
+							{	// no Else then get just body  end (then statement end)
+								this.endingLine = elementIf.getBodyEndingLine();
+								this.endingColumn = elementIf.getBodyEndingColumn();
+							}
+							questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
+							questionPrompt = questionPrompt.replaceAll("<#2>", this.endingLine.toString());
+						} else
+						{	/* setting up the position for the element */
+							this.startingLine = elementIf.getElementStartingLine();
+							this.startingColumn = elementIf.getElementStartingColumn();
+							this.endingLine = elementIf.getElementEndingLine();
+							this.endingColumn = elementIf.getElementEndingColumn();
+							
+							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
+						}
 						question = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt, 
-								this.lineNumber1, this.lineNumber1, this.lineNumber2);
-						this.setColumnsAndPutQuestion(question);
+								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
+						
+						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 					}
 					break;
 					
@@ -154,8 +180,9 @@ public class QuestionFactory {
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = this.setUpQuestionPrompt(questionPrompt, element);
 						question = new Microtask(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt, 
-								element.getElementStartPosition(), element.getBodyStartPosition(), element.getBodyEndPosition());
-						this.setColumnsAndPutQuestion(question);
+								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
+
+						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 					}
 					break;
 					
@@ -170,20 +197,20 @@ public class QuestionFactory {
 						case CodeElement.FOR_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "For");
 							question = new Microtask(CodeElement.FOR_LOOP, codeSnippet, questionPrompt, 
-									element.getElementStartPosition(), element.getBodyStartPosition(), element.getBodyEndPosition());
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
 							break;
 						case CodeElement.DO_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "Do");
 							question = new Microtask(CodeElement.DO_LOOP, codeSnippet, questionPrompt, 
-									element.getElementStartPosition(), element.getBodyStartPosition(), element.getBodyEndPosition());
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
 							break;
 						case CodeElement.WHILE_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "While");
 							question = new Microtask(CodeElement.WHILE_LOOP, codeSnippet, questionPrompt, 
-									element.getElementStartPosition(), element.getBodyStartPosition(), element.getBodyEndPosition());
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
 							break;
 						}
-						this.setColumnsAndPutQuestion(question);
+						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 					}
 					break;
 					// Add more cases here 
@@ -206,26 +233,25 @@ public class QuestionFactory {
 	{
 		if (questionPromptArg.indexOf("<#1>") > 0)	//it means it will ask about the body
 		{
-			this.lineNumber1 = elementArg.getBodyStartPosition();
-			this.lineNumber2 = elementArg.getBodyEndPosition();
-			this.col1 = elementArg.getColumnStart();
-			this.col2 = elementArg.getColumnEnd();
-			questionPromptArg = questionPromptArg.replaceAll("<#1>", this.lineNumber1.toString());
-			questionPromptArg = questionPromptArg.replaceAll("<#2>", this.lineNumber2.toString());
-		} else {
-			questionPromptArg = questionPromptArg.replaceAll("<#>", elementArg.getElementStartPosition().toString());
-			if (elementArg.getBodyStartPosition() == lineNumber1) //if body starts at the constructor line
-				this.col2 = elementArg.getColumnStart();
-		}
+			/* setting up the position for the body */
+			this.startingLine = elementArg.getBodyStartingLine();
+			this.startingColumn = elementArg.getBodyStartingColumn();
+			this.endingLine = elementArg.getBodyEndingLine();
+			this.endingColumn = elementArg.getBodyEndingColumn();
 			
+			questionPromptArg = questionPromptArg.replaceAll("<#1>", this.startingLine.toString());
+			questionPromptArg = questionPromptArg.replaceAll("<#2>", this.endingLine.toString());
+		} else
+		{
+			/* setting up the position for the element */
+			this.startingLine = elementArg.getElementStartingLine();
+			this.startingColumn = elementArg.getElementStartingColumn();
+			this.endingLine = elementArg.getElementEndingLine();
+			this.endingColumn = elementArg.getElementEndingColumn();
+			
+			questionPromptArg = questionPromptArg.replaceAll("<#>", this.startingLine.toString());
+		}
 		return questionPromptArg;
-	}
-	
-	private void setColumnsAndPutQuestion(Microtask questionArg)
-	{
-		questionArg.setBodyStartingColumn(this.col1);
-		questionArg.setBodyEndingColumn(this.col2);
-		this.concreteQuestions.put(new Integer(concreteQuestionID), question);
 	}
 	
 //	public ArrayList<ConcreteQuestion> getConcreteQuestionsOfCS(CodeSnippet codeSnippetConstructor)

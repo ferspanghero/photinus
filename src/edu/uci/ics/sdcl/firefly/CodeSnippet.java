@@ -8,59 +8,79 @@ public class CodeSnippet implements Serializable
 	protected String className; 					// file
 //	protected String methodName; 					// name of method
 //	protected String implementationType; 			// concrete or abstract
+	
 	protected String methodBody;					// whole content of method
-	protected Integer bodyStartsAt;					// line where body starts
-	protected Integer bodyEndsAt;					// line where body ends
-	protected Integer elseStartingLine;				// else startingLine case if statement
-	protected Integer bodyStartingColumn;			// column where body starts
-	protected Integer bodyEndingColumn;				// column where body ends
+	/* finding starting and ending position */
+	/* Element position */
+	protected Integer elementStartingLine;	// line number for the element beginning (not the body)
+	
+
+	protected Integer elementStartingColumn;// column number for the element beginning
+	protected Integer elementEndingLine;	// line number for the element ending
+	protected Integer elementEndingColumn;	// column number for the element ending
+	/* Body position */
+	protected Integer bodyStartingLine;		// line number for the beginning of body
+	protected Integer bodyStartingColumn;	// column number for the body (of element in case of method invocation)
+	protected Integer bodyEndingLine;		// line number for the end of the body
+	protected Integer bodyEndingColumn;		// column number for the end of the body
+	
 	protected Boolean returnStatement;				// true if there is a return value
 	protected MethodSignature methodSignature;		// parsed method declaration
 	protected ArrayList<CodeElement> statements;	// list of statements
 	protected ArrayList<MethodSignature> methodCalss;	// list of method calls
+	
 	private final static String newline = System.getProperty("line.separator");	// Just to jump line @toString
 	
-	public CodeSnippet(String packageName, String className, 
-			String methodBody, Integer bodyStartingLine, Boolean returnStatement, 
-			MethodSignature methodSignature)
+	/* constructor for methods without body */
+	public CodeSnippet(String packageName, String className, MethodSignature methodSignature, 
+			String methodBody, Boolean returnStatement, 
+			Integer elementStartingLineArg, Integer elementStartingColumnArg, 
+			Integer elementEndingLineArg, Integer elementEndingColumnArg)
 	{
 		this.packageName = packageName;
 		this.className = className;
-		this.bodyStartsAt = bodyStartingLine;
-		this.bodyStartingColumn = 0;
-		this.bodyEndingColumn = 2000;
-//		this.methodName = methodName;
-//		this.implementationType = implementationType;
+		this.methodSignature = methodSignature;
 		this.methodBody = methodBody;
 		this.returnStatement = returnStatement;
+		/* setting element position */
+		this.elementStartingLine = elementStartingLineArg;
+		this.elementStartingColumn = elementStartingColumnArg;
+		this.elementEndingLine = elementEndingLineArg;
+		this.elementEndingColumn = elementEndingColumnArg;
+		/* setting body position */
+		this.bodyStartingLine = CodeElement.NO_NUMBER_ASSOCIATED;		
+		this.bodyStartingColumn = CodeElement.NO_NUMBER_ASSOCIATED;	
+		this.bodyEndingLine = CodeElement.NO_NUMBER_ASSOCIATED;		
+		this.bodyEndingColumn = CodeElement.NO_NUMBER_ASSOCIATED;
+		
+		this.statements = new ArrayList<CodeElement>();
+		this.methodCalss = new ArrayList<MethodSignature>();
+	}
+	
+	/* constructor for methods with body */
+	public CodeSnippet(String packageName, String className, MethodSignature methodSignature, 
+			String methodBody, Boolean returnStatement, 
+			Integer elementStartingLineArg, Integer elementStartingColumnArg, 
+			Integer elementEndingLineArg, Integer elementEndingColumnArg,
+			Integer bodyStartingLineArg, Integer bodyStartingColumnArg,
+			Integer bodyEndingLineArg, Integer bodyEndingColumnArg)
+	{
+		this.packageName = packageName;
+		this.className = className;
 		this.methodSignature = methodSignature;
-		if (null != this.methodBody)
-		{
-			String contentPerLines[] = CodeSnippetFactory.getFileContentePerLine();
-			Integer curlyBracesTrack = 0;	// reference to find the end of the body
-			int currentLine = (this.bodyStartsAt -1);
-			do {	// looping lines to find the end of the body
-				for (int i=0; i < contentPerLines[currentLine].length(); i++) // looping chars to find brackets 
-				{
-					switch ( contentPerLines[currentLine].charAt(i) ) {
-					case '{':
-//						System.out.println("FOUND A BRACKET!");
-						curlyBracesTrack++;
-						break;
-					case '}':
-						curlyBracesTrack--;
-						break;	
-					}
-				}
-				currentLine++;
-			}
-			while (0 < curlyBracesTrack);
-			
-			this.bodyEndsAt = currentLine;
-			this.bodyEndingColumn = contentPerLines[currentLine-1].length() + 2; // to highlight the last char
-		}
-		else
-			this.bodyEndsAt = this.bodyStartsAt;
+		this.methodBody = methodBody;
+		this.returnStatement = returnStatement;
+		/* setting element position */
+		this.elementStartingLine = elementStartingLineArg;
+		this.elementStartingColumn = elementStartingColumnArg;
+		this.elementEndingLine = elementEndingLineArg;
+		this.elementEndingColumn = elementEndingColumnArg;
+		/* setting body position */
+		this.bodyStartingLine = bodyStartingLineArg;		
+		this.bodyStartingColumn = bodyStartingColumnArg;	
+		this.bodyEndingLine = bodyEndingLineArg;		
+		this.bodyEndingColumn = bodyEndingColumnArg;	
+		
 		this.statements = new ArrayList<CodeElement>();
 		this.methodCalss = new ArrayList<MethodSignature>();
 	}
@@ -102,22 +122,6 @@ public class CodeSnippet implements Serializable
 		this.className = className;
 	}
 
-//	public String getMethodName() {
-//		return methodName;
-//	}
-//
-//	public void setMethodName(String methodName) {
-//		this.methodName = methodName;
-//	}
-
-//	public String getImplementationType() {
-//		return implementationType;
-//	}
-//
-//	public void setImplementationType(String implementationType) {
-//		this.implementationType = implementationType;
-//	}
-
 	public String getMethodBody() {
 		return methodBody;
 	}
@@ -149,33 +153,36 @@ public class CodeSnippet implements Serializable
 	public void setStatements(ArrayList<CodeElement> statements) {
 		this.statements = statements;
 	}
-	public Integer getBodyStartsAt() {
-		return bodyStartsAt;
+	/* Getters for the position */
+	public Integer getElementStartingLine() {
+		return elementStartingLine;
 	}
 
-	public void setBodyStartsAt(Integer bodyStartsAt) {
-		this.bodyStartsAt = bodyStartsAt;
-	}
-	public Integer getBodyEndsAt() {
-		return bodyEndsAt;
+	public Integer getElementStartingColumn() {
+		return elementStartingColumn;
 	}
 
-	public void setBodyEndsAt(Integer bodyEndsAt) {
-		this.bodyEndsAt = bodyEndsAt;
+	public Integer getElementEndingLine() {
+		return elementEndingLine;
 	}
+
+	public Integer getElementEndingColumn() {
+		return elementEndingColumn;
+	}
+
+	public Integer getBodyStartingLine() {
+		return bodyStartingLine;
+	}
+
 	public Integer getBodyStartingColumn() {
 		return bodyStartingColumn;
 	}
 
-	public void setBodyStartingColumn(Integer bodyStartingColumn) {
-		this.bodyStartingColumn = bodyStartingColumn;
+	public Integer getBodyEndingLine() {
+		return bodyEndingLine;
 	}
+
 	public Integer getBodyEndingColumn() {
 		return bodyEndingColumn;
 	}
-
-	public void setBodyEndingColumn(Integer bodyEndingColumn) {
-		this.bodyEndingColumn = bodyEndingColumn;
-	}
-
 }

@@ -3,6 +3,7 @@ package edu.uci.ics.sdcl.firefly;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.DoStatement;
@@ -22,11 +23,21 @@ public class MyVisitor extends ASTVisitor {
 	private CompilationUnit cu;
 	private String className;
 	private String packageName;
-//	private Integer methodIndex;
 	private CodeSnippet newMethod;
-//	private SwitchStatement lastSwitchVisited;
-//	private SwitchCase lastCaseVisited;
-	
+	private CodeElement element;
+	/* Element position */
+	private Integer elementStartingLine;	// line number for the element beginning (not the body)
+	private Integer elementStartingColumn;// column number for the element beginning
+	private Integer elementEndingLine;	// line number for the element ending
+	private Integer elementEndingColumn;	// column number for the element ending
+	/* Body position */
+	private Integer bodyStartingLine;		// line number for the beginning of body
+	private Integer bodyStartingColumn;	// column number for the body (of element in case of method invocation)
+	private Integer bodyEndingLine;		// line number for the end of the body
+	private Integer bodyEndingColumn;		// column number for the end of the body
+	/* to find the end positions */
+	private PositionFinder elementPosition;
+	private PositionFinder bodyPosition;
 	
 	public MyVisitor(CompilationUnit cuArg)
 	{
@@ -63,10 +74,10 @@ public class MyVisitor extends ASTVisitor {
 		MethodSignature signature;
 		String visibility;
 		List<Object> parameters;
-		Integer lnNumber;
 		System.out.println("-----------");
-		lnNumber = cu.getLineNumber(node.getStartPosition());
-		System.out.println("Method at line: " + lnNumber);
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+//		System.out.println("Method at line: " + lnNumber);
 //		System.out.println("Method name full: " + node.getName().getFullyQualifiedName()); //FullName?
 		if ( null == node.getName() )
 		{
@@ -102,7 +113,7 @@ public class MyVisitor extends ASTVisitor {
 			hasReturnStatement = true;
 		System.out.println("Has return statement: " + hasReturnStatement);
 		
-		signature = new MethodSignature(name, visibility, lnNumber);
+		signature = new MethodSignature(name, visibility, this.elementStartingLine);
 		parameters = node.parameters();
 		if (null != parameters)
 		{
@@ -118,29 +129,33 @@ public class MyVisitor extends ASTVisitor {
 		}
 		System.out.println("Parameters: " + parameters);
 		
-		Integer bodyStartingLineNumber;
-		Integer bodyColumnStartNumber;
+		setupElementEndPosition();
 		if (null == node.getBody())
 		{
 			body = null;
-			bodyStartingLineNumber = lnNumber;
-			bodyColumnStartNumber = cu.getColumnNumber(node.getBody().getStartPosition());
-		}
-			
+			setupElementEndPosition();
+			/* Creating new object without body */
+			newMethod = new CodeSnippet(this.packageName, this.className, signature, body, hasReturnStatement,
+					this.elementStartingLine, this.elementStartingColumn,
+					this.elementEndingLine, this.elementEndingColumn);
+		}	
 		else
 		{
 			body = node.getBody().toString();
-			bodyStartingLineNumber = cu.getLineNumber(node.getBody().getStartPosition());
-			bodyColumnStartNumber = cu.getColumnNumber(node.getBody().getStartPosition());
+			this.bodyStartingLine = cu.getLineNumber(node.getBody().getStartPosition());
+			this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
+			setupBodyEndPostition();
+			/* Creating new object with body */
+			newMethod = new CodeSnippet(this.packageName, this.className, signature, body, hasReturnStatement,
+					this.elementStartingLine, this.elementStartingColumn,
+					this.elementEndingLine, this.elementEndingColumn,
+					this.bodyStartingLine, this.bodyStartingColumn,
+					this.bodyEndingLine, this.bodyEndingColumn);
 		}
-			
-//		System.out.println("Body: " + body);
-		/* Creating new object */
-		newMethod = new CodeSnippet(this.packageName, this.className, body, bodyStartingLineNumber,
-				hasReturnStatement, signature);
-		newMethod.setBodyStartingColumn(bodyColumnStartNumber);
+		
+
 		CodeSnippetFactory.addToCodeSnippetList(newMethod);
-//		this.methodIndex = CodeSnippetFactory.getIndexCSList(newMethod);
+		
 		return true;
 	}
 	
@@ -150,14 +165,21 @@ public class MyVisitor extends ASTVisitor {
 		if(invalidCall(node)) 
 			return true;
 		else{
-			System.out.println("Method invocation at line: " + cu.getLineNumber(node.getStartPosition()));	
+			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+			
+			System.out.println("Method invocation at line: " + this.elementStartingLine);	
 			System.out.println("Method name: " + node.getName().toString());
 			System.out.println("Method expression: " + node.getExpression().toString());
-			System.out.println("Method parameters " + node.arguments());	
+			System.out.println("Method parameters " + node.arguments());
+			
+			setupElementEndPosition();
 			@SuppressWarnings("unchecked")
-			myMethodCall methodCall = new myMethodCall(node.getName().toString(), node.getExpression().toString(),
-					node.arguments(), cu.getLineNumber(node.getStartPosition()));
-			methodCall.setColumnStart(cu.getColumnNumber(node.getStartPosition()));
+			myMethodCall methodCall = new myMethodCall(node.getName().toString(), 
+					node.getExpression().toString(), node.arguments(), 
+					this.elementStartingLine, this.elementStartingColumn,
+					this.elementEndingLine, this.elementEndingColumn);
+
 			newMethod.addElement(methodCall);
 		}
 		return true;
@@ -166,25 +188,59 @@ public class MyVisitor extends ASTVisitor {
 	/*Statements */
 	public boolean visit(IfStatement node)
 	{
-		System.out.println("If at line: " + cu.getLineNumber(node.getStartPosition()));	
-		int elseStartingLine = MyIfStatement.NO_ELSE_STATEMENT;
-		if (null != node.getElseStatement())
-			elseStartingLine = cu.getLineNumber(node.getElseStatement().getStartPosition());
-		MyIfStatement element = new MyIfStatement(cu.getLineNumber(node.getStartPosition()), 
-			cu.getLineNumber(node.getThenStatement().getStartPosition()), elseStartingLine);
-		element.setColumnStart(cu.getColumnNumber(node.getThenStatement().getStartPosition()));
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+		setupElementEndPosition();
+		this.bodyStartingLine = cu.getLineNumber(node.getThenStatement().getStartPosition());
+		this.bodyStartingColumn = cu.getColumnNumber(node.getThenStatement().getStartPosition());
+		setupBodyEndPostition();
+		
+		System.out.println("If at line: " + this.elementStartingLine);	
+		if (null == node.getElseStatement()) // There is no else statement (body = then statement)
+		{	// just create the element
+			element = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
+					this.elementEndingLine, this.elementEndingColumn,
+					this.bodyStartingLine, this.bodyStartingColumn,
+					this.bodyEndingLine, this.bodyEndingColumn);
+		}
+		else	// there is an else statement 
+		{
+			Integer elseStartingLine = cu.getLineNumber(node.getElseStatement().getStartPosition());
+			Integer elseStartingColumn = cu.getColumnNumber(node.getElseStatement().getStartPosition());
+			/* Finding the end position for the else */
+			this.bodyPosition = new PositionFinder(elseStartingLine, elseStartingColumn, 
+					CodeSnippetFactory.getFileContentePerLine(), '{', '}');
+			Integer elseEndingLine = this.bodyPosition.getEndingLineNumber();
+			Integer elseEndingColumn = this.bodyPosition.getEndingColumnNumber();
+			element = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
+					this.elementEndingLine, this.elementEndingColumn,
+					this.bodyStartingLine, this.bodyStartingColumn,
+					this.bodyEndingLine, this.bodyEndingColumn,
+					elseStartingLine, elseStartingColumn,
+					elseEndingLine, elseEndingColumn);
+		}
 		newMethod.addElement(element);
 //		System.out.println(" $$$ CS = " + element.getColumnStart());
-		System.out.println(" $$$ CE = " + element.getColumnEnd());
+//		System.out.println(" $$$ CE = " + element.getBodyEndingColumn());
 		return true;
 	}
 	
 	public boolean visit(SwitchStatement node)
 	{
-//		this.lastSwitchVisited = node;
-		System.out.println("Switch at line: " + cu.getLineNumber(node.getStartPosition()));	
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+		setupElementEndPosition();
+
+		this.bodyStartingLine = this.elementEndingLine;
+		this.bodyStartingColumn = this.elementEndingColumn-1 ; // Not much precision here!
+		setupBodyEndPostition();
+		
+		System.out.println("Switch at line: " + this.elementStartingLine);	
 		CodeElement element = new CodeElement(CodeElement.SWITCH_CONDITIONAL, 
-				cu.getLineNumber(node.getStartPosition()), cu.getLineNumber(node.getStartPosition()));
+				this.elementStartingLine, this.elementStartingColumn, 
+				this.elementEndingLine, this.elementEndingColumn,
+				this.bodyStartingLine, this.bodyStartingColumn,
+				this.bodyEndingLine, this.bodyEndingColumn);
 		newMethod.addElement(element);
 		return true;
 	}
@@ -198,23 +254,44 @@ public class MyVisitor extends ASTVisitor {
 	
 	public boolean visit(ForStatement node)
 	{
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+		setupElementEndPosition();
+
+		this.bodyStartingLine = cu.getLineNumber(node.getBody().getStartPosition());
+		this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
+		setupBodyEndPostition();
+		
 		System.out.println("For at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
-				cu.getLineNumber(node.getStartPosition()), cu.getLineNumber(node.getBody().getStartPosition()));
-		element.setColumnStart(cu.getColumnNumber(node.getBody().getStartPosition()));
+				this.elementStartingLine, this.elementStartingColumn, 
+				this.elementEndingLine, this.elementEndingColumn,
+				this.bodyStartingLine, this.bodyStartingColumn,
+				this.bodyEndingLine, this.bodyEndingColumn);
 //		System.out.println("For-body column starting point: " + element.getColumnStart());
 		newMethod.addElement(element);
-		
+
 //		System.out.println("For statement: " + node.getBody().toString());
 		return true;
 	}
 	
 	public boolean visit(EnhancedForStatement node)
 	{
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+		setupElementEndPosition();
+
+		this.bodyStartingLine = cu.getLineNumber(node.getBody().getStartPosition());
+		this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
+		setupBodyEndPostition();
+		
 		System.out.println("ForEach at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
-				cu.getLineNumber(node.getStartPosition()), cu.getLineNumber(node.getBody().getStartPosition()));
-		element.setColumnStart(cu.getColumnNumber(node.getBody().getStartPosition()));
+				this.elementStartingLine, this.elementStartingColumn, 
+				this.elementEndingLine, this.elementEndingColumn,
+				this.bodyStartingLine, this.bodyStartingColumn,
+				this.bodyEndingLine, this.bodyEndingColumn);
+		
 		newMethod.addElement(element);
 //		System.out.println("For statement: " + node.getBody().toString());
 		return true;
@@ -222,10 +299,21 @@ public class MyVisitor extends ASTVisitor {
 	
 	public boolean visit(DoStatement node)
 	{
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+		setupElementEndPosition();
+
+		this.bodyStartingLine = cu.getLineNumber(node.getBody().getStartPosition());
+		this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
+		setupBodyEndPostition();
+		
 		System.out.println("Do-While at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.DO_LOOP, 
-				cu.getLineNumber(node.getStartPosition()), cu.getLineNumber(node.getBody().getStartPosition()));
-		element.setColumnStart(cu.getColumnNumber(node.getBody().getStartPosition()));
+				this.elementStartingLine, this.elementStartingColumn, 
+				this.elementEndingLine, this.elementEndingColumn,
+				this.bodyStartingLine, this.bodyStartingColumn,
+				this.bodyEndingLine, this.bodyEndingColumn);
+		
 		newMethod.addElement(element);
 //		System.out.println("Do-While statement: " + node.getBody().toString());
 		return true;
@@ -233,10 +321,21 @@ public class MyVisitor extends ASTVisitor {
 	
 	public boolean visit(WhileStatement node)
 	{
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+		setupElementEndPosition();
+
+		this.bodyStartingLine = cu.getLineNumber(node.getBody().getStartPosition());
+		this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
+		setupBodyEndPostition();
+		
 		System.out.println("While at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.WHILE_LOOP, 
-				cu.getLineNumber(node.getStartPosition()), cu.getLineNumber(node.getBody().getStartPosition()));
-		element.setColumnStart(cu.getColumnNumber(node.getBody().getStartPosition()));
+				this.elementStartingLine, this.elementStartingColumn, 
+				this.elementEndingLine, this.elementEndingColumn,
+				this.bodyStartingLine, this.bodyStartingColumn,
+				this.bodyEndingLine, this.bodyEndingColumn);
+		
 		newMethod.addElement(element);
 //		System.out.println("While statement: " + node.getBody().toString());
 		return true;
@@ -265,6 +364,25 @@ public class MyVisitor extends ASTVisitor {
 					return true;
 			else 
 				return false;
+	}
+	
+	/* assuming the correct values for the starting position */
+	private void setupElementEndPosition()
+	{
+		/* Finding the end position for the element */
+		this.elementPosition = new PositionFinder(this.elementStartingLine, this.elementStartingColumn, 
+				CodeSnippetFactory.getFileContentePerLine(), '(', ')');
+		this.elementEndingLine = this.elementPosition.getEndingLineNumber();
+		this.elementEndingColumn = this.elementPosition.getEndingColumnNumber();
+	}
+	
+	private void setupBodyEndPostition()
+	{
+		/* Finding the end position for the body */
+		this.bodyPosition = new PositionFinder(this.bodyStartingLine, this.bodyStartingColumn, 
+				CodeSnippetFactory.getFileContentePerLine(), '{', '}');
+		this.bodyEndingLine = this.bodyPosition.getEndingLineNumber();
+		this.bodyEndingColumn = this.bodyPosition.getEndingColumnNumber();
 	}
 	
 }
