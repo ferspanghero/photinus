@@ -5,14 +5,13 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.CodeElement;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
+import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.MethodParameter;
 import edu.uci.ics.sdcl.firefly.MethodSignature;
 import edu.uci.ics.sdcl.firefly.Microtask;
@@ -21,7 +20,7 @@ import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
 
 public class MicrotaskSelectorTest {
 
-	private  HashMap<String, HashMap<Integer, Microtask>> debugSessionMicrotaskMap = new HashMap<String, HashMap<Integer,Microtask>>();
+	private  HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
 	private HashMap<Integer, Microtask> microtaskMap;
 	MicrotaskMemento memento = new MicrotaskMemento();
 	MicrotaskSelector selector = new MicrotaskSelector();
@@ -77,11 +76,12 @@ public class MicrotaskSelectorTest {
 		microtaskMap.put(new Integer(1),mtask1);
 		microtaskMap.put(new Integer(2),mtask2);
 		microtaskMap.put(new Integer(3),mtask3);
-
-		this.debugSessionMicrotaskMap.put(fileName, microtaskMap);
+	
+		FileDebugSession debugSession = new FileDebugSession(fileName,microtaskMap);
+		this.debugSessionMap.put(fileName, debugSession);
 
 		//Persist microtasks
-		memento.insert(fileName, this.debugSessionMicrotaskMap.get(fileName));
+		memento.insert(fileName, debugSession); 
 	}
 
 
@@ -90,9 +90,10 @@ public class MicrotaskSelectorTest {
 	@Test
 	public void testIncrement() {	
 
-		//Associate an answer
-		HashMap<Integer, Microtask> mMap = memento.read(fileName);
-		if (mMap!=null){
+		 FileDebugSession debugSession = memento.read(fileName);
+		 if((debugSession!=null) && (debugSession.getMicrotaskMap()!=null)){
+			HashMap<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
+			//Associate an answer
 			Integer key = new Integer (1);
 			Microtask mtask1 = mMap.get(key);
 			ArrayList<Answer> answerList = mtask1.getAnswerList();
@@ -100,9 +101,9 @@ public class MicrotaskSelectorTest {
 			answerList.add(new Answer(Answer.YES));
 			mtask1.setAnswer(answerList);
 
-			this.selector.incrementSelector(fileName, answerList.size());
+			debugSession.incrementAnswersReceived(answerList.size());
 
-			int max = this.selector.getMaxNumberOfAnswers(fileName);
+			int max = debugSession.getMaximumAnswerCount();
 
 			//Check whether it actually incremented
 			assertEquals(1, max);
@@ -115,8 +116,9 @@ public class MicrotaskSelectorTest {
 	@Test
 	public void testGetFirst() {
 		//Associate answers to two microtasks
-		HashMap<Integer, Microtask> mMap = memento.read(fileName);
-		if (mMap!=null){
+		 FileDebugSession debugSession = memento.read(fileName);
+		 if((debugSession!=null) && (debugSession.getMicrotaskMap()!=null)){
+			HashMap<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
 			Integer key = new Integer (1);
 			Microtask mtask1 = mMap.get(key);
 			ArrayList<Answer> answerList = mtask1.getAnswerList();
@@ -124,7 +126,7 @@ public class MicrotaskSelectorTest {
 			answerList.add(new Answer(Answer.YES));
 			mtask1.setAnswer(answerList);
 			mMap.put(key, mtask1);
-			this.selector.incrementSelector(fileName, answerList.size());
+			debugSession.incrementAnswersReceived(answerList.size());
 			
 			key = new Integer (2);
 			Microtask mtask2 = mMap.get(key);
@@ -132,19 +134,21 @@ public class MicrotaskSelectorTest {
 			if(answerList==null) answerList= new ArrayList<Answer>();
 			answerList.add(new Answer(Answer.NO));
 			mtask2.setAnswer(answerList);
-			this.selector.incrementSelector(fileName, answerList.size());
+			debugSession.incrementAnswersReceived(answerList.size());
 			
 			//Persist data back
 			mMap.put(new Integer (1), mtask1);
 			mMap.put(new Integer (2), mtask2);
-			memento.insert(fileName, mMap);
+			debugSession.setMicrotaskMap(mMap);
+			
+			memento.insert(fileName, debugSession);
 						
 			Microtask mtask3 = this.selector.selectMicrotask(fileName);
 			
 			assertEquals(null,mtask3.getAnswerList());
 
 			//Cleans up.
-			memento.insert(fileName, new HashMap<Integer,Microtask>());
+			//memento.insert(fileName, debugSession);
 		}	
 		else{
 			fail("Not yet implemented");
@@ -154,8 +158,9 @@ public class MicrotaskSelectorTest {
 	@Test
 	public void testGetAllPlusOne(){
 		//Associate answers to two microtasks
-		HashMap<Integer, Microtask> mMap = memento.read(fileName);
-		if (mMap!=null){
+		 FileDebugSession debugSession = memento.read(fileName);
+		 if((debugSession!=null) && (debugSession.getMicrotaskMap()!=null)){
+			HashMap<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
 			Integer key = new Integer (1);
 			Microtask mtask1 = mMap.get(key);
 			ArrayList<Answer> answerList = mtask1.getAnswerList();
@@ -163,7 +168,7 @@ public class MicrotaskSelectorTest {
 			answerList.add(new Answer(Answer.YES));
 			mtask1.setAnswer(answerList);
 			mMap.put(key, mtask1);
-			this.selector.incrementSelector(fileName, answerList.size());
+			debugSession.incrementAnswersReceived(answerList.size());
 			
 			key = new Integer (2);
 			Microtask mtask2 = mMap.get(key);
@@ -171,7 +176,7 @@ public class MicrotaskSelectorTest {
 			if(answerList==null) answerList= new ArrayList<Answer>();
 			answerList.add(new Answer(Answer.NO));
 			mtask2.setAnswer(answerList);
-			this.selector.incrementSelector(fileName, answerList.size());
+			debugSession.incrementAnswersReceived(answerList.size());
 			
 			key = new Integer (3);
 			Microtask mtask3 = mMap.get(key);
@@ -180,20 +185,22 @@ public class MicrotaskSelectorTest {
 			answerList.add(new Answer(Answer.NO));
 			answerList.add(new Answer(Answer.NO));
 			mtask3.setAnswer(answerList);
-			this.selector.incrementSelector(fileName, 2);
+			debugSession.incrementAnswersReceived(answerList.size());
 			
 			//Persist data back
 			mMap.put(new Integer (1), mtask1);
 			mMap.put(new Integer (2), mtask2);
 			mMap.put(new Integer (3), mtask3);
-			memento.insert(fileName, mMap);
+			debugSession.setMicrotaskMap(mMap); 
+			
+			memento.insert(fileName, debugSession);
 						
 			Microtask mtaskActual1 = this.selector.selectMicrotask(fileName);
 			
-			assertEquals(2,mtaskActual1.getAnswerList().size());
+			assertEquals(1,mtaskActual1.getAnswerList().size());
 			
 			//Cleans up.
-			memento.insert(fileName, new HashMap<Integer,Microtask>());
+			//memento.insert(fileName, null);
 
 		}
 		else{

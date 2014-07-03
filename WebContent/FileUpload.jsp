@@ -8,17 +8,15 @@
 <script type="text/javascript"
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 
-<script type="text/javascript"
-	src="js/beautify.js"></script>
-
-	
 </head>
 <body>
 
 	<script>
 		//Uploads a file. It is the starting point for generating microtasks
 		function uploadFile(thisObj, thisEvent) {
+			alert("uploadFile");
 			var fileName = $('#fileName').val(); // file name in an input field
+			alert(fileName);
 			var jsonDataObject = new Object();
 			jsonDataObject.fileName = fileName;
 
@@ -32,6 +30,8 @@
 				alert(data.message);
 				$('#return_message').html(data.message);
 			});
+			
+			
 
 			return false; // prevents the page from refreshing before JSON is read from server response
 		}
@@ -61,19 +61,22 @@
 		<li>Allowed file types are: .java</li>
 	</ul>
 
+<form action="upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit">
+</form>
+
 	<table cellspacing="2" cellpadding="2" border="0">
 		<tr>
 			<td align="right">File Name:</td>
-			<td><input type='text' name='fileName' id='fileName' size='80' />
+			<td><input type='file' name='fileName' id='fileName' size='80' />
+			</td> 
 			</td>
 		</tr>
 		<tr>
 			<td align="right"></td>
 			<td><input type="submit" name="upload" value="uploadFile"
-				onclick="return uploadFile(this, event);"></td>
-			<td>
-				<div id="return_message"></div>
-			</td>
+				onclick="uploadFile(this, event);"></td> 
 		</tr>
 	</table>
 

@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import edu.uci.ics.sdcl.firefly.CodeElement;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
+import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.MethodParameter;
 import edu.uci.ics.sdcl.firefly.MethodSignature;
 import edu.uci.ics.sdcl.firefly.Microtask;
@@ -16,8 +17,9 @@ import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
 
 public class MicrotaskMementoTest {
 
-	private  HashMap<String, HashMap<Integer, Microtask>> debugSessionMicrotaskMap = new HashMap<String, HashMap<Integer,Microtask>>();
+	private  HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
 	private HashMap<Integer, Microtask> microtaskMap;
+	private String fileName = "SimpleSampleCode.java";
 
 	@Before
 	public void setUp() throws Exception {
@@ -51,28 +53,30 @@ public class MicrotaskMementoTest {
 		String questionArg = "Is there maybe something wrong in the declaration of function 'factorial' at line 12 " 
 				+ "(e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?";
 		
-		CodeSnippet codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer (12),
+		CodeSnippet codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer (1),
 				new Boolean (true), signature);
-		Microtask mtask = new Microtask(CodeElement.METHOD_DECLARARION, codeSnippetFactorial, questionArg, new Integer(12));
+		Microtask mtask = new Microtask(CodeElement.METHOD_DECLARARION, codeSnippetFactorial, questionArg, new Integer(1));
 
 		//Create the data structure
 		this.microtaskMap =  new HashMap<Integer,Microtask>();
 		microtaskMap.put(new Integer(1),mtask);
-
-		this.debugSessionMicrotaskMap.put("SimpleSampleCode.java", microtaskMap);
+		FileDebugSession debugMap = new FileDebugSession(fileName,microtaskMap);
+		
+		this.debugSessionMap.put(fileName, debugMap);
 	}
 
 	@Test
 	public void testCreateNewPersistentFile() {
 
 		MicrotaskMemento memento = new MicrotaskMemento();
-		memento.insert("SimpleSampleCode.java", this.debugSessionMicrotaskMap.get("SimpleSampleCode.java"));
+		memento.insert(fileName, this.debugSessionMap.get(fileName));
 
-		HashMap<Integer, Microtask> mMap = memento.read("SimpleSampleCode.java");
-		if (mMap!=null){
+		 FileDebugSession debugMap = memento.read(fileName);
+		 if((debugMap!=null) && (debugMap.getMicrotaskMap()!=null)){
+			HashMap<Integer, Microtask> mMap = debugMap.getMicrotaskMap();
 			Integer key = new Integer (1);
 			Microtask expectedTask = this.microtaskMap.get(key);
-			Microtask actualTask = this.microtaskMap.get(key);
+			Microtask actualTask = mMap.get(key);
 			
 			assertEquals(expectedTask.getMethod().getClassName(),actualTask.getMethod().getClassName().toString());
 		}
@@ -80,4 +84,13 @@ public class MicrotaskMementoTest {
 			fail("review test setup");
 	}
 
+	@Test
+	public void testRemoveDebugSession() {
+		MicrotaskMemento memento = new MicrotaskMemento();
+		memento.insert(fileName, this.debugSessionMap.get(fileName));
+		
+		 memento.remove(fileName);
+		 FileDebugSession debugMap = memento.read(fileName);
+		 assertNull(debugMap);
+	}
 }

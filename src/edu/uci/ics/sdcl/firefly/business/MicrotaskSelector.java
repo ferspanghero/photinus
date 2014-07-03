@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.Iterator;
 
 import edu.uci.ics.sdcl.firefly.Answer;
+import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
 
@@ -22,33 +23,17 @@ import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
  */
 public class MicrotaskSelector {
 
-	/** String = file name, Integer = largest number of answers yet received by a question for a file.*/
-	HashMap <String, Integer> answerCountMap = new HashMap<String,Integer>();
-
-	public MicrotaskSelector(){}
-
-
-	public void incrementSelector(String fileName, int numberOfAnswers){
-		Integer maxAnswer= this.answerCountMap.get(fileName);
-		if(maxAnswer!=null)
-			if(maxAnswer.intValue()<numberOfAnswers)
-				answerCountMap.put(fileName, new Integer(numberOfAnswers));
-			else{}
-				//ignore it, because there is a microtask with more answers than that.
-		else//initialize the vector with the first entry.
-			answerCountMap.put(fileName, new Integer(numberOfAnswers));
-	}
-
 	public Microtask selectMicrotask(String fileName){
 
 		MicrotaskMemento memento = new MicrotaskMemento();
-		HashMap<Integer, Microtask> map = memento.read(fileName);
-		if(map==null){
+		FileDebugSession debugSession = memento.read(fileName);
+		if((debugSession==null) || (debugSession.getMicrotaskMap()==null)){
 			return null;
 		}
 		else{
+			HashMap<Integer, Microtask> map = debugSession.getMicrotaskMap();
 			Set<Integer> keySet = map.keySet();	
-			Integer maxAnswers= this.answerCountMap.get(fileName);
+			Integer maxAnswers= debugSession.getMaximumAnswerCount();
 			Iterator<Integer> iter = keySet.iterator();
 			Integer key = (Integer) iter.next();
 
@@ -72,18 +57,5 @@ public class MicrotaskSelector {
 			}//else
 		}//else
 	}//selectMicrotask
-	
-	/** 
-	 * 
-	 * @param fileName
-	 * @return the maximum number of answers received for microtasks on code snippets from a given file
-	 */
-	public int getMaxNumberOfAnswers(String fileName){
-		
-		Integer maxObj = this.answerCountMap.get(fileName);
-		if (maxObj==null)
-				return 0;
-		else
-			return maxObj.intValue();
-	}
+
 }

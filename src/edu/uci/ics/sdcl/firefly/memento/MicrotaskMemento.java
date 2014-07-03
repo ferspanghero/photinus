@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
 
 /** Decouples the persistence mechanism for Microtasks
@@ -21,7 +22,7 @@ public class MicrotaskMemento {
 
 	/** Holds the list of microtasks for all files. 
 	 * String key = file name, ArrayList is the list of microtasks*/
-	private HashMap<String,HashMap<Integer, Microtask>> debugSessionMicrotaskMap;
+	private HashMap<String,FileDebugSession> debugSessionMap;
 
 	private String persistentFileName = "../microtasks.ser";
 
@@ -39,21 +40,21 @@ public class MicrotaskMemento {
 						// Read it from a File in the file system
 						new FileInputStream(file));
 
-				this.debugSessionMicrotaskMap = (HashMap<String,HashMap<Integer,Microtask>>) objInputStream.readObject();
+				this.debugSessionMap = (HashMap<String,FileDebugSession>) objInputStream.readObject();
 
 				objInputStream.close();
 			}
 			// No files has been created yet. 
 			else{
 				// Create a sample object, that contains the default values.
-				this.debugSessionMicrotaskMap = new HashMap<String,HashMap<Integer,Microtask>>();
+				this.debugSessionMap = new HashMap<String,FileDebugSession>();
 
 				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 						// By using "FileOutputStream" we will 
 						// Write it to a File in the file system
 						new FileOutputStream(new File(this.persistentFileName)));
 
-				objOutputStream.writeObject( debugSessionMicrotaskMap );
+				objOutputStream.writeObject( debugSessionMap );
 				objOutputStream.close();
 			}
 
@@ -71,7 +72,7 @@ public class MicrotaskMemento {
 	 * @param fileName
 	 * @return
 	 */
-	public HashMap<Integer,Microtask> read(String fileName){
+	public FileDebugSession read(String fileName){
 
 		try{	
 			ObjectInputStream objInputStream = new ObjectInputStream( 
@@ -79,10 +80,10 @@ public class MicrotaskMemento {
 					// Read it to a File in the file system
 					new FileInputStream(new File(this.persistentFileName)));
 
-			this.debugSessionMicrotaskMap = (HashMap<String,HashMap<Integer,Microtask>>) objInputStream.readObject();
+			this.debugSessionMap = (HashMap<String,FileDebugSession>) objInputStream.readObject();
 			objInputStream.close();
 
-			return this.debugSessionMicrotaskMap.get(fileName);
+			return this.debugSessionMap.get(fileName);
 		}
 		catch(IOException exception){
 			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
@@ -103,17 +104,17 @@ public class MicrotaskMemento {
 	 * @param fileName
 	 * @param microtaskList
 	 */
-	public void insert(String fileName, HashMap <Integer, Microtask> microtaskMap){
+	public void insert(String fileName, FileDebugSession fileDebuggingSession){
 		try{
 
-			this.debugSessionMicrotaskMap.put(fileName, microtaskMap);
+			this.debugSessionMap.put(fileName, fileDebuggingSession);
 
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					// By using "FileOutputStream" we will 
 					// Write it to a File in the file system
 					new FileOutputStream(new File(this.persistentFileName)));
 
-			objOutputStream.writeObject( debugSessionMicrotaskMap );
+			objOutputStream.writeObject( debugSessionMap );
 			objOutputStream.close();
 		}
 		catch(IOException exception){
@@ -124,12 +125,32 @@ public class MicrotaskMemento {
 		}
 	}
 
-	public void update(String key, Microtask microtask){
-		//TO DO
-	}
+	
+	/**
+	 * Removes the debug session data associated to the provided file name
+	 * @param fileName
+	 */
+	public void remove(String fileName) {
+		
+		try{
 
-	public void delete(String key){
-		//TO DO
+			this.debugSessionMap.remove(fileName);
+
+			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
+					// By using "FileOutputStream" we will 
+					// Write it to a File in the file system
+					new FileOutputStream(new File(this.persistentFileName)));
+
+			objOutputStream.writeObject( debugSessionMap );
+			objOutputStream.close();
+		}
+		catch(IOException exception){
+			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
+		}
+		catch(Exception exception){
+			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
+		}
+		
 	}
 
 }

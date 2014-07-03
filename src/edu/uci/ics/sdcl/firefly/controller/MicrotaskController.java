@@ -29,7 +29,7 @@ public class MicrotaskController extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		//Collect and persist the answer
-		//Mark the microtask as already answered.
+		//Mark the microtask as already answered
 		System.out.println("in Get");
 	}
 
@@ -37,8 +37,12 @@ public class MicrotaskController extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Prepare the microtask page to be loaded.
+		// Prepare the microtask page to be loaded
 		System.out.println("in Microtask Post...");
+		
+		
+		
+		
 		RequestDispatcher view = request.getRequestDispatcher("/Microtask.jsp");
 		view.forward(request, response);
 	}
