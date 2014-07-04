@@ -17,7 +17,7 @@ public class MyIfStatement extends CodeElement{
 		super(CodeElement.IF_CONDITIONAL, elementStartingLineArg, elementStartingColumnArg,
 				elementEndingLineArg, elementEndingColumnArg,
 				bodyStartingLineArg, bodyStartingColumnArg,
-				bodyEndingLineArg, bodyStartingColumnArg);
+				bodyEndingLineArg, bodyEndingColumnArg);
 		this.thereIsElse = false;
 		this.elseStartingLine = MyIfStatement.NO_ELSE_STATEMENT;
 		this.elseStartingColumn = MyIfStatement.NO_ELSE_STATEMENT;

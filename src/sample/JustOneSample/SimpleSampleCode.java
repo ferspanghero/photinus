@@ -34,6 +34,7 @@ public class SimpleSampleCode {
 		Integer cases = 2;
 		cases -= 1;
 		switch (cases) 
+		
 		{
 		case 1:
 			System.out.println("1");

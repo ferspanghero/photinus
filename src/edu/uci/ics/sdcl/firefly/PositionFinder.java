@@ -18,6 +18,11 @@ public class PositionFinder {
 		this.openingBrace = openingBraceArg;
 		this.closingBrace = closingBraceArg;
 		
+		setEndPosition();
+	}
+	
+	public void setEndPosition()
+	{
 		Integer bracesTrack = 0;	// reference to find the end counting the braces
 		int currentLine =  (this.startingLineNumber-1);	// because the vector starts at 0
 		
@@ -26,9 +31,11 @@ public class PositionFinder {
 		System.out.print("---> Checking if this is the right starting column: " + this.startingColumnNumber + "-");
 		System.out.println(this.fileInLines[currentLine].charAt(this.startingColumnNumber));
 		
+		/* Flags */
 		boolean openingBraceFound = false;		// assuming the OPEN bracket was not yet found
 		boolean semiColonFound = false;			// assuming end of an instruction was not yet found
 		boolean firstIterationFlag = true;		// to not reset the column
+		
 		this.endingColumnNumber = this.startingColumnNumber; // setting the start position of the column  
 		do {	// looping lines to find the ending line
 			if (!firstIterationFlag) this.endingColumnNumber = 0;	// do not reset if it is first iteration
@@ -37,6 +44,11 @@ public class PositionFinder {
 			{
 				if ( this.openingBrace == this.fileInLines[currentLine].charAt(this.endingColumnNumber) )
 				{
+					if (!openingBraceFound)
+					{	// first opening brace occurrence 
+						this.startingLineNumber = currentLine +1;	// to remain consistent (Switch Statement)
+						this.startingColumnNumber = this.endingColumnNumber; 
+					}
 					System.out.println(this.openingBrace + " found at " + this.fileInLines[currentLine]);
 					bracesTrack++;
 					openingBraceFound = true;

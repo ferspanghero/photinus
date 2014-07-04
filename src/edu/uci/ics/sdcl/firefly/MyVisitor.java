@@ -232,8 +232,11 @@ public class MyVisitor extends ASTVisitor {
 		setupElementEndPosition();
 
 		this.bodyStartingLine = this.elementEndingLine;
-		this.bodyStartingColumn = this.elementEndingColumn-1 ; // Not much precision here!
+		this.bodyStartingColumn = this.elementEndingColumn; // Not much precision here!
 		setupBodyEndPostition();
+		/* starting line updated just because of the switch statement body */
+		this.bodyStartingLine = this.bodyPosition.getStartingLineNumber();
+		this.bodyStartingColumn = this.bodyPosition.getStartingColumnNumber();
 		
 		System.out.println("Switch at line: " + this.elementStartingLine);	
 		CodeElement element = new CodeElement(CodeElement.SWITCH_CONDITIONAL, 
@@ -299,8 +302,12 @@ public class MyVisitor extends ASTVisitor {
 	
 	public boolean visit(DoStatement node)
 	{
-		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
-		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+		
+		this.elementStartingLine = cu.getLineNumber(node.getExpression().getStartPosition());
+		/* Finding where the 'while'-word start */
+		String[] fileInLines = CodeSnippetFactory.getFileContentePerLine();
+		this.elementStartingColumn =  fileInLines[this.elementStartingLine-1].indexOf("while");
+		/* setting up the end position */
 		setupElementEndPosition();
 
 		this.bodyStartingLine = cu.getLineNumber(node.getBody().getStartPosition());
