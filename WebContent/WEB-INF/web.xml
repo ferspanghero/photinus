@@ -11,22 +11,22 @@
   </welcome-file-list>
   <servlet>
     <description></description>
-    <display-name>FileUploadController</display-name>
-    <servlet-name>FileUploadController</servlet-name>
-    <servlet-class>edu.uci.ics.sdcl.firefly.controller.FileUploadController</servlet-class>
+    <display-name>FileUploadServlet</display-name>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <servlet-class>edu.uci.ics.sdcl.firefly.servlet.FileUploadServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>FileUploadController</servlet-name>
-    <url-pattern>/FileUploadController</url-pattern>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <url-pattern>/upload</url-pattern>
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>MicrotaskController</display-name>
-    <servlet-name>MicrotaskController</servlet-name>
-    <servlet-class>edu.uci.ics.sdcl.firefly.controller.MicrotaskController</servlet-class>
+    <display-name>MicrotaskServlet</display-name>
+    <servlet-name>MicrotaskServlet</servlet-name>
+    <servlet-class>edu.uci.ics.sdcl.firefly.servlet.MicrotaskServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>MicrotaskController</servlet-name>
-    <url-pattern>/MicrotaskController</url-pattern>
+    <servlet-name>MicrotaskServlet</servlet-name>
+    <url-pattern>/MicrotaskServlet</url-pattern>
   </servlet-mapping>
 </web-app>

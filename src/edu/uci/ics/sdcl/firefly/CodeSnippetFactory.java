@@ -6,33 +6,32 @@ import java.util.ArrayList;
 
 public class CodeSnippetFactory {
 	private String folderPath;
-	private static String fileContent;
+	private String fileContent;
+	private String fileName;
 	private static String[] fileContentePerLine;
-	private static ArrayList<CodeSnippet> codeSnippetList;
+	private static ArrayList<CodeSnippet> codeSnippetList= new ArrayList<CodeSnippet>();
 	
 	public CodeSnippetFactory(String folderPathArg)
 	{
 		this.folderPath = folderPathArg;
-		CodeSnippetFactory.codeSnippetList = new ArrayList<CodeSnippet>();
-		fileContent = null;
-		fileContentePerLine = null;
 	}
 	
-	public ArrayList<CodeSnippet> getCodeSnippetList()
-	{
-		return codeSnippetList;
+	public CodeSnippetFactory(String fileName, String fileContent){
+		this.fileContent = fileContent;
+		this.fileName = fileName;
 	}
 
-	public static void addToCodeSnippetList(CodeSnippet method)
+	/** Generates code snippets for a file content  in memory (attribute fileContent) */
+	public ArrayList<CodeSnippet> generateSnippetsForFile()
 	{
-		CodeSnippetFactory.codeSnippetList.add(method);
+		this.codeSnippetList = new ArrayList<CodeSnippet>(); //Cleans up the snippet list
+		fileContentePerLine = this.fileContent.split("\r\n|\r|\n");
+		@SuppressWarnings("unused")
+		JavaParser parser = new JavaParser(fileContent);
+		return this.codeSnippetList;
 	}
 	
-	public static Integer getIndexCSList(CodeSnippet method)
-	{
-		return CodeSnippetFactory.codeSnippetList.indexOf(method); // -1 if does not exist
-	}
-
+	/** Generates code snippets for all files in a the provide filePath */
 	public ArrayList<CodeSnippet> generateSnippets()
 	{
 		try
@@ -79,12 +78,25 @@ public class CodeSnippetFactory {
 			}
 		}
 	}
-
-	public static String getFileContent() {
-		return fileContent;
-	}
+	
+	
 
 	public static String[] getFileContentePerLine() {
 		return fileContentePerLine;
+	}
+	
+	public ArrayList<CodeSnippet> getCodeSnippetList()
+	{
+		return codeSnippetList;
+	}
+
+	public static void addToCodeSnippetList(CodeSnippet method)
+	{
+		CodeSnippetFactory.codeSnippetList.add(method);
+	}
+	
+	public static Integer getIndexCSList(CodeSnippet method)
+	{
+		return CodeSnippetFactory.codeSnippetList.indexOf(method); // -1 if does not exist
 	}
 }

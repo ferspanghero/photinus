@@ -1,5 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -30,8 +28,6 @@
 				alert(data.message);
 				$('#return_message').html(data.message);
 			});
-			
-			
 
 			return false; // prevents the page from refreshing before JSON is read from server response
 		}
@@ -47,12 +43,12 @@
 			var jsonData = JSON.stringify(jsonDataObject);
 
 			//$.post("MicrotaskController", {
-		///		url:"Edit.jsp",
-		//		action : "openMicrotask",
-		//		json : jsonData}, function (response){},'json'
-		//	);
-					
-			return true;  // prevents the page from refreshing before JSON is read from server response
+			///		url:"Edit.jsp",
+			//		action : "openMicrotask",
+			//		json : jsonData}, function (response){},'json'
+			//	);
+
+			return true; // prevents the page from refreshing before JSON is read from server response
 		}
 	</script>
 
@@ -61,32 +57,33 @@
 		<li>Allowed file types are: .java</li>
 	</ul>
 
-<form action="upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file">
-    <input type="submit">
-</form>
+	<form action="upload" method="post" enctype="multipart/form-data">
+		<table cellspacing="2" cellpadding="2" border="0">
+			<tr>
+				<td align="right">File Name:</td>
+				<td><input type="file" name="fileUploaded"></td>
+			</tr>
+			<tr>
+				<td align="right"></td>
+				<td><input type="submit" value="upload"></td>
+			</tr>
+		</table>
 
-	<table cellspacing="2" cellpadding="2" border="0">
-		<tr>
-			<td align="right">File Name:</td>
-			<td><input type='file' name='fileName' id='fileName' size='80' />
-			</td> 
-			</td>
-		</tr>
-		<tr>
-			<td align="right"></td>
-			<td><input type="submit" name="upload" value="uploadFile"
-				onclick="uploadFile(this, event);"></td> 
-		</tr>
-	</table>
-
-	<br>
+		<br>
+	</form>
+	
  
-	<form method="POST" action='MicrotaskController' name="openMicrotask">
-		<input type="submit" name="Give me a Microtask!" value="openMicrotask">
-		
+ <div id="result">
+            <h4>${requestScope["return_message"]}</h4>
+        </div>
+	
+	<form method="POST" action='MicrotaskServlet' name="openMicrotask">
+		<input type="submit" value="Give me a Microtask!" name="openMicrotask">
+
 	</form>
 	<br>
+	
+	
 
 
 

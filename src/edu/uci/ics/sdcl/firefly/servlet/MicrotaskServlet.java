@@ -1,4 +1,4 @@
-package edu.uci.ics.sdcl.firefly.controller;
+package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException;
 
@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class MicrotaskController
  */
-public class MicrotaskController extends HttpServlet {
+public class MicrotaskServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public MicrotaskController() {
+    public MicrotaskServlet() {
         super();
         // TODO Auto-generated constructor stub
     }

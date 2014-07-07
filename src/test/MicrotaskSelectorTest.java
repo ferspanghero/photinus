@@ -15,7 +15,7 @@ import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.MethodParameter;
 import edu.uci.ics.sdcl.firefly.MethodSignature;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.business.MicrotaskSelector;
+import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
 import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
 
 public class MicrotaskSelectorTest {
