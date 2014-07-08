@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -174,12 +175,11 @@ public class MyVisitor extends ASTVisitor {
 			System.out.println("Method invocation at line: " + this.elementStartingLine);	
 			System.out.println("Method name: " + node.getName().toString());
 			System.out.println("Method expression: " + node.getExpression().toString());
-			System.out.println("Method parameters " + node.arguments());
-			
+			System.out.println("Method parameters " + node.arguments().toString());
 			setupElementEndPosition();
-			@SuppressWarnings("unchecked")
-			myMethodCall methodCall = new myMethodCall(node.getName().toString(), 
-					node.getExpression().toString(), node.arguments(), 
+
+			MyMethodCall methodCall = new MyMethodCall(node.getName().toString(), 
+					node.getExpression().toString(), node.arguments().toString(), 
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
 

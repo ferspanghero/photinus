@@ -1,16 +1,17 @@
 package edu.uci.ics.sdcl.firefly;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.Expression;
 
-public class myMethodCall extends CodeElement
+public class MyMethodCall extends CodeElement implements Serializable
 {
 	private String name;
 	private String expression;
-	private List<Expression> parameterList;
+	private String parameterList;
 	
-	public myMethodCall(String nameArg, String expressionArg, List<Expression> parametersArg, 
+	public MyMethodCall(String nameArg, String expressionArg, String parametersArg, 
 			Integer elementStartingLineArg, Integer elementStartingColumnArg,
 			Integer elementEndingLineArg, Integer elementEndingColumnArg)
 	{
@@ -18,7 +19,7 @@ public class myMethodCall extends CodeElement
 				elementEndingLineArg, elementEndingColumnArg);
 		this.setName(nameArg);
 		this.setExpression(expressionArg);
-		this.setParameterList(parametersArg);
+		this.parameterList = parametersArg;
 	}
 	
 	public String getName()
@@ -41,12 +42,12 @@ public class myMethodCall extends CodeElement
 		this.expression = expression;
 	}
 
-	public List<Expression> getParameterList()
+	public String getParameterList()
 	{
 		return parameterList;
 	}
 
-	public void setParameterList(List<Expression> parametersArg)
+	public void setParameterList(String parametersArg)
 	{
 		this.parameterList = parametersArg;
 	}
