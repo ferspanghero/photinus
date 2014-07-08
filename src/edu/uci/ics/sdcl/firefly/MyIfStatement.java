@@ -1,6 +1,8 @@
 package edu.uci.ics.sdcl.firefly;
 
-public class MyIfStatement extends CodeElement{
+import java.io.Serializable;
+
+public class MyIfStatement extends CodeElement implements Serializable {
 	public final static Integer NO_ELSE_STATEMENT = -1;
 	public final static Integer DOES_NOT_BELONG_TO_ANY_IF = -2;
 	private boolean thereIsElse;
@@ -98,14 +100,19 @@ public class MyIfStatement extends CodeElement{
 	{
 		boolean flagThereAreWords = false;
 		System.out.println("=================Trying to find the lost Else(if)================");
-		for (int l = ifLineNumber; l > -1; l--) {	// going backwards on the line number
+		for (int l = ifLineNumber; l > -1; l--) 
+		{	// going backwards on the line number
+			while ( fileContentInLines[l].startsWith("\t") ) {	// taking off tabs
+				fileContentInLines[l] = fileContentInLines[l].substring(1, fileContentInLines[l].length());
+			}
 			System.out.println("On line " + l + ": " + fileContentInLines[l]);
 			String[] words = fileContentInLines[l].split(" ");
 			System.out.print("words: ");
 			for (int i = 0; i < words.length; i++) {	// looking for 'else' word
-				System.out.print(words[i] + ", ");
+				System.out.print(words[i] + "--");
 				if (null != words[i])
 				{
+					flagThereAreWords = true;
 					if ( words[i].equals("else") )
 					{	// Found an else-word
 						System.out.println("Found an Else!");
@@ -127,7 +134,7 @@ public class MyIfStatement extends CodeElement{
 						else 
 						{
 							System.out.println("Else is NOT the last word");
-							int p = 0;	// just to make sure the next word is not a null char
+							int p = 1;	// just to make sure the next word is not a null char
 							while ( words[i+p].isEmpty() ) p++;
 							if ( words[i+p].equals("if") )
 								return true;		// if after else! Else-if case
@@ -137,8 +144,11 @@ public class MyIfStatement extends CodeElement{
 							
 					}
 				}
+				else
+					flagThereAreWords = false;
 			}
 			System.out.println(); // another line will begin
+			if (l<ifLineNumber && flagThereAreWords) break;	// no else found,  no point in continue 
 		}
 		return false;
 	}
