@@ -24,7 +24,7 @@ public class MicrotaskMemento {
 	 * String key = file name, ArrayList is the list of microtasks*/
 	private HashMap<String,FileDebugSession> debugSessionMap;
 
-	private String persistentFileName = "../microtasks.ser";
+	private String persistentFileName = "microtasks.ser";
 
 	private File file;
 
