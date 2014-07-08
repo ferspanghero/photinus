@@ -118,7 +118,7 @@ public class QuestionFactory {
 				case CodeElement.METHOD_INVOCATION:
 					for (String templateForQuestion : templateMethodInvocation)
 					{
-						myMethodCall elementCall = (myMethodCall)element;
+						MyMethodCall elementCall = (MyMethodCall)element;
 						/* setting up the position for the element */
 						this.startingLine = elementCall.getElementStartingLine();
 						this.startingColumn = elementCall.getElementStartingColumn();
