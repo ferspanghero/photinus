@@ -13,8 +13,6 @@ public class CodeSnippet implements Serializable
 	/* finding starting and ending position */
 	/* Element position */
 	protected Integer elementStartingLine;	// line number for the element beginning (not the body)
-	
-
 	protected Integer elementStartingColumn;// column number for the element beginning
 	protected Integer elementEndingLine;	// line number for the element ending
 	protected Integer elementEndingColumn;	// column number for the element ending

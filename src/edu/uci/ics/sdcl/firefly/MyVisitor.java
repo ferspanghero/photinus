@@ -2,8 +2,8 @@ package edu.uci.ics.sdcl.firefly;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Stack;
 
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.DoStatement;
@@ -27,20 +27,23 @@ public class MyVisitor extends ASTVisitor {
 	private CodeElement element;
 	/* Element position */
 	private Integer elementStartingLine;	// line number for the element beginning (not the body)
-	private Integer elementStartingColumn;// column number for the element beginning
-	private Integer elementEndingLine;	// line number for the element ending
+	private Integer elementStartingColumn;	// column number for the element beginning
+	private Integer elementEndingLine;		// line number for the element ending
 	private Integer elementEndingColumn;	// column number for the element ending
 	/* Body position */
 	private Integer bodyStartingLine;		// line number for the beginning of body
-	private Integer bodyStartingColumn;	// column number for the body (of element in case of method invocation)
-	private Integer bodyEndingLine;		// line number for the end of the body
+	private Integer bodyStartingColumn;		// column number for the body (of element in case of method invocation)
+	private Integer bodyEndingLine;			// line number for the end of the body
 	private Integer bodyEndingColumn;		// column number for the end of the body
 	/* to find the end positions */
 	private PositionFinder elementPosition;
 	private PositionFinder bodyPosition;
+	/* specific for the else-if case */
+	private Stack<MyIfStatement> ifElements;		// line numbers of if with else-if statements 
 	
 	public MyVisitor(CompilationUnit cuArg)
 	{
+		this.ifElements = new Stack<MyIfStatement>();
 		this.cu = cuArg;
 		String nameOfThePackg = new String();
 		if (null == cu.getPackage())
@@ -135,7 +138,7 @@ public class MyVisitor extends ASTVisitor {
 			body = null;
 			setupElementEndPosition();
 			/* Creating new object without body */
-			newMethod = new CodeSnippet(this.packageName, this.className, signature, body, hasReturnStatement,
+			this.newMethod = new CodeSnippet(this.packageName, this.className, signature, body, hasReturnStatement,
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
 		}	
@@ -146,7 +149,7 @@ public class MyVisitor extends ASTVisitor {
 			this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
 			setupBodyEndPostition();
 			/* Creating new object with body */
-			newMethod = new CodeSnippet(this.packageName, this.className, signature, body, hasReturnStatement,
+			this.newMethod = new CodeSnippet(this.packageName, this.className, signature, body, hasReturnStatement,
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn,
 					this.bodyStartingLine, this.bodyStartingColumn,
@@ -154,7 +157,7 @@ public class MyVisitor extends ASTVisitor {
 		}
 		
 
-		CodeSnippetFactory.addToCodeSnippetList(newMethod);
+		CodeSnippetFactory.addToCodeSnippetList(this.newMethod);
 		
 		return true;
 	}
@@ -180,7 +183,7 @@ public class MyVisitor extends ASTVisitor {
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
 
-			newMethod.addElement(methodCall);
+			this.newMethod.addElement(methodCall);
 		}
 		return true;
 	}
@@ -195,31 +198,68 @@ public class MyVisitor extends ASTVisitor {
 		this.bodyStartingColumn = cu.getColumnNumber(node.getThenStatement().getStartPosition());
 		setupBodyEndPostition();
 		
-		System.out.println("If at line: " + this.elementStartingLine);	
+		System.out.println(":::If at line: " + this.elementStartingLine);	
+		
 		if (null == node.getElseStatement()) // There is no else statement (body = then statement)
 		{	// just create the element
 			element = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
 					this.elementEndingLine, this.elementEndingColumn,
 					this.bodyStartingLine, this.bodyStartingColumn,
 					this.bodyEndingLine, this.bodyEndingColumn);
+			this.newMethod.addElement(element);
+			// checking if belongs to an else-if statement
+			if (MyIfStatement.isIfofAnElseIfCase(CodeSnippetFactory.getFileContentePerLine(), this.elementStartingLine-1))
+			{	// match this if with its else-if case on hold onto stack
+				System.out.println("!:This if w NO else is part of an Else-If case");
+				MyIfStatement ifElement = this.ifElements.pop();
+				ifElement.setElseEndingLine(this.bodyEndingLine);
+				ifElement.setElseEndingColumn(this.bodyEndingColumn);
+				this.newMethod.addElement(ifElement);
+			}
 		}
 		else	// there is an else statement 
-		{
+		{			
 			Integer elseStartingLine = cu.getLineNumber(node.getElseStatement().getStartPosition());
 			Integer elseStartingColumn = cu.getColumnNumber(node.getElseStatement().getStartPosition());
-			/* Finding the end position for the else */
-			this.bodyPosition = new PositionFinder(elseStartingLine, elseStartingColumn, 
-					CodeSnippetFactory.getFileContentePerLine(), '{', '}');
-			Integer elseEndingLine = this.bodyPosition.getEndingLineNumber();
-			Integer elseEndingColumn = this.bodyPosition.getEndingColumnNumber();
-			element = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
-					this.elementEndingLine, this.elementEndingColumn,
-					this.bodyStartingLine, this.bodyStartingColumn,
-					this.bodyEndingLine, this.bodyEndingColumn,
-					elseStartingLine, elseStartingColumn,
-					elseEndingLine, elseEndingColumn);
+			if ( node.getElseStatement().toString().substring(0, 2).equals("if") )
+			{	// else-if case
+				// setting the element as unknown end position
+				element = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
+						this.elementEndingLine, this.elementEndingColumn,
+						this.bodyStartingLine, this.bodyStartingColumn,
+						this.bodyEndingLine, this.bodyEndingColumn,
+						elseStartingLine, elseStartingColumn,
+						CodeElement.NO_NUMBER_ASSOCIATED, CodeElement.NO_NUMBER_ASSOCIATED);
+				// adding element to the stack, not added on NewMethod yet
+				this.ifElements.push((MyIfStatement)element);
+				
+				System.out.println("This if is now onto Stack!");
+			} 
+			else
+			{	/* Finding the end position for the else [not the else-if case] */
+				this.bodyPosition = new PositionFinder(elseStartingLine, elseStartingColumn, 
+						CodeSnippetFactory.getFileContentePerLine(), '{', '}');
+				Integer elseEndingLine = this.bodyPosition.getEndingLineNumber();
+				Integer elseEndingColumn = this.bodyPosition.getEndingColumnNumber();
+				element = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
+						this.elementEndingLine, this.elementEndingColumn,
+						this.bodyStartingLine, this.bodyStartingColumn,
+						this.bodyEndingLine, this.bodyEndingColumn,
+						elseStartingLine, elseStartingColumn,
+						elseEndingLine, elseEndingColumn);
+				this.newMethod.addElement(element);
+				// checking if belongs to an else-if statement
+				if (MyIfStatement.isIfofAnElseIfCase(CodeSnippetFactory.getFileContentePerLine(), this.elementStartingLine-1))
+				{	// match this if with its else-if case on hold onto stack
+					System.out.println("::This if w else is part of an Else-If case");
+					MyIfStatement ifElement = this.ifElements.pop();
+					ifElement.setElseEndingLine(elseEndingLine);
+					ifElement.setElseEndingColumn(elseEndingColumn);
+					this.newMethod.addElement(ifElement);
+				}
+			}
 		}
-		newMethod.addElement(element);
+		
 //		System.out.println(" $$$ CS = " + element.getColumnStart());
 //		System.out.println(" $$$ CE = " + element.getBodyEndingColumn());
 		return true;
@@ -244,7 +284,7 @@ public class MyVisitor extends ASTVisitor {
 				this.elementEndingLine, this.elementEndingColumn,
 				this.bodyStartingLine, this.bodyStartingColumn,
 				this.bodyEndingLine, this.bodyEndingColumn);
-		newMethod.addElement(element);
+		this.newMethod.addElement(element);
 		return true;
 	}
 	
@@ -272,7 +312,7 @@ public class MyVisitor extends ASTVisitor {
 				this.bodyStartingLine, this.bodyStartingColumn,
 				this.bodyEndingLine, this.bodyEndingColumn);
 //		System.out.println("For-body column starting point: " + element.getColumnStart());
-		newMethod.addElement(element);
+		this.newMethod.addElement(element);
 
 //		System.out.println("For statement: " + node.getBody().toString());
 		return true;
@@ -295,7 +335,7 @@ public class MyVisitor extends ASTVisitor {
 				this.bodyStartingLine, this.bodyStartingColumn,
 				this.bodyEndingLine, this.bodyEndingColumn);
 		
-		newMethod.addElement(element);
+		this.newMethod.addElement(element);
 //		System.out.println("For statement: " + node.getBody().toString());
 		return true;
 	}
@@ -321,7 +361,7 @@ public class MyVisitor extends ASTVisitor {
 				this.bodyStartingLine, this.bodyStartingColumn,
 				this.bodyEndingLine, this.bodyEndingColumn);
 		
-		newMethod.addElement(element);
+		this.newMethod.addElement(element);
 //		System.out.println("Do-While statement: " + node.getBody().toString());
 		return true;
 	}
@@ -343,7 +383,7 @@ public class MyVisitor extends ASTVisitor {
 				this.bodyStartingLine, this.bodyStartingColumn,
 				this.bodyEndingLine, this.bodyEndingColumn);
 		
-		newMethod.addElement(element);
+		this.newMethod.addElement(element);
 //		System.out.println("While statement: " + node.getBody().toString());
 		return true;
 	}
@@ -391,5 +431,4 @@ public class MyVisitor extends ASTVisitor {
 		this.bodyEndingLine = this.bodyPosition.getEndingLineNumber();
 		this.bodyEndingColumn = this.bodyPosition.getEndingColumnNumber();
 	}
-	
 }

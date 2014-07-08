@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class CodeSnippetFactory {
 	private String folderPath;
-	private String fileContent;
+	private static String fileContent;
 	private String fileName;
 	private static String[] fileContentePerLine;
 	private static ArrayList<CodeSnippet> codeSnippetList= new ArrayList<CodeSnippet>();
@@ -98,5 +98,10 @@ public class CodeSnippetFactory {
 	public static Integer getIndexCSList(CodeSnippet method)
 	{
 		return CodeSnippetFactory.codeSnippetList.indexOf(method); // -1 if does not exist
+	}
+	
+	public static String getFileContent()
+	{
+		return fileContent;
 	}
 }

@@ -25,11 +25,11 @@ public class PositionFinder {
 	{
 		Integer bracesTrack = 0;	// reference to find the end counting the braces
 		int currentLine =  (this.startingLineNumber-1);	// because the vector starts at 0
-		
-		System.out.print("---> Checking if this is the right starting line: " + this.startingLineNumber + "-");
-		System.out.println(this.fileInLines[currentLine]);
-		System.out.print("---> Checking if this is the right starting column: " + this.startingColumnNumber + "-");
-		System.out.println(this.fileInLines[currentLine].charAt(this.startingColumnNumber));
+
+//		System.out.print("---> Checking if this is the right starting line: " + this.startingLineNumber + "-");
+//		System.out.println(this.fileInLines[currentLine]);
+//		System.out.print("---> Checking if this is the right starting column: " + this.startingColumnNumber + "-");
+//		System.out.println(this.fileInLines[currentLine].charAt(this.startingColumnNumber));
 		
 		/* Flags */
 		boolean openingBraceFound = false;		// assuming the OPEN bracket was not yet found
@@ -49,7 +49,7 @@ public class PositionFinder {
 						this.startingLineNumber = currentLine +1;	// to remain consistent (Switch Statement)
 						this.startingColumnNumber = this.endingColumnNumber; 
 					}
-					System.out.println(this.openingBrace + " found at " + this.fileInLines[currentLine]);
+//					System.out.println(this.openingBrace + " found at " + this.fileInLines[currentLine]);
 					bracesTrack++;
 					openingBraceFound = true;
 				} else if (this.closingBrace == this.fileInLines[currentLine].charAt(this.endingColumnNumber))
@@ -60,13 +60,13 @@ public class PositionFinder {
 				if( openingBraceFound && (0 >= bracesTrack) ) break;	// found the end already
 				if( !openingBraceFound && semiColonFound) 
 				{
-					System.out.println("Found body with one single instruction!");
+//					System.out.println("Found body with one single instruction!");
 					break;		// body has one line w/o braces
 				}
 			}
 			currentLine++;
 			firstIterationFlag = false;
-			System.out.println("Brace track value: " + bracesTrack);
+//			System.out.println("Brace track value: " + bracesTrack);
 		}
 		// First OR: continue if braces did not close or if did not find the opening brace
 		// Second AND: for the case of one single instruction without braces
@@ -75,11 +75,11 @@ public class PositionFinder {
 		this.endingLineNumber = currentLine;
 		this.endingColumnNumber++; // to set the highlight until the last character
 		
-		System.out.print("---> Checking if this is the right ending line: " + this.endingLineNumber + "-");
-		System.out.println(this.fileInLines[currentLine-1]);
-		System.out.print("---> Checking if this is the right ending column: " + this.endingColumnNumber + "-");
-		System.out.println(this.fileInLines[currentLine-1].charAt(this.endingColumnNumber-1));
-		System.out.println("------------");
+//		System.out.print("---> Checking if this is the right ending line: " + this.endingLineNumber + "-");
+//		System.out.println(this.fileInLines[currentLine-1]);
+//		System.out.print("---> Checking if this is the right ending column: " + this.endingColumnNumber + "-");
+//		System.out.println(this.fileInLines[currentLine-1].charAt(this.endingColumnNumber-1));
+//		System.out.println("------------");
 	}
 	
 	public Integer getStartingLineNumber() {

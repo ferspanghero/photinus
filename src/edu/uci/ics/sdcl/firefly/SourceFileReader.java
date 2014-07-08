@@ -17,7 +17,7 @@ public class SourceFileReader {
 		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippets();
 		System.out.println();
 		System.out.println("********************************");
-		codeSnippets.printAll();
+//		codeSnippets.printAll();
 		QuestionFactory questionFactory = new QuestionFactory();
 		System.out.println("----------Printing Concrete Questions-------------");
 		HashMap<Integer, Microtask> concreteQuestionsMade = questionFactory.generateQuestions(methodsParsed);

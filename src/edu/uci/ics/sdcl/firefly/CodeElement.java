@@ -105,4 +105,11 @@ public class CodeElement implements Serializable {
 	public Integer getBodyEndingColumn() {
 		return bodyEndingColumn;
 	}
+	/* setting positions */
+	public void setBodyEndingLine(Integer bodyEndingLine) {
+		this.bodyEndingLine = bodyEndingLine;
+	}
+	public void setBodyEndingColumn(Integer bodyEndingColumn) {
+		this.bodyEndingColumn = bodyEndingColumn;
+	}
 }
