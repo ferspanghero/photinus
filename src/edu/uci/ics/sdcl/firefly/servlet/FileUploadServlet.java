@@ -22,7 +22,7 @@ import java.util.*;
 
 public class FileUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -54,17 +54,9 @@ public class FileUploadServlet extends HttpServlet {
 					if (!item.isFormField()) { 
 						String fileName = item.getName(); 
 						long sizeInBytes = item.getSize();
-						
+
 						if(sizeInBytes>0){
-							InputStreamReader in = new InputStreamReader(item.getInputStream());
-							ByteArrayOutputStream out = new ByteArrayOutputStream();
-							byte[] buffer = new byte[1024];
-							int read = 0;
-							while( (read = in.read()) != -1){
-								out.write(buffer, 0, read);
-							}
-							String fileContent = new String(out.toByteArray());
-							
+							String fileContent = new Scanner(item.getInputStream(),"Cp1252").useDelimiter("\\A").next();		  				
 							return_message = "File "+ fileName+" was successfully uploaded, size: "+sizeInBytes+"\n";
 							String results = generateMicrotasks(fileName, fileContent);
 							return_message = return_message +"\n"+ results ;
@@ -88,24 +80,24 @@ public class FileUploadServlet extends HttpServlet {
 		request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 	}
 
-	
+
 	private String generateMicrotasks(String fileName, String fileContent){
 		//calls CodeSnippetFactory
 		CodeSnippetFactory codeSnippetFactory = new CodeSnippetFactory(fileName,fileContent);
 		ArrayList<CodeSnippet> snippetList = codeSnippetFactory.generateSnippetsForFile();
-		
+
 		//calls QuestionFactory
 		QuestionFactory questionFactory = new QuestionFactory ();
 		HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(snippetList);
 		FileDebugSession fileDebuggingSession = new FileDebugSession(fileName,microtaskMap);
-								
+
 		//Persist data
 		MicrotaskMemento memento = new MicrotaskMemento();
 		memento.insert(fileName, fileDebuggingSession);
-						
+
 		int numberOfCodeSnippets = snippetList.size();
 		int numberOfMicrotasks = microtaskMap.size();
-		
+
 		String results = "";
 		if (microtaskMap!= null && microtaskMap.size() > 0){
 			results = "Microtasks generated: " + numberOfMicrotasks+", "+"Number of code snippets: "+numberOfCodeSnippets;
