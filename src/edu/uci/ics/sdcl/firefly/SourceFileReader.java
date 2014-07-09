@@ -25,7 +25,7 @@ public class SourceFileReader {
 		while(i.hasNext()) 
 		{
 	         Map.Entry<Integer, Microtask> me = (Map.Entry<Integer, Microtask>)i.next();
-	         System.out.print("ID = " + me.getKey() + ": ");
+	         System.out.print("ID = " + me.getValue().getId() + ": ");
 	         System.out.println(me.getValue().getQuestion());
 	    }
 		System.out.println();

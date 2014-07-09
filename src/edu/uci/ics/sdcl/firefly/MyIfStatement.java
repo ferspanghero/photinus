@@ -8,7 +8,6 @@ public class MyIfStatement extends CodeElement implements Serializable {
 	private boolean thereIsElse;
 	private boolean thereIsElseIf;
 	private boolean isIfOfAnElse;
-//	private Integer belongsToIfAt;
 	private Integer elseStartingLine;
 	private Integer elseStartingColumn;
 	private Integer elseEndingLine;
@@ -60,49 +59,6 @@ public class MyIfStatement extends CodeElement implements Serializable {
 			this.setThereIsElseIf(false);
 		
 	}
-	
-//	/* IF of ELSE-IF case */
-//	/* Construct without else statement */
-//	public MyIfStatement(Integer ifFatherLineNumber,
-//			Integer elementStartingLineArg, Integer elementStartingColumnArg, 
-//			Integer elementEndingLineArg, Integer elementEndingColumnArg,
-//			Integer bodyStartingLineArg, Integer bodyStartingColumnArg,
-//			Integer bodyEndingLineArg, Integer bodyEndingColumnArg)
-//	{
-//		super(CodeElement.IF_CONDITIONAL, elementStartingLineArg, elementStartingColumnArg,
-//				elementEndingLineArg, elementEndingColumnArg,
-//				bodyStartingLineArg, bodyStartingColumnArg,
-//				bodyEndingLineArg, bodyEndingColumnArg);
-//		this.isElseIfCase = true;
-//		this.belongsToIfAt = ifFatherLineNumber;
-//		this.thereIsElse = false;
-//		this.elseStartingLine = MyIfStatement.NO_ELSE_STATEMENT;
-//		this.elseStartingColumn = MyIfStatement.NO_ELSE_STATEMENT;
-//		this.elseEndingLine = MyIfStatement.NO_ELSE_STATEMENT;
-//		this.elseEndingColumn = MyIfStatement.NO_ELSE_STATEMENT;
-//	}
-//	
-//	/* Construct with else statement */
-//	public MyIfStatement(Integer ifFatherLineNumber,
-//			Integer elementStartingLineArg, Integer elementStartingColumnArg, 
-//			Integer elementEndingLineArg, Integer elementEndingColumnArg,
-//			Integer bodyStartingLineArg, Integer bodyStartingColumnArg,
-//			Integer bodyEndingLineArg, Integer bodyEndingColumnArg,
-//			Integer elseStartingLineArg, Integer elseStartingColumnArg, 
-//			Integer elseEndingLineArg, Integer elseEndingColumnArg)
-//	{
-//		super(CodeElement.IF_CONDITIONAL, elementStartingLineArg, elementStartingColumnArg,
-//				elementEndingLineArg, elementEndingColumnArg,
-//				bodyStartingLineArg, bodyStartingColumnArg,
-//				bodyEndingLineArg, bodyStartingColumnArg); 
-//		this.isElseIfCase = true;
-//		this.belongsToIfAt = ifFatherLineNumber;
-//		this.thereIsElse = true;
-//		this.elseStartingLine = elseStartingLineArg;
-//		this.elseStartingColumn = elseStartingColumnArg;
-//		this.elseEndingLine = elseEndingLineArg;
-//		this.elseEndingColumn = elseEndingColumnArg;
-//	}
 	
 	public static boolean isIfofAnElseIfCase(String[] fileContentInLines, Integer ifLineNumber)
 	{

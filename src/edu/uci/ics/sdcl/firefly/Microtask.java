@@ -15,6 +15,8 @@ public class Microtask implements Serializable
 	private Integer endingLine;
 	private Integer endingColumn;
 	
+	private Integer id;
+	
 	public Microtask(String questionTypeArg, CodeSnippet methodArg, String questionArg, 
 			Integer startingLineNumber, Integer startingColumnNumber, 
 			Integer endingLineNumber, Integer endingColumnNumber)
@@ -84,6 +86,14 @@ public class Microtask implements Serializable
 
 	public Integer getEndingColumn() {
 		return endingColumn;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	
