@@ -5,21 +5,20 @@ public class SimpleSampleCode {
 	Integer SeedLimit = null;
 
 	public SimpleSampleCode(Integer seedValue) {
-		if (SeedLimit == null)
-			this.SeedLimit = new Integer(seedValue);
+		if (SeedLimit == null) this.SeedLimit = new Integer(seedValue);	// all at the same line
 		Integer testes = 3;
-		if (testes == 5)
+		if (testes == 5)							// if without braces
 			this.SeedLimit = new Integer(testes);
 		if (testes == 8) {this.SeedLimit = new Integer(testes);	} // If with curly braces at the same line
 		if (testes == 10) 
 		{
-
+												// empty line
 			this.SeedLimit = new Integer(testes); // If with curly braces
 		}
 	}
 
 	public Integer factorial(Integer Seed, Integer Iterations) {
-		if (Seed != null) 
+		if (Seed != null) 	// if with else
 		{	int aux = 1;
 			for (int i = 0; i < Iterations.intValue(); i++) {
 				aux = aux * Seed;
@@ -33,7 +32,7 @@ public class SimpleSampleCode {
 	public void newCases() {
 		Integer cases = 2;
 		cases -= 1;
-		switch (cases) 
+		switch (cases) // switch case
 		
 		{
 		case 1:
@@ -57,19 +56,21 @@ public class SimpleSampleCode {
 			System.out.println(myArray[i]);
 			System.out.println(myArray[i]);
 			System.out.println(myArray[i]);
-			if (1 == cases) {
+			if (1 == cases) {	// if with ifs and else-if
 				if (2 == myArray[i]) { // If with curly braces at the same
 					for (Integer j = 1;;) {
 						j++;
 						break;
 					}
 				}
-				else if (3 == myArray[i])
+				else if (3 == myArray[i])	// else-if
 					break;
-				else
+				else if (4 == myArray[i])	// with another else if 
 					cases = 1;
+				else
+					cases = 2;
 			}
-			else if (2 == cases) {
+			else if (2 == cases) {	// else if braces
 				break;
 			}
 		}
