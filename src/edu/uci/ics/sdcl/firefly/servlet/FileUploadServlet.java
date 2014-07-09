@@ -100,7 +100,7 @@ public class FileUploadServlet extends HttpServlet {
 
 		String results = "";
 		if (microtaskMap!= null && microtaskMap.size() > 0){
-			results = "Microtasks generated: " + numberOfMicrotasks+", "+"Number of code snippets: "+numberOfCodeSnippets;
+			results = "Number of code snippets: "+numberOfCodeSnippets+ ". Microtasks generated: " + numberOfMicrotasks+".";
 		}
 		else
 			results = "No Microtasks were generated. Please review the file.";
