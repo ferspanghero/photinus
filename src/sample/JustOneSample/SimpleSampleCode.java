@@ -66,7 +66,11 @@ public class SimpleSampleCode {
 				else if (3 == myArray[i])	// else-if
 					break;
 				else if (4 == myArray[i])	// with another else if 
-					cases = 1;
+				{
+						cases = 1;
+						myArray[i] = 5;
+						System.out.println("Another else-if");
+				}
 				else
 					cases = 2;
 			}
