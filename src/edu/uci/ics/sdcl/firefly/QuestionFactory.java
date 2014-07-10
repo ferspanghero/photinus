@@ -101,7 +101,10 @@ public class QuestionFactory {
 				/* setting and adding a concrete question */
 				question = new Microtask(CodeElement.METHOD_DECLARARION, codeSnippet, questionPrompt,
 						this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
-				this.concreteQuestions.put(new Integer(concreteQuestionID), question);
+				
+				Integer id = new Integer(concreteQuestionID);
+				question.setID(id);
+				this.concreteQuestions.put(id, question);
 			}
 			
 			ArrayList<CodeElement> statements = codeSnippet.getStatements();	// now getting the question for the statements
@@ -132,7 +135,10 @@ public class QuestionFactory {
 						
 						question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, questionPrompt, 
 								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
-						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
+						
+						Integer id = new Integer(concreteQuestionID);
+						question.setID(id);
+						this.concreteQuestions.put(id, question);
 					}
 					break;
 					
@@ -170,7 +176,10 @@ public class QuestionFactory {
 						question = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt, 
 								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
 						
-						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
+						Integer id = new Integer(concreteQuestionID);
+						question.setID(id);
+						this.concreteQuestions.put(id, question);
+						
 					}
 					break;
 					
@@ -182,7 +191,9 @@ public class QuestionFactory {
 						question = new Microtask(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt, 
 								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
 
-						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
+						Integer id = new Integer(concreteQuestionID);
+						question.setID(id);
+						this.concreteQuestions.put(id, question);
 					}
 					break;
 					
@@ -210,7 +221,9 @@ public class QuestionFactory {
 									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
 							break;
 						}
-						this.concreteQuestions.put(new Integer(concreteQuestionID), question);
+						Integer id = new Integer(concreteQuestionID);
+						question.setID(id);
+						this.concreteQuestions.put(id, question);
 					}
 					break;
 					// Add more cases here 

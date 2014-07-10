@@ -14,6 +14,7 @@ public class Microtask implements Serializable
 	private Integer startingColumn;
 	private Integer endingLine;
 	private Integer endingColumn;
+	private Integer ID;
 	
 	public Microtask(String questionTypeArg, CodeSnippet methodArg, String questionArg, 
 			Integer startingLineNumber, Integer startingColumnNumber, 
@@ -29,6 +30,14 @@ public class Microtask implements Serializable
 		QuestionFactory.concreteQuestionID++;
 	}
 
+	public Integer getID(){
+		return this.ID;
+	}
+	
+	public void setID(Integer ID){
+		this.ID=ID;
+	}
+	
 	public String getQuestion()
 	{
 		return question;

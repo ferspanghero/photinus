@@ -7,66 +7,66 @@
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 
 </head>
-<body>
-
-
+<body> 
 
 	<table border="0">
-		<tr>
-<center>	
-			<td> <img src="./images/Firefly-2.jpg" width=112 height=46/>
-					 &nbsp;&nbsp;&nbsp;
-	
-		<i>
-		 <a href="./FileUpload.jsp&action=load"><img src="./images/HomeButton.jpg"></a>
-	    <a href="./FileUpload.jsp&action=load"><img src="./images/UploadsButton.jpg"></a>
-	     <a href="./FileUpload.jsp&action=load"><img src="./images/MicrotasksButton.jpg"></a>
-	   <a href="./FileUpload.jsp&action=load"><img src="./images/ResultsButton.jpg"></a>
-	     
-	 </i>
-	 </center>
-		 </td>
-				
-			 
-				
-			
-			
+		<tr valign="bottom">
+			<center>
+				<td><img src="./images/Firefly-2.jpg" width=112 height=46 />
+					&nbsp;&nbsp;&nbsp;</td>  
+					
+					<td><img src="./images/UploadsButton-blue.jpg"></td>
+					
+					<td>
+						<form method="POST" action="MicrotaskServlet" name="openMicrotask">
+							<input type="image" src="./images/MicrotasksButton.jpg"
+								value="Open Microtask" name="openMicrotask">
+						</form>
+					</td>
+					
+					<td><img src="./images/ResultsButton-blue.jpg"></td>
+ 
+			</center>  
 		</tr>
 
-		<tr>	
-	
-	
-			<td bgcolor ="#FFFAEB">
-			<h1><i>Upload Suspicious File</i></h1>
+	</table>
+
+ 
+	<table cellspacing="0">
+
+		<tr bgcolor="#FFFAEB">
+              <td>&nbsp;&nbsp;&nbsp; </td>
+              <td>&nbsp;&nbsp;&nbsp; </td>
+
+
+		
+				 	<td bgcolor="#FFFAEB">
 				<form action="upload" method="post" enctype="multipart/form-data">
-					<table  border="0">
+					<table border="0">
 						<tr>
-							<td align="right">File Name:</td>
-							<td><input type="file" name="fileUploaded"></td>
+							<td align="right">Suspicious file:</td>
+							<td><input name="fileUploaded" type="file" size="40" src="./images/Browse.jpg"></td>
 						</tr>
 						<tr>
 							<td align="right"></td>
-							<td><input type="submit" value="upload"></td>
+							<td><input type="submit" value="Generate Microtasks"> 
+							</td>
+								 
 						</tr>
 					</table>
 
 					<br>
 				</form>
-<form method="POST" action='MicrotaskServlet' name="openMicrotask">
-					<input type="submit" value="Upload File"
-						name="openMicrotask"> <br>
-					
-						
-				</form> <br>
-
-				<div id="result">
-					<h4>${requestScope["return_message"]}</h4>
-				</div>
-
-				
-			<td>
- 
 			
+			<form action="upload" method="get"><br>
+							<input type="hidden" name="testField" value=${requestScope["test"]} > 
+					 <input type="submit" value="testSubmit" ></form>
+
+				<div id="result"> 
+					 ${requestScope["return_message"]} 
+				</div>
+			<td>
+			 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </td> 
 		</tr>
 	</table>
 

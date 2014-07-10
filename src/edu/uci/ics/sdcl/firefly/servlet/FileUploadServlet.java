@@ -35,7 +35,10 @@ public class FileUploadServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doPost(request, response);
+		System.out.println("Test...:"+ request.getParameter("testField"));
+		request.setAttribute("return_message","");
+		request.setAttribute("test", "setting to test");
+		request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 	}
 
 	/**
@@ -43,6 +46,8 @@ public class FileUploadServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+	
+		
 		//process only if its multipart content
 		if(ServletFileUpload.isMultipartContent(request)){
 			FileItemFactory factory = new DiskFileItemFactory();
@@ -57,26 +62,25 @@ public class FileUploadServlet extends HttpServlet {
 
 						if(sizeInBytes>0){
 							String fileContent = new Scanner(item.getInputStream(),"Cp1252").useDelimiter("\\A").next();		  				
-							return_message = "File "+ fileName+" was successfully uploaded, size: "+sizeInBytes+"\n";
+							return_message = "File <b>"+ fileName+"</b> was successfully uploaded.<br> Size: "+sizeInBytes+" bytes <br>";
 							String results = generateMicrotasks(fileName, fileContent);
-							return_message = return_message +"\n"+ results ;
+							return_message = return_message + results ;
 						}
 						else
-							return_message = "File "+ fileName+" is empty!";
+							return_message = "File <b>"+ fileName+"</b> is empty!";
 						request.setAttribute("return_message",return_message);
+						request.setAttribute("fileName", fileName);
 					}
 					else
-						request.setAttribute("return_message",
-								"Sorry this servlet only handles file upload requests.");
+						request.setAttribute("return_message",								"");
 				}
 			} catch (FileUploadException e) {
 				request.setAttribute("return_message", "File upload failed. " + e);
 			}
 		}
 		else
-			request.setAttribute("return_message",
-					"Sorry this servlet only handles file upload requests.");
-
+			request.setAttribute("return_message","");
+ 
 		request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 	}
 
@@ -100,7 +104,7 @@ public class FileUploadServlet extends HttpServlet {
 
 		String results = "";
 		if (microtaskMap!= null && microtaskMap.size() > 0){
-			results = "Number of code snippets: "+numberOfCodeSnippets+ ". Microtasks generated: " + numberOfMicrotasks+".";
+			results = "Number of code snippets: "+numberOfCodeSnippets+ "<br> Microtasks generated: " + numberOfMicrotasks+"<br>";
 		}
 		else
 			results = "No Microtasks were generated. Please review the file.";

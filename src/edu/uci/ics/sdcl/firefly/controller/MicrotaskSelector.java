@@ -2,7 +2,6 @@ package edu.uci.ics.sdcl.firefly.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Iterator;
 
@@ -23,6 +22,39 @@ import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
  */
 public class MicrotaskSelector {
 
+	/** 
+	 * @return a list with a microtask and the fileName identifying a debugging session.
+	 * @see selectMicrotask(String fileName)
+	 */
+	public SelectorReturn selectAnyMicrotask(){
+		MicrotaskMemento memento = new MicrotaskMemento();
+		Set<String> debuggingSessionNameSet = memento.retrieveDebuggingSessionNames();
+		if((debuggingSessionNameSet==null) || (!debuggingSessionNameSet.iterator().hasNext())){
+			return null;
+		}
+		else{
+			String fileName = debuggingSessionNameSet.iterator().next();
+			Microtask task = this.selectMicrotask(fileName);
+			return new SelectorReturn (task,fileName);	
+		}
+	}
+	
+	
+	public class SelectorReturn{
+		
+		public Microtask task;
+		public String fileName;
+		
+		public SelectorReturn(Microtask task,  String fileName){ 
+			this.fileName=fileName; 
+			this.task=task;
+		}
+	}
+	
+	/** 
+	 * @param the identifier of a debugging session 
+	 * @return a microtask from the debugging session provided
+	 */
 	public Microtask selectMicrotask(String fileName){
 
 		MicrotaskMemento memento = new MicrotaskMemento();

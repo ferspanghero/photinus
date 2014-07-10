@@ -9,6 +9,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
@@ -84,6 +85,34 @@ public class MicrotaskMemento {
 			objInputStream.close();
 
 			return this.debugSessionMap.get(fileName);
+		}
+		catch(IOException exception){
+			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
+			return null;
+		}
+		catch(Exception exception){
+			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
+			return null;
+		}
+	}
+	
+	/** Retrieves the all the file debugging sessions .
+	 * A debugging session is identified by a file name
+	 * 
+	 * @return a set of debugging sessions
+	 */
+	public Set<String> retrieveDebuggingSessionNames(){
+		//TO DO enable to activate and deactivate debugging sessions.
+		try{	
+			ObjectInputStream objInputStream = new ObjectInputStream( 
+					// By using "FileOutputStream" we will 
+					// Read it to a File in the file system
+					new FileInputStream(new File(this.persistentFileName)));
+
+			this.debugSessionMap = (HashMap<String, FileDebugSession>) objInputStream.readObject();
+			objInputStream.close();
+
+			return this.debugSessionMap.keySet();
 		}
 		catch(IOException exception){
 			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
