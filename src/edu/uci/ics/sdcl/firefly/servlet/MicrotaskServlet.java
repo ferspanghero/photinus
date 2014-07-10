@@ -57,11 +57,16 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("question", task.getQuestion());
 			request.setAttribute("source", task.getMethod().getMethodBody());
 
-			request.setAttribute("id", task.getID().toString());
+			request.setAttribute("id", task.getID());
 			request.setAttribute("fileName", fileName);
+			
+			request.setAttribute("startLine", task.getStartingLine());
+			request.setAttribute("startColumn", task.getStartingColumn());
+			request.setAttribute("endLine", task.getEndingLine());
+			request.setAttribute("endColumn", task.getEndingColumn());
 
 
-			RequestDispatcher view = request.getRequestDispatcher("/Question.jsp");
+			RequestDispatcher view = request.getRequestDispatcher("/QuestionMicrotask.jsp");
 			view.forward(request, response);
 		}
 	}

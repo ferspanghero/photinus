@@ -58,9 +58,6 @@
 					<br>
 				</form>
 			
-			<form action="upload" method="get"><br>
-							<input type="hidden" name="testField" value=${requestScope["test"]} > 
-					 <input type="submit" value="testSubmit" ></form>
 
 				<div id="result"> 
 					 ${requestScope["return_message"]} 
