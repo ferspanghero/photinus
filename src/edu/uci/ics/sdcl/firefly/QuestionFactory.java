@@ -86,8 +86,16 @@ public class QuestionFactory {
 					this.endingLine = codeSnippet.getBodyEndingLine();
 					this.endingColumn = codeSnippet.getBodyEndingColumn();
 					
-					questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
-					questionPrompt = questionPrompt.replaceAll("<#2>", this.endingLine.toString());
+					if ( this.startingLine != this.endingLine )
+					{	// different lines, so between is OK
+						questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
+						questionPrompt = questionPrompt.replaceAll("<#2>", this.endingLine.toString());
+					}
+					else
+					{	// same lines, so between is has to be replaced
+						questionPrompt = questionPrompt.substring(0, questionPrompt.indexOf("between")) + "at line " +
+								this.startingLine + questionPrompt.substring(questionPrompt.indexOf("<#2>")+4); 
+					}
 				} else
 				{
 					/* setting up the position for the element */
@@ -162,8 +170,16 @@ public class QuestionFactory {
 								this.endingLine = elementIf.getBodyEndingLine();
 								this.endingColumn = elementIf.getBodyEndingColumn();
 							}
-							questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
-							questionPrompt = questionPrompt.replaceAll("<#2>", this.endingLine.toString());
+							if ( this.startingLine != this.endingLine )
+							{
+								questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
+								questionPrompt = questionPrompt.replaceAll("<#2>", this.endingLine.toString());
+							}
+							else
+							{
+								questionPrompt = questionPrompt.substring(0, questionPrompt.indexOf("between")) + "at line " +
+										this.startingLine + questionPrompt.substring(questionPrompt.indexOf("<#2>")+4);
+							}
 						} else
 						{	/* setting up the position for the element */
 							this.startingLine = elementIf.getElementStartingLine();
@@ -252,8 +268,19 @@ public class QuestionFactory {
 			this.endingLine = elementArg.getBodyEndingLine();
 			this.endingColumn = elementArg.getBodyEndingColumn();
 			
-			questionPromptArg = questionPromptArg.replaceAll("<#1>", this.startingLine.toString());
-			questionPromptArg = questionPromptArg.replaceAll("<#2>", this.endingLine.toString());
+			System.out.println("Starting and ending line: " + this.startingLine + ", " + this.endingLine);
+			if ( this.startingLine != this.endingLine )
+			{
+				questionPromptArg = questionPromptArg.replaceAll("<#1>", this.startingLine.toString());
+				questionPromptArg = questionPromptArg.replaceAll("<#2>", this.endingLine.toString());
+			}
+			else
+			{
+//				System.out.println("Old question: " + questionPromptArg);
+				questionPromptArg = questionPromptArg.substring(0, questionPromptArg.indexOf("between")) + "at line " +
+						this.startingLine + questionPromptArg.substring(questionPromptArg.indexOf("<#2>")+4);
+//				System.out.println("New question: " + questionPromptArg);
+			}
 		} else
 		{
 			/* setting up the position for the element */
