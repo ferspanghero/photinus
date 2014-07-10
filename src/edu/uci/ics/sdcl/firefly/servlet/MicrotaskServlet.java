@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
 
@@ -41,8 +42,7 @@ public class MicrotaskServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Prepare the microtask page to be loaded
-		System.out.println("in Microtask Post...");
+		// Prepare the microtask page to be loaded 
 
 		//Retrieve Microtask from Selector
 		MicrotaskSelector selector = new MicrotaskSelector();
@@ -55,7 +55,7 @@ public class MicrotaskServlet extends HttpServlet {
 			Microtask task = returnValues.task;
 			String fileName = returnValues.fileName;
 			request.setAttribute("question", task.getQuestion());
-			request.setAttribute("source", task.getMethod().getMethodBody());
+			request.setAttribute("source", CodeSnippetFactory.getFileContent());  //task.getMethod().getMethodBody()
 
 			request.setAttribute("id", task.getID());
 			request.setAttribute("fileName", fileName);
@@ -65,8 +65,7 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("endLine", task.getEndingLine());
 			request.setAttribute("endColumn", task.getEndingColumn());
 
-
-			RequestDispatcher view = request.getRequestDispatcher("/QuestionMicrotask.jsp");
+			RequestDispatcher view = request.getRequestDispatcher("/Microtask.jsp");
 			view.forward(request, response);
 		}
 	}

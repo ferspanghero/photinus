@@ -1,14 +1,18 @@
-<%@ page import="edu.uci.ics.sdcl.firefly.*, java.util.*, java.util.Map.Entry" language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
+<%@ page
+	import="edu.uci.ics.sdcl.firefly.*, java.util.*, java.util.Map.Entry"
+	language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta charset=utf-8 />
-<title>GUI</title>
+<title>Firefly - Question-based Crowd Debugging</title>
 <style type="text/css" media="screen">
 #editor {
 	position: relative;
-	height: 300px;
+	height: 200px;
+	width: 660px;
 }
 
 .foo {
@@ -25,95 +29,181 @@
 </style>
 </head>
 
-<%! 
-	String example = new String("\npublic SimpleSampleCode(Integer seedValue) {\n" +
-		"	if(SeedLimit == null)\n" +
-			"		this.SeedLimit = new Integer(seedValue);\n" +
-        "	Integer testes = 3;" +
-        "	if(testes == 5) this.SeedLimit = new Integer(testes);\n" + 
-        "	if(testes == 8) { this.SeedLimit = new Integer(testes); } // If with curly braces at the same line\n" +
-        "	if(testes == 10) {\n" +
-                "		this.SeedLimit = new Integer(testes); // If with curly braces\n" +
-        "	}\n" +
-	"}"); 
-	ConcreteQuestion lastQuestion; 
-	CodeSnippetFactory codeSnippets = new CodeSnippetFactory(
-			"C:\\Users\\Christian Adriano\\Documents\\GitHub\\crowd-debug-firefly\\src\\sample\\JustOneSample");
-	ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippets();
-	QuestionFactory questionFactory = new QuestionFactory();
-	HashMap<Integer, ConcreteQuestion> concreteQuestionsMade = questionFactory.generateQuestions(methodsParsed);
-	Set<Map.Entry<Integer, ConcreteQuestion>> set = concreteQuestionsMade.entrySet();
-	Iterator<Entry<Integer, ConcreteQuestion>> i = set.iterator();
-%>
-	
-	<%
-	while(i.hasNext()) 
-	{
-         Map.Entry<Integer, ConcreteQuestion> me = (Map.Entry<Integer, ConcreteQuestion>)i.next();
-         System.out.print("ID = " + me.getKey() + ": ");
-         System.out.println(me.getValue().getQuestion());
-         lastQuestion = me.getValue();
-    }
-	%>
+<body>
 
-<body bgcolor="#F0F8FF">
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script
-		src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
-	<div style="position: relative">
-		<h1>Question</h1>
-		<h2><%= lastQuestion.getQuestion() %></h2>
 
-		<form name="input" action="demo_form_action.asp" method="get">
-			<p>
-				Would you like to answer? <input type="radio" name="PreAnswer"
-					value="yes">Yes <input type="radio" name="PreAnswer"
-					value="no">No <input type="radio" name="PreAnswer"
-					value="no">Maybe<br>
-				<br> <font size="5">Explanation: </font><br>
-				<textarea rows="4" cols="80">Firefly</textarea>
-			</p>
-		</form>
-	</div>
 
-	<div id="editor">
-		<%= lastQuestion.getMethod().getMethodBody() %>
-	</div>
-
-	<br>
 	<script>
-    var editor = ace.edit('editor');
-    //var textarea = $('textarea[name="editor"]').hide();
-    var Range = ace.require('ace/range').Range;
-    editor.setReadOnly(true);
-    editor.setTheme("ace/theme/github");
-    editor.getSession().setMode("ace/mode/java");
-    setTimeout(function() {
-      //editor.gotoLine(30);
-      editor.session.addMarker(new Range(3, 0, 15, 0), "ace_active-line", "fullLine");
-      editor.session.addMarker(new Range(4, 5, 8, 5), "foo", "line");
-       editor.session.addMarker(new Range(17, 5, 19, 8), "bar", "text");
-    }, 100);
+		function checkAnswer() {
 
-  </script>
+			var radios = document.getElementsByName('answer');
+			
+			var option = -1;
+			var i = 0;
+
+			for (i = 0; i < radios.length; i++) {
+				if (radios[i].checked) {
+					option = i;
+					break;
+				}
+			}
+			alert("option" + option);
+			if (option == -1) { 
+				alert("Please select an answer.");
+				return -1;
+			} else {
+				if ((radios[0].checked) || (radios[1].checked)) {//yes and probably yes must provide an explanation
+					if (document.getElementById("explanation").value == '') {
+						alert("Please provide an explanation for your answer.");
+						return -1;
+					} else
+						return option;
+				} else
+					return option;
+			}
+		}
+
+		function submitAnswer() {
+			var checked = checkAnswer();
+			if (checked != -1) {
+				var jsonDataObject = new Object();
+				jsonDataObject.fileName = document.getElementById("fileName").value;			
+				jsonDataObject.id = document.getElementById("id").value;				
+				jsonDataObject.answerOption = checked;				
+				jsonDataObject.explanation = document.getElementById("explanation").value;
+				
+				// turn the jsonData object into a string so it can be passed to the servlet
+				var jsonData = JSON.stringify(jsonDataObject);
+
+				$.getJSON("MicrotaskServlet", {
+					action : "addAnswer",
+					json : jsonData
+				}, function(data) {
+				});
+
+				return false; // prevents the page from refreshing before JSON is read from server response
+			} else {
+				//nothing to do.
+			}
+		}
+
+		function cancel() {
+		 	//Ask the use if she want's a new microtask or want's to close the tab.
+		}
+	</script>
 
 
-	<div style="position: relative">
-		<TABLE BORDER="0">
-			<TR>
 
-				<TD ALIGN=left><FORM METHOD="LINK" ACTION="http://cancel.com">
-						<INPUT TYPE="submit" VALUE="Cancel">
-					</FORM></TD>
-				<TD></TD>
+	<table border="0">
+		<tr valign="bottom">
 
-				<TD align=right><FORM METHOD="LINK" ACTION="http://submit.com">
-						<INPUT TYPE="submit" VALUE="Submit">
-					</FORM></TD>
+			<td><img src="./images/Firefly-2.jpg" width=112 height=46 />
+				&nbsp;&nbsp;&nbsp;</td>
 
-			</TR>
-		</TABLE>
-	</div>
+			<td><form method="POST" action='./FileUpload.jsp'
+					name="fileUpload">
+					<input type="image" src="./images/UploadsButton.jpg"
+						value="Upload Files" name="upload">
+				</form></td>
+
+			<td><img src="./images/MicrotasksButton-blue.jpg"></td>
+
+			<td><img src="./images/ResultsButton-blue.jpg"></td>
+
+
+		</tr>
+
+	</table>
+
+
+	<table cellspacing="0" bgcolor="#FFFAEB">
+
+		<tr bgcolor="#FFFAEB">
+
+
+			<td><script
+					src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+				<script
+					src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
+				<b>${requestScope["question"]}</b></td>
+		</tr>
+	</table>
+
+
+
+	<table bgcolor="#FFFAEB">
+		<tr>
+			<td>
+				<form name="answerForm" action=MicrotaskServlet method="get">
+					 
+						<input type="radio" name="answer" value="1">Yes <br>
+						<input type="radio" name="answer" value="2">Probably yes<br>
+						<input type="radio" name="answer" value="3">I can't tell<br>
+						<input type="radio" name="answer" value="4">Probably not<br>
+						<input type="radio" name="answer" value="5">No<br>
+				 
+					<!-- Hidden fields -->
+					<input type="hidden" id="fileName"
+						value=${requestScope["fileName"]}> <input type="hidden"
+						id="id" value=${requestScope["id"]}> <input type="hidden"
+						id="startLine" value=${requestScope["startLine"]}> <input
+						type="hidden" id="startColumn"
+						value=${requestScope["startColumn"]}> <input type="hidden"
+						id="endLine" value=${requestScope["endLine"]}> <input
+						type="hidden" id="endColumn" value=${requestScope["endColumn"]}>
+				</form>
+			</td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td align="left"><br>  Please provide an
+				explanation for your answer:  <br> <textarea id="explanation"
+					rows="6" cols="50"></textarea></td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		</tr>
+		<tr>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td align="right"><INPUT TYPE="button" VALUE="Cancel"
+				onclick="cancel()"> <INPUT TYPE="button"
+				VALUE="Submit Answer" onclick="submitAnswer()"></td>
+		<tr>
+	</table>
+
+
+	<table bgcolor="#FFFAEB">
+		<tr>
+			<td align="left">
+				<div id="editor">${requestScope["source"]}</div> <script>
+			var editor = ace.edit('editor');
+			editor.setReadOnly(true);
+			editor.setTheme("ace/theme/github");
+			editor.getSession().setMode("ace/mode/java");
+		    editor.setBehavioursEnabled(false);
+			var startLine = document.getElementById("startLine").value;
+			var startColumn =  document.getElementById("startColumn").value;
+			var endLine = document.getElementById("endLine").value;
+			var endColumn =  document.getElementById("endColumn").value;  
+		    var Range = ace.require("ace/range").Range;
+		    
+		    setTimeout(function() {
+		    	editor.session.addMarker(new Range(startLine - 1, startColumn,
+						endLine - 1, endColumn), "foo", "line");
+				editor.gotoLine(startLine);
+			}, 100);
+		  
+		    //alert("here 2");
+			//document.write(startLine, ", ", startColumn, " C ");
+			//document.write(endLine, ", ", endColumn);
+		</script>
+
+			</td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		</tr>
+		<tr bgcolor="#FFFAEB">
+			<td><br>
+			<br>
+			<br></td>
+			<td></td>
+		</tr>
+	</table>
 </body>
 </html>

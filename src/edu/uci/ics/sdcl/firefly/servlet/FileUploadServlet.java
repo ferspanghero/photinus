@@ -67,7 +67,8 @@ public class FileUploadServlet extends HttpServlet {
 						else
 							return_message = "File <b>"+ fileName+"</b> is empty!";
 						request.setAttribute("return_message",return_message);
-						request.setAttribute("fileName", fileName);
+						request.setAttribute("fileName", fileName); 
+						//request.setAttribute("source", source);
 					}
 					else
 						request.setAttribute("return_message",								"");
