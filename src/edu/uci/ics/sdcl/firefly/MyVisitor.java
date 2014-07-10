@@ -200,22 +200,31 @@ public class MyVisitor extends ASTVisitor {
 		
 		System.out.println(":::If at line: " + this.elementStartingLine);	
 		
+		MyIfStatement ifCreated = (MyIfStatement)element;
 		if (null == node.getElseStatement()) // There is no else statement (body = then statement)
 		{	// just create the element
-			element = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
+			ifCreated = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
 					this.elementEndingLine, this.elementEndingColumn,
 					this.bodyStartingLine, this.bodyStartingColumn,
 					this.bodyEndingLine, this.bodyEndingColumn);
-			this.newMethod.addElement(element);
+			
 			// checking if belongs to an else-if statement
 			if (MyIfStatement.isIfofAnElseIfCase(CodeSnippetFactory.getFileContentePerLine(), this.elementStartingLine-1))
 			{	// match this if with its else-if case on hold onto stack
 				System.out.println("!:This if w NO else is part of an Else-If case");
-				MyIfStatement ifElement = this.ifElements.pop();
-				ifElement.setElseEndingLine(this.bodyEndingLine);
-				ifElement.setElseEndingColumn(this.bodyEndingColumn);
-				this.newMethod.addElement(ifElement);
+				ifCreated.setIfOfAnElse(true);
+				
+				MyIfStatement ifElementOnStack;
+				do
+				{
+					ifElementOnStack = this.ifElements.pop();
+					ifElementOnStack.setElseEndingLine(this.bodyEndingLine);
+					ifElementOnStack.setElseEndingColumn(this.bodyEndingColumn);
+					this.newMethod.addElement(ifElementOnStack);
+				}while( ifElementOnStack.isIfOfAnElse() );
+				
 			}
+			this.newMethod.addElement(ifCreated);
 		}
 		else	// there is an else statement 
 		{			
@@ -224,16 +233,22 @@ public class MyVisitor extends ASTVisitor {
 			if ( node.getElseStatement().toString().substring(0, 2).equals("if") )
 			{	// else-if case
 				// setting the element as unknown end position
-				element = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
+				ifCreated = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
 						this.elementEndingLine, this.elementEndingColumn,
 						this.bodyStartingLine, this.bodyStartingColumn,
 						this.bodyEndingLine, this.bodyEndingColumn,
 						elseStartingLine, elseStartingColumn,
 						CodeElement.NO_NUMBER_ASSOCIATED, CodeElement.NO_NUMBER_ASSOCIATED);
-				// adding element to the stack, not added on NewMethod yet
-				this.ifElements.push((MyIfStatement)element);
 				
+				if (MyIfStatement.isIfofAnElseIfCase(CodeSnippetFactory.getFileContentePerLine(), this.elementStartingLine-1))
+				{	// match this if with its else-if case on hold onto stack
+					System.out.println("!:This if w NO else is part of an Else-If case");
+					ifCreated.setIfOfAnElse(true);
+				}
+				// adding element to the stack, not added on NewMethod yet
+				this.ifElements.push(ifCreated);
 				System.out.println("This if is now onto Stack!");
+				
 			} 
 			else
 			{	/* Finding the end position for the else [not the else-if case] */
@@ -241,22 +256,29 @@ public class MyVisitor extends ASTVisitor {
 						CodeSnippetFactory.getFileContentePerLine(), '{', '}');
 				Integer elseEndingLine = this.bodyPosition.getEndingLineNumber();
 				Integer elseEndingColumn = this.bodyPosition.getEndingColumnNumber();
-				element = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
+				ifCreated = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
 						this.elementEndingLine, this.elementEndingColumn,
 						this.bodyStartingLine, this.bodyStartingColumn,
 						this.bodyEndingLine, this.bodyEndingColumn,
 						elseStartingLine, elseStartingColumn,
 						elseEndingLine, elseEndingColumn);
-				this.newMethod.addElement(element);
+				
 				// checking if belongs to an else-if statement
 				if (MyIfStatement.isIfofAnElseIfCase(CodeSnippetFactory.getFileContentePerLine(), this.elementStartingLine-1))
 				{	// match this if with its else-if case on hold onto stack
 					System.out.println("::This if w else is part of an Else-If case");
-					MyIfStatement ifElement = this.ifElements.pop();
-					ifElement.setElseEndingLine(elseEndingLine);
-					ifElement.setElseEndingColumn(elseEndingColumn);
-					this.newMethod.addElement(ifElement);
+					ifCreated.setIfOfAnElse(true);
+					
+					MyIfStatement ifElementOnStack;
+					do
+					{
+						ifElementOnStack = this.ifElements.pop();
+						ifElementOnStack.setElseEndingLine(elseEndingLine);
+						ifElementOnStack.setElseEndingColumn(elseEndingColumn);
+						this.newMethod.addElement(ifElementOnStack);
+					}while( ifElementOnStack.isIfOfAnElse() );
 				}
+				this.newMethod.addElement(ifCreated);
 			}
 		}
 		

@@ -16,7 +16,6 @@ public class SourceFileReader {
 		CodeSnippetFactory codeSnippets = new CodeSnippetFactory(args[0]);
 		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippets();
 		System.out.println();
-		System.out.println("********************************");
 //		codeSnippets.printAll();
 		QuestionFactory questionFactory = new QuestionFactory();
 		System.out.println("----------Printing Concrete Questions-------------");
@@ -26,7 +25,7 @@ public class SourceFileReader {
 		while(i.hasNext()) 
 		{
 	         Map.Entry<Integer, Microtask> me = (Map.Entry<Integer, Microtask>)i.next();
-	         System.out.print("ID = " + me.getKey() + ": ");
+	         System.out.print("ID = " + me.getValue().getId() + ": ");
 	         System.out.println(me.getValue().getQuestion());
 	    }
 		System.out.println();
@@ -34,10 +33,37 @@ public class SourceFileReader {
 		System.out.println("Number of Snippets: " + methodsParsed.size());
 		System.out.println("Number of questions: " + concreteQuestionsMade.size());
 		System.out.println("Number of statements: " + questionFactory.getNumberOfStatements());
+		System.out.println("****************Coordinates****************");
+		
+		for (CodeSnippet method : methodsParsed) {
+			System.out.println("Method: " + method.getMethodSignature());
+			ArrayList<CodeElement> statements = method.getStatements();
+			for (CodeElement codeElement : statements) {
+				// just for ifs
+				if ( CodeElement.IF_CONDITIONAL == codeElement.getType() )
+				{
+					MyIfStatement ifElement = (MyIfStatement)codeElement;
+					System.out.println("Element Begining: (" + codeElement.getElementStartingLine() + ", " 
+							+ codeElement.getElementStartingColumn() + ") Ending: (" + codeElement.getElementEndingLine()
+							+ ", " + codeElement.getElementEndingColumn() + ")");
+					if (ifElement.isThereIsElse())
+						System.out.println("Body Begining: (" + codeElement.getBodyStartingLine() + ", " 
+							+ codeElement.getBodyStartingColumn() + ") Ending: (" + ifElement.getElseEndingLine()
+							+ ", " + ifElement.getElseEndingColumn() + ")");
+					else
+						System.out.println("Body Begining: (" + codeElement.getBodyStartingLine() + ", " 
+								+ codeElement.getBodyStartingColumn() + ") Ending: (" + codeElement.getBodyEndingLine()
+								+ ", " + codeElement.getBodyEndingColumn() + ")");
+					if (ifElement.isIfOfAnElse())
+						System.out.println("this if belongs to an Else!");
+					System.out.println("---");
+				}
+			}
+			System.out.println("~~~~");
+		}
 	} 
 
 	public SourceFileReader() {}
-
 	//read file content into a string
 		public static String readFileToString(String filePath) throws IOException {
 			System.out.println();
