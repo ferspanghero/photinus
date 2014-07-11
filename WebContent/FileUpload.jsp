@@ -18,7 +18,7 @@
 					<td><img src="./images/UploadsButton-blue.jpg"></td>
 					
 					<td>
-						<form method="POST" action="MicrotaskServlet" name="openMicrotask">
+						<form method="POST" action="microtask" name="openMicrotask">
 							<input type="image" src="./images/MicrotasksButton.jpg"
 								value="Open Microtask" name="openMicrotask">
 						</form>

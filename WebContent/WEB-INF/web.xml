@@ -27,6 +27,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>MicrotaskServlet</servlet-name>
-    <url-pattern>/MicrotaskServlet</url-pattern>
+    <url-pattern>/microtask</url-pattern>
   </servlet-mapping>
 </web-app>

@@ -137,7 +137,7 @@ public class MicrotaskMemento {
 			Microtask mtask = fileDebuggingSession.getMicrotask(microtaskId);
 			mtask.addAnswer(answer);
 			fileDebuggingSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
-			
+			System.out.println("Inserting microtask id:"+mtask.getID()+" answers: "+mtask.getNumberOfAnswers()+" : "+mtask.getAnswerList().toString());
 			this.insert(fileName, fileDebuggingSession);
 	}
 

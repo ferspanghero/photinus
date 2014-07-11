@@ -38,7 +38,7 @@ public class FileUploadServlet extends HttpServlet {
 		System.out.println("Test...:"+ request.getParameter("testField"));
 		request.setAttribute("return_message","");
 		request.setAttribute("test", "setting to test");
-		request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
+	//	request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 	}
 
 	/**

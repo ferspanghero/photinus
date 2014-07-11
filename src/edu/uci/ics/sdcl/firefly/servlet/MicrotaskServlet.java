@@ -41,25 +41,24 @@ public class MicrotaskServlet extends HttpServlet {
 		//Collect and persist the answer
 		//Mark the microtask as already answered
 		System.out.println("in Get");
-		
+
 		String fileName = request.getParameter("fileName");
 		int answer = new Integer(request.getParameter("answerOption")).intValue();
 		String id = request.getParameter("id");
 		String explanation = request.getParameter("explanation");
-		
+
 		MicrotaskMemento memento = new MicrotaskMemento();
 		memento.insertAnswer(fileName, new Integer(id), new Answer(Answer.mapToString(answer),explanation));
-		
+
 		//display a new microtask
-		doPost(request, response);
+		request.getRequestDispatcher("/Microtask.jsp").forward(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Prepare the microtask page to be loaded 
-
+	 
 		//Retrieve Microtask from Selector
 		MicrotaskSelector selector = new MicrotaskSelector();
 		MicrotaskSelector.SelectorReturn returnValues = selector.selectAnyMicrotask();
@@ -68,22 +67,25 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("return_message","No microtasks available");
 		}
 		else{
+
 			Microtask task = returnValues.task;
+			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
 			String fileName = returnValues.fileName;
 			request.setAttribute("question", task.getQuestion());
-			request.setAttribute("source", CodeSnippetFactory.getFileContent());  //task.getMethod().getMethodBody()
+			request.setAttribute("source", CodeSnippetFactory.getFileContent());   
 
 			request.setAttribute("id", task.getID());
 			request.setAttribute("fileName", fileName);
-			
+			request.setAttribute("explanation",""); //clean up the explanation field.
+
 			request.setAttribute("startLine", task.getStartingLine());
 			request.setAttribute("startColumn", task.getStartingColumn());
 			request.setAttribute("endLine", task.getEndingLine());
 			request.setAttribute("endColumn", task.getEndingColumn());
 
-			RequestDispatcher view = request.getRequestDispatcher("/Microtask.jsp");
-			view.forward(request, response);
+			request.getRequestDispatcher("/Microtask.jsp").forward(request, response);
 		}
 	}
 
+ 
 }

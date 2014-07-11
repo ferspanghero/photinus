@@ -66,18 +66,18 @@
 		function submitAnswer() {
 			var checked = checkAnswer();
 			if (checked != -1) {
-			  
-				$.get("MicrotaskServlet", {
-					action : "addAnswer",
+							  
+				$.get("microtask", {
+					action: "microtask",
 					fileName : document.getElementById("fileName").value,
 					answerOption: checked,
 					explanation: document.getElementById("explanation").value,
 					id:document.getElementById("id").value,
 				}, function(data) { 
-					window.location.reload();
+					//window.location.reload(false);
 				});
 
-				return true; // prevents the page from refreshing before JSON is read from server response
+				//return false; // prevents the page from refreshing before JSON is read from server response
 			} else {
 				//nothing to do.
 			}
