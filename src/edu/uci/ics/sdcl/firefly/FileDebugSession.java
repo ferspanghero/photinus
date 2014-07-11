@@ -43,6 +43,14 @@ public class FileDebugSession implements Serializable {
 		return maximumAnswerCount;
 	}
 	
+	public Microtask getMicrotask(Integer id){
+		return this.microtaskMap.get(id);
+	}
+	
+	public void insertMicrotask(Integer id, Microtask mtask){
+		this.microtaskMap.put(id, mtask);
+	}
+	
 	/** 
 	 * If the provided number is smaller then maximumAnswerCount, then 
 	 * increment maximumAnswerCount, otherwise, ignore 

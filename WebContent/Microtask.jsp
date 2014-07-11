@@ -47,7 +47,7 @@
 					break;
 				}
 			}
-			alert("option" + option);
+			 
 			if (option == -1) { 
 				alert("Please select an answer.");
 				return -1;
@@ -66,22 +66,18 @@
 		function submitAnswer() {
 			var checked = checkAnswer();
 			if (checked != -1) {
-				var jsonDataObject = new Object();
-				jsonDataObject.fileName = document.getElementById("fileName").value;			
-				jsonDataObject.id = document.getElementById("id").value;				
-				jsonDataObject.answerOption = checked;				
-				jsonDataObject.explanation = document.getElementById("explanation").value;
-				
-				// turn the jsonData object into a string so it can be passed to the servlet
-				var jsonData = JSON.stringify(jsonDataObject);
-
-				$.getJSON("MicrotaskServlet", {
+			  
+				$.get("MicrotaskServlet", {
 					action : "addAnswer",
-					json : jsonData
-				}, function(data) {
+					fileName : document.getElementById("fileName").value,
+					answerOption: checked,
+					explanation: document.getElementById("explanation").value,
+					id:document.getElementById("id").value,
+				}, function(data) { 
+					window.location.reload();
 				});
 
-				return false; // prevents the page from refreshing before JSON is read from server response
+				return true; // prevents the page from refreshing before JSON is read from server response
 			} else {
 				//nothing to do.
 			}

@@ -28,6 +28,7 @@ public class Microtask implements Serializable
 		this.endingLine = endingLineNumber;
 		this.endingColumn = endingColumnNumber;
 		QuestionFactory.concreteQuestionID++;
+		this.answerList = new ArrayList<Answer>();
 	}
 
 	public Integer getID(){
@@ -78,6 +79,10 @@ public class Microtask implements Serializable
 		this.answerList = answerList;
 	}
 	
+	public void addAnswer(Answer answer){
+		this.answerList.add(answer);
+	}
+	
 	/* getters for the position */
 	public Integer getStartingLine() {
 		return startingLine;
@@ -93,6 +98,10 @@ public class Microtask implements Serializable
 
 	public Integer getEndingColumn() {
 		return endingColumn;
+	}
+
+	public int getNumberOfAnswers() {
+		return this.answerList.size();
 	}
 
 

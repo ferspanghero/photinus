@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
 
@@ -124,8 +125,20 @@ public class MicrotaskMemento {
 		}
 	}
 
-	public void insert(String key, Microtask microtask){
-		//TO DO
+	/** 
+	 * Add a new answer to a microtask
+	 * @param fileName  the file from which the codesnippet was obtained
+	 * @param microtaskId the unique identifier for the microtask
+	 * @param answer the answer obtained from the user
+	 */
+	public void insertAnswer(String fileName, Integer microtaskId, Answer answer){ 
+
+			FileDebugSession fileDebuggingSession = this.read(fileName);
+			Microtask mtask = fileDebuggingSession.getMicrotask(microtaskId);
+			mtask.addAnswer(answer);
+			fileDebuggingSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
+			
+			this.insert(fileName, fileDebuggingSession);
 	}
 
 	/** Insert a new List of Microtasks. It overwrites any existing one for the same file.
@@ -154,6 +167,7 @@ public class MicrotaskMemento {
 		}
 	}
 
+	 
 	
 	/**
 	 * Removes the debug session data associated to the provided file name

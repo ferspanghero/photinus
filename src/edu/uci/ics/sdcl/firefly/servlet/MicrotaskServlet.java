@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,9 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
+
+import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
+import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
 
 /**
  * Servlet implementation class MicrotaskController
@@ -36,6 +41,17 @@ public class MicrotaskServlet extends HttpServlet {
 		//Collect and persist the answer
 		//Mark the microtask as already answered
 		System.out.println("in Get");
+		
+		String fileName = request.getParameter("fileName");
+		int answer = new Integer(request.getParameter("answerOption")).intValue();
+		String id = request.getParameter("id");
+		String explanation = request.getParameter("explanation");
+		
+		MicrotaskMemento memento = new MicrotaskMemento();
+		memento.insertAnswer(fileName, new Integer(id), new Answer(Answer.mapToString(answer),explanation));
+		
+		//display a new microtask
+		doPost(request, response);
 	}
 
 	/**
