@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
+
 public class SourceFileReader {
 
 	public static void main(String args[]) throws IOException{
@@ -35,6 +37,18 @@ public class SourceFileReader {
 		System.out.println("Number of statements: " + questionFactory.getNumberOfStatements());
 		System.out.println("****************Coordinates****************");
 		
+		HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
+		
+		FileDebugSession debugMap = new FileDebugSession("SimpleSampleCode.java", concreteQuestionsMade);
+		debugSessionMap.put("SimpleSampleCode.java", debugMap);
+		
+		MicrotaskMemento memento = new MicrotaskMemento();
+		memento.insert("SimpleSampleCode.java", debugSessionMap.get("SimpleSampleCode.java"));
+		debugMap = memento.read("SimpleSampleCode.java");
+		
+		
+		
+		/* for debug purposes 
 		for (CodeSnippet method : methodsParsed) {
 			System.out.println("Method: " + method.getMethodSignature());
 			ArrayList<CodeElement> statements = method.getStatements();
@@ -60,7 +74,7 @@ public class SourceFileReader {
 				}
 			}
 			System.out.println("~~~~");
-		}
+		} */
 	} 
 
 	public SourceFileReader() {}
