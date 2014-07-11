@@ -54,9 +54,12 @@ public class MicrotaskSelectorTest {
 		buffer.append("else return null;");
 		buffer.append("\n");
 		buffer.append("}");
+		
+		String body = buffer.toString().substring(buffer.toString().indexOf('{'));
 
-		String questionArg1 = "Is there maybe something wrong in the declaration of function 'factorial' at line 1 " 
-				+ "(e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?";
+		String questionArg1 = "Is there maybe something wrong in the declaration of function 'factorial' "
+				+ "at line 20 (e.g., requires a parameter that is not listed, needs different parameters to "
+				+ "produce the correct result, specifies the wrong or no return type, etc .)?";
 
 		String questionArg2 = "Is it possible that the conditional clause at line 2 has "
 				+ "problems (e.g., wrong Boolean operator, wrong comparison, misplaced parentheses, etc.)?";
@@ -64,10 +67,10 @@ public class MicrotaskSelectorTest {
 		String questionArg3 = "Is there maybe something wrong with the '<L>-loop' construct at line 4 "
 				+ "(e.g., incorrect initialization, wrong counter increment, wrong exit condition, etc.)?";
 
-		CodeSnippet codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer (1),
-				new Boolean (true), signature);
+		CodeSnippet codeSnippetFactorial = new CodeSnippet("sample", "SimpleSampleCode", signature, body, true, 
+				7, 0, 7, 27, 7, 27, 10, 0); 
 
-		Microtask mtask1 = new Microtask(CodeElement.METHOD_DECLARARION, codeSnippetFactorial, questionArg1, new Integer(1));
+		Microtask mtask1 = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, questionArg1, 20, 0, 20, 58);
 		Microtask mtask2 = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippetFactorial, questionArg2, new Integer(2));
 		Microtask mtask3 = new Microtask(CodeElement.FOR_LOOP, codeSnippetFactorial, questionArg3, new Integer(4));
 
@@ -80,7 +83,7 @@ public class MicrotaskSelectorTest {
 		FileDebugSession debugSession = new FileDebugSession(fileName,microtaskMap);
 		this.debugSessionMap.put(fileName, debugSession);
 
-		//Persist microtasks
+		//Persist micro tasks
 		memento.insert(fileName, debugSession); 
 	}
 

@@ -50,12 +50,15 @@ public class MicrotaskMementoTest {
 		buffer.append("\n");
 		buffer.append("}");
 
-		String questionArg = "Is there maybe something wrong in the declaration of function 'factorial' at line 12 " 
-				+ "(e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?";
+		String body = buffer.toString().substring(buffer.toString().indexOf('{'));
 		
-		CodeSnippet codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer (1),
-				new Boolean (true), signature);
-		Microtask mtask = new Microtask(CodeElement.METHOD_DECLARARION, codeSnippetFactorial, questionArg, new Integer(1));
+		String questionArg = "Is there maybe something wrong in the declaration of function 'factorial' "
+				+ "at line 20 (e.g., requires a parameter that is not listed, needs different parameters to "
+				+ "produce the correct result, specifies the wrong or no return type, etc .)?";
+		
+		CodeSnippet codeSnippetFactorial = new CodeSnippet("sample", "SimpleSampleCode", signature, body, true, 
+				7, 0, 7, 27, 7, 27, 10, 0); 
+		Microtask mtask = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, questionArg, 20, 0, 20, 58);
 
 		//Create the data structure
 		this.microtaskMap =  new HashMap<Integer,Microtask>();

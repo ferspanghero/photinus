@@ -15,38 +15,38 @@ public class CodeSnippetFactoryMock {
 	public CodeSnippetFactoryMock(){
 		MethodSignature signature = new MethodSignature("factorial", "public", new Integer(12));
 		
-		StringBuffer buffer = new StringBuffer("public Integer factorial(Integer Seed, Integer Iterations){");
+		StringBuffer buffer = new StringBuffer("public Integer factorial(Integer Seed, Integer Iterations){"); //12
+		buffer.append("\n");				
+		buffer.append("if(Seed!=null){");	// 13
+		buffer.append("\n");				
+		buffer.append("int aux=1;");		// 14
+		buffer.append("\n");	
+		buffer.append("for (int i=0;i<Iterations.intValue();i++){"); // 15
 		buffer.append("\n");
-		buffer.append("if(Seed!=null){");
+		buffer.append("aux =  aux * Seed;"); // 16
 		buffer.append("\n");
-		buffer.append("int aux=1;");
+		buffer.append("	}");				 // 17
 		buffer.append("\n");
-		buffer.append("for (int i=0;i<Iterations.intValue();i++){");
+		buffer.append("	return new Integer(aux);"); // 18
 		buffer.append("\n");
-		buffer.append("aux =  aux * Seed;");
+		buffer.append("}");					// 19
 		buffer.append("\n");
-		buffer.append("	}");
+		buffer.append("else return null;");	// 20
 		buffer.append("\n");
-		buffer.append("	return new Integer(aux);");
-		buffer.append("\n");
-		buffer.append("}");
-		buffer.append("\n");
-		buffer.append("else return null;");
-		buffer.append("\n");
-		buffer.append("}");
+		buffer.append("}");					// 21
 		
-		this.codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer(12),
-				new Boolean (true), signature);
+		String body = buffer.toString().substring(buffer.toString().indexOf('{'));
 		
-		CodeElement element = new CodeElement(CodeElement.METHOD_DECLARARION,new Integer(12));
+		this.codeSnippetFactorial=new CodeSnippet("sample", "SimpleSampleCode", signature, body, true,
+				12, 0, 12, 58, 12, 59, 21, 0);
+		
+//		CodeElement element = new CodeElement(CodeElement.METHOD_DECLARARION, 12, 0, 12, 58);
+//		codeSnippetFactorial.addElement(element);
+		CodeElement element = new CodeElement(CodeElement.IF_CONDITIONAL, 14, 0, 14, 15, 14, 15, 20, 17);
 		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.IF_CONDITIONAL,new Integer(14));
+		element = new CodeElement(CodeElement.FOR_LOOP, 15, 0, 15, 42, 15, 42, 17, 0);
 		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.FOR_LOOP,new Integer(16));
-		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.METHOD_INVOCATION,new Integer(19));
-		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.METHOD_INVOCATION,new Integer(21));
+		element = new CodeElement(CodeElement.METHOD_INVOCATION, 15, 26, 15, 36);
 		codeSnippetFactorial.addElement(element);
 		
 		this.list.add(codeSnippetFactorial);
@@ -54,18 +54,20 @@ public class CodeSnippetFactoryMock {
 		//Second CodeSnippet
 		signature = new MethodSignature("SimpleSampleCode", "public", new Integer(7));
 		
-		buffer = new StringBuffer("public SimpleSampleCode() {");
+		buffer = new StringBuffer("public SimpleSampleCode() {"); 	// 7
+		buffer.append("\n");	
+		buffer.append("if(SeedLimit == null)");						// 8
 		buffer.append("\n");
-		buffer.append("if(SeedLimit == null)");
+		buffer.append("this.SeedLimit = new Integer(10);");			// 9
 		buffer.append("\n");
-		buffer.append("this.SeedLimit = new Integer(10);");
-		buffer.append("\n");
-		buffer.append("}");
+		buffer.append("}");											// 10
 		
-		this.codeSnippetConstructor=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer(7), 
-				new Boolean (true), signature);
+		body = buffer.toString().substring(buffer.toString().indexOf('{'));
 		
-		element = new CodeElement(CodeElement.METHOD_DECLARARION,new Integer(7));
+		this.codeSnippetConstructor=new CodeSnippet("sample", "SimpleSampleCode", signature, body, true, 
+				7, 0, 7, 27, 7, 27, 10, 0);
+		
+		element = new CodeElement(CodeElement.IF_CONDITIONAL, 8, 0, 8, 11, 9, 0, 9, 15);
 		codeSnippetConstructor.addElement(element);
 		
 		this.list.add(codeSnippetConstructor);

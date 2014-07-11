@@ -47,18 +47,16 @@ public class CodeSnippetFactoryTest {
 		buffer.append("\n");
 		buffer.append("}");
 		
-		this.codeSnippetFactorial=new CodeSnippet("sample","SimpleSampleCode", buffer.toString(), new Integer(12),
-				new Boolean (true), signature);
+		String body = buffer.toString().substring(buffer.toString().indexOf('{'));
+		
+		this.codeSnippetFactorial=new CodeSnippet("sample", "SimpleSampleCode", signature, body, true,
+				12, 0, 12, 58, 12, 59, 21, 0);
 			
-		CodeElement element = new CodeElement(CodeElement.METHOD_DECLARARION,new Integer(12));
+		CodeElement element = new CodeElement(CodeElement.IF_CONDITIONAL, 14, 0, 14, 15, 14, 15, 20, 17);
 		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.IF_CONDITIONAL,new Integer(14));
+		element = new CodeElement(CodeElement.FOR_LOOP, 15, 0, 15, 42, 15, 42, 17, 0);
 		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.FOR_LOOP,new Integer(16));
-		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.METHOD_INVOCATION,new Integer(19));
-		codeSnippetFactorial.addElement(element);
-		element = new CodeElement(CodeElement.METHOD_INVOCATION,new Integer(21));
+		element = new CodeElement(CodeElement.METHOD_INVOCATION, 15, 26, 15, 36);
 		codeSnippetFactorial.addElement(element);
 		
 		//Second CodeSnippet
@@ -74,10 +72,12 @@ public class CodeSnippetFactoryTest {
 		buffer.append("\n");
 		buffer.append("}");
 		
-		this.codeSnippetConstructor=new CodeSnippet("sample", "SimpleSampleCode", buffer.toString(), new Integer(7),
-				new Boolean(false), signature);
+		body = buffer.toString().substring(buffer.toString().indexOf('{'));
 		
-		element = new CodeElement(CodeElement.METHOD_DECLARARION, new Integer(7));
+		this.codeSnippetConstructor=new CodeSnippet("sample", "SimpleSampleCode", signature, body, true, 
+				7, 0, 10, 27, 7, 27, 10, 0);
+		
+		element = new CodeElement(CodeElement.IF_CONDITIONAL, 8, 0, 8, 11, 9, 0, 9, 15);
 		codeSnippetConstructor.addElement(element);
 		
 	}
@@ -85,9 +85,9 @@ public class CodeSnippetFactoryTest {
 	@Test
 	public void test() {
 		CodeSnippetFactory factory = new CodeSnippetFactory(
-				"C:/Users/Danilo/Documents/GitHub/crowd-debug-firefly/src/sample/JustOneSample");
+				"C://Users//Danilo//Documents//GitHub//crowd-debug-firefly//src//sample//JustOneSample");
 		ArrayList<CodeSnippet> list = factory.generateSnippets();
-		if((list ==null ) || (list.size()!=2))
+		if((list ==null ) || (list.size()!=3))
 			Assert.fail("Null list of snippets or file does not match test data");
 		else{
 			boolean match=false;
