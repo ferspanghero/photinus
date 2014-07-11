@@ -35,8 +35,9 @@ public class SourceFileReader {
 		System.out.println("Number of Snippets: " + methodsParsed.size());
 		System.out.println("Number of questions: " + concreteQuestionsMade.size());
 		System.out.println("Number of statements: " + questionFactory.getNumberOfStatements());
-		System.out.println("****************Coordinates****************");
+		//System.out.println("****************Coordinates****************");
 		
+		// calling memento and creating xlsx file
 		HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
 		
 		FileDebugSession debugMap = new FileDebugSession("SimpleSampleCode.java", concreteQuestionsMade);
