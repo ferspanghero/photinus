@@ -33,8 +33,9 @@ public class ExcelFileDealer
 			int numberOfStatements = 0;
 			
 			Map.Entry<String,HashMap<String,MethodData>> me = (Map.Entry<String,HashMap<String,MethodData>>)i.next();
-			String fileNameWithoutDotJava = new String(me.getKey().substring(0, me.getKey().indexOf('.')));
-		
+			String filePathWithoutDotJava = new String(me.getKey().substring(0, me.getKey().indexOf('.')));
+			String fileName = filePathWithoutDotJava.substring(filePathWithoutDotJava.lastIndexOf('\\')+1);
+				
 			/* creating excel file */
 			//Blank workbook
 			XSSFWorkbook workbook = new XSSFWorkbook();
@@ -48,17 +49,17 @@ public class ExcelFileDealer
 			Iterator<Entry<String,MethodData>> i2 = set2.iterator();
 			while(i2.hasNext())
 			{
-				numberOfQuestions++;
+				numberOfSnippets++;
 				Map.Entry<String,MethodData> me2 = (Map.Entry<String,MethodData>)i2.next();
 			}
 			
 			/* setting the summary sheet */
 			//This data needs to be written (Object[])
 			Map<String, Object[]> data = new TreeMap<String, Object[]>();
-			data.put("1", new Object[] {"File name: ", fileNameWithoutDotJava});
-			data.put("2", new Object[] {"Number of Snippets: ", "put number here"});
+			data.put("1", new Object[] {"File name: ", fileName});
+			data.put("2", new Object[] {"Number of Snippets: ", numberOfSnippets});
 			data.put("3", new Object[] {"Number of questions: ", numberOfQuestions});
-			data.put("4", new Object[] {"Number of statements: ", "put number here"});
+			data.put("4", new Object[] {"Number of statements: ", numberOfStatements});
 
 			//Iterate over data and write to sheet
 			Set<String> keyset = data.keySet();
@@ -81,11 +82,12 @@ public class ExcelFileDealer
 			{
 				//Write the workbook in file system
 
-				FileOutputStream out = new FileOutputStream(new File(fileNameWithoutDotJava + ".xlsx"));
+				FileOutputStream out = new FileOutputStream(new File(filePathWithoutDotJava + ".xlsx"));
 				workbook.write(out);
+				out.flush();
 				out.close();
 
-				System.out.println(fileNameWithoutDotJava + ".xlsx written successfully on disk.");
+				System.out.println(filePathWithoutDotJava + ".xlsx written successfully on disk.");
 
 			}
 			catch (Exception e)
