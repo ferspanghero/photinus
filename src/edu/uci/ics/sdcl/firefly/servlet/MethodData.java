@@ -7,9 +7,9 @@ import edu.uci.ics.sdcl.firefly.Answer;
 
 public class MethodData {
 
-	HashMap<String,String> questionAnswerMap = new HashMap<String,String>(); 
+	private HashMap<String,String> questionAnswerMap = new HashMap<String,String>(); 
 
-	HashMap<String, Integer> answerPerQuestionMap = new HashMap<String,Integer>();
+	private HashMap<String, Integer> answerPerQuestionMap = new HashMap<String,Integer>();
 
 	public MethodData(String question){
 		this.questionAnswerMap.put(question, null);
