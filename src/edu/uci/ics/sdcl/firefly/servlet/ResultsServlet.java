@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.export.file.ExcelFileDealer;
 import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
 
 /**
@@ -40,6 +41,9 @@ public class ResultsServlet extends HttpServlet {
 		
 		//Build the structure to report
 		HashMap<String,HashMap<String,MethodData>> resultMap = buildResults();
+		
+		// Extracting the xlsx file
+		ExcelFileDealer.writeToXlsx(resultMap);
 
 		String results = this.toString(resultMap);
 		
