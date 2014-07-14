@@ -92,15 +92,19 @@
 				</form></td>
 
 			<td><img src="./images/MicrotasksButton-blue.jpg"></td>
-
-			<td><img src="./images/ResultsButton-blue.jpg"></td>
+			
+			<td><form method="POST" action='results'
+					name="results">
+					<input type="image" src="./images/ResultsButton.jpg"
+						value="results" name="results">
+				</form></td>
 
 
 		</tr>
 
 	</table>
 
-
+ <div  style="background-color:#FFFAEB;">
 	<table cellspacing="0" bgcolor="#FFFAEB">
 
 		<tr bgcolor="#FFFAEB">
@@ -156,7 +160,8 @@
 	<table bgcolor="#FFFAEB">
 		<tr>
 			<td align="left">
-				<div id="editor">${requestScope["source"]}</div> <script>
+				<div id="editor">${requestScope["source"]}</div> 
+	<script>
 			var editor = ace.edit('editor');
 			editor.setReadOnly(true);
 			editor.setTheme("ace/theme/github");
@@ -189,5 +194,6 @@
 			<td></td>
 		</tr>
 	</table>
+	</div>
 </body>
 </html>
