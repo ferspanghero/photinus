@@ -43,15 +43,39 @@ public class MicrotaskServlet extends HttpServlet {
 		System.out.println("in Get");
 
 		String fileName = request.getParameter("fileName");
-		int answer = new Integer(request.getParameter("answerOption")).intValue();
+		int answer = new Integer(request.getParameter("answer")).intValue();
 		String id = request.getParameter("id");
 		String explanation = request.getParameter("explanation");
 
 		MicrotaskMemento memento = new MicrotaskMemento();
 		memento.insertAnswer(fileName, new Integer(id), new Answer(Answer.mapToString(answer),explanation));
+		
+		System.out.println("prep request");
+		MicrotaskSelector selector = new MicrotaskSelector();
+		MicrotaskSelector.SelectorReturn returnValues = selector.selectAnyMicrotask();
 
+		if(returnValues==null){
+			request.setAttribute("return_message","No microtasks available");
+		}
+		else{
+
+			Microtask task = returnValues.task;
+			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
+			fileName = returnValues.fileName;
+			request.setAttribute("question", task.getQuestion());
+			request.setAttribute("source", CodeSnippetFactory.getFileContent());   
+
+			request.setAttribute("id", task.getID());
+			request.setAttribute("fileName", fileName);
+			request.setAttribute("explanation",""); //clean up the explanation field.
+
+			request.setAttribute("startLine", task.getStartingLine());
+			request.setAttribute("startColumn", task.getStartingColumn());
+			request.setAttribute("endLine", task.getEndingLine());
+			request.setAttribute("endColumn", task.getEndingColumn());
+		}
 		//display a new microtask
-		request.getRequestDispatcher("/Microtask.jsp").forward(request, response);
+		request.getRequestDispatcher("/Microtask.jsp").include(request, response);
 	}
 
 	/**

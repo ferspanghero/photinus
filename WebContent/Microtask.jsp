@@ -66,18 +66,7 @@
 		function submitAnswer() {
 			var checked = checkAnswer();
 			if (checked != -1) {
-							  
-				$.get("microtask", {
-					action: "microtask",
-					fileName : document.getElementById("fileName").value,
-					answerOption: checked,
-					explanation: document.getElementById("explanation").value,
-					id:document.getElementById("id").value,
-				}, function(data) { 
-					//window.location.reload(false);
-				});
-
-				//return false; // prevents the page from refreshing before JSON is read from server response
+				document.forms["answerForm"].submit();
 			} else {
 				//nothing to do.
 			}
@@ -130,7 +119,7 @@
 	<table bgcolor="#FFFAEB">
 		<tr>
 			<td>
-				<form name="answerForm" action=MicrotaskServlet method="get">
+				<form name="answerForm" action=microtask method="get">
 					 
 						<input type="radio" name="answer" value="1">Yes <br>
 						<input type="radio" name="answer" value="2">Probably yes<br>
@@ -139,28 +128,27 @@
 						<input type="radio" name="answer" value="5">No<br>
 				 
 					<!-- Hidden fields -->
-					<input type="hidden" id="fileName"
-						value=${requestScope["fileName"]}> <input type="hidden"
-						id="id" value=${requestScope["id"]}> <input type="hidden"
-						id="startLine" value=${requestScope["startLine"]}> <input
-						type="hidden" id="startColumn"
-						value=${requestScope["startColumn"]}> <input type="hidden"
-						id="endLine" value=${requestScope["endLine"]}> <input
-						type="hidden" id="endColumn" value=${requestScope["endColumn"]}>
-				</form>
+					<input type="hidden" name="fileName" value=${requestScope["fileName"]}> 
+					<input type="hidden" name="id" value=${requestScope["id"]}> 
+					<input type="hidden" id="startLine" value=${requestScope["startLine"]}> 
+					<input type="hidden" id="startColumn"	value=${requestScope["startColumn"]}> 
+					<input type="hidden" id="endLine" value=${requestScope["endLine"]}> 
+					<input type="hidden" id="endColumn" value=${requestScope["endColumn"]}>
+			
 			</td>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			<td align="left"><br>  Please provide an
-				explanation for your answer:  <br> <textarea id="explanation"
+				explanation for your answer:  <br> <textarea name="explanation" id="explanation"
 					rows="6" cols="50"></textarea></td>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				</form>
 		</tr>
 		<tr>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			<td align="right"><INPUT TYPE="button" VALUE="Cancel"
 				onclick="cancel()"> <INPUT TYPE="button"
-				VALUE="Submit Answer" onclick="submitAnswer()"></td>
+				VALUE="Submit Answer" onclick="submitAnswer(event)"></td>
 		<tr>
 	</table>
 

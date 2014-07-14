@@ -4,16 +4,16 @@ public class SimpleSampleCode {
 
 	Integer SeedLimit = null;
 
-	public SimpleSampleCode(Integer seedValue) {
+	public void SeedVerifier(Integer seedValue) {
 		if (SeedLimit == null) this.SeedLimit = new Integer(seedValue);	// all at the same line
-		Integer testes = 3;
-		if (testes == 5)							// if without braces
-			this.SeedLimit = new Integer(testes);
-		if (testes == 8) {this.SeedLimit = new Integer(testes);	} // If with curly braces at the same line
-		if (testes == 10) 
+		int value = seedValue.intValue();
+		if (value == 5)							// if without braces
+			this.SeedLimit = new Integer(value);
+		if (value == 8) {this.SeedLimit = new Integer(value);	} // If with curly braces at the same line
+		if (value == 10) 
 		{
 												// empty line
-			this.SeedLimit = new Integer(testes); // If with curly braces
+			this.SeedLimit = new Integer(value); // If with curly braces
 		}
 	}
 
