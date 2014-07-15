@@ -21,9 +21,9 @@ public class JavaParser {
 	//private MethodInvocationVisitor methodInvocationVisitor = null; //See org.eclipse.jdt.core.dom.MethodInvocation
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public JavaParser(String SourcePath) {
-
-		char[] source = SourcePath.toCharArray(); // obtain an array of char from the source file = ...;
+	public JavaParser(CodeSnippetFactory snippetFactory) {
+		
+		char[] source = snippetFactory.getFileContent().toCharArray(); // obtain an array of char from the source file = ...;
 		ASTParser parser = ASTParser.newParser(AST.JLS4);  // handles JDK 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
 		parser.setSource(source);
 		// In order to parse 1.5 code, some compiler options need to be set to 1.5
@@ -35,10 +35,10 @@ public class JavaParser {
 		
 		//Add a Method Visitor
 //		this.methodVisitor
-		this.unit.accept(new MyVisitor(this.unit));
+		this.unit.accept(new MyVisitor(this.unit, snippetFactory));
 		List<Comment> commentsList = (List<Comment>)this.unit.getCommentList();
 		for (Comment comment : commentsList) {
-			comment.accept(new CommentVisitor(this.unit, SourcePath.split("\n")));
+			comment.accept(new CommentVisitor(this.unit, snippetFactory.getFileContent().split("\n")));
 		}
 	}
 

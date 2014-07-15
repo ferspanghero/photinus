@@ -6,28 +6,28 @@ import java.util.ArrayList;
 
 public class CodeSnippetFactory {
 	private String folderPath;
-	private static String fileContent;
+	private String fileContent;
 	private String fileName;
-	private static String[] fileContentePerLine;
-	private static ArrayList<CodeSnippet> codeSnippetList= new ArrayList<CodeSnippet>();
+	private String[] fileContentPerLine;
+	private ArrayList<CodeSnippet> codeSnippetList= new ArrayList<CodeSnippet>();
 	
-	public CodeSnippetFactory(String folderPathArg)
-	{
-		this.folderPath = folderPathArg;
-	}
+	//public CodeSnippetFactory(String folderPathArg)
+//	{
+//		this.folderPath = folderPathArg;
+//	}
 	
 	public CodeSnippetFactory(String fileName, String fileContent){
 		this.fileContent = fileContent;
 		this.fileName = fileName;
+		this.fileContentPerLine = this.fileContent.split("\r\n|\r|\n");
 	}
 
 	/** Generates code snippets for a file content  in memory (attribute fileContent) */
 	public ArrayList<CodeSnippet> generateSnippetsForFile()
 	{
 		this.codeSnippetList = new ArrayList<CodeSnippet>(); //Cleans up the snippet list
-		fileContentePerLine = this.fileContent.split("\r\n|\r|\n");
 		@SuppressWarnings("unused")
-		JavaParser parser = new JavaParser(fileContent);
+		JavaParser parser = new JavaParser(this);
 		return this.codeSnippetList;
 	}
 	
@@ -70,19 +70,22 @@ public class CodeSnippetFactory {
 				filePath = f.getAbsolutePath();
 				if(f.isFile()){
 		/* this implementation require endLine to be update by its codeSnippet constructor */
-					fileContent = SourceFileReader.readFileToString(filePath);
-					fileContentePerLine = fileContent.split("\r\n|\r|\n");
+					this.fileContent = SourceFileReader.readFileToString(filePath);
+					this.fileContentPerLine = fileContent.split("\r\n|\r|\n");
 					@SuppressWarnings("unused")
-					JavaParser parser = new JavaParser(fileContent);
+					JavaParser parser = new JavaParser(this);
 				}
 			}
 		}
 	}
 	
 	
-
-	public static String[] getFileContentePerLine() {
-		return fileContentePerLine;
+	public String getFileName(){
+		return fileName;
+	}
+	
+	public String[] getFileContentPerLine() {
+		return fileContentPerLine;
 	}
 	
 	public ArrayList<CodeSnippet> getCodeSnippetList()
@@ -90,17 +93,13 @@ public class CodeSnippetFactory {
 		return codeSnippetList;
 	}
 
-	public static void addToCodeSnippetList(CodeSnippet method)
+	public void addToCodeSnippetList(CodeSnippet method)
 	{
-		CodeSnippetFactory.codeSnippetList.add(method);
+		this.codeSnippetList.add(method);
 	}
 	
-	public static Integer getIndexCSList(CodeSnippet method)
-	{
-		return CodeSnippetFactory.codeSnippetList.indexOf(method); // -1 if does not exist
-	}
-	
-	public static String getFileContent()
+		
+	public String getFileContent()
 	{
 		return fileContent;
 	}

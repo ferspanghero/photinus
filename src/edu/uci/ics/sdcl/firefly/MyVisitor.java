@@ -41,9 +41,12 @@ public class MyVisitor extends ASTVisitor {
 	private PositionFinder bodyPosition;
 	/* specific for the else-if case */
 	private Stack<MyIfStatement> ifElements;		// line numbers of if with else-if statements 
+	private CodeSnippetFactory snippetFactory;       //Factory that keeps track of the fileName and fileContent being parsed
 	
-	public MyVisitor(CompilationUnit cuArg)
+	public MyVisitor(CompilationUnit cuArg, CodeSnippetFactory snippetFactory)
 	{
+		super();
+		this.snippetFactory = snippetFactory;
 		this.ifElements = new Stack<MyIfStatement>();
 		this.cu = cuArg;
 		String nameOfThePackg = new String();
@@ -158,7 +161,7 @@ public class MyVisitor extends ASTVisitor {
 		}
 		
 
-		CodeSnippetFactory.addToCodeSnippetList(this.newMethod);
+		this.snippetFactory.addToCodeSnippetList(this.newMethod);
 		
 		return true;
 	}
@@ -209,7 +212,7 @@ public class MyVisitor extends ASTVisitor {
 					this.bodyEndingLine, this.bodyEndingColumn);
 			
 			// checking if belongs to an else-if statement
-			if (MyIfStatement.isIfofAnElseIfCase(CodeSnippetFactory.getFileContentePerLine(), this.elementStartingLine-1))
+			if (MyIfStatement.isIfofAnElseIfCase(this.snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
 			{	// match this if with its else-if case on hold onto stack
 				System.out.println("!:This if w NO else is part of an Else-If case");
 				ifCreated.setIfOfAnElse(true);
@@ -240,7 +243,7 @@ public class MyVisitor extends ASTVisitor {
 						elseStartingLine, elseStartingColumn,
 						CodeElement.NO_NUMBER_ASSOCIATED, CodeElement.NO_NUMBER_ASSOCIATED);
 				
-				if (MyIfStatement.isIfofAnElseIfCase(CodeSnippetFactory.getFileContentePerLine(), this.elementStartingLine-1))
+				if (MyIfStatement.isIfofAnElseIfCase(snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
 				{	// match this if with its else-if case on hold onto stack
 					System.out.println("!:This if w NO else is part of an Else-If case");
 					ifCreated.setIfOfAnElse(true);
@@ -253,7 +256,7 @@ public class MyVisitor extends ASTVisitor {
 			else
 			{	/* Finding the end position for the else [not the else-if case] */
 				this.bodyPosition = new PositionFinder(elseStartingLine, elseStartingColumn, 
-						CodeSnippetFactory.getFileContentePerLine(), '{', '}');
+						snippetFactory.getFileContentPerLine(), '{', '}');
 				Integer elseEndingLine = this.bodyPosition.getEndingLineNumber();
 				Integer elseEndingColumn = this.bodyPosition.getEndingColumnNumber();
 				ifCreated = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
@@ -264,7 +267,7 @@ public class MyVisitor extends ASTVisitor {
 						elseEndingLine, elseEndingColumn);
 				
 				// checking if belongs to an else-if statement
-				if (MyIfStatement.isIfofAnElseIfCase(CodeSnippetFactory.getFileContentePerLine(), this.elementStartingLine-1))
+				if (MyIfStatement.isIfofAnElseIfCase(snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
 				{	// match this if with its else-if case on hold onto stack
 					System.out.println("::This if w else is part of an Else-If case");
 					ifCreated.setIfOfAnElse(true);
@@ -367,7 +370,7 @@ public class MyVisitor extends ASTVisitor {
 		
 		this.elementStartingLine = cu.getLineNumber(node.getExpression().getStartPosition());
 		/* Finding where the 'while'-word start */
-		String[] fileInLines = CodeSnippetFactory.getFileContentePerLine();
+		String[] fileInLines = snippetFactory.getFileContentPerLine();
 		this.elementStartingColumn =  fileInLines[this.elementStartingLine-1].indexOf("while");
 		/* setting up the end position */
 		setupElementEndPosition();
@@ -440,7 +443,7 @@ public class MyVisitor extends ASTVisitor {
 	{
 		/* Finding the end position for the element */
 		this.elementPosition = new PositionFinder(this.elementStartingLine, this.elementStartingColumn, 
-				CodeSnippetFactory.getFileContentePerLine(), '(', ')');
+				snippetFactory.getFileContentPerLine(), '(', ')');
 		this.elementEndingLine = this.elementPosition.getEndingLineNumber();
 		this.elementEndingColumn = this.elementPosition.getEndingColumnNumber();
 	}
@@ -449,7 +452,7 @@ public class MyVisitor extends ASTVisitor {
 	{
 		/* Finding the end position for the body */
 		this.bodyPosition = new PositionFinder(this.bodyStartingLine, this.bodyStartingColumn, 
-				CodeSnippetFactory.getFileContentePerLine(), '{', '}');
+				snippetFactory.getFileContentPerLine(), '{', '}');
 		this.bodyEndingLine = this.bodyPosition.getEndingLineNumber();
 		this.bodyEndingColumn = this.bodyPosition.getEndingColumnNumber();
 	}
