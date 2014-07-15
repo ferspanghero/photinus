@@ -167,7 +167,16 @@ public class MicrotaskMemento {
 		}
 	}
 
-	 
+	/** Replaces the existing list of Microtasks for a new one. 
+	 * 
+	 * @param fileName
+	 * @param microtaskList
+	 */
+	public void replace(String fileName, FileDebugSession fileDebuggingSession){
+		this.remove(fileName);
+		this.insert(fileName, fileDebuggingSession);
+	}
+
 	
 	/**
 	 * Removes the debug session data associated to the provided file name

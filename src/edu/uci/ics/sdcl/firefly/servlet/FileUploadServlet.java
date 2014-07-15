@@ -34,12 +34,7 @@ public class FileUploadServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Test...:"+ request.getParameter("testField"));
-		request.setAttribute("return_message","");
-		request.setAttribute("test", "setting to test");
-	//	request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
-	}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -96,7 +91,7 @@ public class FileUploadServlet extends HttpServlet {
 
 		//Persist data
 		MicrotaskMemento memento = new MicrotaskMemento();
-		memento.insert(fileName, fileDebuggingSession);
+		memento.replace(fileName, fileDebuggingSession);
 
 		int numberOfCodeSnippets = snippetList.size();
 		int numberOfMicrotasks = microtaskMap.size();
