@@ -65,7 +65,7 @@ public class ExcelFileDealer
 				Cell cell = row.createCell(cellnum2++);
 				cell.setCellValue("Questions");
 				cell = row.createCell(cellnum2);
-				cell.setCellValue("Explanations");
+				cell.setCellValue("Answers");
 				
 				// iterating questions (per method)
 				Set<Map.Entry<String, ArrayList<Answer>>> set3 = questionAnswers.entrySet();
@@ -117,7 +117,7 @@ public class ExcelFileDealer
 								
 						}
 					}
-					row = methodSheet.createRow(rownum++);	// blank row
+					//row = methodSheet.createRow(rownum++);	// blank row
 				}
 				// sizing columns for method sheet
 				methodSheet.setColumnWidth(0, 30000);

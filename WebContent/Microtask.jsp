@@ -167,6 +167,9 @@
 			editor.setTheme("ace/theme/github");
 			editor.getSession().setMode("ace/mode/java");
 		    editor.setBehavioursEnabled(false);
+		    editor.setOption("highlightActiveLine", false);		// disable highligthing on the active line
+		    editor.setShowPrintMargin(false);					// disable printing margin
+		    
 			var startLine = document.getElementById("startLine").value;
 			var startColumn =  document.getElementById("startColumn").value;
 			var endLine = document.getElementById("endLine").value;
@@ -175,7 +178,7 @@
 		    
 		    setTimeout(function() {
 		    	editor.session.addMarker(new Range(startLine - 1, startColumn,
-						endLine - 1, endColumn), "foo", "line");
+						endLine - 1, endColumn), "ace_active-line", "line");
 				editor.gotoLine(startLine);
 			}, 100);
 		  

@@ -129,21 +129,24 @@ public class QuestionFactory {
 					{
 						MyMethodCall elementCall = (MyMethodCall)element;
 						/* setting up the position for the element */
-						this.startingLine = elementCall.getElementStartingLine();
-						this.startingColumn = elementCall.getElementStartingColumn();
-						this.endingLine = elementCall.getElementEndingLine();
-						this.endingColumn = elementCall.getElementEndingColumn();
-						
-						questionPrompt = new String(templateForQuestion);
-						questionPrompt = questionPrompt.replaceAll("<F>", elementCall.getName());
-						questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
-						questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
-						
-						question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, questionPrompt, 
-								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.concreteQuestionID);
-						
-						this.concreteQuestions.put(question.getID(),question);
-						this.concreteQuestionID++;
+						if (2 < elementCall.getParameterList().length())
+						{ // just make question if there is parameters (2 for the brackets) 
+							this.startingLine = elementCall.getElementStartingLine();
+							this.startingColumn = elementCall.getElementStartingColumn();
+							this.endingLine = elementCall.getElementEndingLine();
+							this.endingColumn = elementCall.getElementEndingColumn();
+							
+							questionPrompt = new String(templateForQuestion);
+							questionPrompt = questionPrompt.replaceAll("<F>", elementCall.getName());
+							questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
+							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
+							
+							question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, questionPrompt, 
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.concreteQuestionID);
+							
+							this.concreteQuestions.put(question.getID(),question);
+							this.concreteQuestionID++;
+						}
 					}
 					break;
 					
