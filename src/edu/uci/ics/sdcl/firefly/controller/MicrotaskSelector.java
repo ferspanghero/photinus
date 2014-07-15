@@ -34,8 +34,10 @@ public class MicrotaskSelector {
 		}
 		else{
 			String fileName = debuggingSessionNameSet.iterator().next();
+			FileDebugSession session = memento.read(fileName);
+			String fileContent = session.getFileContent(); 
 			Microtask task = this.selectMicrotask(fileName);
-			return new SelectorReturn (task,fileName);	
+			return new SelectorReturn (task,fileName,fileContent);	
 		}
 	}
 	
@@ -44,10 +46,12 @@ public class MicrotaskSelector {
 		
 		public Microtask task;
 		public String fileName;
+		public String fileContent;
 		
-		public SelectorReturn(Microtask task,  String fileName){ 
+		public SelectorReturn(Microtask task,  String fileName, String fileContent){ 
 			this.fileName=fileName; 
 			this.task=task;
+			this.fileContent = fileContent;
 		}
 	}
 	

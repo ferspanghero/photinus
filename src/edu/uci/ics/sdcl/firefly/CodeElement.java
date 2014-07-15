@@ -10,7 +10,7 @@ public class CodeElement implements Serializable {
 	public final static String IF_CONDITIONAL = "IF_CONDITIONAL"; 
 	public final static String SWITCH_CONDITIONAL = "SWITCH_CONDITIONAL"; 
 //	public final static String METHOD_CALL = "METHOD_CALL"; 
-	public final static String METHOD_DECLARARION = "METHOD_DECLARATION"; 
+	public final static String METHOD_DECLARATION = "METHOD_DECLARATION"; 
 	public final static String METHOD_INVOCATION = "METHOD_INVOCATION"; 
 //	public final static String METHOD_PARAMETERS = "METHOD_PARAMETERS"; 
 //	public final static String METHOD_NAME = "METHOD_NAME";

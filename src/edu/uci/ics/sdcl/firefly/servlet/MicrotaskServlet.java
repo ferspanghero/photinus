@@ -36,7 +36,6 @@ public class MicrotaskServlet extends HttpServlet {
 
 		//Collect and persist the answer
 		//Mark the microtask as already answered
-		System.out.println("in Get");
 
 		String fileName = request.getParameter("fileName");
 		int answer = new Integer(request.getParameter("answer")).intValue();
@@ -45,8 +44,8 @@ public class MicrotaskServlet extends HttpServlet {
 
 		MicrotaskMemento memento = new MicrotaskMemento();
 		memento.insertAnswer(fileName, new Integer(id), new Answer(Answer.mapToString(answer),explanation));
-		
-		System.out.println("prep request");
+ 
+		//Prepare next microtask request
 		MicrotaskSelector selector = new MicrotaskSelector();
 		MicrotaskSelector.SelectorReturn returnValues = selector.selectAnyMicrotask();
 
@@ -58,8 +57,9 @@ public class MicrotaskServlet extends HttpServlet {
 			Microtask task = returnValues.task;
 			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
 			fileName = returnValues.fileName;
+			String fileContent = returnValues.fileContent;
 			request.setAttribute("question", task.getQuestion());
-			request.setAttribute("source", CodeSnippetFactory.getFileContent());   
+			request.setAttribute("source", fileContent);   
 
 			request.setAttribute("id", task.getID());
 			request.setAttribute("fileName", fileName);
@@ -74,6 +74,7 @@ public class MicrotaskServlet extends HttpServlet {
 		request.getRequestDispatcher("/Microtask.jsp").include(request, response);
 	}
 
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -91,8 +92,9 @@ public class MicrotaskServlet extends HttpServlet {
 			Microtask task = returnValues.task;
 			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
 			String fileName = returnValues.fileName;
+			String fileContent = returnValues.fileContent;
 			request.setAttribute("question", task.getQuestion());
-			request.setAttribute("source", CodeSnippetFactory.getFileContent());   
+			request.setAttribute("source", fileContent);   
 
 			request.setAttribute("id", task.getID());
 			request.setAttribute("fileName", fileName);

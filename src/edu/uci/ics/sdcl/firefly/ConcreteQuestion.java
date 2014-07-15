@@ -10,27 +10,32 @@ public class ConcreteQuestion
 	private ArrayList<String> answer;
 	private Integer lineNumber1;
 	private Integer lineNumber2;
+	private Integer ID;
 	
 	public ConcreteQuestion(String questionTypeArg, CodeSnippet methodArg, String questionArg, 
-			Integer startingLineNumber)
+			Integer startingLineNumber, Integer ID)
 	{
 		this.setMethod(methodArg);
 		this.setQuestion(questionArg);
 		this.setQuestionType(questionTypeArg);
 		this.lineNumber1 = startingLineNumber;
 		this.lineNumber2 = startingLineNumber;
-		QuestionFactory.concreteQuestionID++;
+		this.ID=ID;
 	}
 	
 	public ConcreteQuestion(String questionTypeArg, CodeSnippet methodArg, String questionArg, 
-			Integer startingLineNumber, Integer endingLineNumber)
+			Integer startingLineNumber, Integer endingLineNumber, Integer ID)
 	{
 		this.setMethod(methodArg);
 		this.setQuestion(questionArg);
 		this.setQuestionType(questionTypeArg);
 		this.lineNumber1 = startingLineNumber;
 		this.lineNumber2 = endingLineNumber;
-		QuestionFactory.concreteQuestionID++;
+		this.ID = ID;
+	}
+	
+	public Integer getID(){
+		return ID;
 	}
 
 	public String getQuestion()

@@ -104,7 +104,7 @@ public class QuestionFactoryTest
 						+ "etc .)?", 7, 0, 7, 27);
 		this.questionFactory.addConcreteQuestion(questionMethodCallConstructor, this.codeSnippetConstructor);
 
-		constructorBody = new Microtask(CodeElement.METHOD_DECLARARION, this.codeSnippetConstructor, "Is there possibly "
+		constructorBody = new Microtask(CodeElement.METHOD_DECLARATION, this.codeSnippetConstructor, "Is there possibly "
 				+ "something wrong with the body of function 'SimpleSampleCode' between lines 7 and 9 (e.g., "
 				+ "function produces an incorrect return value, return statement is at the wrong place, does not "
 				+ "properly handle error situations, etc.)?" , 7, 27, 10, 1);
@@ -126,7 +126,7 @@ public class QuestionFactoryTest
 						+ "produce the correct result, specifies the wrong or no return type, etc .)?", 20, 0, 20, 58);
 		this.questionFactory.addConcreteQuestion(questionMethodCallFactorial, this.codeSnippetFactorial);
 
-		factorialBody = new Microtask(CodeElement.METHOD_DECLARARION, this.codeSnippetFactorial, "Is there possibly "
+		factorialBody = new Microtask(CodeElement.METHOD_DECLARATION, this.codeSnippetFactorial, "Is there possibly "
 				+ "something wrong with the body of function 'factorial' between lines 20 and 30 (e.g., function "
 				+ "produces an incorrect return value, return statement is at the wrong place, does not properly "
 				+ "handle error situations, etc.)?", 20, 58, 30, 1);

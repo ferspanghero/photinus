@@ -13,14 +13,14 @@ public class QuestionFactory {
 	public final static String METHOD_NAME = "METHOD_NAME";
 	public static final String RETURN_STATEMENT = "RETURN_STATEMENT"; */
 	/* Template Lists */
-	public static ArrayList<String> templateMethodDeclaration = new ArrayList<String>();
-	public static ArrayList<String> templateMethodInvocation = new ArrayList<String>();
-	public static ArrayList<String> templateIf = new ArrayList<String>();
-	public static ArrayList<String> templateSwitch = new ArrayList<String>();
-	public static ArrayList<String> templateLoop = new ArrayList<String>();
+	public ArrayList<String> templateMethodDeclaration = new ArrayList<String>();
+	public ArrayList<String> templateMethodInvocation = new ArrayList<String>();
+	public ArrayList<String> templateIf = new ArrayList<String>();
+	public ArrayList<String> templateSwitch = new ArrayList<String>();
+	public ArrayList<String> templateLoop = new ArrayList<String>();
 	
 	public Integer numberOfStatements; 
-	public static Integer concreteQuestionID = 0;
+	public Integer concreteQuestionID = 0;
 	private String questionPrompt;
 	private Microtask question;
 	
@@ -30,13 +30,12 @@ public class QuestionFactory {
 	private Integer endingLine;
 	private Integer endingColumn;
 	
-//	private ArrayList<ConcreteQuestion> concreteQuestions;
 	private HashMap<Integer, Microtask> concreteQuestions;
 	
 	public QuestionFactory()
 	{
 		this.numberOfStatements = 0;
-		concreteQuestionID = 0;
+		this.concreteQuestionID = new Integer(0);
 		this.concreteQuestions = new HashMap<Integer, Microtask>();
 		/* Method Declaration */
 		templateMethodDeclaration.add("Is there maybe something wrong in the declaration of function '<F>' at line <#> " 
@@ -71,6 +70,8 @@ public class QuestionFactory {
 	public HashMap<Integer, Microtask> generateQuestions(ArrayList<CodeSnippet> methodsArg)
 	{
 		this.numberOfStatements = 0;	// initializing variable
+		this.concreteQuestions = new  HashMap<Integer, Microtask>();
+		this.concreteQuestionID = new Integer(0);
 		for (CodeSnippet codeSnippet : methodsArg)
 		{
 			for (String templateForQuestion : templateMethodDeclaration)
@@ -107,19 +108,16 @@ public class QuestionFactory {
 					questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 				}
 				/* setting and adding a concrete question */
-				question = new Microtask(CodeElement.METHOD_DECLARARION, codeSnippet, questionPrompt,
-						this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
+				question = new Microtask(CodeElement.METHOD_DECLARATION, codeSnippet, questionPrompt,
+						this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,concreteQuestionID);
 				
-				Integer id = new Integer(concreteQuestionID);
-				question.setID(id);
-				this.concreteQuestions.put(id, question);
+				this.concreteQuestions.put(question.getID(),question);
+				this.concreteQuestionID++;
+	
 			}
 			
 			ArrayList<CodeElement> statements = codeSnippet.getStatements();	// now getting the question for the statements
 			
-			//Method Declaration
-			
-			//Method Body
 			
 			for (CodeElement element : statements)
 			{
@@ -142,11 +140,10 @@ public class QuestionFactory {
 						questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 						
 						question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, questionPrompt, 
-								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
+								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.concreteQuestionID);
 						
-						Integer id = new Integer(concreteQuestionID);
-						question.setID(id);
-						this.concreteQuestions.put(id, question);
+						this.concreteQuestions.put(question.getID(),question);
+						this.concreteQuestionID++;
 					}
 					break;
 					
@@ -190,11 +187,10 @@ public class QuestionFactory {
 							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 						}
 						question = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt, 
-								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
+								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.concreteQuestionID);
 						
-						Integer id = new Integer(concreteQuestionID);
-						question.setID(id);
-						this.concreteQuestions.put(id, question);
+						this.concreteQuestions.put(question.getID(),question);
+						this.concreteQuestionID++;
 						
 					}
 					break;
@@ -205,11 +201,10 @@ public class QuestionFactory {
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = this.setUpQuestionPrompt(questionPrompt, element);
 						question = new Microtask(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt, 
-								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
+								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,this.concreteQuestionID);
 
-						Integer id = new Integer(concreteQuestionID);
-						question.setID(id);
-						this.concreteQuestions.put(id, question);
+						this.concreteQuestions.put(question.getID(),question);
+						this.concreteQuestionID++;
 					}
 					break;
 					
@@ -224,22 +219,21 @@ public class QuestionFactory {
 						case CodeElement.FOR_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "For");
 							question = new Microtask(CodeElement.FOR_LOOP, codeSnippet, questionPrompt, 
-									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.concreteQuestionID);
 							break;
 						case CodeElement.DO_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "Do");
 							question = new Microtask(CodeElement.DO_LOOP, codeSnippet, questionPrompt, 
-									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,this.concreteQuestionID);
 							break;
 						case CodeElement.WHILE_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "While");
 							question = new Microtask(CodeElement.WHILE_LOOP, codeSnippet, questionPrompt, 
-									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn);
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,this.concreteQuestionID);
 							break;
 						}
-						Integer id = new Integer(concreteQuestionID);
-						question.setID(id);
-						this.concreteQuestions.put(id, question);
+						this.concreteQuestions.put(question.getID(),question);
+						this.concreteQuestionID++;
 					}
 					break;
 					// Add more cases here 
@@ -253,11 +247,7 @@ public class QuestionFactory {
 		return concreteQuestions;
 	}
 	
-	public void addConcreteQuestion(Microtask question, CodeSnippet method)
-	{
-		//TO DO
-	}
-	
+		
 	private String setUpQuestionPrompt(String questionPromptArg, CodeElement elementArg)
 	{
 		if (questionPromptArg.indexOf("<#1>") > 0)	//it means it will ask about the body
@@ -294,9 +284,5 @@ public class QuestionFactory {
 		return questionPromptArg;
 	}
 	
-//	public ArrayList<ConcreteQuestion> getConcreteQuestionsOfCS(CodeSnippet codeSnippetConstructor)
-//	{
-//		// TO DO
-//		return // questions for the CodeSnippet specified
-//	}
+
 }

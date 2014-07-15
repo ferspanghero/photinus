@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -18,13 +19,17 @@ public class FileDebugSession implements Serializable {
 
 	private String fileName;
 	
+	private String fileContent;
+	
 	private HashMap<Integer, Microtask> microtaskMap;
 	
 	private Integer maximumAnswerCount; 
 	
-	public FileDebugSession(String fileName, HashMap<Integer,Microtask> microtaskMap){
+	
+	public FileDebugSession(String fileName, String fileContent, HashMap<Integer,Microtask> microtaskMap){
 		this.microtaskMap =  microtaskMap;
 		this.fileName = fileName;
+		this.fileContent = fileContent;
 	}
 
 	public HashMap<Integer, Microtask> getMicrotaskMap() {
@@ -51,6 +56,11 @@ public class FileDebugSession implements Serializable {
 		this.microtaskMap.put(id, mtask);
 	}
 	
+	public String getFileContent() {
+		return fileContent;
+	}
+	 
+	
 	/** 
 	 * If the provided number is smaller then maximumAnswerCount, then 
 	 * increment maximumAnswerCount, otherwise, ignore 
@@ -66,7 +76,5 @@ public class FileDebugSession implements Serializable {
 		else
 			return false;
 	}
-	
-	
 	
 }

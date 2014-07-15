@@ -18,7 +18,7 @@ public class Microtask implements Serializable
 	
 	public Microtask(String questionTypeArg, CodeSnippet methodArg, String questionArg, 
 			Integer startingLineNumber, Integer startingColumnNumber, 
-			Integer endingLineNumber, Integer endingColumnNumber)
+			Integer endingLineNumber, Integer endingColumnNumber, Integer ID)
 	{
 		this.setMethod(methodArg);
 		this.setQuestion(questionArg);
@@ -27,16 +27,12 @@ public class Microtask implements Serializable
 		this.startingColumn = startingColumnNumber;
 		this.endingLine = endingLineNumber;
 		this.endingColumn = endingColumnNumber;
-		QuestionFactory.concreteQuestionID++;
 		this.answerList = new ArrayList<Answer>();
+		this.ID = ID;
 	}
 
 	public Integer getID(){
 		return this.ID;
-	}
-	
-	public void setID(Integer ID){
-		this.ID=ID;
 	}
 	
 	public String getQuestion()

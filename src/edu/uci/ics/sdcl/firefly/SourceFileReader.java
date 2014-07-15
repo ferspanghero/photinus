@@ -40,7 +40,7 @@ public class SourceFileReader {
 		// calling memento and creating xlsx file
 		HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
 		
-		FileDebugSession debugMap = new FileDebugSession("SimpleSampleCode.java", concreteQuestionsMade);
+		FileDebugSession debugMap = new FileDebugSession("SimpleSampleCode.java",  "source",concreteQuestionsMade);
 		debugSessionMap.put("SimpleSampleCode.java", debugMap);
 		
 		MicrotaskMemento memento = new MicrotaskMemento();

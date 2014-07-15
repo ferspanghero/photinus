@@ -87,7 +87,7 @@ public class FileUploadServlet extends HttpServlet {
 		//calls QuestionFactory
 		QuestionFactory questionFactory = new QuestionFactory ();
 		HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(snippetList);
-		FileDebugSession fileDebuggingSession = new FileDebugSession(fileName,microtaskMap);
+		FileDebugSession fileDebuggingSession = new FileDebugSession(fileName,fileContent, microtaskMap);
 
 		//Persist data
 		MicrotaskMemento memento = new MicrotaskMemento();
