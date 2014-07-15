@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException; 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.export.file.ExcelFileDealer;
@@ -107,12 +109,12 @@ public class ResultsServlet extends HttpServlet {
 			while(methodIter.hasNext()){
 				String methodName = methodIter.next();
 				MethodData methodData = methodMap.get(methodName);
-				HashMap<String, String> answerPerQuestionMap = methodData.getQuestionAnswerMap();
+				HashMap<String, ArrayList<Answer>> answerPerQuestionMap = methodData.getQuestionAnswerMap();
 				Iterator<String> questionIter = answerPerQuestionMap.keySet().iterator();
 				while(questionIter.hasNext()){
 					String questionName = questionIter.next();
-					String answers = answerPerQuestionMap.get(questionName);
-					result = result + formatString(fileName,methodName,questionName,answers) + "<br><br>";
+					ArrayList<Answer> answers = answerPerQuestionMap.get(questionName);
+					result = result + formatString(fileName, methodName, questionName, " CHANGE THIS! -> answers") + "<br><br>";
 				}
 			}
 		}

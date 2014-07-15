@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.export.file;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.servlet.MethodData;
 
 
@@ -52,18 +54,18 @@ public class ExcelFileDealer
 				//Create a blank sheet for the method
 				XSSFSheet methodSheet = workbook.createSheet(me2.getKey());
 				
-				HashMap<String, String> questionAnswers = me2.getValue().getQuestionAnswerMap();
+				HashMap<String, ArrayList<Answer>> questionAnswers = me2.getValue().getQuestionAnswerMap();
 				int key = 0;	// for the 'data' below
 				int rownum = 0;	
 				Row row;
 				// iterating questions (per method)
-				Set<Map.Entry<String, String>> set3 = questionAnswers.entrySet();
-				Iterator<Entry<String, String>> i3 = set3.iterator();
+				Set<Map.Entry<String, ArrayList<Answer>>> set3 = questionAnswers.entrySet();
+				Iterator<Entry<String, ArrayList<Answer>>> i3 = set3.iterator();
 				while(i3.hasNext())
 				{	
 					numberOfQuestions++;
-					Map.Entry<String, String> me3 = (Map.Entry<String, String>)i3.next();
-					numberOfAnswers += me2.getValue().numberOfAnswersPerQuestion(me3.getKey());
+					Map.Entry<String, ArrayList<Answer>> me3 = (Map.Entry<String, ArrayList<Answer>>)i3.next();
+					numberOfAnswers += me3.getValue().size();
 					
 					/* filling the method sheet */
 					Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
