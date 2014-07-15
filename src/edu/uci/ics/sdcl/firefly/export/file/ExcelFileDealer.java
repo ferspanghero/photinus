@@ -1,6 +1,5 @@
 package edu.uci.ics.sdcl.firefly.export.file;
 
-import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -13,9 +12,7 @@ import java.util.Map.Entry;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -62,6 +59,14 @@ public class ExcelFileDealer
 				int key = 0;	// for the 'data' below
 				int rownum = 0;	
 				Row row;
+				/* creating first header line */
+				row = methodSheet.createRow(rownum++);
+				int cellnum2 = 0;
+				Cell cell = row.createCell(cellnum2++);
+				cell.setCellValue("Questions");
+				cell = row.createCell(cellnum2);
+				cell.setCellValue("Explanations");
+				
 				// iterating questions (per method)
 				Set<Map.Entry<String, ArrayList<Answer>>> set3 = questionAnswers.entrySet();
 				Iterator<Entry<String, ArrayList<Answer>>> i3 = set3.iterator();
@@ -95,11 +100,21 @@ public class ExcelFileDealer
 						int cellnum = 0;
 						for (Object obj : objArr)
 						{	// new cell for each object on the object Array
-							Cell cell = row.createCell(cellnum++);
+							cell = row.createCell(cellnum++);
 							if(obj instanceof String)
-								cell.setCellValue((String)obj);
+							{
+								String text = (String)obj;
+								if (text.length() > 30)	// wraping text
+								{
+									CellStyle style = workbook.createCellStyle(); //Create new style
+						            style.setWrapText(true); 	//Set wordwrap
+						            cell.setCellStyle(style); 	//Apply style to cell
+								}
+					            cell.setCellValue(text);
+							}
 							else if(obj instanceof Integer)
 								cell.setCellValue((Integer)obj);
+								
 						}
 					}
 					row = methodSheet.createRow(rownum++);	// blank row
