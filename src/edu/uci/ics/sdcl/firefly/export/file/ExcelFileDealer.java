@@ -69,21 +69,28 @@ public class ExcelFileDealer
 					
 					/* filling the method sheet */
 					Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
-					data.put(new Integer(key++), new Object[] {me3.getKey()});
-					data.put(new Integer(key++), new Object[] {me3.getValue()});
-
-					System.out.println("Answer: " + me3.getValue() + "size of data: " + data.size());
-//					String answers[] = me3.getValue().split(";");
-
+					data.put(new Integer(key++), new Object[] {"Questions", "Explanations"});	// header line 
+					// preparing line (object), which index is a cell
+					Object[] lineContent = new Object[me3.getValue().size()+2]; // question(1) + explanations(1) + answers(size)
+					lineContent[0] = me3.getKey();	// question (cell 0)
+					String cellOne = "";
+					int k = 2;
+					for (Answer singleAnswer : me3.getValue()) {
+						cellOne += singleAnswer.getOption() + "{" + singleAnswer.getExplanation() + "}; ";
+						lineContent[k++] = singleAnswer.getOption();	// adding answers per question
+					}
+					lineContent[1] = cellOne;
+					data.put(new Integer(key++), lineContent);	// putting customized line 
+					
 					//Iterate over data and write to method sheet
 					Set<Integer> keyset = data.keySet();
 					for (Integer singleKey : keyset)
-					{
+					{	// new row for each entry
 						row = methodSheet.createRow(rownum++);
 						Object [] objArr = data.get(singleKey);
 						int cellnum = 0;
 						for (Object obj : objArr)
-						{
+						{	// new cell for each object on the object Array
 							Cell cell = row.createCell(cellnum++);
 							if(obj instanceof String)
 								cell.setCellValue((String)obj);
@@ -93,10 +100,10 @@ public class ExcelFileDealer
 					}
 					row = methodSheet.createRow(rownum++);	// blank row
 				}
-				// auto-sizing columns for method sheet
-				for (int columnPosition = 0; columnPosition< 5; columnPosition++) {
-					methodSheet.autoSizeColumn((short) (columnPosition));
-				}
+				// sizing columns for method sheet
+				methodSheet.setColumnWidth(0, 30000);
+				methodSheet.autoSizeColumn(1);
+				methodSheet.autoSizeColumn(2);
 			}
 
 			/* filling the summary sheet */
@@ -145,7 +152,5 @@ public class ExcelFileDealer
 				e.printStackTrace();
 			}
 		}
-
-
 	}
 }

@@ -15,7 +15,7 @@ import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
 public class SourceFileReader {
 
 	public static void main(String args[]) throws IOException{
-		CodeSnippetFactory codeSnippets = new CodeSnippetFactory(args[0]);
+		CodeSnippetFactory codeSnippets = new CodeSnippetFactory(args[0], args[1]); // file name and file content
 		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippets();
 		System.out.println();
 //		codeSnippets.printAll();

@@ -114,7 +114,7 @@ public class ResultsServlet extends HttpServlet {
 				while(questionIter.hasNext()){
 					String questionName = questionIter.next();
 					ArrayList<Answer> answers = answerPerQuestionMap.get(questionName);
-					result = result + formatString(fileName, methodName, questionName, " CHANGE THIS! -> answers") + "<br><br>";
+					result = result + formatString(fileName, methodName, questionName, answers);
 				}
 			}
 		}
@@ -122,10 +122,17 @@ public class ResultsServlet extends HttpServlet {
 	}
 
 	private String formatString(String fileName, String methodName,
-			String questionName, String answers) {
+			String questionName, ArrayList<Answer> answers) {
 
-		return "<b>File: </b>"+ fileName+ "<b> Method: </b>"+methodName+"<b> Question: </b>"+ 
-				questionName+ "<b> Answers: </b>"+answers;
+		String toBePrinted = new String("<b>File: </b>"+ fileName+ "<b> Method: </b>"+methodName+"<b> Question: </b>"+ 
+				questionName+ "<b> Answers: </b>");
+		// Concatenating all answers (with explanation) regarding the question in focus
+		for (Answer answer : answers) {
+			toBePrinted += answer.getOption() + " - " + answer.getExplanation() +  " | ";
+		}
+		toBePrinted +=	"<br><br>";
+				
+		return toBePrinted;
 
 	}
 
