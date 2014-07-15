@@ -1,5 +1,6 @@
 package edu.uci.ics.sdcl.firefly.export.file;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -11,7 +12,10 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -69,7 +73,7 @@ public class ExcelFileDealer
 					
 					/* filling the method sheet */
 					Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
-					data.put(new Integer(key++), new Object[] {"Questions", "Explanations"});	// header line 
+//					data.put(new Integer(key++), new Object[] {"Questions", "Explanations"});	// header line 
 					// preparing line (object), which index is a cell
 					Object[] lineContent = new Object[me3.getValue().size()+2]; // question(1) + explanations(1) + answers(size)
 					lineContent[0] = me3.getKey();	// question (cell 0)
@@ -79,7 +83,7 @@ public class ExcelFileDealer
 						cellOne += singleAnswer.getOption() + "{" + singleAnswer.getExplanation() + "}; ";
 						lineContent[k++] = singleAnswer.getOption();	// adding answers per question
 					}
-					lineContent[1] = cellOne;
+					lineContent[1] = cellOne;					// setting cell at index 1
 					data.put(new Integer(key++), lineContent);	// putting customized line 
 					
 					//Iterate over data and write to method sheet
@@ -104,6 +108,12 @@ public class ExcelFileDealer
 				methodSheet.setColumnWidth(0, 30000);
 				methodSheet.autoSizeColumn(1);
 				methodSheet.autoSizeColumn(2);
+				/*
+				CellStyle cs = workbook.createCellStyle();
+				XSSFFont f = workbook.createFont();
+				f.setBoldweight((short) Font.BOLD);
+				cs.setFont(f);
+				methodSheet.setDefaultColumnStyle(1,cs); //set bold for column 1 */
 			}
 
 			/* filling the summary sheet */
