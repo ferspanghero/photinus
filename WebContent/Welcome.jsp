@@ -8,10 +8,12 @@
 </head>
 <body>
  
+<center>
 	<div>
-		<img src="./images/Firefly-2.jpg" width=112 height=46 />
+		<img src="./images/Firefly-2.jpg"  /><br>
+		<img src="./images/HelpUsLightSomeBugs.jpg" /><br>
+		
 	</div>
-
 	<div style="background-color: #FFFAEB;">
 		<h1>What would you like to do today?</h1>
 
@@ -39,6 +41,7 @@
 
 		</table>
 	</div>
+</center>
 
 </body>
 </html>
