@@ -44,7 +44,7 @@ public class QuestionFactory {
 				+ "<#1> and <#2> (e.g., function produces an incorrect return value, return statement is at the wrong place, does not properly handle error situations, etc.)?");
 		/* Method invocation */
 		templateMethodInvocation.add("Is there maybe something wrong with the invocation of function <F> in function "
-				+ "<G> at line <#> (e.g., should be at a different place in the code, should invoke a different "
+				+ "'<G>' at line <#> (e.g., should be at a different place in the code, should invoke a different "
 				+ "function, has unanticipated side effects, return value is improperly used, etc.)");
 		templateMethodInvocation.add("Is there perhaps something wrong with the values of the parameters received "
 				+ "by function '<F>' when called by function '<G>' at line <#> (e.g., wrong variables used as "
