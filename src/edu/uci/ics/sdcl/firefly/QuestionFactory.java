@@ -18,20 +18,20 @@ public class QuestionFactory {
 	public ArrayList<String> templateIf = new ArrayList<String>();
 	public ArrayList<String> templateSwitch = new ArrayList<String>();
 	public ArrayList<String> templateLoop = new ArrayList<String>();
-	
+
 	public Integer numberOfStatements; 
 	public Integer concreteQuestionID = 0;
 	private String questionPrompt;
 	private Microtask question;
-	
+
 	/* for the Range-values (ACE Editor) */
 	private Integer startingLine;
 	private Integer startingColumn;
 	private Integer endingLine;
 	private Integer endingColumn;
-	
+
 	private HashMap<Integer, Microtask> concreteQuestions;
-	
+
 	public QuestionFactory()
 	{
 		this.numberOfStatements = 0;
@@ -43,6 +43,9 @@ public class QuestionFactory {
 		templateMethodDeclaration.add("Is there possibly something wrong with the body of function '<F>' between lines "
 				+ "<#1> and <#2> (e.g., function produces an incorrect return value, return statement is at the wrong place, does not properly handle error situations, etc.)?");
 		/* Method invocation */
+		templateMethodInvocation.add("Is there maybe something wrong with the invocation of function <F> in function "
+				+ "<G> at line <#> (e.g., should be at a different place in the code, should invoke a different "
+				+ "function, has unanticipated side effects, return value is improperly used, etc.)");
 		templateMethodInvocation.add("Is there perhaps something wrong with the values of the parameters received "
 				+ "by function '<F>' when called by function '<G>' at line <#> (e.g., wrong variables used as "
 				+ "parameters, wrong order, missing or wrong type of parameter, values of the parameters are not checked, etc .)?");
@@ -61,12 +64,12 @@ public class QuestionFactory {
 		templateLoop.add("Is the body of the '<L>-loop' between lines <#1> and <#2> "
 				+ "possibly not producing what it is supposed to (e.g., does not compute the expected result, does not exit at the expected iteration, etc.)?");
 	}
-	
+
 	public Integer getNumberOfStatements()
 	{
 		return this.numberOfStatements;
 	}
-	
+
 	public HashMap<Integer, Microtask> generateQuestions(ArrayList<CodeSnippet> methodsArg)
 	{
 		this.numberOfStatements = 0;	// initializing variable
@@ -86,7 +89,7 @@ public class QuestionFactory {
 					this.startingColumn = codeSnippet.getBodyStartingColumn();
 					this.endingLine = codeSnippet.getBodyEndingLine();
 					this.endingColumn = codeSnippet.getBodyEndingColumn();
-					
+
 					if ( this.startingLine != this.endingLine )
 					{	// different lines, so between is OK
 						questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
@@ -104,21 +107,21 @@ public class QuestionFactory {
 					this.startingColumn = codeSnippet.getElementStartingColumn();
 					this.endingLine = codeSnippet.getElementEndingLine();
 					this.endingColumn = codeSnippet.getElementEndingColumn();
-					
+
 					questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 				}
 				/* setting and adding a concrete question */
 				question = new Microtask(CodeElement.METHOD_DECLARATION, codeSnippet, questionPrompt,
 						this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,concreteQuestionID);
-				
+
 				this.concreteQuestions.put(question.getID(),question);
 				this.concreteQuestionID++;
-	
+
 			}
-			
+
 			ArrayList<CodeElement> statements = codeSnippet.getStatements();	// now getting the question for the statements
-			
-			
+
+
 			for (CodeElement element : statements)
 			{
 				this.numberOfStatements++;
@@ -127,29 +130,39 @@ public class QuestionFactory {
 				case CodeElement.METHOD_INVOCATION:
 					for (String templateForQuestion : templateMethodInvocation)
 					{
+						boolean addQuestion = false; 		// assuming question is NOT good formed 
 						MyMethodCall elementCall = (MyMethodCall)element;
 						/* setting up the position for the element */
-						if (2 < elementCall.getParameterList().length())
-						{ // just make question if there is parameters (2 for the brackets) 
+
+						questionPrompt = new String(templateForQuestion);
+					
+						if ( -1 != questionPrompt.indexOf("parameters"))	// question about parameters
+						{	// are there parameters? ('2' for the brackets) 
+							if (2 < elementCall.getParameterList().length())	
+								addQuestion = true;	// question is all set
+						}
+						else
+							addQuestion = true;		// other questions are always good formed
+						
+						if (addQuestion)
+						{	// then add question!
 							this.startingLine = elementCall.getElementStartingLine();
 							this.startingColumn = elementCall.getElementStartingColumn();
 							this.endingLine = elementCall.getElementEndingLine();
 							this.endingColumn = elementCall.getElementEndingColumn();
 							
-							questionPrompt = new String(templateForQuestion);
 							questionPrompt = questionPrompt.replaceAll("<F>", elementCall.getName());
 							questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
 							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 							
 							question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, questionPrompt, 
 									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.concreteQuestionID);
-							
 							this.concreteQuestions.put(question.getID(),question);
 							this.concreteQuestionID++;
 						}
 					}
 					break;
-					
+
 				case CodeElement.IF_CONDITIONAL:
 					for (String templateForQuestion : templateIf)
 					{
@@ -186,18 +199,18 @@ public class QuestionFactory {
 							this.startingColumn = elementIf.getElementStartingColumn();
 							this.endingLine = elementIf.getElementEndingLine();
 							this.endingColumn = elementIf.getElementEndingColumn();
-							
+
 							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 						}
 						question = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt, 
 								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.concreteQuestionID);
-						
+
 						this.concreteQuestions.put(question.getID(),question);
 						this.concreteQuestionID++;
-						
+
 					}
 					break;
-					
+
 				case CodeElement.SWITCH_CONDITIONAL:
 					for (String templateForQuestion : templateSwitch)
 					{
@@ -210,7 +223,7 @@ public class QuestionFactory {
 						this.concreteQuestionID++;
 					}
 					break;
-					
+
 				case CodeElement.FOR_LOOP:
 				case CodeElement.DO_LOOP:
 				case CodeElement.WHILE_LOOP:
@@ -240,17 +253,17 @@ public class QuestionFactory {
 					}
 					break;
 					// Add more cases here 
-					
+
 				default:
-						System.out.println("!!! Type of element did not matched: " + element.getType() + " !!!");
-						break;
+					System.out.println("!!! Type of element did not matched: " + element.getType() + " !!!");
+					break;
 				} 
 			}
 		}
 		return concreteQuestions;
 	}
-	
-		
+
+
 	private String setUpQuestionPrompt(String questionPromptArg, CodeElement elementArg)
 	{
 		if (questionPromptArg.indexOf("<#1>") > 0)	//it means it will ask about the body
@@ -260,7 +273,7 @@ public class QuestionFactory {
 			this.startingColumn = elementArg.getBodyStartingColumn();
 			this.endingLine = elementArg.getBodyEndingLine();
 			this.endingColumn = elementArg.getBodyEndingColumn();
-			
+
 			System.out.println("Starting and ending line: " + this.startingLine + ", " + this.endingLine);
 			if ( this.startingLine != this.endingLine )
 			{
@@ -269,10 +282,10 @@ public class QuestionFactory {
 			}
 			else
 			{
-//				System.out.println("Old question: " + questionPromptArg);
+				//				System.out.println("Old question: " + questionPromptArg);
 				questionPromptArg = questionPromptArg.substring(0, questionPromptArg.indexOf("between")) + "at line " +
 						this.startingLine + questionPromptArg.substring(questionPromptArg.indexOf("<#2>")+4);
-//				System.out.println("New question: " + questionPromptArg);
+				//				System.out.println("New question: " + questionPromptArg);
 			}
 		} else
 		{
@@ -281,11 +294,11 @@ public class QuestionFactory {
 			this.startingColumn = elementArg.getElementStartingColumn();
 			this.endingLine = elementArg.getElementEndingLine();
 			this.endingColumn = elementArg.getElementEndingColumn();
-			
+
 			questionPromptArg = questionPromptArg.replaceAll("<#>", this.startingLine.toString());
 		}
 		return questionPromptArg;
 	}
-	
+
 
 }
