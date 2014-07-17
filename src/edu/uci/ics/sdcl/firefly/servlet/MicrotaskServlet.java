@@ -71,7 +71,7 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("endColumn", task.getEndingColumn());
 		}
 		//display a new microtask
-		request.getRequestDispatcher("/Question.jsp").include(request, response);
+		request.getRequestDispatcher("/QuestionMicrotask.jsp").include(request, response);
 	}
 
 	
@@ -105,7 +105,8 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("endLine", task.getEndingLine());
 			request.setAttribute("endColumn", task.getEndingColumn());
 
-			request.getRequestDispatcher("/Question.jsp").forward(request, response);
+			//Calls the microtask page
+			request.getRequestDispatcher("/QuestionMicrotask.jsp").forward(request, response);
 		}
 	}
 
