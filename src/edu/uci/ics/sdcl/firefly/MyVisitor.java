@@ -42,9 +42,14 @@ public class MyVisitor extends ASTVisitor {
 	private Stack<MyIfStatement> ifElements;		// line numbers of if with else-if statements 
 	private CodeSnippetFactory snippetFactory;       //Factory that keeps track of the fileName and fileContent being parsed
 	
+	private int numberOfMethodInvocations;
+	
+	
+	
 	public MyVisitor(CompilationUnit cuArg, CodeSnippetFactory snippetFactory)
 	{
 		super();
+		numberOfMethodInvocations = 0;
 		this.snippetFactory = snippetFactory;
 		this.ifElements = new Stack<MyIfStatement>();
 		this.cu = cuArg;
@@ -174,21 +179,42 @@ public class MyVisitor extends ASTVisitor {
 			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
 			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
 			
-			System.out.println(this.elementStartingLine + " - " + node.getExpression() + "." + node.getName() + 
-					node.arguments().toString().replace('[', '(').replace(']', ')'));	
+			/* to avoid null pointers */
+			String name;
+			String expression;
+			String arguments;
+			if (null == node.getName())
+				name = "";
+			else
+				name = node.getName().toString();
+			
+			if (null == node.getExpression())
+				expression = "";
+			else
+				expression = node.getExpression().toString();
+			
+			if (null == node.arguments())
+				arguments = "";
+			else
+				arguments = node.arguments().toString();
+			
+			System.out.println(this.elementStartingLine + " - " + expression + "." + name + 
+					arguments.replace('[', '(').replace(']', ')'));	
 //			System.out.println("Method name: " + node.getName().toString());
 //			System.out.println("Method expression package: " + node.getExpression().toString());
 //			System.out.println("Method parameters " + node.arguments().toString());
-			System.out.println();
+			
 			setupElementEndPosition();
 
-			MyMethodCall methodCall = new MyMethodCall(node.getName().toString(), 
-					node.getExpression().toString(), node.arguments().toString(), 
+			MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, 
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
 
 			this.newMethod.addElement(methodCall);
 		}
+		numberOfMethodInvocations++;
+		System.out.println("# of Method invocations: " + numberOfMethodInvocations);
+		System.out.println();
 		return true;
 	}
 	
