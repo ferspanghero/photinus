@@ -17,6 +17,8 @@
 
 package com.netflix.nfgraph.util;
 
+import Mixer;
+
 import java.util.Arrays;
 import java.util.Iterator;
 

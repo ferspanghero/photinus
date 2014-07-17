@@ -15,9 +15,13 @@
  *
  */
 
-package com.netflix.nfgraph.compressor;
+
 
 import java.util.List;
+
+import main.java.com.netflix.nfgraph.compressor.BitSetPropertyBuilder;
+import main.java.com.netflix.nfgraph.compressor.CompactPropertyBuilder;
+import main.java.com.netflix.nfgraph.compressor.HashedPropertyBuilder;
 
 import com.netflix.nfgraph.NFGraphModelHolder;
 import com.netflix.nfgraph.OrdinalSet;

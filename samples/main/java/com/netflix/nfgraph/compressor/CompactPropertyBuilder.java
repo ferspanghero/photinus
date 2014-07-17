@@ -17,6 +17,8 @@
 
 package com.netflix.nfgraph.compressor;
 
+import NFCompressedGraphBuilder;
+
 import java.util.Arrays;
 
 import com.netflix.nfgraph.OrdinalSet;

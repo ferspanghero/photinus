@@ -15,7 +15,7 @@
 *
 */
 
-package com.netflix.nfgraph.compressor;
+
 
 import static com.netflix.nfgraph.OrdinalIterator.NO_MORE_ORDINALS;
 

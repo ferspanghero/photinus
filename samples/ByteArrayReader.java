@@ -15,7 +15,7 @@
  *
  */
 
-package com.netflix.nfgraph.util;
+
 
 import com.netflix.nfgraph.OrdinalIterator;
 import com.netflix.nfgraph.OrdinalSet;

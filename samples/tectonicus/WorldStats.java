@@ -34,7 +34,7 @@
 * OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 */
-package tectonicuss;
+package tectonicus;
 
 import java.io.File;
 import java.text.NumberFormat;
