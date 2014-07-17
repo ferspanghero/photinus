@@ -15,8 +15,7 @@ public class QuestionFactory {
 	/* Template Lists */
 	public ArrayList<String> templateMethodDeclaration = new ArrayList<String>();
 	public ArrayList<String> templateMethodInvocation = new ArrayList<String>();
-	public ArrayList<String> templateIf = new ArrayList<String>();
-	public ArrayList<String> templateSwitch = new ArrayList<String>();
+	public ArrayList<String> templateConditional = new ArrayList<String>();
 	public ArrayList<String> templateLoop = new ArrayList<String>();
 
 	public Integer numberOfStatements; 
@@ -50,13 +49,9 @@ public class QuestionFactory {
 				+ "by function '<F>' when called by function '<G>' at line <#> (e.g., wrong variables used as "
 				+ "parameters, wrong order, missing or wrong type of parameter, values of the parameters are not checked, etc .)?");
 		/* Conditional */
-		templateIf.add("Is it possible that the conditional clause at line <#> has "
+		templateConditional.add("Is it possible that the conditional clause at line <#> has "
 				+ "problems (e.g., wrong Boolean operator, wrong comparison, misplaced parentheses, etc.)?");
-		templateIf.add("Is there maybe something wrong with the body of the conditional clause between lines <#1> and <#2> "
-				+ "(e.g., enters the wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?");
-		templateSwitch.add("Is it possible that the conditional clause at line <#> has "
-				+ "problems (e.g., wrong Boolean operator, wrong comparison, misplaced parentheses, etc.)?");
-		templateSwitch.add("Is there maybe something wrong with the body of the conditional clause between lines <#1> and <#2> "
+		templateConditional.add("Is there maybe something wrong with the body of the conditional clause between lines <#1> and <#2> "
 				+ "(e.g., enters the wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?");
 		/* Loops */
 		templateLoop.add("Is there maybe something wrong with the '<L>-loop' construct at line <#> "
@@ -164,7 +159,7 @@ public class QuestionFactory {
 					break;
 
 				case CodeElement.IF_CONDITIONAL:
-					for (String templateForQuestion : templateIf)
+					for (String templateForQuestion : templateConditional)
 					{
 						MyIfStatement elementIf = (MyIfStatement)element;
 						questionPrompt = new String(templateForQuestion);
@@ -212,7 +207,7 @@ public class QuestionFactory {
 					break;
 
 				case CodeElement.SWITCH_CONDITIONAL:
-					for (String templateForQuestion : templateSwitch)
+					for (String templateForQuestion : templateConditional)
 					{
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = this.setUpQuestionPrompt(questionPrompt, element);
@@ -274,7 +269,7 @@ public class QuestionFactory {
 			this.endingLine = elementArg.getBodyEndingLine();
 			this.endingColumn = elementArg.getBodyEndingColumn();
 
-			System.out.println("Starting and ending line: " + this.startingLine + ", " + this.endingLine);
+//			System.out.println("Starting and ending line: " + this.startingLine + ", " + this.endingLine);
 			if ( this.startingLine != this.endingLine )
 			{
 				questionPromptArg = questionPromptArg.replaceAll("<#1>", this.startingLine.toString());

@@ -8,7 +8,6 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -52,12 +51,12 @@ public class MyVisitor extends ASTVisitor {
 		String nameOfThePackg = new String();
 		if (null == cu.getPackage())
 		{
-			System.out.println("Package: default");
+//			System.out.println("Package: default");
 			nameOfThePackg = "default";
 		}
 		else
 		{
-			System.out.println("Package: " + cu.getPackage().getName());
+//			System.out.println("Package: " + cu.getPackage().getName());
 			nameOfThePackg = cu.getPackage().getName().toString();
 		}
 		this.packageName = nameOfThePackg;
@@ -65,8 +64,8 @@ public class MyVisitor extends ASTVisitor {
 	
 	public boolean visit(TypeDeclaration node)
 	{
-		System.out.println("TypeDeclaration at line: " + cu.getLineNumber(node.getStartPosition()));	
-		System.out.println("TypeDeclaration name: " + node.getName());
+//		System.out.println("TypeDeclaration at line: " + cu.getLineNumber(node.getStartPosition()));	
+//		System.out.println("TypeDeclaration name: " + node.getName());
 		this.className = node.getName().toString();
 		return true;
 	}
@@ -95,12 +94,12 @@ public class MyVisitor extends ASTVisitor {
 		else
 		{
 			name = node.getName().toString();
-			System.out.println("Method name: " + name);
+//			System.out.println("Method name: " + name);
 		}
 		
 		/* For visibility */
 		int modifierIdent = node.getModifiers();
-		System.out.print("Visibility: ");
+//		System.out.print("Visibility: ");
 		if (Modifier.isPrivate(modifierIdent))
 			visibility = "Private";
 		else if (Modifier.isProtected(modifierIdent))
@@ -109,16 +108,16 @@ public class MyVisitor extends ASTVisitor {
 			visibility = "Public";
 		else
 			visibility = "Undefined";
-		System.out.println(visibility);
+//		System.out.println(visibility);
 		
-		System.out.println("Return type: " + node.getReturnType2());
+//		System.out.println("Return type: " + node.getReturnType2());
 		if ( null == node.getReturnType2() )
 			hasReturnStatement = false;
 		else if ( node.getReturnType2().toString().equalsIgnoreCase("void") )
 			hasReturnStatement = false;
 		else
 			hasReturnStatement = true;
-		System.out.println("Has return statement: " + hasReturnStatement);
+//		System.out.println("Has return statement: " + hasReturnStatement);
 		
 		signature = new MethodSignature(name, visibility, this.elementStartingLine);
 		parameters = node.parameters();
@@ -130,11 +129,11 @@ public class MyVisitor extends ASTVisitor {
 				String parameterName = parameterCasted.getName().toString();
 				String parameterType = parameterCasted.getType().toString();
 				MethodParameter parameterReady = new MethodParameter(parameterType, parameterName);
-				System.out.println("Parameter name: " + parameterName + " type: " + parameterType);
+//				System.out.println("Parameter name: " + parameterName + " type: " + parameterType);
 				signature.addMethodParameters(parameterReady);
 			}
 		}
-		System.out.println("Parameters: " + parameters);
+//		System.out.println("Parameters: " + parameters);
 		
 		setupElementEndPosition();
 		if (null == node.getBody())
@@ -175,10 +174,12 @@ public class MyVisitor extends ASTVisitor {
 			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
 			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
 			
-			System.out.println("Method invocation at line: " + this.elementStartingLine);	
-			System.out.println("Method name: " + node.getName().toString());
-			System.out.println("Method expression: " + node.getExpression().toString());
-			System.out.println("Method parameters " + node.arguments().toString());
+			System.out.println(this.elementStartingLine + " - " + node.getExpression() + "." + node.getName() + 
+					node.arguments().toString().replace('[', '(').replace(']', ')'));	
+//			System.out.println("Method name: " + node.getName().toString());
+//			System.out.println("Method expression package: " + node.getExpression().toString());
+//			System.out.println("Method parameters " + node.arguments().toString());
+			System.out.println();
 			setupElementEndPosition();
 
 			MyMethodCall methodCall = new MyMethodCall(node.getName().toString(), 
@@ -201,7 +202,7 @@ public class MyVisitor extends ASTVisitor {
 		this.bodyStartingColumn = cu.getColumnNumber(node.getThenStatement().getStartPosition());
 		setupBodyEndPostition();
 		
-		System.out.println(":::If at line: " + this.elementStartingLine);	
+//		System.out.println(":::If at line: " + this.elementStartingLine);	
 		
 		MyIfStatement ifCreated = (MyIfStatement)element;
 		if (null == node.getElseStatement()) // There is no else statement (body = then statement)
@@ -214,7 +215,7 @@ public class MyVisitor extends ASTVisitor {
 			// checking if belongs to an else-if statement
 			if (MyIfStatement.isIfofAnElseIfCase(this.snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
 			{	// match this if with its else-if case on hold onto stack
-				System.out.println("!:This if w NO else is part of an Else-If case");
+//				System.out.println("!:This if w NO else is part of an Else-If case");
 				ifCreated.setIfOfAnElse(true);
 				
 				MyIfStatement ifElementOnStack;
@@ -245,12 +246,12 @@ public class MyVisitor extends ASTVisitor {
 				
 				if (MyIfStatement.isIfofAnElseIfCase(snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
 				{	// match this if with its else-if case on hold onto stack
-					System.out.println("!:This if w NO else is part of an Else-If case");
+//					System.out.println("!:This if w NO else is part of an Else-If case");
 					ifCreated.setIfOfAnElse(true);
 				}
 				// adding element to the stack, not added on NewMethod yet
 				this.ifElements.push(ifCreated);
-				System.out.println("This if is now onto Stack!");
+//				System.out.println("This if is now onto Stack!");
 				
 			} 
 			else
@@ -269,7 +270,7 @@ public class MyVisitor extends ASTVisitor {
 				// checking if belongs to an else-if statement
 				if (MyIfStatement.isIfofAnElseIfCase(snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
 				{	// match this if with its else-if case on hold onto stack
-					System.out.println("::This if w else is part of an Else-If case");
+//					System.out.println("::This if w else is part of an Else-If case");
 					ifCreated.setIfOfAnElse(true);
 					
 					MyIfStatement ifElementOnStack;
@@ -303,7 +304,7 @@ public class MyVisitor extends ASTVisitor {
 		this.bodyStartingLine = this.bodyPosition.getStartingLineNumber();
 		this.bodyStartingColumn = this.bodyPosition.getStartingColumnNumber();
 		
-		System.out.println("Switch at line: " + this.elementStartingLine);	
+//		System.out.println("Switch at line: " + this.elementStartingLine);	
 		CodeElement element = new CodeElement(CodeElement.SWITCH_CONDITIONAL, 
 				this.elementStartingLine, this.elementStartingColumn, 
 				this.elementEndingLine, this.elementEndingColumn,
@@ -316,7 +317,7 @@ public class MyVisitor extends ASTVisitor {
 	public boolean visit(SwitchCase node)
 	{
 //		this.lastCaseVisited = node;
-		System.out.println("Case at line: " + cu.getLineNumber(node.getStartPosition()));	
+//		System.out.println("Case at line: " + cu.getLineNumber(node.getStartPosition()));	
 		return true;
 	}
 	
@@ -330,7 +331,7 @@ public class MyVisitor extends ASTVisitor {
 		this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
 		setupBodyEndPostition();
 		
-		System.out.println("For at line: " + cu.getLineNumber(node.getStartPosition()));
+//		System.out.println("For at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
 				this.elementStartingLine, this.elementStartingColumn, 
 				this.elementEndingLine, this.elementEndingColumn,
@@ -353,7 +354,7 @@ public class MyVisitor extends ASTVisitor {
 		this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
 		setupBodyEndPostition();
 		
-		System.out.println("ForEach at line: " + cu.getLineNumber(node.getStartPosition()));
+//		System.out.println("ForEach at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
 				this.elementStartingLine, this.elementStartingColumn, 
 				this.elementEndingLine, this.elementEndingColumn,
@@ -379,7 +380,7 @@ public class MyVisitor extends ASTVisitor {
 		this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
 		setupBodyEndPostition();
 		
-		System.out.println("Do-While at line: " + cu.getLineNumber(node.getStartPosition()));
+//		System.out.println("Do-While at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.DO_LOOP, 
 				this.elementStartingLine, this.elementStartingColumn, 
 				this.elementEndingLine, this.elementEndingColumn,
@@ -401,7 +402,7 @@ public class MyVisitor extends ASTVisitor {
 		this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
 		setupBodyEndPostition();
 		
-		System.out.println("While at line: " + cu.getLineNumber(node.getStartPosition()));
+//		System.out.println("While at line: " + cu.getLineNumber(node.getStartPosition()));
 		CodeElement element = new CodeElement(CodeElement.WHILE_LOOP, 
 				this.elementStartingLine, this.elementStartingColumn, 
 				this.elementEndingLine, this.elementEndingColumn,

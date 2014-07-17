@@ -24,7 +24,7 @@ public class CommentVisitor extends ASTVisitor {
         int startLineNumber = compilationUnit.getLineNumber(node.getStartPosition()) - 1;
         String lineComment = source[startLineNumber].trim();
 
-        System.out.println(lineComment);
+//        System.out.println(lineComment);
 
         return true;
     }
@@ -45,7 +45,7 @@ public class CommentVisitor extends ASTVisitor {
             }
         }
 
-        System.out.println(blockComment.toString());
+//        System.out.println(blockComment.toString());
 
         return true;
     }

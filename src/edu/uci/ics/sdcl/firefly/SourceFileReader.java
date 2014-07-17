@@ -10,13 +10,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
-
 public class SourceFileReader {
 
 	public static void main(String args[]) throws IOException{
-		CodeSnippetFactory codeSnippets = new CodeSnippetFactory(args[0], args[1]); // file name and file content
-		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippets();
+		CodeSnippetFactory codeSnippets = new CodeSnippetFactory("SimpleSampleCode", 
+				readFileToString("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\src\\sample\\JustOneSample\\SimpleSampleCode.java")); // file name and file content
+		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippetsForFile();
 		System.out.println();
 //		codeSnippets.printAll();
 		QuestionFactory questionFactory = new QuestionFactory();
@@ -36,18 +35,6 @@ public class SourceFileReader {
 		System.out.println("Number of questions: " + concreteQuestionsMade.size());
 		System.out.println("Number of statements: " + questionFactory.getNumberOfStatements());
 		//System.out.println("****************Coordinates****************");
-		
-		// calling memento and creating xlsx file
-		HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
-		
-		FileDebugSession debugMap = new FileDebugSession("SimpleSampleCode.java",  "source",concreteQuestionsMade);
-		debugSessionMap.put("SimpleSampleCode.java", debugMap);
-		
-		MicrotaskMemento memento = new MicrotaskMemento();
-		memento.insert("SimpleSampleCode.java", debugSessionMap.get("SimpleSampleCode.java"));
-		debugMap = memento.read("SimpleSampleCode.java");
-		
-		
 		
 		/* for debug purposes 
 		for (CodeSnippet method : methodsParsed) {
