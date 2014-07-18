@@ -24,7 +24,11 @@
 						</form>
 					</td>
 					
-					<td><img src="./images/ResultsButton-blue.jpg"></td>
+					<td><form method="POST" action='results'
+					name="results">
+					<input type="image" src="./images/ResultsButton.jpg"
+						value="results" name="results">
+				</form></td>
  
 			</center>  
 		</tr>
