@@ -19,7 +19,7 @@
 
 import java.util.List;
 
-import main.java.com.netflix.nfgraph.compressor.BitSetPropertyBuilder;
+import main.java.com.netflix.nfgraph.compressor.BitSetPropertyBuilder_buggy;
 import main.java.com.netflix.nfgraph.compressor.CompactPropertyBuilder;
 import main.java.com.netflix.nfgraph.compressor.HashedPropertyBuilder;
 
@@ -52,7 +52,7 @@ public class NFCompressedGraphBuilder {
     
     private final CompactPropertyBuilder compactPropertyBuilder;
     private final HashedPropertyBuilder hashedPropertyBuilder;
-    private final BitSetPropertyBuilder bitSetPropertyBuilder;
+    private final BitSetPropertyBuilder_buggy bitSetPropertyBuilder;
     
     private NFCompressedGraphPointers compressedGraphPointers;
     
@@ -67,7 +67,7 @@ public class NFCompressedGraphBuilder {
         
         this.compactPropertyBuilder = new CompactPropertyBuilder(fieldBuffer);
         this.hashedPropertyBuilder = new HashedPropertyBuilder(fieldBuffer);
-        this.bitSetPropertyBuilder = new BitSetPropertyBuilder(fieldBuffer);
+        this.bitSetPropertyBuilder = new BitSetPropertyBuilder_buggy(fieldBuffer);
         
         this.compressedGraphPointers = new NFCompressedGraphPointers();
     }

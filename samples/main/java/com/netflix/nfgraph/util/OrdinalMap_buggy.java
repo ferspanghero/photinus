@@ -15,7 +15,7 @@
  *
  */
 
-package com.netflix.nfgraph.util;
+package main.java.com.netflix.nfgraph.util;
 
 import Mixer;
 
@@ -48,19 +48,19 @@ import java.util.Iterator;
  * }
  * </pre>
  */
-public class OrdinalMap<T> implements Iterable<T> {
+public class OrdinalMap_buggy<T> implements Iterable<T> {
 
     private int hashedOrdinalArray[];
     private T objectsByOrdinal[];
     
     private int size;
     
-    public OrdinalMap() {
+    public OrdinalMap_buggy() {
         this(10);
     }
     
     @SuppressWarnings("unchecked")
-    public OrdinalMap(int expectedSize) {
+    public OrdinalMap_buggy(int expectedSize) {
         int mapArraySize = 1 << (32 - Integer.numberOfLeadingZeros(expectedSize * 4 / 3));
         int ordinalArraySize = mapArraySize * 3 / 4;
         

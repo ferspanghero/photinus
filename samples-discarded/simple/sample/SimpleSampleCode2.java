@@ -1,4 +1,4 @@
-package sample.JustOneSample;
+package simple.sample;
 
 public class SimpleSampleCode {
 

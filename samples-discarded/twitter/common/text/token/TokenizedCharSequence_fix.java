@@ -14,7 +14,7 @@
 // limitations under the License.
 // =================================================================================================
 
-package com.twitter.common.text.token;
+package twitter.common.text.token;
 
 import java.nio.CharBuffer;
 import java.util.Collections;
@@ -39,7 +39,7 @@ import com.twitter.common.text.token.attribute.TokenTypeAttribute;
 /**
 * Keeps the original text as well as its tokenized tokens.
 */
-public class TokenizedCharSequence implements CharSequence {
+public class TokenizedCharSequence_buggy implements CharSequence {
   public static final class Token implements CharSequence {
     public static final int DEFAULT_PART_OF_SPEECH = -1;
 
@@ -47,7 +47,7 @@ public class TokenizedCharSequence implements CharSequence {
     private final TokenType type;
     private final int pos;
     private final int inc;
-    private final TokenizedCharSequence group;
+    private final TokenizedCharSequence_buggy group;
 
     protected Token(CharBuffer term, TokenType type) {
       this(term, type, DEFAULT_PART_OF_SPEECH);
@@ -57,7 +57,7 @@ public class TokenizedCharSequence implements CharSequence {
       this(term, type, pos, 1, null);
     }
 
-    protected Token(CharBuffer term, TokenType type, int pos, int inc, @Nullable TokenizedCharSequence group) {
+    protected Token(CharBuffer term, TokenType type, int pos, int inc, @Nullable TokenizedCharSequence_buggy group) {
       this.term = term;
       this.type = type;
       this.pos = pos;
@@ -127,7 +127,7 @@ public class TokenizedCharSequence implements CharSequence {
       return inc;
     }
 
-    public TokenizedCharSequence getGroup() {
+    public TokenizedCharSequence_buggy getGroup() {
       return group;
     }
 
@@ -146,7 +146,7 @@ public class TokenizedCharSequence implements CharSequence {
   private int hashCode;
   private boolean hashCodeCalced = false;
 
-  protected TokenizedCharSequence(CharSequence text, List<Token> tokens) {
+  protected TokenizedCharSequence_buggy(CharSequence text, List<Token> tokens) {
     this.tokens = Collections.unmodifiableList(tokens);
     this.term = text;
   }
@@ -177,8 +177,8 @@ public class TokenizedCharSequence implements CharSequence {
   @Override
   public boolean equals(Object obj) {
     return (obj != null)
-      && (obj instanceof TokenizedCharSequence)
-      && ((TokenizedCharSequence) obj).term.toString().equals(this.term.toString());
+      && (obj instanceof TokenizedCharSequence_buggy)
+      && ((TokenizedCharSequence_buggy) obj).term.toString().equals(this.term.toString());
   }
 
   @Override
@@ -239,12 +239,14 @@ public class TokenizedCharSequence implements CharSequence {
     }
 
     if (types.length == 1) {
-     return typeToTokensMap.get(types[0]);
+    	List<Token> tokens = typeToTokensMap.get(types[0]);
+    	return (tokens != null) ? tokens : Lists.<Token>newArrayList();
     }
 
     List<Token> subtokens = Lists.newArrayList();
     for (TokenType type : types) {
-       subtokens.addAll(typeToTokensMap.get(type));
+    	List<Token> tokens = typeToTokensMap.get(type);
+    	subtokens.addAll((tokens != null) ? tokens : Lists.<Token>newArrayList());
     }
     return subtokens;
   }
@@ -298,7 +300,7 @@ public class TokenizedCharSequence implements CharSequence {
         TokenType type,
         int pos,
         int inc,
-        TokenizedCharSequence group) {
+        TokenizedCharSequence_buggy group) {
       Preconditions.checkArgument(offset >= 0);
       Preconditions.checkArgument(length >= 0);
       Preconditions.checkNotNull(type);
@@ -309,12 +311,12 @@ public class TokenizedCharSequence implements CharSequence {
       return this;
     }
 
-    public TokenizedCharSequence build() {
-      return new TokenizedCharSequence(origText, tokens);
+    public TokenizedCharSequence_buggy build() {
+      return new TokenizedCharSequence_buggy(origText, tokens);
     }
   }
 
-  public static final TokenizedCharSequence createFrom(TokenStream tokenizer) {
+  public static final TokenizedCharSequence_buggy createFrom(TokenStream tokenizer) {
     CharSequenceTermAttribute termAttr = tokenizer.getAttribute(CharSequenceTermAttribute.class);
     TokenTypeAttribute typeAttr = tokenizer.getAttribute(TokenTypeAttribute.class);
     PartOfSpeechAttribute posAttr = null;
@@ -331,12 +333,12 @@ public class TokenizedCharSequence implements CharSequence {
     }
 
     //Need to wait for increment token for termAttr to have charsequence properly set
-    TokenizedCharSequence.Builder builder = null;
+    TokenizedCharSequence_buggy.Builder builder = null;
 
     while (tokenizer.incrementToken()) {
       if (builder == null) {
         //Now we can set the term sequence for the builder.
-        builder = new TokenizedCharSequence.Builder(termAttr.getCharSequence());
+        builder = new TokenizedCharSequence_buggy.Builder(termAttr.getCharSequence());
       }
       builder.addToken(termAttr.getOffset(), termAttr.getLength(),
           typeAttr.getType(),
@@ -349,23 +351,23 @@ public class TokenizedCharSequence implements CharSequence {
     }
 
     if (builder == null) { //Never entered tokenizer loop, build an empty string
-      builder = new TokenizedCharSequence.Builder("");
+      builder = new TokenizedCharSequence_buggy.Builder("");
     }
 
     return builder.build();
   }
 
-  public static final TokenizedCharSequence createFrom(CharSequence text,
+  public static final TokenizedCharSequence_buggy createFrom(CharSequence text,
       TokenStream tokenizer) {
     tokenizer.reset(text);
     return createFrom(tokenizer);
   }
 
-  public static final List<TokenizedCharSequence> createFromTokenGroupsIn(
+  public static final List<TokenizedCharSequence_buggy> createFromTokenGroupsIn(
       TokenStream stream) {
     TokenGroupAttribute groupAttr = stream.getAttribute(TokenGroupAttribute.class);
 
-    List<TokenizedCharSequence> groups = Lists.newArrayList();
+    List<TokenizedCharSequence_buggy> groups = Lists.newArrayList();
     while (stream.incrementToken()) {
       Builder builder = new Builder(stream.term());
 

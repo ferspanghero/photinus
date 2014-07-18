@@ -15,7 +15,7 @@
  *
  */
 
-package com.netflix.nfgraph.compressor;
+package main.java.com.netflix.nfgraph.compressor;
 
 import static com.netflix.nfgraph.OrdinalIterator.NO_MORE_ORDINALS;
 import NFCompressedGraphBuilder;
@@ -32,11 +32,11 @@ import com.netflix.nfgraph.util.ByteArrayBuffer;
  * 
  * @see BitSetOrdinalSet
  */
-public class BitSetPropertyBuilder {
+public class BitSetPropertyBuilder_buggy {
 
 	private final ByteArrayBuffer buf;
 	
-	public BitSetPropertyBuilder(ByteArrayBuffer buf) {
+	public BitSetPropertyBuilder_buggy(ByteArrayBuffer buf) {
 		this.buf = buf;
 	}
 	

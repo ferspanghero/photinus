@@ -47,7 +47,7 @@ import com.google.gerrit.reviewdb.PatchSetApproval;
 /**
  * @author Steffen Pingel
  */
-public class PublishDialog extends GerritOperationDialog {
+public class PublishDialog_buggy extends GerritOperationDialog {
 
 	private static final String KEY_ID = "ApprovalCategoryValue.Id"; //$NON-NLS-1$
 
@@ -63,7 +63,7 @@ public class PublishDialog extends GerritOperationDialog {
 
 	private final IReviewItemSet set;
 
-	public PublishDialog(Shell parentShell, ITask task, PatchSetPublishDetail publishDetail, IReviewItemSet set,
+	public PublishDialog_buggy(Shell parentShell, ITask task, PatchSetPublishDetail publishDetail, IReviewItemSet set,
 			String editorCommentText) {
 		super(parentShell, task);
 		this.publishDetail = publishDetail;

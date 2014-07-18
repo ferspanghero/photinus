@@ -32,7 +32,7 @@ public class TokenizedCharSequenceStream extends TokenProcessor {
 	private final PositionIncrementAttribute incAttr;
 	private final TokenGroupAttributeImpl groupAttr;
 
-	private TokenizedCharSequence tokenized = null;
+	private TokenizedCharSequence_buggy tokenized = null;
 	private int currentIndex = 0;
 
 	/**
@@ -101,7 +101,7 @@ public class TokenizedCharSequenceStream extends TokenProcessor {
 			return false;
 		}
 
-		TokenizedCharSequence.Token token = tokenized.getTokens().get(currentIndex);
+		TokenizedCharSequence_buggy.Token token = tokenized.getTokens().get(currentIndex);
 
 		updateOffsetAndLength(token.getOffset(), token.getLength());
 		updateType(token.getType());
@@ -122,9 +122,9 @@ public class TokenizedCharSequenceStream extends TokenProcessor {
 	@Override
 	public void reset(CharSequence input) {
 		// Check if input is already tokenized or not.
-		if (input instanceof TokenizedCharSequence) {
+		if (input instanceof TokenizedCharSequence_buggy) {
 			clearAttributes();
-			tokenized = (TokenizedCharSequence) input;
+			tokenized = (TokenizedCharSequence_buggy) input;
 			currentIndex = 0;
 			updateInputCharSequence(tokenized);
 		} else {

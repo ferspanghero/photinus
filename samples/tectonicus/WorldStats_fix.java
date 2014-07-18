@@ -43,7 +43,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WorldStats
+public class WorldStats_buggy
 {
 	private int numChunks;
 	private int numPortals;
@@ -51,7 +51,7 @@ public class WorldStats
 	
 	private Map<IdDataPair, Long> blockIdCounts;
 	
-	public WorldStats()
+	public WorldStats_buggy()
 	{
 		blockIdCounts = new HashMap<IdDataPair, Long>();
 	}
@@ -132,7 +132,7 @@ public class WorldStats
 				args.put("name", "\""+key+"\"");
 				
 				String countStr = NumberFormat.getInstance().format(count);
-				args.put("count", "'"+countStr+"'");
+				args.put("count", "\""+countStr+"\"");
 				
 				jsWriter.write(args);
 			}
