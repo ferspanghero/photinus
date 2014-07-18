@@ -106,7 +106,21 @@
 		}
 	</script>
 
-
+<div id="myDiv">
+		
+		<form name="skipForm" action="microtask" value="skip" method="post"></form>
+		<br>
+	<!-- Hidden fields -->
+			
+			<input type="hidden"
+				id="startLine" value=${requestScope["startLine"]}> 
+			<input
+				type="hidden" id="startColumn" value=${requestScope["startColumn"]}>
+			<input type="hidden" id="endLine" value=${requestScope["endLine"]}>
+			<input type="hidden" id="endColumn"
+				value=${requestScope["endColumn"]}>
+	</div>
+	
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script
@@ -141,7 +155,7 @@
 			editor.gotoLine(startLine);
 		}, 100);
 	</script>
-
+	
 
 	<div id="thumbs"   style="background-color: #FFFAEB">
 		<br>
@@ -153,32 +167,24 @@
 			<a id="option4"> <input type="radio" name="answer" value="4">Probably not</a> 
 			<a id="option5"> <input type="radio" name="answer" value="5">No</a> 
 			<span class="stretch"></span>
-
-			<!-- Hidden fields -->
 			<input type="hidden" name="fileName"
 				value=${requestScope["fileName"]}> 
 			<input type="hidden"
 				name="id" value=${requestScope["id"]}> 
-			<input type="hidden"
-				id="startLine" value=${requestScope["startLine"]}> 
-			<input
-				type="hidden" id="startColumn" value=${requestScope["startColumn"]}>
-			<input type="hidden" id="endLine" value=${requestScope["endLine"]}>
-			<input type="hidden" id="endColumn"
-				value=${requestScope["endColumn"]}>
-		</form>
+		
+	
 		<br> Please provide an explanation for your answer: <br>
 		<textarea name="explanation" id="explanation" rows="3" cols="72"></textarea>
+			</form>
+</div>
 
-
-	</div>
-	<div id="myDiv">
-		<br> <INPUT TYPE="button" VALUE="Skip this" onclick="skipAnswer()">
+<div id=myDiv>
+<br> <INPUT TYPE="button" VALUE="Skip this" onclick="skipAnswer()">
 		<INPUT TYPE="button" VALUE="Submit Answer"
 			onclick="submitAnswer(event)">
-		<form name="skipForm" action="microtask" value="skip" method="post"></form>
-		<br>
-
 	</div>
+	
+	
+	
 </body>
 </html>
