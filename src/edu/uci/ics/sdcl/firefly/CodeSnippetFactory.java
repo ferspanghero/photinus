@@ -3,6 +3,11 @@ package edu.uci.ics.sdcl.firefly;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 public class CodeSnippetFactory {
 	private String folderPath;
@@ -28,6 +33,7 @@ public class CodeSnippetFactory {
 		this.codeSnippetList = new ArrayList<CodeSnippet>(); //Cleans up the snippet list
 		@SuppressWarnings("unused")
 		JavaParser parser = new JavaParser(this);
+		this.setCallers(this.codeSnippetList);
 		return this.codeSnippetList;
 	}
 	
@@ -79,6 +85,40 @@ public class CodeSnippetFactory {
 		}
 	}
 	
+	public void setCallers(ArrayList<CodeSnippet> codeSnippets)
+	{
+		System.out.println(" <> ");
+		/* building and populating callers-callees structure */
+		HashMap<CodeSnippet, ArrayList<String>> callersCalles = new HashMap<CodeSnippet, ArrayList<String>>();
+		for (CodeSnippet codeSnippet : codeSnippets) {	// for each method (caller)
+			ArrayList<String> callees = new ArrayList<String>();
+			System.out.println("Caller: " + codeSnippet.getMethodSignature().getName());
+			for (CodeElement codeElement : codeSnippet.getStatements()) {	// find the callees (within the method)
+				if (CodeElement.METHOD_INVOCATION == codeElement.getType())
+				{
+					MyMethodCall methodInvocation = (MyMethodCall)codeElement;
+					callees.add(methodInvocation.getName());
+					System.out.println("--callee: " + methodInvocation.getName()); 
+				}
+			}
+			callersCalles.put(codeSnippet, callees); //add to the hash map
+			System.out.println(" <> ");
+		}
+		
+		/* Updating the methods callers */
+		for (CodeSnippet codeSnippet : codeSnippets) {
+			String methodName = codeSnippet.getMethodSignature().getName();	// callee name
+			Set<Map.Entry<CodeSnippet, ArrayList<String>>> set = callersCalles.entrySet();
+			Iterator<Entry<CodeSnippet, ArrayList<String>>> i = set.iterator();
+			while(i.hasNext()) 	// searching for caller (from other methods within this codeSnippet list)
+			{
+		         Map.Entry<CodeSnippet, ArrayList<String>> me = (Map.Entry<CodeSnippet, ArrayList<String>>)i.next();
+		          if (-1 != me.getValue().indexOf(methodName))	// this methodName is called so...
+		        	  codeSnippet.addCaller(me.getKey());		// ...update its caller list field
+		    }
+		}
+		
+	}
 	
 	public String getFileName(){
 		return fileName;
@@ -98,7 +138,6 @@ public class CodeSnippetFactory {
 		this.codeSnippetList.add(method);
 	}
 	
-		
 	public String getFileContent()
 	{
 		return fileContent;

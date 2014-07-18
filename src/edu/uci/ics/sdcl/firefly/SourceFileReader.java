@@ -13,9 +13,8 @@ import java.util.Set;
 public class SourceFileReader {
 
 	public static void main(String args[]) throws IOException{
-		CodeSnippetFactory codeSnippets = new CodeSnippetFactory("BitSetPropertyBuilder", 
-				readFileToString("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples"
-						+ "\\main\\java\\com\\netflix\\nfgraph\\compressor\\BitSetPropertyBuilder.java")); // file name and file content
+		CodeSnippetFactory codeSnippets = new CodeSnippetFactory("OrdinalMap", 
+				readFileToString("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap.java")); // file name and file content
 		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippetsForFile();
 		System.out.println();
 //		codeSnippets.printAll();
@@ -35,7 +34,17 @@ public class SourceFileReader {
 		System.out.println("Number of Snippets: " + methodsParsed.size());
 		System.out.println("Number of questions: " + concreteQuestionsMade.size());
 		System.out.println("Number of statements: " + questionFactory.getNumberOfStatements());
-		//System.out.println("****************Coordinates****************");
+		
+		System.out.println("****************Method callers****************");
+		for (CodeSnippet snippet : methodsParsed) {
+			System.out.print(snippet.getMethodSignature().getName() + " is called by [");
+			ArrayList<CodeSnippet> methods = snippet.getCallers();
+			for (CodeSnippet codeSnippet : methods) {
+				System.out.print(codeSnippet.getMethodSignature().getName() + ", ");
+			}
+			System.out.println("]");
+			
+		}
 		
 		/* for debug purposes 
 		for (CodeSnippet method : methodsParsed) {
