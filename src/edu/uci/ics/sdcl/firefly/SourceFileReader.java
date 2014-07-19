@@ -13,8 +13,8 @@ import java.util.Set;
 public class SourceFileReader {
 
 	public static void main(String args[]) throws IOException{
-		CodeSnippetFactory codeSnippets = new CodeSnippetFactory("OrdinalMap", 
-				readFileToString("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap.java")); // file name and file content
+		CodeSnippetFactory codeSnippets = new CodeSnippetFactory("OrdinalMap_buggy", 
+				readFileToString("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap_buggy.java")); // file name and file content
 		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippetsForFile();
 		System.out.println();
 //		codeSnippets.printAll();

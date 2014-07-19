@@ -26,11 +26,13 @@ public class CodeSnippet implements Serializable
 	protected ArrayList<CodeElement> statements;	// list of statements
 	protected ArrayList<MethodSignature> methodCalls;	// list of method calls
 	
+	protected String codeSnippetFromFileContent;	// the string that has the whole body of the method
+
 	private final static String newline = System.getProperty("line.separator");	// Just to jump line @toString
 	
 	/* constructor for methods without body */
 	public CodeSnippet(String packageName, String className, MethodSignature methodSignature, 
-			String methodBody, Boolean returnStatement, 
+			String methodBody, Boolean returnStatement,
 			Integer elementStartingLineArg, Integer elementStartingColumnArg, 
 			Integer elementEndingLineArg, Integer elementEndingColumnArg)
 	{
@@ -193,5 +195,13 @@ public class CodeSnippet implements Serializable
 
 	public Integer getBodyEndingColumn() {
 		return bodyEndingColumn;
+	}
+	// getting codeSnippet from file content
+	public String getCodeSnippetFromFileContent() {
+		return codeSnippetFromFileContent;
+	}
+
+	public void setCodeSnippetFromFileContent(String codeSnippetFromFileContent) {
+		this.codeSnippetFromFileContent = codeSnippetFromFileContent;
 	}
 }

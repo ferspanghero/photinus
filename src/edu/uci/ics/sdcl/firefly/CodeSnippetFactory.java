@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -15,12 +16,12 @@ public class CodeSnippetFactory {
 	private String fileName;
 	private String[] fileContentPerLine;
 	private ArrayList<CodeSnippet> codeSnippetList= new ArrayList<CodeSnippet>();
-	
+
 	//public CodeSnippetFactory(String folderPathArg)
-//	{
-//		this.folderPath = folderPathArg;
-//	}
-	
+	//	{
+	//		this.folderPath = folderPathArg;
+	//	}
+
 	public CodeSnippetFactory(String fileName, String fileContent){
 		this.fileContent = fileContent;
 		this.fileName = fileName;
@@ -34,9 +35,10 @@ public class CodeSnippetFactory {
 		@SuppressWarnings("unused")
 		JavaParser parser = new JavaParser(this);
 		this.setCallers(this.codeSnippetList);
+		this.setMethodTexts(this.codeSnippetList, this.fileContentPerLine);
 		return this.codeSnippetList;
 	}
-	
+
 	/** Generates code snippets for all files in a the provide filePath */
 	public ArrayList<CodeSnippet> generateSnippets()
 	{
@@ -50,7 +52,7 @@ public class CodeSnippetFactory {
 		}
 		return codeSnippetList;
 	}
-	
+
 	public void printAll()
 	{
 		System.out.println("Printing all methods");
@@ -60,7 +62,7 @@ public class CodeSnippetFactory {
 			System.out.println(method);
 		}
 	}
-	
+
 	//loop directory to get file list
 	private void ParseFilesInDir() throws IOException
 	{
@@ -75,7 +77,7 @@ public class CodeSnippetFactory {
 			for (File f : files ) {
 				filePath = f.getAbsolutePath();
 				if(f.isFile()){
-		/* this implementation require endLine to be update by its codeSnippet constructor */
+					/* this implementation require endLine to be update by its codeSnippet constructor */
 					this.fileContent = SourceFileReader.readFileToString(filePath);
 					this.fileContentPerLine = fileContent.split("\r\n|\r|\n");
 					@SuppressWarnings("unused")
@@ -84,7 +86,7 @@ public class CodeSnippetFactory {
 			}
 		}
 	}
-	
+
 	public void setCallers(ArrayList<CodeSnippet> codeSnippets)
 	{
 		System.out.println(" <> ");
@@ -104,7 +106,7 @@ public class CodeSnippetFactory {
 			callersCalles.put(codeSnippet, callees); //add to the hash map
 			System.out.println(" <> ");
 		}
-		
+
 		/* Updating the methods callers */
 		for (CodeSnippet codeSnippet : codeSnippets) {
 			String methodName = codeSnippet.getMethodSignature().getName();	// callee name
@@ -112,22 +114,55 @@ public class CodeSnippetFactory {
 			Iterator<Entry<CodeSnippet, ArrayList<String>>> i = set.iterator();
 			while(i.hasNext()) 	// searching for caller (from other methods within this codeSnippet list)
 			{
-		         Map.Entry<CodeSnippet, ArrayList<String>> me = (Map.Entry<CodeSnippet, ArrayList<String>>)i.next();
-		          if (-1 != me.getValue().indexOf(methodName))	// this methodName is called so...
-		        	  codeSnippet.addCaller(me.getKey());		// ...update its caller list field
-		    }
+				Map.Entry<CodeSnippet, ArrayList<String>> me = (Map.Entry<CodeSnippet, ArrayList<String>>)i.next();
+				if (-1 != me.getValue().indexOf(methodName))	// this methodName is called so...
+					codeSnippet.addCaller(me.getKey());		// ...update its caller list field
+			}
 		}
-		
+
 	}
-	
+
+	// assuming that the method is NOT OVERLOADED
+	private void setMethodTexts(ArrayList<CodeSnippet> codeSnippetsArg, String[] fileContentPerLineArg)
+	{
+		for (CodeSnippet codeSnippet : codeSnippetsArg) {
+			int startingLine = codeSnippet.getMethodSignature().getLineNumber() -1;	// -1 because the vector starts from 0
+			int endingLine = codeSnippet.getBodyEndingLine() -1;	// -1 because the vector starts from 0
+			/* getting method content */
+			Scanner scanner = new Scanner(this.fileContent);
+			int j = 0;
+			StringBuilder builder = new StringBuilder();
+			String newline = System.getProperty("line.separator");
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				if ( (j >= startingLine) && (j <= endingLine) )
+				{
+					builder.append(line + newline);
+//					System.out.println("line: " + line);
+				}
+				j++;
+				if (j > endingLine) break;
+//				System.out.println("j: " + j);
+			}
+			scanner.close();
+			/* updating on respective CodeSnippet */
+			codeSnippet.setCodeSnippetFromFileContent(builder.toString());
+			System.out.println("@@@@@@@@@@@@@@@@@@@");
+			System.out.println(codeSnippet.getCodeSnippetFromFileContent());
+			
+			
+		}
+		System.out.println();
+	}
+
 	public String getFileName(){
 		return fileName;
 	}
-	
+
 	public String[] getFileContentPerLine() {
 		return fileContentPerLine;
 	}
-	
+
 	public ArrayList<CodeSnippet> getCodeSnippetList()
 	{
 		return codeSnippetList;
@@ -137,7 +172,7 @@ public class CodeSnippetFactory {
 	{
 		this.codeSnippetList.add(method);
 	}
-	
+
 	public String getFileContent()
 	{
 		return fileContent;

@@ -57,7 +57,7 @@ public class MicrotaskServlet extends HttpServlet {
 			Microtask task = returnValues.task;
 			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
 			fileName = returnValues.fileName;
-			String fileContent = returnValues.fileContent;
+			String fileContent = task.getMethod().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
 			request.setAttribute("question", task.getQuestion());
 			request.setAttribute("source", fileContent);   
 
@@ -92,7 +92,7 @@ public class MicrotaskServlet extends HttpServlet {
 			Microtask task = returnValues.task;
 			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
 			String fileName = returnValues.fileName;
-			String fileContent = returnValues.fileContent;
+			String fileContent = task.getMethod().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
 			request.setAttribute("question", task.getQuestion());
 			request.setAttribute("source", fileContent);   
 
