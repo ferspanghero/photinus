@@ -53,10 +53,9 @@
 							<td><input name="fileUploaded" type="file" size="40" src="./images/Browse.jpg"></td>
 						</tr>
 						<tr>
-							<td align="right"></td>
-							<td><input type="submit" value="Generate Microtasks"> 
-							</td>
-								 
+							<td align="right">Method Name:</td>
+							<td><input type="text" name="targetMethod" id="targetMethod" size=54></input></td>
+							<td><input type="submit" value="Generate Microtasks"></td>				 
 						</tr>
 					</table>
 
