@@ -147,8 +147,8 @@ public class CodeSnippetFactory {
 			scanner.close();
 			/* updating on respective CodeSnippet */
 			codeSnippet.setCodeSnippetFromFileContent(builder.toString());
-			System.out.println("@@@@@@@@@@@@@@@@@@@");
-			System.out.println(codeSnippet.getCodeSnippetFromFileContent());
+//			System.out.println("@@@@@@@@@@@@@@@@@@@");
+//			System.out.println(codeSnippet.getCodeSnippetFromFileContent());
 			
 			
 		}

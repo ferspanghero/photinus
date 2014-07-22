@@ -169,7 +169,7 @@
 		    editor.setBehavioursEnabled(false);
 		    editor.setOption("highlightActiveLine", false);		// disable highligthing on the active line
 		    editor.setShowPrintMargin(false);					// disable printing margin
-		    editor.setOption("firstLineNumber", 10);
+		    
 		    
 			var startLine = document.getElementById("startLine").value;
 			var startColumn =  document.getElementById("startColumn").value;
@@ -183,7 +183,7 @@
 				editor.gotoLine(startLine);
 			}, 100);
 		  
-		    //alert("here 2");
+		   
 			//document.write(startLine, ", ", startColumn, " C ");
 			//document.write(endLine, ", ", endColumn);
 		</script>

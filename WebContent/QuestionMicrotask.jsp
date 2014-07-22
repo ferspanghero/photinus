@@ -111,14 +111,11 @@
 		<form name="skipForm" action="microtask" value="skip" method="post"></form>
 		<br>
 	<!-- Hidden fields -->
-			
-			<input type="hidden"
-				id="startLine" value=${requestScope["startLine"]}> 
-			<input
-				type="hidden" id="startColumn" value=${requestScope["startColumn"]}>
+			<input type="hidden" id="startLine" value=${requestScope["startLine"]}> 
+			<input type="hidden" id="startColumn" value=${requestScope["startColumn"]}>
 			<input type="hidden" id="endLine" value=${requestScope["endLine"]}>
-			<input type="hidden" id="endColumn"
-				value=${requestScope["endColumn"]}>
+			<input type="hidden" id="endColumn"	value=${requestScope["endColumn"]}>
+			<input type="hidden" id="methodStartingLine" value=${requestScope["methodStartingLine"]}>
 	</div>
 	
 	<script
@@ -140,19 +137,22 @@
 		editor.setTheme("ace/theme/github");
 		editor.getSession().setMode("ace/mode/java");
 		editor.setBehavioursEnabled(false);
-		editor.setOption("highlightActiveLine", false); // disable highligthing on the active line
-		editor.setShowPrintMargin(false); // disable printing margin
+		editor.setOption("highlightActiveLine", false);	// disable highligthing on the active line
+		editor.setShowPrintMargin(false); 				// disable printing margin
 
 		var startLine = document.getElementById("startLine").value;
 		var startColumn = document.getElementById("startColumn").value;
 		var endLine = document.getElementById("endLine").value;
 		var endColumn = document.getElementById("endColumn").value;
 		var Range = ace.require("ace/range").Range;
+		
+		var codeSnippetStartingLine = parseInt(document.getElementById("methodStartingLine").value);
+		editor.setOption("firstLineNumber", codeSnippetStartingLine);	// set the starting line to <second parameter>
 
 		setTimeout(function() {
-			editor.session.addMarker(new Range(startLine - 1, startColumn,
-					endLine - 1, endColumn), "ace_active-line", "line");
-			editor.gotoLine(startLine);
+			editor.session.addMarker(new Range(startLine - codeSnippetStartingLine, startColumn,
+					endLine - codeSnippetStartingLine, endColumn), "ace_active-line", "line");
+			editor.gotoLine(startLine - codeSnippetStartingLine + 1);
 		}, 100);
 	</script>
 	
