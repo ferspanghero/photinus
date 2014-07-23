@@ -34,39 +34,51 @@ public class FileUploadServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println(request.getParameter("targetMethod"));
 		//process only if its multipart content
+		String targetName = new String();
+		String fileName = new String();
+		String fileContent = new String();
 		if(ServletFileUpload.isMultipartContent(request)){
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
 			String return_message ="";
 			try {
 				List<FileItem>  items = upload.parseRequest(request);
-				for(FileItem item: items){//Already enables more than one file upload.
+				for(FileItem item: items){	//Already enables more than one file upload.
 					if (!item.isFormField()) { 
-						String fileName = item.getName(); 
+						fileName = item.getName(); 
 						long sizeInBytes = item.getSize();
-
 						if(sizeInBytes>0){
-							String fileContent = new Scanner(item.getInputStream(),"Cp1252").useDelimiter("\\A").next();		  				
+							// reading fileContent
+							Scanner scanner = new Scanner(item.getInputStream(),"Cp1252");
+							fileContent = scanner.useDelimiter("\\A").next();		  				
 							return_message = "File <b>"+ fileName+"</b> was successfully uploaded.<br> Size: "+sizeInBytes+" bytes <br>";
-							String results = generateMicrotasks(fileName, fileContent);
-							return_message = return_message + results ;
+							scanner.close();
 						}
 						else
 							return_message = "File <b>"+ fileName+"</b> is empty!";
+						
 						request.setAttribute("return_message",return_message);
 						request.setAttribute("fileName", fileName); 
 						//request.setAttribute("source", source);
 					}
-					else
-						request.setAttribute("return_message",								"");
+					else{
+						// getting specific method name
+						if (item.getFieldName().equalsIgnoreCase("targetMethod")){
+							targetName = item.getString();
+							String results = generateMicrotasks(fileName, fileContent, targetName);
+							return_message = return_message + results;
+						}
+						request.setAttribute("return_message", return_message);
+					}
 				}
 			} catch (FileUploadException e) {
 				request.setAttribute("return_message", "File upload failed. " + e);
@@ -79,14 +91,23 @@ public class FileUploadServlet extends HttpServlet {
 	}
 
 
-	private String generateMicrotasks(String fileName, String fileContent){
+	private String generateMicrotasks(String fileName, String fileContent, String methodName){
 		//calls CodeSnippetFactory
 		CodeSnippetFactory codeSnippetFactory = new CodeSnippetFactory(fileName,fileContent);
 		ArrayList<CodeSnippet> snippetList = codeSnippetFactory.generateSnippetsForFile();
-
+		
+		//filtering by methodName
+		System.out.print("candidates: " + methodName);
+		ArrayList<CodeSnippet> filteredCodeSnippets = new ArrayList<CodeSnippet>();
+		for (CodeSnippet codeSnippet : snippetList) {
+			System.out.print(codeSnippet.getMethodSignature().getName() + ", ");
+			if (codeSnippet.getMethodSignature().getName().equals(methodName))
+				filteredCodeSnippets.add(codeSnippet);
+		}
+		System.out.println();
 		//calls QuestionFactory
 		QuestionFactory questionFactory = new QuestionFactory ();
-		HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(snippetList);
+		HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(filteredCodeSnippets);
 		FileDebugSession fileDebuggingSession = new FileDebugSession(fileName,fileContent, microtaskMap);
 
 		//Persist data
@@ -101,8 +122,8 @@ public class FileUploadServlet extends HttpServlet {
 			results = "Number of code snippets: "+numberOfCodeSnippets+ "<br> Microtasks generated: " + numberOfMicrotasks+"<br>";
 		}
 		else
-			results = "No Microtasks were generated. Please review the file.";
-
+			results = "No Microtasks were generated. Please review the file and method name.";
+		System.out.println(results);
 		return results;
 	}
 
