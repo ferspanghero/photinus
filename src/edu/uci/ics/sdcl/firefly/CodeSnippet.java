@@ -7,6 +7,7 @@ public class CodeSnippet implements Serializable
 	protected String packageName;					// package name
 	protected String className; 					// file
 	protected ArrayList<CodeSnippet> callers;		// all callers of this method within the file
+	protected ArrayList<CodeSnippet> callees;		// all callees of this method within the file
 	
 	protected String methodBody;					// whole content of method
 	/* finding starting and ending position */
@@ -24,7 +25,6 @@ public class CodeSnippet implements Serializable
 	protected Boolean returnStatement;				// true if there is a return value
 	protected MethodSignature methodSignature;		// parsed method declaration
 	protected ArrayList<CodeElement> statements;	// list of statements
-	protected ArrayList<MethodSignature> methodCalls;	// list of method calls
 	
 	protected String codeSnippetFromFileContent;	// the string that has the whole body of the method
 
@@ -36,7 +36,6 @@ public class CodeSnippet implements Serializable
 			Integer elementStartingLineArg, Integer elementStartingColumnArg, 
 			Integer elementEndingLineArg, Integer elementEndingColumnArg)
 	{
-		this.callers = new ArrayList<CodeSnippet>();
 		this.packageName = packageName;
 		this.className = className;
 		this.methodSignature = methodSignature;
@@ -54,7 +53,8 @@ public class CodeSnippet implements Serializable
 		this.bodyEndingColumn = CodeElement.NO_NUMBER_ASSOCIATED;
 		
 		this.statements = new ArrayList<CodeElement>();
-		this.methodCalls = new ArrayList<MethodSignature>();
+		this.callers = new ArrayList<CodeSnippet>();
+		this.callees = new ArrayList<CodeSnippet>();
 	}
 	
 	/* constructor for methods with body */
@@ -65,7 +65,6 @@ public class CodeSnippet implements Serializable
 			Integer bodyStartingLineArg, Integer bodyStartingColumnArg,
 			Integer bodyEndingLineArg, Integer bodyEndingColumnArg)
 	{
-		this.callers = new ArrayList<CodeSnippet>();
 		this.packageName = packageName;
 		this.className = className;
 		this.methodSignature = methodSignature;
@@ -83,7 +82,8 @@ public class CodeSnippet implements Serializable
 		this.bodyEndingColumn = bodyEndingColumnArg;	
 		
 		this.statements = new ArrayList<CodeElement>();
-		this.methodCalls = new ArrayList<MethodSignature>();
+		this.callers = new ArrayList<CodeSnippet>();
+		this.callees = new ArrayList<CodeSnippet>();
 	}
 
 	@Override
@@ -112,9 +112,19 @@ public class CodeSnippet implements Serializable
 		this.callers.add(callerSnippet);
 	}
 	
+	public void addCallee(CodeSnippet calleeSnippet)
+	{
+		this.callees.add(calleeSnippet);
+	}
+	
 	public ArrayList<CodeSnippet> getCallers()
 	{
 		return this.callers;
+	}
+	
+	public ArrayList<CodeSnippet> getCallees()
+	{
+		return this.callees;
 	}
 
 	public String getPackageName() {

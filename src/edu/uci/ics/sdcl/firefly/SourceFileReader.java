@@ -16,6 +16,30 @@ public class SourceFileReader {
 		CodeSnippetFactory codeSnippets = new CodeSnippetFactory("OrdinalMap_buggy", 
 				readFileToString("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap_buggy.java")); // file name and file content
 		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippetsForFile();
+		for (CodeSnippet codeSnippet : methodsParsed) {
+			System.out.println("--> " + codeSnippet.getMethodSignature().getName());
+			System.out.println("callers: ");
+			for (CodeSnippet caller : codeSnippet.getCallers())
+			{
+				System.out.print("\t");
+				System.out.print(caller.getMethodSignature().getName());
+				if (codeSnippet.getCallers().indexOf(caller) < (codeSnippet.getCallers().size()-1))
+					System.out.print(", ");
+				else
+					System.out.println();
+			}
+			System.out.println("callees: ");
+			for (CodeSnippet callee : codeSnippet.getCallees())
+			{
+				System.out.print("\t");
+				System.out.print(callee.getMethodSignature().getName());
+				if (codeSnippet.getCallees().indexOf(callee) < (codeSnippet.getCallees().size()-1))
+					System.out.print(", ");
+				else
+					System.out.println();
+			}
+			System.out.println();
+		}
 		System.out.println();
 //		codeSnippets.printAll();
 		QuestionFactory questionFactory = new QuestionFactory();

@@ -7,9 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
  
-
 import edu.uci.ics.sdcl.firefly.Answer;
-import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
+import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
 import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
@@ -59,8 +58,34 @@ public class MicrotaskServlet extends HttpServlet {
 			fileName = returnValues.fileName;
 			String fileContent = task.getMethod().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
 			request.setAttribute("question", task.getQuestion());
-			request.setAttribute("source", fileContent);   
+			request.setAttribute("source", fileContent); 	// content displayed on the first ACE Editor
+			/* preparing the second ACE Editor - callers */
+			StringBuilder builder = new StringBuilder();
+			String newline = System.getProperty("line.separator");
+			builder.append("The method above is called by: ");
+			builder.append(newline);
+			for (CodeSnippet caller : task.getMethod().getCallers()) {
+				builder.append(caller.getCodeSnippetFromFileContent());	// appending caller
+				if ( task.getMethod().getCallers().indexOf(caller) < (task.getMethod().getCallers().size()-1) ){
+					builder.append(newline);	// appending two new lines in case it is NOT the last caller 
+					builder.append(newline);
+				}
+			}			
+			request.setAttribute("caller", builder.toString());
 
+			/* preparing the third ACE Editor - callees */
+			builder.setLength(0);	// reseting the builder
+			builder.append("The method above has callee(s): ");
+			builder.append(newline);
+			for (CodeSnippet callee : task.getMethod().getCallees()) {
+				builder.append(callee.getCodeSnippetFromFileContent());	// appending caller
+				if ( task.getMethod().getCallees().indexOf(callee) < (task.getMethod().getCallees().size()-1) ){
+					builder.append(newline);	// appending two new lines in case it is NOT the last callee 
+					builder.append(newline);
+				}
+			}			
+			request.setAttribute("callee", builder.toString());
+			
 			request.setAttribute("id", task.getID());
 			request.setAttribute("fileName", fileName);
 			request.setAttribute("explanation",""); //clean up the explanation field.
@@ -97,7 +122,33 @@ public class MicrotaskServlet extends HttpServlet {
 			String fileContent = task.getMethod().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
 			request.setAttribute("question", task.getQuestion());
 			request.setAttribute("source", fileContent);   
-
+			/* preparing the second ACE Editor - callers */
+			StringBuilder builder = new StringBuilder();
+			String newline = System.getProperty("line.separator");
+			builder.append("The method above is called by: ");
+			builder.append(newline);
+			for (CodeSnippet caller : task.getMethod().getCallers()) {
+				builder.append(caller.getCodeSnippetFromFileContent());	// appending caller
+				if ( task.getMethod().getCallers().indexOf(caller) < (task.getMethod().getCallers().size()-1) ){
+					builder.append(newline);	// appending two new lines in case it is NOT the last caller 
+					builder.append(newline);
+				}
+			}			
+			request.setAttribute("caller", builder.toString());
+			
+			/* preparing the third ACE Editor - callees */
+			builder.setLength(0);	// reseting the builder
+			builder.append("The method above has callee(s): ");
+			builder.append(newline);
+			for (CodeSnippet callee : task.getMethod().getCallees()) {
+				builder.append(callee.getCodeSnippetFromFileContent());	// appending caller
+				if ( task.getMethod().getCallees().indexOf(callee) < (task.getMethod().getCallees().size()-1) ){
+					builder.append(newline);	// appending two new lines in case it is NOT the last callee 
+					builder.append(newline);
+				}
+			}			
+			request.setAttribute("callee", builder.toString());
+			
 			request.setAttribute("id", task.getID());
 			request.setAttribute("fileName", fileName);
 			request.setAttribute("explanation",""); //clean up the explanation field.

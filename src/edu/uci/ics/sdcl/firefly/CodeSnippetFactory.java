@@ -115,8 +115,10 @@ public class CodeSnippetFactory {
 			while(i.hasNext()) 	// searching for caller (from other methods within this codeSnippet list)
 			{
 				Map.Entry<CodeSnippet, ArrayList<String>> me = (Map.Entry<CodeSnippet, ArrayList<String>>)i.next();
-				if (-1 != me.getValue().indexOf(methodName))	// this methodName is called so...
+				if (-1 != me.getValue().indexOf(methodName)){	// this methodName is called so...
 					codeSnippet.addCaller(me.getKey());		// ...update its caller list field
+					me.getKey().addCallee(codeSnippet); 	// ...update its caller adding it as a callee
+				}
 			}
 		}
 
