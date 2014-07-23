@@ -85,7 +85,10 @@ public class MicrotaskMemento {
 			this.debugSessionMap = (HashMap<String,FileDebugSession>) objInputStream.readObject();
 			objInputStream.close();
 
-			return this.debugSessionMap.get(fileName);
+			if(this.debugSessionMap!=null && this.debugSessionMap.containsKey(fileName))
+				return this.debugSessionMap.get(fileName);
+			else
+				return null;
 		}
 		catch(IOException exception){
 			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
@@ -113,7 +116,10 @@ public class MicrotaskMemento {
 			this.debugSessionMap = (HashMap<String, FileDebugSession>) objInputStream.readObject();
 			objInputStream.close();
 
-			return this.debugSessionMap.keySet();
+			if(this.debugSessionMap!=null && !this.debugSessionMap.isEmpty())
+				return this.debugSessionMap.keySet();
+			else
+				return null;			
 		}
 		catch(IOException exception){
 			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
