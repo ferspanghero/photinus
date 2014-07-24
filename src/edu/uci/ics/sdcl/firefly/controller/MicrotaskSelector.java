@@ -73,7 +73,7 @@ public class MicrotaskSelector {
 			Iterator<Integer> iter = keySet.iterator();
 			Integer key = (Integer) iter.next();
 
-			//Check if there is a max number of questions. If not, then return the fist Microtask.
+			//Check if there is a max number of questions. If not, then return the first Microtask.
 			if((maxAnswers == null) || (maxAnswers.intValue()==0)){
 				return map.get(key);
 			}
@@ -88,7 +88,7 @@ public class MicrotaskSelector {
 					if(answers!=null && answers.size()<maxAnswers)
 						found=true;
 				}
-				//Returns the last task found, having found or not.
+				//Returns the last task read, having found one with less answers than max or not.
 				return task;
 			}//else
 		}//else
