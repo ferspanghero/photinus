@@ -13,7 +13,7 @@ import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.MethodParameter;
 import edu.uci.ics.sdcl.firefly.MethodSignature;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
+import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 public class MicrotaskMementoTest {
 
@@ -58,12 +58,12 @@ public class MicrotaskMementoTest {
 		
 		CodeSnippet codeSnippetFactorial = new CodeSnippet("sample", "SimpleSampleCode", signature, body, true, 
 				7, 0, 7, 27, 7, 27, 10, 0); 
-		Microtask mtask = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, questionArg, 20, 0, 20, 58);
+		Microtask mtask = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, questionArg, 20, 0, 20, 58, 1);
 
 		//Create the data structure
 		this.microtaskMap =  new HashMap<Integer,Microtask>();
 		microtaskMap.put(new Integer(1),mtask);
-		FileDebugSession debugMap = new FileDebugSession(fileName,microtaskMap);
+		FileDebugSession debugMap = new FileDebugSession(fileName,body, microtaskMap);
 		
 		this.debugSessionMap.put(fileName, debugMap);
 	}
@@ -71,7 +71,7 @@ public class MicrotaskMementoTest {
 	@Test
 	public void testCreateNewPersistentFile() {
 
-		MicrotaskMemento memento = new MicrotaskMemento();
+		MicrotaskStorage memento = new MicrotaskStorage();
 		memento.insert(fileName, this.debugSessionMap.get(fileName));
 
 		 FileDebugSession debugMap = memento.read(fileName);
@@ -89,7 +89,7 @@ public class MicrotaskMementoTest {
 
 	@Test
 	public void testRemoveDebugSession() {
-		MicrotaskMemento memento = new MicrotaskMemento();
+		MicrotaskStorage memento = new MicrotaskStorage();
 		memento.insert(fileName, this.debugSessionMap.get(fileName));
 		
 		 memento.remove(fileName);

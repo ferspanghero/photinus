@@ -16,13 +16,13 @@ import edu.uci.ics.sdcl.firefly.MethodParameter;
 import edu.uci.ics.sdcl.firefly.MethodSignature;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
-import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
+import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 public class MicrotaskSelectorTest {
 
 	private  HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
 	private HashMap<Integer, Microtask> microtaskMap;
-	MicrotaskMemento memento = new MicrotaskMemento();
+	MicrotaskStorage memento = new MicrotaskStorage();
 	MicrotaskSelector selector = new MicrotaskSelector();
 	String fileName = "SimpleSampleCode.java";
 

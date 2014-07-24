@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
-import edu.uci.ics.sdcl.firefly.memento.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.servlet.MethodData;
+import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
+import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 
 
 /**
@@ -90,7 +90,7 @@ public class WorkerSessionFactory {
 		//indexed by fileName and method name and HashMap of microtasks
 		HashMap<String,HashMap<String,HashMap<Integer, Microtask>>> fileMethodMap = new HashMap<String,HashMap<String,HashMap<Integer, Microtask>>> ();
 
-		MicrotaskMemento storage = new MicrotaskMemento();
+		MicrotaskStorage storage = new MicrotaskStorage();
 		Set<String> sessionSet= storage.retrieveDebuggingSessionNames();
 		if((sessionSet==null) || (!sessionSet.iterator().hasNext())){
 			//EMPTY!!!

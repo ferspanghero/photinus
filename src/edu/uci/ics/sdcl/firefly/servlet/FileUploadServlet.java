@@ -16,7 +16,7 @@ import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.QuestionFactory;
-import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
+import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 import java.util.*; 
 
@@ -111,7 +111,7 @@ public class FileUploadServlet extends HttpServlet {
 		FileDebugSession fileDebuggingSession = new FileDebugSession(fileName,fileContent, microtaskMap);
 
 		//Persist data
-		MicrotaskMemento memento = new MicrotaskMemento();
+		MicrotaskStorage memento = new MicrotaskStorage();
 		memento.replace(fileName, fileDebuggingSession);
 
 		int numberOfCodeSnippets = snippetList.size();
@@ -123,7 +123,7 @@ public class FileUploadServlet extends HttpServlet {
 		}
 		else
 			results = "No Microtasks were generated. Please review the file and method name.";
-		System.out.println(results);
+		System.out.println("Results: "+results);
 		return results;
 	}
 

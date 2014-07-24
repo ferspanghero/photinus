@@ -15,7 +15,7 @@ import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.export.file.ExcelFileDealer;
-import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
+import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 /**
  * Servlet implementation class MicrotaskController
@@ -61,7 +61,7 @@ public class ResultsServlet extends HttpServlet {
 		//indexed by fileName and method name
 		HashMap<String,HashMap<String,MethodData>> resultMap = new HashMap<String,HashMap<String,MethodData>> ();
 
-		MicrotaskMemento memento = new MicrotaskMemento();
+		MicrotaskStorage memento = new MicrotaskStorage();
 		Set<String> sessionSet= memento.retrieveDebuggingSessionNames();
 		if((sessionSet==null) || (!sessionSet.iterator().hasNext())){
 			//EMPTY!!!
@@ -93,7 +93,6 @@ public class ResultsServlet extends HttpServlet {
 					resultMap.put(fileName, methodMap);
 				}				
 			}
-
 		}
 		return resultMap;
 	}

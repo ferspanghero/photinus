@@ -8,7 +8,7 @@ import java.util.Iterator;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.memento.MicrotaskMemento;
+import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 /**
  * Selects the next microtask to be published for execution.
@@ -27,7 +27,7 @@ public class MicrotaskSelector {
 	 * @see selectMicrotask(String fileName)
 	 */
 	public SelectorReturn selectAnyMicrotask(){
-		MicrotaskMemento memento = new MicrotaskMemento();
+		MicrotaskStorage memento = new MicrotaskStorage();
 		Set<String> debuggingSessionNameSet = memento.retrieveDebuggingSessionNames();
 		if((debuggingSessionNameSet==null) || (!debuggingSessionNameSet.iterator().hasNext())){
 			return null;
@@ -61,7 +61,7 @@ public class MicrotaskSelector {
 	 */
 	public Microtask selectMicrotask(String fileName){
 
-		MicrotaskMemento memento = new MicrotaskMemento();
+		MicrotaskStorage memento = new MicrotaskStorage();
 		FileDebugSession debugSession = memento.read(fileName);
 		if((debugSession==null) || (debugSession.getMicrotaskMap()==null)){
 			return null;
