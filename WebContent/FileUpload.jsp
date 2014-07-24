@@ -1,5 +1,4 @@
-<! DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -11,27 +10,26 @@
 <body> 
 
 	<table border="0">
-		<tr valign="bottom">
-			<center>
-				<td><img src="./images/Firefly-2.jpg" width=112 height=46 />
-					&nbsp;&nbsp;&nbsp;</td>  
-					
+		<tr>
+		
+						<td><img src="./images/Firefly-2.jpg" width=112 height=46 />
+				&nbsp;&nbsp;&nbsp;</td>
+				
 					<td><img src="./images/UploadsButton-blue.jpg"></td>
 					
 					<td>
 						<form method="POST" action="microtask" name="openMicrotask">
 							<input type="image" src="./images/MicrotasksButton.jpg"
-								value="Open Microtask" name="openMicrotask">
+								value="Open Microtask" name="openMicrotask" align="bottom">
 						</form>
 					</td>
 					
-					<td><form method="POST" action='results'
-					name="results">
+					<td><form method="POST" action='results' name="results">
 					<input type="image" src="./images/ResultsButton.jpg"
 						value="results" name="results">
 				</form></td>
  
-			</center>  
+		
 		</tr>
 
 	</table>
