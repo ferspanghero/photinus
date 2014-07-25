@@ -58,7 +58,7 @@ public class WorkerSessionFactory {
 		}
 		
 		//TODO implement the cloning to happen when all WorkerSession have already been generated.
-		WorkerSession session;
+		WorkerSession session=null;
 		//generate copies
 		for(int i=0;i<copies;i++){
 			WorkerSession copiedSession =  new WorkerSession(this.sessionID, session.getMicrotaskList());
