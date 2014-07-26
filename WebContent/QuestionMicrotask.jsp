@@ -128,6 +128,7 @@
 		<input type="hidden" id="endLine" value=${requestScope["endLine"]}> 
 		<input type="hidden" id="endColumn" value=${requestScope["endColumn"]}>
 		<input type="hidden" id="methodStartingLine" value=${requestScope["methodStartingLine"]}>
+		<input type="hidden" id="words" value=${requestScope["words"]}>
 	</div>
 
 	<script
@@ -211,11 +212,31 @@
 			editorCallee.setOption("highlightActiveLine", false); 	// disable highligthing on the active line
 			editorCallee.setShowPrintMargin(false);					// disable printing margin
 			
+			/* highlighting specific words*/
+			// caller
+			var keywords = eval(document.getElementById("words").value);	// what will be highlighted goes here
+	        keywords = new RegExp(keywords);
+	        editorCaller.findAll(keywords,{
+	            //caseSensitive: false,
+	            //wholeWord: true,
+	            regExp: true
+	        });
+	        // callee
+	        var keywords = eval(document.getElementById("words").value);	// what will be highlighted goes here
+	        keywords = new RegExp(keywords);
+	        editorCallee.findAll(keywords,{
+	            //caseSensitive: false,
+	            //wholeWord: true,
+	            regExp: true
+	        });
+			
 			setTimeout(function() {
 				editor.session.addMarker(new Range(startLine - codeSnippetStartingLine, startColumn, 
 						endLine	- codeSnippetStartingLine, endColumn), "ace_active-line", "line");
 				editor.gotoLine(startLine - codeSnippetStartingLine + 1);
 			}, 100); 
+			
+			document.write(document.getElementById("words").value);
 		</script>
 
 	</div>
