@@ -70,9 +70,9 @@ public class MicrotaskSelectorTest {
 		CodeSnippet codeSnippetFactorial = new CodeSnippet("sample", "SimpleSampleCode", signature, body, true, 
 				7, 0, 7, 27, 7, 27, 10, 0); 
 
-		Microtask mtask1 = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, questionArg1, 20, 0, 20, 58);
-		Microtask mtask2 = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippetFactorial, questionArg2, new Integer(2));
-		Microtask mtask3 = new Microtask(CodeElement.FOR_LOOP, codeSnippetFactorial, questionArg3, new Integer(4));
+		Microtask mtask1 = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, questionArg1, 20, 0, 20, 58, 1);
+		Microtask mtask2 = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippetFactorial, questionArg2, 2, 0, 2, 16, 2);
+		Microtask mtask3 = new Microtask(CodeElement.FOR_LOOP, codeSnippetFactorial, questionArg3, 4, 0, 4, 41, 3);
 
 		//Create the data structure
 		this.microtaskMap =  new HashMap<Integer,Microtask>();
@@ -80,7 +80,7 @@ public class MicrotaskSelectorTest {
 		microtaskMap.put(new Integer(2),mtask2);
 		microtaskMap.put(new Integer(3),mtask3);
 	
-		FileDebugSession debugSession = new FileDebugSession(fileName,microtaskMap);
+		FileDebugSession debugSession = new FileDebugSession(fileName,body, microtaskMap);
 		this.debugSessionMap.put(fileName, debugSession);
 
 		//Persist micro tasks
@@ -101,7 +101,7 @@ public class MicrotaskSelectorTest {
 			Microtask mtask1 = mMap.get(key);
 			ArrayList<Answer> answerList = mtask1.getAnswerList();
 			if(answerList==null) answerList= new ArrayList<Answer>();
-			answerList.add(new Answer(Answer.YES));
+			answerList.add(new Answer(Answer.YES,"statement should be executed ealier" ));
 			mtask1.setAnswer(answerList);
 
 			debugSession.incrementAnswersReceived(answerList.size());
@@ -126,7 +126,7 @@ public class MicrotaskSelectorTest {
 			Microtask mtask1 = mMap.get(key);
 			ArrayList<Answer> answerList = mtask1.getAnswerList();
 			if(answerList==null) answerList= new ArrayList<Answer>();
-			answerList.add(new Answer(Answer.YES));
+			answerList.add(new Answer(Answer.YES,"statement should be executed ealier"));
 			mtask1.setAnswer(answerList);
 			mMap.put(key, mtask1);
 			debugSession.incrementAnswersReceived(answerList.size());
@@ -135,7 +135,7 @@ public class MicrotaskSelectorTest {
 			Microtask mtask2 = mMap.get(key);
 			answerList = mtask2.getAnswerList();
 			if(answerList==null) answerList= new ArrayList<Answer>();
-			answerList.add(new Answer(Answer.NO));
+			answerList.add(new Answer(Answer.NO,""));
 			mtask2.setAnswer(answerList);
 			debugSession.incrementAnswersReceived(answerList.size());
 			
@@ -168,7 +168,7 @@ public class MicrotaskSelectorTest {
 			Microtask mtask1 = mMap.get(key);
 			ArrayList<Answer> answerList = mtask1.getAnswerList();
 			if(answerList==null) answerList= new ArrayList<Answer>();
-			answerList.add(new Answer(Answer.YES));
+			answerList.add(new Answer(Answer.YES,"statement should be executed ealier"));
 			mtask1.setAnswer(answerList);
 			mMap.put(key, mtask1);
 			debugSession.incrementAnswersReceived(answerList.size());
@@ -177,7 +177,7 @@ public class MicrotaskSelectorTest {
 			Microtask mtask2 = mMap.get(key);
 			answerList = mtask2.getAnswerList();
 			if(answerList==null) answerList= new ArrayList<Answer>();
-			answerList.add(new Answer(Answer.NO));
+			answerList.add(new Answer(Answer.NO,""));
 			mtask2.setAnswer(answerList);
 			debugSession.incrementAnswersReceived(answerList.size());
 			
@@ -185,8 +185,8 @@ public class MicrotaskSelectorTest {
 			Microtask mtask3 = mMap.get(key);
 			answerList = mtask3.getAnswerList();
 			if(answerList==null) answerList= new ArrayList<Answer>();
-			answerList.add(new Answer(Answer.NO));
-			answerList.add(new Answer(Answer.NO));
+			answerList.add(new Answer(Answer.NO,""));
+			answerList.add(new Answer(Answer.NO,""));
 			mtask3.setAnswer(answerList);
 			debugSession.incrementAnswersReceived(answerList.size());
 			

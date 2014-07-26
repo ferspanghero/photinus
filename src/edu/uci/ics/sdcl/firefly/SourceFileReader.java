@@ -41,7 +41,7 @@ public class SourceFileReader {
 			System.out.println();
 		}
 		System.out.println();
-//		codeSnippets.printAll();
+		//		codeSnippets.printAll();
 		QuestionFactory questionFactory = new QuestionFactory();
 		System.out.println("----------Printing Concrete Questions-------------");
 		HashMap<Integer, Microtask> concreteQuestionsMade = questionFactory.generateQuestions(methodsParsed);
@@ -49,16 +49,16 @@ public class SourceFileReader {
 		Iterator<Entry<Integer, Microtask>> i = set.iterator();
 		while(i.hasNext()) 
 		{
-	         Map.Entry<Integer, Microtask> me = (Map.Entry<Integer, Microtask>)i.next();
-	         System.out.print("ID = " + me.getValue().getID() + ": ");
-	         System.out.println(me.getValue().getQuestion());
-	    }
+			Map.Entry<Integer, Microtask> me = (Map.Entry<Integer, Microtask>)i.next();
+			System.out.print("ID = " + me.getValue().getID() + ": ");
+			System.out.println(me.getValue().getQuestion());
+		}
 		System.out.println();
 		System.out.println("~~~~~~~~~~~~~Reports~~~~~~~~~~~~~~~~");
 		System.out.println("Number of Snippets: " + methodsParsed.size());
 		System.out.println("Number of questions: " + concreteQuestionsMade.size());
 		System.out.println("Number of statements: " + questionFactory.getNumberOfStatements());
-		
+
 		System.out.println("****************Method callers****************");
 		for (CodeSnippet snippet : methodsParsed) {
 			System.out.print(snippet.getMethodSignature().getName() + " is called by [");
@@ -67,9 +67,9 @@ public class SourceFileReader {
 				System.out.print(codeSnippet.getMethodSignature().getName() + ", ");
 			}
 			System.out.println("]");
-			
+
 		}
-		
+
 		/* for debug purposes 
 		for (CodeSnippet method : methodsParsed) {
 			System.out.println("Method: " + method.getMethodSignature());
@@ -101,25 +101,31 @@ public class SourceFileReader {
 
 	public SourceFileReader() {}
 	//read file content into a string
-		public static String readFileToString(String filePath) throws IOException {
+	public static String readFileToString(String filePath)  {
+		try{
 			System.out.println();
 			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			System.out.println("Reading file '" + filePath + "'");
 			StringBuilder fileData = new StringBuilder(1000);
 			BufferedReader reader = new BufferedReader(new FileReader(filePath));
-	 
+
 			char[] buf = new char[10];
 			int numRead = 0;
 			while ((numRead = reader.read(buf)) != -1) {
-//				System.out.println(numRead);
+				//				System.out.println(numRead);
 				String readData = String.valueOf(buf, 0, numRead);
 				fileData.append(readData);
 				buf = new char[1024];
 			}
-	 
+
 			reader.close();
-	 
-			return  fileData.toString();	
+
+			return  fileData.toString();
 		}
+		catch(IOException exception){
+			exception.printStackTrace();
+			return null;
+		}
+	}
 }
 

@@ -11,6 +11,7 @@ import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 import edu.uci.ics.sdcl.firefly.MethodParameter;
 import edu.uci.ics.sdcl.firefly.MethodSignature;
+import edu.uci.ics.sdcl.firefly.SourceFileReader;
 
 public class CodeSnippetFactoryTest {
 
@@ -84,8 +85,9 @@ public class CodeSnippetFactoryTest {
 
 	@Test
 	public void test() {
-		CodeSnippetFactory factory = new CodeSnippetFactory(
-				"C://Users//Danilo//Documents//GitHub//crowd-debug-firefly//src//sample//JustOneSample");
+		CodeSnippetFactory factory = new CodeSnippetFactory("SimpleSampleCode.java",
+				SourceFileReader.readFileToString("C:/Users/Danilo/Documents/GitHub/crowd-debug-firefly/src/sample/JustOneSample"));
+
 		ArrayList<CodeSnippet> list = factory.generateSnippets();
 		if((list ==null ) || (list.size()!=3))
 			Assert.fail("Null list of snippets or file does not match test data");
