@@ -7,7 +7,7 @@ public class Microtask implements Serializable
 {	
 	private String question;
 	private CodeSnippet method;
-	private String questionType;
+	private String codeElementType;
 	private ArrayList<Answer> answerList;
 
 	private Integer startingLine;
@@ -16,13 +16,27 @@ public class Microtask implements Serializable
 	private Integer endingColumn;
 	private Integer ID;
 	
-	public Microtask(String questionTypeArg, CodeSnippet methodArg, String questionArg, 
+	/**
+	 * 
+	 * Represents a question about one element (see CodeElement class) in a code snippet. The element is 
+	 * localized by the line and column parameters provided.
+	 * 
+	 * @param codeElementTypeArg
+	 * @param methodArg
+	 * @param questionArg
+	 * @param startingLineNumber 
+	 * @param startingColumnNumber
+	 * @param endingLineNumber
+	 * @param endingColumnNumber
+	 * @param ID
+	 */
+	public Microtask(String codeElementTypeArg, CodeSnippet methodArg, String questionArg, 
 			Integer startingLineNumber, Integer startingColumnNumber, 
 			Integer endingLineNumber, Integer endingColumnNumber, Integer ID)
 	{
 		this.setMethod(methodArg);
 		this.setQuestion(questionArg);
-		this.setQuestionType(questionTypeArg);
+		this.setCodeElementType(codeElementTypeArg);
 		this.startingLine = startingLineNumber;
 		this.startingColumn = startingColumnNumber;
 		this.endingLine = endingLineNumber;
@@ -45,14 +59,14 @@ public class Microtask implements Serializable
 		this.question = question;
 	}
 	
-	public String getQuestionType()
+	public String getCodeElementType()
 	{
-		return questionType;
+		return codeElementType;
 	}
 
-	public void setQuestionType(String questionType)
+	public void setCodeElementType(String type)
 	{
-		this.questionType = questionType;
+		this.codeElementType = type;
 	}
 
 	public CodeSnippet getMethod()
