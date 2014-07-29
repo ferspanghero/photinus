@@ -65,6 +65,12 @@ public class QuestionFactory {
 		return this.numberOfStatements;
 	}
 
+	/**
+	 * 
+	 * @param methodsArg only the code snippets for which microtasks will be generated
+	 * @return the map of microtasks
+	 */
+	
 	public HashMap<Integer, Microtask> generateQuestions(ArrayList<CodeSnippet> methodsArg)
 	{
 		this.numberOfStatements = 0;	// initializing variable
