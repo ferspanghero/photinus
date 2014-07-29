@@ -215,3 +215,4 @@ pip-log.txt
 .mr.developer.cfg
 WebContent/Question.jsp
 WebContent/QuestionMicrotask.jsp
+*.ser

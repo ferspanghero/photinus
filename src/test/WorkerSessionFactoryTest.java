@@ -228,29 +228,29 @@ public class WorkerSessionFactoryTest {
 		this.mtaskMap = QuestionFactoryMock.generateQuestions();
 
 		ArrayList<Microtask> mtaskList0= new ArrayList<Microtask>();
-		mtaskList0.add(microtaskMap.get(0));
-		mtaskList0.add(microtaskMap.get(4));
+		mtaskList0.add(mtaskMap.get(0));
+		mtaskList0.add(mtaskMap.get(4));
 
 		ArrayList<Microtask> mtaskList1= new ArrayList<Microtask>();
-		mtaskList1.add(microtaskMap.get(1));
-		mtaskList1.add(microtaskMap.get(5));
+		mtaskList1.add(mtaskMap.get(1));
+		mtaskList1.add(mtaskMap.get(5));
 
 		ArrayList<Microtask> mtaskList2= new ArrayList<Microtask>();	
-		mtaskList2.add(microtaskMap.get(2));
-		mtaskList2.add(microtaskMap.get(6));
+		mtaskList2.add(mtaskMap.get(2));
+		mtaskList2.add(mtaskMap.get(6));
 
 		ArrayList<Microtask> mtaskList3= new ArrayList<Microtask>();	
-		mtaskList3.add(microtaskMap.get(3));
-		mtaskList3.add(microtaskMap.get(7));
+		mtaskList3.add(mtaskMap.get(3));
+		mtaskList3.add(mtaskMap.get(7));
 
 		ArrayList<Microtask> mtaskList4= new ArrayList<Microtask>();		
-		mtaskList4.add(microtaskMap.get(8));
+		mtaskList4.add(mtaskMap.get(8));
 
 		ArrayList<Microtask> mtaskList5= new ArrayList<Microtask>();	
-		mtaskList5.add(microtaskMap.get(9));
+		mtaskList5.add(mtaskMap.get(9));
 
 		ArrayList<Microtask> mtaskList6= new ArrayList<Microtask>();	
-		mtaskList6.add(microtaskMap.get(10));
+		mtaskList6.add(mtaskMap.get(10));
 
 		WorkerSession original0 = new WorkerSession(0,mtaskList0);
 		WorkerSession original1 = new WorkerSession(1,mtaskList1);
