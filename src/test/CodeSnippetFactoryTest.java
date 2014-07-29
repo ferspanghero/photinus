@@ -85,10 +85,13 @@ public class CodeSnippetFactoryTest {
 
 	@Test
 	public void test() {
-		CodeSnippetFactory factory = new CodeSnippetFactory("SimpleSampleCode.java",
-				SourceFileReader.readFileToString("C:/Users/Danilo/Documents/GitHub/crowd-debug-firefly/src/sample/JustOneSample"));
+		
+		String folderPath = "C:/Users/Christian Adriano/Documents/GitHub/crowd-debug-firefly/src/sample/JustOneSample/";
+		String fileName = "SimpleSampleCode.java";
+		String fileContent = SourceFileReader.readFileToString(folderPath+fileName);
+		CodeSnippetFactory factory = new CodeSnippetFactory(fileName,fileContent);
 
-		ArrayList<CodeSnippet> list = factory.generateSnippets();
+		ArrayList<CodeSnippet> list = factory.generateSnippetsForFile();
 		if((list ==null ) || (list.size()!=3))
 			Assert.fail("Null list of snippets or file does not match test data");
 		else{

@@ -163,9 +163,13 @@ public class QuestionFactoryTest
 
 	@Test
 	public void test() {
-		CodeSnippetFactory factory = new CodeSnippetFactory("SimpleSampleFile.java",
-				SourceFileReader.readFileToString("C://Users//Danilo//Documents//GitHub//crowd-debug-firefly//src//sample//JustOneSample"));
-		ArrayList<CodeSnippet> list = factory.generateSnippets();
+
+		String folderPath = "C:/Users/Christian Adriano/Documents/GitHub/crowd-debug-firefly/src/sample/JustOneSample/";
+		String fileName = "SimpleSampleCode.java";
+		String fileContent = SourceFileReader.readFileToString(folderPath+fileName);
+		CodeSnippetFactory factory = new CodeSnippetFactory(fileName,fileContent);
+		
+		ArrayList<CodeSnippet> list = factory.generateSnippetsForFile();
 		if((list ==null ) || (list.size()!=2))
 			Assert.fail("Null list of snippets or file does not match test data");
 		else{

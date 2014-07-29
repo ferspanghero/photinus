@@ -10,8 +10,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Map.Entry;
 
-public class CodeSnippetFactory {
-	private String folderPath;
+public class CodeSnippetFactory { 
 	private String fileContent;
 	private String fileName;
 	private String[] fileContentPerLine;
@@ -39,12 +38,16 @@ public class CodeSnippetFactory {
 		return this.codeSnippetList;
 	}
 
-	/** Generates code snippets for all files in a the provide filePath */
-	public ArrayList<CodeSnippet> generateSnippets()
+	/**
+	 *  Generates code snippets for all files in a the provide folder
+	 * @param folderPath the folder where all files are
+	 * 
+	 */
+	public ArrayList<CodeSnippet> generateSnippets(String folderPath)
 	{
 		try
 		{
-			ParseFilesInDir();
+			ParseFilesInDir(folderPath);
 		}
 		catch (IOException e)
 		{
@@ -63,13 +66,17 @@ public class CodeSnippetFactory {
 		}
 	}
 
-	//loop directory to get file list
-	private void ParseFilesInDir() throws IOException
+	/**
+	 * Loops over a folder to get file list and parse all of the files in it.
+	 * @param folderPath
+	 * @throws IOException
+	 */
+	private void ParseFilesInDir(String folderPath) throws IOException
 	{
 		//				File dirs = new File("."); 				// For files under this folder
 		//				String dirPath = dirs.getCanonicalPath() + File.separator+"src"+File.separator;
 		//				System.out.println(dirPath);
-		File root = new File(this.folderPath);
+		File root = new File(folderPath);
 		File[] files = root.listFiles ( );
 		String filePath = null;
 		if( files != null)
