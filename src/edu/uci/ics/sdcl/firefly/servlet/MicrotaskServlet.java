@@ -1,17 +1,27 @@
 package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException; 
- 
+
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
- 
+
+
+
+
+
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.PositionFinder;
 import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
@@ -45,7 +55,7 @@ public class MicrotaskServlet extends HttpServlet {
 
 		MicrotaskStorage storage = new MicrotaskStorage();
 		storage.insertAnswer(fileName, new Integer(id), new Answer(Answer.mapToString(answer),explanation));
- 
+
 		//Prepare next microtask request
 		MicrotaskSelector selector = new MicrotaskSelector();
 		MicrotaskSelector.SelectorReturn returnValues = selector.selectAnyMicrotask();
@@ -62,43 +72,49 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("question", task.getQuestion());
 			request.setAttribute("source", fileContent); 	// content displayed on the first ACE Editor
 			/* preparing the second ACE Editor - callers */
-			StringBuilder builder = new StringBuilder();
+			StringBuilder newFileContent = new StringBuilder();
 			StringBuilder highlight = new StringBuilder();
+			String highlightCommand = new String();
 			String newline = System.getProperty("line.separator");
-			builder.append("THE METHOD ABOVE IS CALLED BY: ");
-			builder.append(newline);
-			for (CodeSnippet caller : task.getMethod().getCallers()) {
-				builder.append(caller.getCodeSnippetFromFileContent());	// appending caller
-				if ( task.getMethod().getCallers().indexOf(caller) < (task.getMethod().getCallers().size()-1) ){
-					builder.append(newline);	// appending two new lines in case it is NOT the last caller 
-					builder.append(newline);
+			if ( task.getMethod().getCallers().isEmpty() ){
+				newFileContent = null;
+				highlightCommand = null;
+			} else 
+			{
+				newFileContent.append("THE METHOD ABOVE IS CALLED BY: ");
+				newFileContent.append(newline);
+				for (CodeSnippet caller : task.getMethod().getCallers()) {
+					newFileContent.append(caller.getCodeSnippetFromFileContent());	// appending caller
+					if ( task.getMethod().getCallers().indexOf(caller) < (task.getMethod().getCallers().size()-1) ){
+						newFileContent.append(newline);	// appending two new lines in case it is NOT the last caller 
+						newFileContent.append(newline);
+					}
 				}
+				// chasing method positions for highlighting purposes
+				for (CodeSnippet caller : task.getMethod().getCallers()) {
+					highlight.append( methodChaser(caller.getMethodSignature().getName(), newFileContent.toString()) );
+				}
+				highlightCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
+				System.out.println("Command to be executed: " + highlightCommand);
 			}
-			// chasing methods for highlighting purposes
-			highlight.append("/");
-			for (CodeSnippet callee : task.getMethod().getCallees()) {
-				highlight.append( methodChaser(callee.getMethodSignature().getName(), builder.toString()) );
-			}
-			String highlightCommand = highlight.toString().substring(0, highlight.length()-2) + "/g";
-			System.out.println("Command to be executed: " + highlightCommand);
 			// passing to jsp
-			request.setAttribute("caller", builder.toString());
-			request.setAttribute("words", highlightCommand);
+			request.setAttribute("positionsCaller", highlightCommand);
+			request.setAttribute("caller", newFileContent.toString());
 
 			/* preparing the third ACE Editor - callees */
-			builder.setLength(0);	// reseting the builder
-			builder.append("THE METHOD ABOVE HAS CALLEE(S): ");
-			builder.append(newline);
+			newFileContent.setLength(0);	// reseting the builder
+			newFileContent.append("THE METHOD ABOVE HAS CALLEE(S): ");
+			newFileContent.append(newline);
 			for (CodeSnippet callee : task.getMethod().getCallees()) {
-				builder.append(callee.getCodeSnippetFromFileContent());	// appending caller
+				newFileContent.append(callee.getCodeSnippetFromFileContent());	// appending caller
 				if ( task.getMethod().getCallees().indexOf(callee) < (task.getMethod().getCallees().size()-1) ){
-					builder.append(newline);	// appending two new lines in case it is NOT the last callee 
-					builder.append(newline);
+					newFileContent.append(newline);	// appending two new lines in case it is NOT the last callee 
+					newFileContent.append(newline);
 				}
 			}			
-			request.setAttribute("callee", builder.toString());
-//			request.setAttribute("words", "/size|int/g");
-			
+			request.setAttribute("callee", newFileContent.toString());
+			//			request.setAttribute("words", "/size|int/g");
+
 			request.setAttribute("id", task.getID());
 			request.setAttribute("fileName", fileName);
 			request.setAttribute("explanation",""); //clean up the explanation field.
@@ -107,20 +123,20 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("startColumn", task.getStartingColumn());
 			request.setAttribute("endLine", task.getEndingLine());
 			request.setAttribute("endColumn", task.getEndingColumn());
-			
+
 			request.setAttribute("methodStartingLine", task.getMethod().getMethodSignature().getLineNumber());
-			
+
 		}
 		//display a new microtask
 		request.getRequestDispatcher("/QuestionMicrotask.jsp").include(request, response);
 	}
 
-	
+
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	 
+
 		//Retrieve Microtask from Selector
 		MicrotaskSelector selector = new MicrotaskSelector();
 		MicrotaskSelector.SelectorReturn returnValues = selector.selectAnyMicrotask();
@@ -148,9 +164,9 @@ public class MicrotaskServlet extends HttpServlet {
 					builder.append(newline);
 				}
 			}		
-			
+
 			request.setAttribute("caller", builder.toString());
-			
+
 			/* preparing the third ACE Editor - callees */
 			builder.setLength(0);	// reseting the builder
 			builder.append("THE METHOD ABOVE HAS CALLEE(S): ");
@@ -163,7 +179,7 @@ public class MicrotaskServlet extends HttpServlet {
 				}
 			}			
 			request.setAttribute("callee", builder.toString());
-			
+
 			request.setAttribute("id", task.getID());
 			request.setAttribute("fileName", fileName);
 			request.setAttribute("explanation",""); //clean up the explanation field.
@@ -172,62 +188,76 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("startColumn", task.getStartingColumn());
 			request.setAttribute("endLine", task.getEndingLine());
 			request.setAttribute("endColumn", task.getEndingColumn());
-			
+
 			request.setAttribute("methodStartingLine", task.getMethod().getMethodSignature().getLineNumber());
 
 			//Calls the microtask page
 			request.getRequestDispatcher("/QuestionMicrotask.jsp").forward(request, response);
 		}
 	}
-	
+
+	// return the position of all the methodName occurrences on the following format:
+	// startingLine#startingColumn#endingLine#endingColumn#... and so on
 	protected String methodChaser(String methodName, String fileContent)
 	{
-		StringBuilder methodChased = new StringBuilder();
+		PositionFinder invocationPosition;
 		StringBuilder highlightCommand = new StringBuilder();
-		String[] words = fileContent.split("\\s+");		// splitting fileContent into words
-		int index;
-		for (index = 0; index < words.length; index++) {
-			System.out.println("word: " + words[index]);
-			methodChased.setLength(0);					// reseting methodChased
-			if ( words[index].contains(methodName) )	// checking if the method name matched the word
-			{	// now, to make sure its a method call, let's find the parenthesis 
-				System.out.println("This word contains " + methodName + ": " + words[index]);	
-				if ( words[index].contains("(") )
-				{	// also contains an opening parenthesis - method call for sure
-					highlightCommand.append( endingMethodChaser(methodChased, words, index) + "|");
+		String stringLines[] = fileContent.split("\r\n|\r|\n");
+		int currentLine = 0;
+		System.out.println("method name: " + methodName);
+		for (String line : stringLines) {
+			currentLine++;
+			System.out.println("Line " + currentLine + ": " + line);
+			if (line == null || line.length() <= 0)	continue;	// if line does not have any content, just skip it
+			String[] stringWords = line.split("\\s+");			// splitting lines into words
+			List<String> wordsPerLine = stringArraytoList(stringWords);
+			int wordLengthAcumulator = 0;	// just for the edge case of the same function being executed more than once per line
+			for (int index = 0; index < wordsPerLine.size(); index++) {
+				boolean isMethodCall = false;				// assuming there is NOT a method Call
+				if ( wordsPerLine.get(index).contains(methodName) )	// checking if the method name matched the word
+				{	// now, to make sure its a method call, let's find the parenthesis 	
+					if ( wordsPerLine.get(index).contains("(") )
+					{	// also contains an opening parenthesis - method call for sure
+						isMethodCall = true;
+						System.out.println("Method call at line " + currentLine + ": " + line);
+					}
+					else if ( index < (wordsPerLine.size()-1) )	// if it is NOT the last word
+					{	// look for parenthesis on the next word
+						if ( wordsPerLine.get(index).contains("(") )
+						{	// its also a method call for sure
+							isMethodCall = true;
+							System.out.println("Method call at line " + currentLine + ": " + line);
+						}	// otherwise continue false, it is not a method call
+					}
 				}
-				else
-				{	// no parenthesis, look on the next word
-					if ( words[index+1].contains("(") )
-					{	// its also a method call for sure
-						methodChased.append(words[index] + " ");	// space to match the fileContent
-						highlightCommand.append( endingMethodChaser(methodChased, words, index+1) + "|");
-					}	// otherwise do nothing, it is not a method call
+				if (isMethodCall)
+				{
+					System.out.println("passing column: " + line.indexOf(methodName, wordLengthAcumulator) + " W.A.: " + wordLengthAcumulator);
+					invocationPosition = 
+							new PositionFinder(currentLine, line.indexOf(methodName, wordLengthAcumulator), stringLines, '(', ')');
+					highlightCommand.append(invocationPosition.getStartingLineNumber()+"#");
+					highlightCommand.append(line.indexOf(methodName, wordLengthAcumulator)+"#");// because I want the start column of the word
+					highlightCommand.append(invocationPosition.getEndingLineNumber()+"#");
+					highlightCommand.append(invocationPosition.getEndingColumnNumber()+"#");
+					wordLengthAcumulator = invocationPosition.getStartingColumnNumber();
+					System.out.println("Positions appended: " + highlightCommand + " WA: " + wordLengthAcumulator);
 				}
 			}
-			index++;
 		}
-		System.out.println("Method chased: " + highlightCommand.toString());
 		return highlightCommand.toString();
 	}
-	
-	private StringBuilder endingMethodChaser(StringBuilder incompleteStringMethod, String[] words, int openingParenthesisIndex)
+
+	private List<String> stringArraytoList( String texts[] ) 
 	{
-		int braces = 0;			// counting the number of non-matching parenthesis found
-		int index2 = openingParenthesisIndex;
-		do 
-		{	// finding the end of the parenthesis 
-			if ( words[index2].contains(")") )
-			{	// found a matching parenthesis
-				braces--;
-			} else if ( words[index2].contains("(") )
-			{	// found another non-matching parenthesis
-				braces++;
+		List<String> list = new ArrayList<String>();
+		// transforming into List and removing null and empty entries
+		for(String string : texts) {
+			if( string != null && string.length() > 0) {
+				list.add(string);
 			}
-			incompleteStringMethod.append(words[index2++] + " ");	// space to match the fileContent
-		} while (0 < braces);
-		return incompleteStringMethod;	// now it is complete!
+		}
+		// returning the list
+		return list;
 	}
 
- 
 }

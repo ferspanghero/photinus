@@ -128,7 +128,7 @@
 		<input type="hidden" id="endLine" value=${requestScope["endLine"]}> 
 		<input type="hidden" id="endColumn" value=${requestScope["endColumn"]}>
 		<input type="hidden" id="methodStartingLine" value=${requestScope["methodStartingLine"]}>
-		<input type="hidden" id="words" value=${requestScope["words"]}>
+		<input type="hidden" id="positionsCaller" value=${requestScope["positionsCaller"]}>
 	</div>
 
 	<script
@@ -214,29 +214,40 @@
 			
 			/* highlighting specific words*/
 			// caller
-			var keywords = eval(document.getElementById("words").value);	// what will be highlighted goes here
-	        keywords = new RegExp(keywords);
-	        editorCaller.findAll(keywords,{
+			//var keywords = eval(document.getElementById("words").value);	// what will be highlighted goes here
+	        //keywords = new RegExp(/"hashOrdinalIntoArray"/g);
+	        //editorCaller.findAll(keywords,{
 	            //caseSensitive: false,
 	            //wholeWord: true,
-	            regExp: true
-	        });
+	        //    regExp: true
+	        //});
 	        // callee
-	        var keywords = eval(document.getElementById("words").value);	// what will be highlighted goes here
-	        keywords = new RegExp(keywords);
-	        editorCallee.findAll(keywords,{
+	        //var keywords = eval();	// what will be highlighted goes here
+	        //keywords = new RegExp(/hashOrdinalIntoArray|int/g);
+	        //editorCallee.findAll(keywords,{
 	            //caseSensitive: false,
 	            //wholeWord: true,
-	            regExp: true
-	        });
-			
+	            //regExp: true
+	        //});
+	        
+	        
+	        var highlightCaller = document.getElementById("positionsCaller").value;
+	        var numbersCaller = null;
+	        if (highlightCaller != null )
+	        	numbersCaller = highlightCaller.split("#");
+	        
+	        document.write(numbersCaller);
+	        
 			setTimeout(function() {
 				editor.session.addMarker(new Range(startLine - codeSnippetStartingLine, startColumn, 
 						endLine	- codeSnippetStartingLine, endColumn), "ace_active-line", "line");
 				editor.gotoLine(startLine - codeSnippetStartingLine + 1);
+				
+				editorCaller.session.addMarker(new Range(numbersCaller[0]-1, 
+						numbersCaller[1], numbersCaller[2]-1, numbersCaller[3]), "ace_active-line", "line");
 			}, 100); 
 			
-			document.write(document.getElementById("words").value);
+			
 		</script>
 
 	</div>

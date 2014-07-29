@@ -1,5 +1,6 @@
 package edu.uci.ics.sdcl.firefly;
 
+/* starting and ending positions of the opening and closing braces */
 public class PositionFinder {
 	private Integer startingLineNumber;
 	private Integer startingColumnNumber;
