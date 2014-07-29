@@ -25,6 +25,8 @@ import edu.uci.ics.sdcl.firefly.WorkerSession;
  * WorkerSessions are organized in three groups: "New", "Active", "Closed"
  * Each group has a workerSesionMap.
  * 
+ * New WorkerSessions are stored  
+ * 
  * @author Christian Adriano
  *
  */
@@ -37,28 +39,28 @@ public class WorkerSessionStorage {
 	private String persistentFileName = "workersession.ser"; 
 
 	public WorkerSessionStorage(){
-		 try{
-			 	File file = new File(this.persistentFileName);
-					if(!file.exists() ||  file.isDirectory()){
-						// No files has been created yet. 
+		try{
+			File file = new File(this.persistentFileName);
+			if(!file.exists() ||  file.isDirectory()){
+				// No files has been created yet. 
 
-						// Create a sample object, that contains the default values.
-						HashMap<String, HashMap<Integer, WorkerSession>> lifecycleMap = 
-								new HashMap<String, HashMap<Integer, WorkerSession>>();
+				// Create a sample object, that contains the default values.
+				HashMap<String, HashMap<Integer, WorkerSession>> lifecycleMap = 
+						new HashMap<String, HashMap<Integer, WorkerSession>>();
 
-						ObjectOutputStream objOutputStream = new ObjectOutputStream( 
-								new FileOutputStream(new File(this.persistentFileName)));
+				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
+						new FileOutputStream(new File(this.persistentFileName)));
 
-						objOutputStream.writeObject( lifecycleMap );
-						objOutputStream.close();
-					}
-				}
-				catch(IOException exception){
-					exception.printStackTrace();
-				}
-				catch(Exception exception){
-					exception.printStackTrace();
-				}
+				objOutputStream.writeObject( lifecycleMap );
+				objOutputStream.close();
+			}
+		}
+		catch(IOException exception){
+			exception.printStackTrace();
+		}
+		catch(Exception exception){
+			exception.printStackTrace();
+		}
 	}
 
 	public HashMap<Integer, WorkerSession> retrieveWorkerSessionMap(String lifecycle){
@@ -114,6 +116,17 @@ public class WorkerSessionStorage {
 			return workerSessionMap.size();
 		else
 			return null;
+	}
+	
+	
+	public WorkerSession readNewWorkerSession(){
+		
+		//HashMap<String, HashMap<String, ArrayList<HashMap<String,WorkerSession>>>>> workerSessionMap = this.retrieveIndex(WorkerSessionStorage.NEW);
+		//HashMap<>
+		//if(workerSessionMap!=null && workerSessionMap.containsKey(id)){
+			
+		//}
+		return null;
 	}
 
 
