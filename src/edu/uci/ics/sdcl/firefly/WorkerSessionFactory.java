@@ -34,7 +34,7 @@ public class WorkerSessionFactory {
 	
 	public WorkerSessionFactory(){
 		this.sessionStorage = new WorkerSessionStorage();
-		this.sessionID= 1;
+		this.sessionID= 0;
 		this.workerSessionMap = new HashMap<Integer, WorkerSession>();
 		this.fileMethodMap = this.buildMethodMap();
 	}
@@ -53,15 +53,14 @@ public class WorkerSessionFactory {
 		ArrayList<WorkerSession> originalList = new ArrayList<WorkerSession>(); 
 		ArrayList<WorkerSession> duplicateList = new ArrayList<WorkerSession>();
 		
-		
 		//Obtain a list of N microtasks from N different codesnippets (i.e., methods)
-		ArrayList<Microtask> mtaskList = this.obtainMicrotaskList(microtaskPerSession);
+		ArrayList<Microtask> mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		//Generate the original WorkerSessions
 		while(mtaskList.size()>0){
 			WorkerSession session = new WorkerSession(sessionID,mtaskList);
 			this.sessionID = this.sessionID + 1;
 			originalList.add(session);
-			mtaskList = this.obtainMicrotaskList(microtaskPerSession);
+			mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		}
 		
 		// produce # copies of the original sessions
@@ -93,10 +92,13 @@ public class WorkerSessionFactory {
 		
 	}
 	
-	
-	public ArrayList<Microtask> obtainMicrotaskList(int number){
-
-		//TODO  sample N microtasks from different methods from the the fileMethoMap.
+	/**
+	 * Produces the next list of microtasks. The list produced is removed from the original set.
+	 * 
+	 * @param number of microtasks in the list
+	 * @return sample N microtasks from different methods from the the fileMethoMap.
+	 */
+	public ArrayList<Microtask> nextMicrotaskList(int number){
 
 		ArrayList<Microtask> resultList = new ArrayList<Microtask>();
 
@@ -135,7 +137,6 @@ public class WorkerSessionFactory {
 	 * @return A map indexed by filename and method name
 	 */
 	public HashMap<String,HashMap<String,ArrayList<Microtask>>> buildMethodMap(){
-		// TODO implement a test for this method.
 		
 		//indexed by fileName and method name and List of microtasks
 		HashMap<String,HashMap<String,ArrayList<Microtask>>> fileMethodMap = new HashMap<String,HashMap<String,ArrayList<Microtask>>> ();

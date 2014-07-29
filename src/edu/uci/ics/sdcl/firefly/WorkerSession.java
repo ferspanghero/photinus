@@ -55,6 +55,10 @@ public class WorkerSession implements Serializable{
 			return true;
 	}
 
+	public Integer getId(){
+		return this.id;
+	}
+	
 	/**
 	 * 
 	 * @return null if the list is empty or the counter already reached the end of the list.
