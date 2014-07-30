@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -20,14 +21,14 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
  */
 public class WorkerSessionFactory {
 
-	/** Starts with 1. It is used to uniquely identify each new WorkerSession */
+	/** Starts with 0. It is used to uniquely identify each new WorkerSession */
 	private Integer sessionID;
 	
 	/** The map of all microtasks that will be used to generate WorkerSession objects */
 	private HashMap<String,HashMap<String,ArrayList<Microtask>>> fileMethodMap;
 	
 	/** Storage of WorkerSessions */
-	private WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
+	private WorkerSessionStorage sessionStorage;
 	
 	/** The worker session datastructure that will be generated */
 	HashMap<Integer, WorkerSession> workerSessionMap;
@@ -44,14 +45,13 @@ public class WorkerSessionFactory {
 	 * @param copies the number of times the same session should be created
 	 * 
 	 */
-	public Stack<WorkerSession> generateSessions(int microtaskPerSession, int copies){
+	public Stack<WorkerSession> generateSessions(int microtaskPerSession){
 		
 		//Final stack that will be persisted
 		Stack<WorkerSession> workerSessionStack = new Stack<WorkerSession>();
 		
 		//Auxiliary lists
 		ArrayList<WorkerSession> originalList = new ArrayList<WorkerSession>(); 
-		ArrayList<WorkerSession> duplicateList = new ArrayList<WorkerSession>();
 		
 		//Obtain a list of N microtasks from N different codesnippets (i.e., methods)
 		ArrayList<Microtask> mtaskList = this.nextMicrotaskList(microtaskPerSession);
@@ -63,24 +63,6 @@ public class WorkerSessionFactory {
 			mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		}
 		
-		// produce # copies of the original sessions
-		for(int j=0;j<copies;j++){
-			//Generate the duplicated WorkerSessions
-			for(int i=0;i<originalList.size();i++){
-				WorkerSession originalSession = originalList.get(i);
-				WorkerSession duplicateSession =  new WorkerSession(this.sessionID, originalSession.getMicrotaskList());
-				this.sessionID = this.sessionID + 1;
-				duplicateList.add(duplicateSession);
-			}
-		}
-		
-		
-		//Store sessions in the final Stack
-		for(int i=duplicateList.size()-1;i>=0;i--){
-			//Traverses the lists from last to first to preserve an ascending order in the stack
-			workerSessionStack.push(duplicateList.get(i));
-		}
-		
 		//Store sessions in the final Stack
 		for(int i=originalList.size()-1;i>=0;i--){
 			//Traverses the lists from last to first to preserve an ascending order in the stack
@@ -88,8 +70,29 @@ public class WorkerSessionFactory {
 		}
 		
 		return workerSessionStack;
-	//	this.sessionStorage.insertAvailableSessions(workerSessionStack);
+	}
+	
+	/** 
+	 * @param stack the original WorkerSession 
+	 * @param copies the number of times the same session should be created
+	 * @return the stack with duplicated sessions
+	 * 
+	 */
+	public Stack<WorkerSession> duplicateSessions(Stack<WorkerSession> originalStack, int copies){
+	
+	  	Stack<WorkerSession> duplicateStack = new Stack<WorkerSession>();
 		
+		// produce # copies of the original sessions
+		for(int j=0;j<copies;j++){
+			//Generate the duplicated WorkerSessions
+			for(int i=0;i<originalStack.size();i++){
+				WorkerSession originalSession = originalStack.elementAt(i);
+				WorkerSession duplicateSession =  new WorkerSession(this.sessionID, originalSession.getMicrotaskList());
+				this.sessionID = this.sessionID + 1;
+				duplicateStack.push(duplicateSession);
+			}
+		}
+		return duplicateStack;	
 	}
 	
 	/**

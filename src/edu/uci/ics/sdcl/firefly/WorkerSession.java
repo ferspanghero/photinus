@@ -36,7 +36,7 @@ public class WorkerSession implements Serializable{
 	 */
 	public boolean storeCurrentMicrotask(Microtask task){
 		if(hasCurrent()){
-			this.microtaskList.add(this.currentIndex,task);
+			this.microtaskList.set(this.currentIndex,task);
 			this.currentIndex++; 
 			return true;
 		}
@@ -49,7 +49,7 @@ public class WorkerSession implements Serializable{
 	 * @return true if the counter points to a position within the list, otherwise false.
 	 */
 	public boolean hasCurrent(){
-		if(currentIndex<0 || currentIndex>microtaskList.size())
+		if(currentIndex<0 || currentIndex>microtaskList.size()-1)
 			return false;
 		else
 			return true;
