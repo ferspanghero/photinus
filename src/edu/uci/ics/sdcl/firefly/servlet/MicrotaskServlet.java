@@ -56,6 +56,28 @@ public class MicrotaskServlet extends HttpServlet {
 		MicrotaskStorage storage = new MicrotaskStorage();
 		storage.insertAnswer(fileName, new Integer(id), new Answer(Answer.mapToString(answer),explanation));
 
+		settingACEEditors(request, fileName);
+
+		//display a new microtask
+		request.getRequestDispatcher("/QuestionMicrotask.jsp").include(request, response);
+	}
+
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		String fileName = new String();
+		settingACEEditors(request, fileName);
+
+		//Calls the microtask page
+		request.getRequestDispatcher("/QuestionMicrotask.jsp").forward(request, response);
+	}
+
+
+	protected void settingACEEditors(HttpServletRequest request, String fileName)
+	{
 		//Prepare next microtask request
 		MicrotaskSelector selector = new MicrotaskSelector();
 		MicrotaskSelector.SelectorReturn returnValues = selector.selectAnyMicrotask();
@@ -72,16 +94,23 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("question", task.getQuestion());
 			request.setAttribute("source", fileContent); 	// content displayed on the first ACE Editor
 			/* preparing the second ACE Editor - callers */
-			StringBuilder newFileContent = new StringBuilder();
-			StringBuilder highlight = new StringBuilder();
-			String highlightCommand = new String();
+			StringBuilder newFileContent;
+			StringBuilder highlight;
+			String highlightCallerCommand;
+
 			String newline = System.getProperty("line.separator");
 			if ( task.getMethod().getCallers().isEmpty() ){
 				newFileContent = null;
-				highlightCommand = null;
+				highlightCallerCommand = null;
+				request.setAttribute("caller", null);
 			} else 
 			{
-				newFileContent.append("THE METHOD ABOVE IS CALLED BY: ");
+				newFileContent = new StringBuilder();
+				highlight = new StringBuilder();
+				highlightCallerCommand = new String();
+				newFileContent.append("METHOD '" + task.getMethod().getMethodSignature().getName() + 
+						"' IS CALLED BY THE FOLLOWING METHOD(S):");
+				newFileContent.append(newline);
 				newFileContent.append(newline);
 				for (CodeSnippet caller : task.getMethod().getCallers()) {
 					newFileContent.append(caller.getCodeSnippetFromFileContent());	// appending caller
@@ -94,26 +123,47 @@ public class MicrotaskServlet extends HttpServlet {
 				for (CodeSnippet caller : task.getMethod().getCallers()) {
 					highlight.append( methodChaser(caller.getMethodSignature().getName(), newFileContent.toString()) );
 				}
-				highlightCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
-				System.out.println("Command to be executed: " + highlightCommand);
+				highlight.append( methodChaser(task.getMethod().getMethodSignature().getName(), newFileContent.toString()) );
+				highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
+				System.out.println("Command to be executed: " + highlightCallerCommand);
+				request.setAttribute("caller", newFileContent.toString());
 			}
 			// passing to jsp
-			request.setAttribute("positionsCaller", highlightCommand);
-			request.setAttribute("caller", newFileContent.toString());
+			request.setAttribute("positionsCaller", highlightCallerCommand);
+
 
 			/* preparing the third ACE Editor - callees */
-			newFileContent.setLength(0);	// reseting the builder
-			newFileContent.append("THE METHOD ABOVE HAS CALLEE(S): ");
-			newFileContent.append(newline);
-			for (CodeSnippet callee : task.getMethod().getCallees()) {
-				newFileContent.append(callee.getCodeSnippetFromFileContent());	// appending caller
-				if ( task.getMethod().getCallees().indexOf(callee) < (task.getMethod().getCallees().size()-1) ){
-					newFileContent.append(newline);	// appending two new lines in case it is NOT the last callee 
-					newFileContent.append(newline);
+			String highlightCalleeCommand;
+			if ( task.getMethod().getCallees().isEmpty() ){
+				newFileContent = null;
+				highlightCalleeCommand = null;
+				request.setAttribute("callee", null);
+			} else 
+			{
+				newFileContent = new StringBuilder();
+				highlight = new StringBuilder();
+				highlightCalleeCommand = new String();
+				newFileContent.append("METHOD '" + task.getMethod().getMethodSignature().getName() + 
+						"' CALLS THE FOLLOWING METHOD(S):");
+				newFileContent.append(newline);
+				newFileContent.append(newline);
+				for (CodeSnippet callee : task.getMethod().getCallees()) {
+					newFileContent.append(callee.getCodeSnippetFromFileContent());	// appending callee
+					if ( task.getMethod().getCallees().indexOf(callee) < (task.getMethod().getCallees().size()-1) ){
+						newFileContent.append(newline);	// appending two new lines in case it is NOT the last callee 
+						newFileContent.append(newline);
+					}
+				}	
+				// chasing method positions for highlighting purposes
+				for (CodeSnippet callee : task.getMethod().getCallees()) {
+					highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString()) );
 				}
-			}			
-			request.setAttribute("callee", newFileContent.toString());
-			//			request.setAttribute("words", "/size|int/g");
+				highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
+				System.out.println("Command to be executed: " + highlightCalleeCommand);
+				request.setAttribute("callee", newFileContent.toString());
+			}
+			// passing to jsp
+			request.setAttribute("positionsCallee", highlightCalleeCommand);
 
 			request.setAttribute("id", task.getID());
 			request.setAttribute("fileName", fileName);
@@ -125,74 +175,6 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("endColumn", task.getEndingColumn());
 
 			request.setAttribute("methodStartingLine", task.getMethod().getMethodSignature().getLineNumber());
-
-		}
-		//display a new microtask
-		request.getRequestDispatcher("/QuestionMicrotask.jsp").include(request, response);
-	}
-
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		//Retrieve Microtask from Selector
-		MicrotaskSelector selector = new MicrotaskSelector();
-		MicrotaskSelector.SelectorReturn returnValues = selector.selectAnyMicrotask();
-
-		if(returnValues==null){
-			request.setAttribute("return_message","No microtasks available");
-		}
-		else{
-
-			Microtask task = returnValues.task;
-			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
-			String fileName = returnValues.fileName;
-			String fileContent = task.getMethod().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
-			request.setAttribute("question", task.getQuestion());
-			request.setAttribute("source", fileContent);   
-			/* preparing the second ACE Editor - callers */
-			StringBuilder builder = new StringBuilder();
-			String newline = System.getProperty("line.separator");
-			builder.append("THE METHOD ABOVE IS CALLED BY: ");
-			builder.append(newline);
-			for (CodeSnippet caller : task.getMethod().getCallers()) {
-				builder.append(caller.getCodeSnippetFromFileContent());	// appending caller
-				if ( task.getMethod().getCallers().indexOf(caller) < (task.getMethod().getCallers().size()-1) ){
-					builder.append(newline);	// appending two new lines in case it is NOT the last caller 
-					builder.append(newline);
-				}
-			}		
-
-			request.setAttribute("caller", builder.toString());
-
-			/* preparing the third ACE Editor - callees */
-			builder.setLength(0);	// reseting the builder
-			builder.append("THE METHOD ABOVE HAS CALLEE(S): ");
-			builder.append(newline);
-			for (CodeSnippet callee : task.getMethod().getCallees()) {
-				builder.append(callee.getCodeSnippetFromFileContent());	// appending caller
-				if ( task.getMethod().getCallees().indexOf(callee) < (task.getMethod().getCallees().size()-1) ){
-					builder.append(newline);	// appending two new lines in case it is NOT the last callee 
-					builder.append(newline);
-				}
-			}			
-			request.setAttribute("callee", builder.toString());
-
-			request.setAttribute("id", task.getID());
-			request.setAttribute("fileName", fileName);
-			request.setAttribute("explanation",""); //clean up the explanation field.
-
-			request.setAttribute("startLine", task.getStartingLine());
-			request.setAttribute("startColumn", task.getStartingColumn());
-			request.setAttribute("endLine", task.getEndingLine());
-			request.setAttribute("endColumn", task.getEndingColumn());
-
-			request.setAttribute("methodStartingLine", task.getMethod().getMethodSignature().getLineNumber());
-
-			//Calls the microtask page
-			request.getRequestDispatcher("/QuestionMicrotask.jsp").forward(request, response);
 		}
 	}
 

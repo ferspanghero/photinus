@@ -15,27 +15,27 @@
 	width: 700px;
 }
 
-#editorCaller {
+#editorCallerNotUsingAnymore {
 	position: relative;
 	height: 200px;
 	width: 700px;
 }
 
-#editorCallee {
+#editorCalleeNotUsingAnymore {
 	position: relative;
 	height: 200px;
 	width: 700px;
 }
 
-.foo {
+.callers {
 	position: absolute;
-	background: rgba(100, 200, 100, 0.5);
+	background: rgba(27, 132, 249, 0.4);
 	z-index: 20
 }
 
-.bar {
+.callees {
 	position: absolute;
-	background: rgba(100, 100, 200, 0.5);
+	background: rgba(27, 132, 249, 0.4);
 	z-index: 20
 }
 
@@ -129,6 +129,7 @@
 		<input type="hidden" id="endColumn" value=${requestScope["endColumn"]}>
 		<input type="hidden" id="methodStartingLine" value=${requestScope["methodStartingLine"]}>
 		<input type="hidden" id="positionsCaller" value=${requestScope["positionsCaller"]}>
+		<input type="hidden" id="positionsCallee" value=${requestScope["positionsCallee"]}>
 	</div>
 
 	<script
@@ -161,7 +162,7 @@
 			
 		</form>
 	</div>
-
+	
 	<div id=myDiv>
 		<br> <INPUT TYPE="button" VALUE="Skip this"	onclick="skipAnswer()"> 
 		<INPUT TYPE="button" VALUE="Submit Answer" onclick="submitAnswer(event)">
@@ -169,12 +170,12 @@
 
 		<br><br>
 		
-		<div id="editorCaller"><xmp>${requestScope["caller"]}</xmp></div>
+		<div id="editorCaller">${requestScope["caller"]}</div>
 		
 		<br><br>
 		
 		<div id="editorCallee"><xmp>${requestScope["callee"]}</xmp></div>
-				
+
 		<script>
 			/* First and main ACE Editor */
 			var editor = ace.edit('editor');
@@ -192,61 +193,84 @@
 			var Range = ace.require("ace/range").Range;
 	
 			var codeSnippetStartingLine = parseInt(document.getElementById("methodStartingLine").value);
-			editor.setOption("firstLineNumber", codeSnippetStartingLine); // set the starting line to <second parameter>
-	
-			/* Second and caller ACE Editor */
-			var editorCaller = ace.edit('editorCaller');
-			editorCaller.setReadOnly(true);
-			editorCaller.setTheme("ace/theme/github");
-			editorCaller.getSession().setMode("ace/mode/java"); 
-			editorCaller.setBehavioursEnabled(false);
-			editorCaller.setOption("highlightActiveLine", false); 	// disable highligthing on the active line
-			editorCaller.setShowPrintMargin(false);					// disable printing margin
+			editor.setOption("firstLineNumber", codeSnippetStartingLine); // set the starting line to <second parameter>	
 			
-			/* Third and callee ACE Editor */
-			var editorCallee = ace.edit('editorCallee');
-			editorCallee.setReadOnly(true);
-			editorCallee.setTheme("ace/theme/github");
-			editorCallee.getSession().setMode("ace/mode/java"); 
-			editorCallee.setBehavioursEnabled(false);
-			editorCallee.setOption("highlightActiveLine", false); 	// disable highligthing on the active line
-			editorCallee.setShowPrintMargin(false);					// disable printing margin
-			
-			/* highlighting specific words*/
-			// caller
-			//var keywords = eval(document.getElementById("words").value);	// what will be highlighted goes here
-	        //keywords = new RegExp(/"hashOrdinalIntoArray"/g);
-	        //editorCaller.findAll(keywords,{
-	            //caseSensitive: false,
-	            //wholeWord: true,
-	        //    regExp: true
-	        //});
-	        // callee
-	        //var keywords = eval();	// what will be highlighted goes here
-	        //keywords = new RegExp(/hashOrdinalIntoArray|int/g);
-	        //editorCallee.findAll(keywords,{
-	            //caseSensitive: false,
-	            //wholeWord: true,
-	            //regExp: true
-	        //});
-	        
-	        
+			// parameters for the others AceEditor
 	        var highlightCaller = document.getElementById("positionsCaller").value;
-	        var numbersCaller = null;
-	        if (highlightCaller != null )
-	        	numbersCaller = highlightCaller.split("#");
-	        
-	        document.write(numbersCaller);
-	        
+	        var highlightCallee = document.getElementById("positionsCallee").value;
+	        	
 			setTimeout(function() {
+				// highlight regarding main method
 				editor.session.addMarker(new Range(startLine - codeSnippetStartingLine, startColumn, 
 						endLine	- codeSnippetStartingLine, endColumn), "ace_active-line", "line");
 				editor.gotoLine(startLine - codeSnippetStartingLine + 1);
 				
-				editorCaller.session.addMarker(new Range(numbersCaller[0]-1, 
-						numbersCaller[1], numbersCaller[2]-1, numbersCaller[3]), "ace_active-line", "line");
+				// other ACE Editor highlights
+				if (highlightCaller){
+					/* setting properties of the div caller */
+					var divCaller = document.getElementById('editorCaller');
+					divCaller.style.position='relative';
+					divCaller.style.height='200px';
+					divCaller.style.width='700px';
+					
+					/* Second and caller ACE Editor */
+					var editorCaller = ace.edit('editorCaller');
+					editorCaller.setReadOnly(true);
+					editorCaller.setTheme("ace/theme/github");
+					editorCaller.getSession().setMode("ace/mode/java"); 
+					editorCaller.setBehavioursEnabled(false);
+					editorCaller.setOption("highlightActiveLine", false); 	// disable highligthing on the active line
+					editorCaller.setShowPrintMargin(false);					// disable printing margin
+					
+					var numbersCaller = highlightCaller.split("#");
+					var lnStart = 0.0;
+					var clStart = 0.0;
+					var lnEnd = 0.0;
+					var clEnd = 0.0;
+					//document.write("Caller length: " + numbersCaller.length + "<br>");
+					for (i=0; i < numbersCaller.length; i+=4){
+						lnStart = numbersCaller[i]-1;
+						clStart = numbersCaller[i+1];
+						lnEnd = numbersCaller[i+2]-1;
+						clEnd = numbersCaller[i+3];
+						editorCaller.session.addMarker(new Range(lnStart, clStart, lnEnd, clEnd), "callers", "line");
+						//document.write("positions: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");
+					}
+					//document.write("<br>");
+				}
+				
+				if (highlightCallee){
+					/* setting properties of the div caller */
+					var divCallee = document.getElementById('editorCallee');
+					divCallee.style.position='relative';
+					divCallee.style.height='200px';
+					divCallee.style.width='700px';
+					
+					/* Third and callee ACE Editor */
+					var editorCallee = ace.edit('editorCallee');
+					editorCallee.setReadOnly(true);
+					editorCallee.setTheme("ace/theme/github");
+					editorCallee.getSession().setMode("ace/mode/java"); 
+					editorCallee.setBehavioursEnabled(false);
+					editorCallee.setOption("highlightActiveLine", false); 	// disable highligthing on the active line
+					editorCallee.setShowPrintMargin(false);					// disable printing margin
+		    
+					var numbersCallee = highlightCallee.split("#");
+					var lnStart = 0.0;
+					var clStart = 0.0;
+					var lnEnd = 0.0;
+					var clEnd = 0.0;
+					//document.write("Callee length: " + numbersCallee.length + "<br>");
+					for (i=0; i < numbersCallee.length; i+=4){
+						lnStart = numbersCallee[i]-1;
+						clStart = numbersCallee[i+1];
+						lnEnd = numbersCallee[i+2]-1;
+						clEnd = numbersCallee[i+3];
+						editorCallee.session.addMarker(new Range(lnStart, clStart, lnEnd, clEnd), "callees", "line");
+						//document.write("positions: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");
+					}
+				}	
 			}, 100); 
-			
 			
 		</script>
 

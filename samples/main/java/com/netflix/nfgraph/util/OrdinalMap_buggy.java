@@ -90,7 +90,7 @@ public class OrdinalMap_buggy<T> implements Iterable<T> {
     
     /**
      * @return the ordinal of an object previously added to the map.  If the 
-     object has not been added to the map, returns -1 instead. 
+     * object has not been added to the map, returns -1 instead. 
      */
     public int get(T obj) {
         int hash = Mixer.hashInt(obj.hashCode());
