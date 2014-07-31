@@ -112,7 +112,7 @@ public class FileUploadServlet extends HttpServlet {
 
 		//filtering by methodName
 		boolean foundMatch = false;		// assuming it found the method specified
-		System.out.print("candidates: " + methodName + ", ");
+		System.out.print("candidates: ");
 		ArrayList<CodeSnippet> filteredCodeSnippets = new ArrayList<CodeSnippet>();
 		for (CodeSnippet codeSnippet : snippetList) {
 			System.out.print(codeSnippet.getMethodSignature().getName() + ", ");
