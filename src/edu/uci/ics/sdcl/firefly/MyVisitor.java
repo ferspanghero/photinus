@@ -86,10 +86,10 @@ public class MyVisitor extends ASTVisitor {
 		String visibility;
 		List<Object> parameters;
 		System.out.println("-----------");
-		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());	
 		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
-//		System.out.println("Method at line: " + lnNumber);
-//		System.out.println("Method name full: " + node.getName().getFullyQualifiedName()); //FullName?
+		System.out.println("Method at line: " + this.elementStartingLine );
+		System.out.println("Method name full: " + node.getName().getFullyQualifiedName()); // FullName?
 		if ( null == node.getName() )
 		{
 			name = null;
@@ -140,6 +140,18 @@ public class MyVisitor extends ASTVisitor {
 		}
 //		System.out.println("Parameters: " + parameters);
 		
+		int nameStartingLine = cu.getLineNumber(node.getName().getStartPosition());
+		if (this.elementStartingLine !=  nameStartingLine)
+		{	// that means that are comment(s) before the method which is(are) misleading the starting line
+			this.elementStartingLine = nameStartingLine;	// but now I do not know the column start
+			System.out.println("[MV] New line: " + this.elementStartingLine);
+			
+			/* Finding the column start and the end position for the element */
+			this.elementPosition = new PositionFinder(this.elementStartingLine,
+					snippetFactory.getFileContentPerLine(), '(', ')');
+			this.elementEndingLine = this.elementPosition.getEndingLineNumber();
+			this.elementEndingColumn = this.elementPosition.getEndingColumnNumber();
+		}
 		setupElementEndPosition();
 		if (null == node.getBody())
 		{

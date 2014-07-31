@@ -96,22 +96,22 @@ public class CodeSnippetFactory {
 
 	public void setCallers(ArrayList<CodeSnippet> codeSnippets)
 	{
-		System.out.println(" <> ");
+//		System.out.println(" <> ");
 		/* building and populating callers-callees structure */
 		HashMap<CodeSnippet, ArrayList<String>> callersCalles = new HashMap<CodeSnippet, ArrayList<String>>();
 		for (CodeSnippet codeSnippet : codeSnippets) {	// for each method (caller)
 			ArrayList<String> callees = new ArrayList<String>();
-			System.out.println("Caller: " + codeSnippet.getMethodSignature().getName());
+//			System.out.println("Caller: " + codeSnippet.getMethodSignature().getName());
 			for (CodeElement codeElement : codeSnippet.getStatements()) {	// find the callees (within the method)
 				if (CodeElement.METHOD_INVOCATION == codeElement.getType())
 				{
 					MyMethodCall methodInvocation = (MyMethodCall)codeElement;
 					callees.add(methodInvocation.getName());
-					System.out.println("--callee: " + methodInvocation.getName()); 
+//					System.out.println("--callee: " + methodInvocation.getName()); 
 				}
 			}
 			callersCalles.put(codeSnippet, callees); //add to the hash map
-			System.out.println(" <> ");
+//			System.out.println(" <> ");
 		}
 
 		/* Updating the methods callers */

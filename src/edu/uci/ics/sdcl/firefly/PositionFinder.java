@@ -22,6 +22,18 @@ public class PositionFinder {
 		setEndPosition();
 	}
 	
+	public PositionFinder(Integer startingLineNumberArg, String fileInLinesArg[], 
+			char openingBraceArg, char closingBraceArg)
+	{
+		this.startingLineNumber = startingLineNumberArg;
+		this.fileInLines = fileInLinesArg;
+		this.openingBrace = openingBraceArg;
+		this.closingBrace = closingBraceArg;
+		
+		setClStartAndEndPosition();
+		
+	}
+	
 	public void setEndPosition()
 	{
 		Integer bracesTrack = 0;	// reference to find the end counting the braces
@@ -81,6 +93,20 @@ public class PositionFinder {
 //		System.out.print("---> Checking if this is the right ending column: " + this.endingColumnNumber + "-");
 //		System.out.println(this.fileInLines[currentLine-1].charAt(this.endingColumnNumber-1));
 //		System.out.println("------------");
+	}
+	
+	public void setClStartAndEndPosition(){
+		this.startingColumnNumber = 0;	// assuming it starts from zero
+		/* finding where is the first word occurrence */
+		String words[] = this.fileInLines[this.startingLineNumber-1].split(" ");
+		for (String word : words) {
+			if ( (null != word) && (word.length() > 0) ){
+				this.startingColumnNumber = this.fileInLines[this.startingLineNumber-1].indexOf(word);
+				System.out.println("[PS] New column start: " + this.startingColumnNumber);
+				break;
+			}
+		}
+		setEndPosition();
 	}
 	
 	public Integer getStartingLineNumber() {
