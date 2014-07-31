@@ -44,7 +44,8 @@ public class SourceFileReader {
 		//		codeSnippets.printAll();
 		QuestionFactory questionFactory = new QuestionFactory();
 		System.out.println("----------Printing Concrete Questions-------------");
-		HashMap<Integer, Microtask> concreteQuestionsMade = questionFactory.generateQuestions(methodsParsed);
+		questionFactory.generateQuestions(methodsParsed);
+		HashMap<Integer, Microtask> concreteQuestionsMade = questionFactory.getConcreteQuestions();
 		Set<Map.Entry<Integer, Microtask>> set = concreteQuestionsMade.entrySet();
 		Iterator<Entry<Integer, Microtask>> i = set.iterator();
 		while(i.hasNext()) 

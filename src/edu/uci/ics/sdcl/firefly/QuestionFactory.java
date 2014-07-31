@@ -2,6 +2,10 @@ package edu.uci.ics.sdcl.firefly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 public class QuestionFactory {
 	/* public final static String FOR_LOOP = "FOR_LOOP"; 
@@ -71,7 +75,7 @@ public class QuestionFactory {
 	 * @return the map of microtasks
 	 */
 	
-	public HashMap<Integer, Microtask> generateQuestions(ArrayList<CodeSnippet> methodsArg)
+	public void generateQuestions(ArrayList<CodeSnippet> methodsArg)
 	{
 		this.numberOfStatements = 0;	// initializing variable
 		this.concreteQuestions = new  HashMap<Integer, Microtask>();
@@ -261,7 +265,11 @@ public class QuestionFactory {
 				} 
 			}
 		}
-		return concreteQuestions;
+	}
+	
+	public void generateQuestions(ArrayList<CodeSnippet> methodsArg, String bugReport){
+		generateQuestions(methodsArg);
+		setUpBugReport(bugReport);
 	}
 
 
@@ -301,5 +309,20 @@ public class QuestionFactory {
 		return questionPromptArg;
 	}
 
-
+	public boolean setUpBugReport(String bugReport){
+		boolean successful = false;	// assuming none microtasks were generated
+		Set<Map.Entry<Integer, Microtask>> set = this.concreteQuestions.entrySet();
+		Iterator<Entry<Integer, Microtask>> i = set.iterator();
+		while(i.hasNext()) 
+		{
+			Map.Entry<Integer, Microtask> me = (Map.Entry<Integer, Microtask>)i.next();
+			me.getValue().setBugReport(bugReport);
+			successful = true;
+		}
+		return successful;
+	}
+	
+	public HashMap<Integer, Microtask> getConcreteQuestions() {
+		return concreteQuestions;
+	}
 }

@@ -35,7 +35,7 @@ public class FileUploadServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
 	}
 
 	/**
@@ -44,8 +44,11 @@ public class FileUploadServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//process only if its multipart content
 		String targetName = new String();
+		String bugReport = new String();
 		String fileName = new String();
 		String fileContent = new String();
+		boolean gotBugReport = false;		// assuming that not all parameters that are necessary are known
+		boolean gotSpecificMethod = false;
 		if(ServletFileUpload.isMultipartContent(request)){
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
@@ -65,18 +68,29 @@ public class FileUploadServlet extends HttpServlet {
 						}
 						else
 							return_message = "File <b>"+ fileName+"</b> is empty!";
-						
+
 						request.setAttribute("return_message",return_message);
 						request.setAttribute("fileName", fileName); 
 						//request.setAttribute("source", source);
 					}
 					else{
+						// getting bug report
+						if (item.getFieldName().equalsIgnoreCase("bugReport")){
+							bugReport = item.getString();
+							gotBugReport = true;
+						}
 						// getting specific method name
 						if (item.getFieldName().equalsIgnoreCase("targetMethod")){
 							targetName = item.getString();
-							String results = generateMicrotasks(fileName, fileContent, targetName);
+							gotSpecificMethod = true;
+						}
+						// generating microtasks if...
+						if (gotBugReport && gotSpecificMethod){
+							String results = generateMicrotasks(fileName, fileContent, targetName, bugReport);
 							return_message = return_message + results;
 						}
+
+
 						request.setAttribute("return_message", return_message);
 					}
 				}
@@ -86,43 +100,54 @@ public class FileUploadServlet extends HttpServlet {
 		}
 		else
 			request.setAttribute("return_message","");
- 
+
 		request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 	}
 
 
-	private String generateMicrotasks(String fileName, String fileContent, String methodName){
+	private String generateMicrotasks(String fileName, String fileContent, String methodName, String bugReport){
 		//calls CodeSnippetFactory
 		CodeSnippetFactory codeSnippetFactory = new CodeSnippetFactory(fileName,fileContent);
 		ArrayList<CodeSnippet> snippetList = codeSnippetFactory.generateSnippetsForFile();
-		
+
 		//filtering by methodName
-		System.out.print("candidates: " + methodName);
+		boolean foundMatch = false;		// assuming it found the method specified
+		System.out.print("candidates: " + methodName + ", ");
 		ArrayList<CodeSnippet> filteredCodeSnippets = new ArrayList<CodeSnippet>();
 		for (CodeSnippet codeSnippet : snippetList) {
 			System.out.print(codeSnippet.getMethodSignature().getName() + ", ");
 			if (codeSnippet.getMethodSignature().getName().equals(methodName))
+			{
 				filteredCodeSnippets.add(codeSnippet);
+				foundMatch = true;
+			}
 		}
 		System.out.println();
-		//calls QuestionFactory
-		QuestionFactory questionFactory = new QuestionFactory ();
-		HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(filteredCodeSnippets);
-		FileDebugSession fileDebuggingSession = new FileDebugSession(fileName,fileContent, microtaskMap);
-
-		//Persist data
-		MicrotaskStorage memento = new MicrotaskStorage();
-		memento.replace(fileName, fileDebuggingSession);
-
-		int numberOfCodeSnippets = snippetList.size();
-		int numberOfMicrotasks = microtaskMap.size();
-
+		
 		String results = "";
-		if (microtaskMap!= null && microtaskMap.size() > 0){
-			results = "Number of code snippets: "+numberOfCodeSnippets+ "<br> Microtasks generated: " + numberOfMicrotasks+"<br>";
+		if (foundMatch){
+			//calls QuestionFactory
+			QuestionFactory questionFactory = new QuestionFactory ();
+			questionFactory.generateQuestions(filteredCodeSnippets, bugReport);
+			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions();
+
+			if (microtaskMap!= null && microtaskMap.size() > 0){
+				FileDebugSession fileDebuggingSession = new FileDebugSession(fileName, fileContent, microtaskMap);
+
+				//Persist data
+				MicrotaskStorage memento = new MicrotaskStorage();
+				memento.replace(fileName, fileDebuggingSession);
+
+				int numberOfCodeSnippets = snippetList.size();
+				int numberOfMicrotasks = microtaskMap.size();
+				results = "Number of code snippets: "+numberOfCodeSnippets+ "<br> Microtasks generated: " + numberOfMicrotasks+"<br>";
+			}
+			else
+				results = "No Microtasks were generated. Please review the file";
 		}
 		else
-			results = "No Microtasks were generated. Please review the file and method name.";
+			results = "No Microtasks were generated. Please review the method name";
+
 		System.out.println("Results: "+results);
 		return results;
 	}

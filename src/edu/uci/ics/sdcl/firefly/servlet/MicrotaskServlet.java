@@ -2,21 +2,12 @@ package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException; 
 
-
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-
-
-
-
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
@@ -89,8 +80,10 @@ public class MicrotaskServlet extends HttpServlet {
 
 			Microtask task = returnValues.task;
 			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
+			System.out.println("Retrieved microtask bug report:" + task.getBugReport());
 			fileName = returnValues.fileName;
 			String fileContent = task.getMethod().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
+			request.setAttribute("bugReport", task.getBugReport());
 			request.setAttribute("question", task.getQuestion());
 			request.setAttribute("source", fileContent); 	// content displayed on the first ACE Editor
 			/* preparing the second ACE Editor - callers */
@@ -121,9 +114,9 @@ public class MicrotaskServlet extends HttpServlet {
 				}
 				// chasing method positions for highlighting purposes
 				for (CodeSnippet caller : task.getMethod().getCallers()) {
-					highlight.append( methodChaser(caller.getMethodSignature().getName(), newFileContent.toString()) );
+					highlight.append( methodChaser(caller.getMethodSignature().getName(), newFileContent.toString(), true) );
 				}
-				highlight.append( methodChaser(task.getMethod().getMethodSignature().getName(), newFileContent.toString()) );
+				highlight.append( methodChaser(task.getMethod().getMethodSignature().getName(), newFileContent.toString(), false) );
 				highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
 				System.out.println("Command to be executed: " + highlightCallerCommand);
 				request.setAttribute("caller", newFileContent.toString());
@@ -156,7 +149,7 @@ public class MicrotaskServlet extends HttpServlet {
 				}	
 				// chasing method positions for highlighting purposes
 				for (CodeSnippet callee : task.getMethod().getCallees()) {
-					highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString()) );
+					highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString(), true) );
 				}
 				highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
 				System.out.println("Command to be executed: " + highlightCalleeCommand);
@@ -180,17 +173,20 @@ public class MicrotaskServlet extends HttpServlet {
 
 	// return the position of all the methodName occurrences on the following format:
 	// startingLine#startingColumn#endingLine#endingColumn#... and so on
-	protected String methodChaser(String methodName, String fileContent)
+	protected String methodChaser(String methodName, String fileContent, boolean methodCallStrict)
 	{
 		PositionFinder invocationPosition;
 		StringBuilder highlightCommand = new StringBuilder();
 		String stringLines[] = fileContent.split("\r\n|\r|\n");
 		int currentLine = 0;
-		System.out.println("method name: " + methodName);
+//		System.out.println("method name: " + methodName);
 		for (String line : stringLines) {
 			currentLine++;
-			System.out.println("Line " + currentLine + ": " + line);
+//			System.out.println("Line " + currentLine + ": " + line);
 			if (line == null || line.length() <= 0)	continue;	// if line does not have any content, just skip it
+			if (methodCallStrict)
+				if (!line.contains("public") && !line.contains("protected") && !line.contains("private"))
+					continue;	// looking just for methodCalls not other occurrences when methodStrict is true (that will be skipped)
 			String[] stringWords = line.split("\\s+");			// splitting lines into words
 			List<String> wordsPerLine = stringArraytoList(stringWords);
 			int wordLengthAcumulator = 0;	// just for the edge case of the same function being executed more than once per line
@@ -201,20 +197,20 @@ public class MicrotaskServlet extends HttpServlet {
 					if ( wordsPerLine.get(index).contains("(") )
 					{	// also contains an opening parenthesis - method call for sure
 						isMethodCall = true;
-						System.out.println("Method call at line " + currentLine + ": " + line);
+//						System.out.println("Method call at line " + currentLine + ": " + line);
 					}
 					else if ( index < (wordsPerLine.size()-1) )	// if it is NOT the last word
 					{	// look for parenthesis on the next word
 						if ( wordsPerLine.get(index).contains("(") )
 						{	// its also a method call for sure
 							isMethodCall = true;
-							System.out.println("Method call at line " + currentLine + ": " + line);
+//							System.out.println("Method call at line " + currentLine + ": " + line);
 						}	// otherwise continue false, it is not a method call
 					}
 				}
 				if (isMethodCall)
 				{
-					System.out.println("passing column: " + line.indexOf(methodName, wordLengthAcumulator) + " W.A.: " + wordLengthAcumulator);
+//					System.out.println("passing column: " + line.indexOf(methodName, wordLengthAcumulator) + " W.A.: " + wordLengthAcumulator);
 					invocationPosition = 
 							new PositionFinder(currentLine, line.indexOf(methodName, wordLengthAcumulator), stringLines, '(', ')');
 					highlightCommand.append(invocationPosition.getStartingLineNumber()+"#");
@@ -222,7 +218,7 @@ public class MicrotaskServlet extends HttpServlet {
 					highlightCommand.append(invocationPosition.getEndingLineNumber()+"#");
 					highlightCommand.append(invocationPosition.getEndingColumnNumber()+"#");
 					wordLengthAcumulator = invocationPosition.getStartingColumnNumber();
-					System.out.println("Positions appended: " + highlightCommand + " WA: " + wordLengthAcumulator);
+//					System.out.println("Positions appended: " + highlightCommand + " WA: " + wordLengthAcumulator);
 				}
 			}
 		}

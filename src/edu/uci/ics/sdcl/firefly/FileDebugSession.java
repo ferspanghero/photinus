@@ -77,4 +77,8 @@ public class FileDebugSession implements Serializable {
 			return false;
 	}
 	
+	public boolean isEmpty(){
+		return (this.microtaskMap == null || this.microtaskMap.isEmpty());
+	}
+	
 }

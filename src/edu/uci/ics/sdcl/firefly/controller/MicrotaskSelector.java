@@ -63,7 +63,7 @@ public class MicrotaskSelector {
 
 		MicrotaskStorage memento = new MicrotaskStorage();
 		FileDebugSession debugSession = memento.read(fileName);
-		if((debugSession==null) || (debugSession.getMicrotaskMap()==null)){
+		if( (debugSession==null) || (debugSession.isEmpty()) ){
 			return null;
 		}
 		else{

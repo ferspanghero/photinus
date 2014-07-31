@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Microtask implements Serializable
 {	
 	private String question;
+	private String bugReport;
 	private CodeSnippet method;
 	private String codeElementType;
 	private ArrayList<Answer> answerList;
@@ -112,6 +113,14 @@ public class Microtask implements Serializable
 
 	public int getNumberOfAnswers() {
 		return this.answerList.size();
+	}
+
+	public String getBugReport() {
+		return bugReport;
+	}
+
+	public void setBugReport(String bugReport) {
+		this.bugReport = bugReport;
 	}
 
 

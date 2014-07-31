@@ -44,6 +44,11 @@
 	background-color: #FFFAEB
 }
 
+#failurePrompt {
+	max-width: 700px;
+	background-color: #FFFAEB
+}
+
 #thumbs {
 	width: 700px;
 	margin-top: 0px;
@@ -71,8 +76,6 @@
 </head>
 
 <body>
-
-
 
 	<script>
 		function checkAnswer() {
@@ -137,6 +140,11 @@
 	<script
 		src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
 
+	<div id="failurePrompt" align="center">
+		Failure description: ${requestScope["bugReport"]}
+		<br><br>
+	</div>
+	
 	<div id="myDiv">
 		<b>${requestScope["question"]}</b><br> <br>
 	</div>
@@ -167,12 +175,11 @@
 		<br> <INPUT TYPE="button" VALUE="Skip this"	onclick="skipAnswer()"> 
 		<INPUT TYPE="button" VALUE="Submit Answer" onclick="submitAnswer(event)">
 	
-
 		<br><br>
 		
-		<div id="editorCaller">${requestScope["caller"]}</div>
+		<div id="editorCaller"><xmp>${requestScope["caller"]}</xmp></div>
 		
-		<br><br>
+		<div id="space"></div>
 		
 		<div id="editorCallee"><xmp>${requestScope["callee"]}</xmp></div>
 
@@ -212,7 +219,7 @@
 					divCaller.style.position='relative';
 					divCaller.style.height='200px';
 					divCaller.style.width='700px';
-					
+					 
 					/* Second and caller ACE Editor */
 					var editorCaller = ace.edit('editorCaller');
 					editorCaller.setReadOnly(true);
@@ -268,8 +275,12 @@
 						clEnd = numbersCallee[i+3];
 						editorCallee.session.addMarker(new Range(lnStart, clStart, lnEnd, clEnd), "callees", "line");
 						//document.write("positions: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");
-					}
-				}	
+					}	
+				}
+				// just do make a space between Editors
+				if (highlightCaller && highlightCallee)
+					document.getElementById('space').innerHTML = '<br>';
+					
 			}, 100); 
 			
 		</script>
