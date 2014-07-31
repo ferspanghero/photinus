@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class Microtask implements Serializable
 {	
+	private static final long serialVersionUID = 1L;
 	private String question;
 	private String failureDescription;
 	private CodeSnippet method;
@@ -16,7 +17,6 @@ public class Microtask implements Serializable
 	private Integer endingLine;
 	private Integer endingColumn;
 	private Integer ID;
-	private Integer sessionId;
 	
 	/**
 	 * 
@@ -49,14 +49,6 @@ public class Microtask implements Serializable
 
 	public Integer getID(){
 		return this.ID;
-	}
-	
-	public Integer getSessionId(){
-		return this.sessionId;
-	}
-	
-	public void setSessionId(Integer sessionId){
-		this.sessionId = sessionId;
 	}
 	
 	public String getQuestion()

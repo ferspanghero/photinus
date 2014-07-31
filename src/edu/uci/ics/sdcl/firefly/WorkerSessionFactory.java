@@ -68,7 +68,6 @@ public class WorkerSessionFactory {
 			//Traverses the lists from last to first to preserve an ascending order in the stack
 			workerSessionStack.push(originalList.get(i));
 		}
-		
 		return workerSessionStack;
 	}
 	

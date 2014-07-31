@@ -51,17 +51,15 @@ public class StorageManager {
 	/** 
 	 * @param userId is used to associate the WorkerSession with a unique anonymous worker
 	 * @param hitIT is used to associate the WorkerSession with the Mechanical Turk HIT
-	 * @return 
+	 * @return a new session, if there aren't new sessions available return null
 	 */
-	public Microtask readFirstMicrotask(Integer userId, Integer hitId){
+	public WorkerSession readNewSession(Integer userId, Integer hitId){
 		WorkerSession session = sessionStorage.readNewWorkerSession();
 		if(session!=null){
 			session.setUserId(userId);
 			session.setHitId(hitId);
 			sessionStorage.updateActiveWorkerSession(session);
-			Microtask microtask = session.getCurrentMicrotask();
-			microtask.setSessionId(session.getId());
-			return microtask;
+			return session;
 		}
 		else
 			return null; //TO DO treat the in the GUI empty list of microtasks.		
@@ -70,15 +68,12 @@ public class StorageManager {
 	/**
 	 * 
 	 * @param sessionId 
-	 * @return the next microtask, otherwise null if there are not more microtasks or if the session ID is invalid
+	 * @return a session that is already active (received at least one answer), otherwise null 
+	 * if the session is not active anymore or if the session ID is invalid
 	 */
-	public Microtask readNextMicrotask(Integer sessionId){
+	public WorkerSession readActiveSession(Integer sessionId){
 		WorkerSession session = sessionStorage.readActiveWorkerSessionByID(sessionId);
-		if(session!=null){
-			return session.getCurrentMicrotask();
-		}
-		else
-			return null;
+		return session;
 	}
 	
 	private void writeLog(String operation, String data){
