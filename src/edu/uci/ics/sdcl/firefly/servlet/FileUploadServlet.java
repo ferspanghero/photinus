@@ -143,10 +143,10 @@ public class FileUploadServlet extends HttpServlet {
 				results = "Number of code snippets: "+numberOfCodeSnippets+ "<br> Microtasks generated: " + numberOfMicrotasks+"<br>";
 			}
 			else
-				results = "No Microtasks were generated. Please review the file";
+				results = "No Microtasks were generated. Please review the file uploaded";
 		}
 		else
-			results = "No Microtasks were generated. Please review the method name";
+			results = "No Microtasks were generated. The method name was not found on the file";
 
 		System.out.println("Results: "+results);
 		return results;
