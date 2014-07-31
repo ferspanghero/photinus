@@ -16,6 +16,12 @@ public class WorkerSession implements Serializable{
 	/** Keeps track of the position of the current microtask */
 	private Integer currentIndex;
 
+	/** Associates a session with an anonymous user */
+	private Integer userId;
+
+	/** Associates a session with a Mechanical Turk Hit */
+	private Integer hitId;
+
 	/** 
 	 * Initializes the array and the counter to the first position in 
 	 * @param microtaskList
@@ -34,7 +40,7 @@ public class WorkerSession implements Serializable{
 	 * @param task the microtask that was answered
 	 * @return true if the microtask was effectively stored, false otherwise.
 	 */
-	public boolean storeCurrentMicrotask(Microtask task){
+	private boolean storeCurrentMicrotask(Microtask task){
 		if(hasCurrent()){
 			this.microtaskList.set(this.currentIndex,task);
 			this.currentIndex++; 
@@ -81,6 +87,31 @@ public class WorkerSession implements Serializable{
 	public ArrayList<Microtask> getMicrotaskList() {
 		return this.microtaskList;
 	}
+	
+	/**
+	 * 
+	 * @param microtaskId
+	 * @param answer
+	 * @return true if successful, otherwise false. In case of success, the microtask counter is incremented.
+	 */
+	public boolean insertMicrotaskAnswer(Integer microtaskId, Answer answer) {
+		
+		Microtask microtask = this.getCurrentMicrotask();
+		if((microtask == null) || (microtask.getID().intValue() != microtaskId.intValue()))
+			return false;
+		else{
+			microtask.addAnswer(answer);
+			this.storeCurrentMicrotask(microtask);
+			return true;
+		}
+	}
 
+	public void setUserId(Integer userId) {
+		this.userId = userId;		
+	}
+
+	public void setHitId(Integer hitId) {
+		this.hitId = hitId;		
+	}
 	
 }

@@ -179,7 +179,9 @@ public class QuestionFactoryTest
 			if((snippet1.isEqualTo(codeSnippetConstructor)) || (snippet1.isEqualTo(codeSnippetFactorial)) && 
 					(snippet2.isEqualTo(codeSnippetConstructor)) || (snippet2.isEqualTo(codeSnippetFactorial))){
 				/* Methods OK, now checking questions */
-				HashMap<Integer, Microtask> allQuestions = this.questionFactory.generateQuestions(list);
+				this.questionFactory.generateQuestions(list);
+				HashMap<Integer, Microtask> allQuestions = this.questionFactory.getConcreteQuestions();
+				
 				if( (null == allQuestions) || (allQuestions.size()!= 11) )
 					Assert.fail("Null list of questions or questions do not match test data");
 				else

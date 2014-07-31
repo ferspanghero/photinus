@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
+import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 
@@ -239,24 +240,43 @@ public class WorkerSessionStorage {
 	public boolean updateActiveWorkerSession(WorkerSession session){
 		HashMap<Integer,WorkerSession> workerSessionMap =this.retrieveActiveWorkerSessionMap();
 		if(workerSessionMap!=null){
-			if(!session.hasCurrent()){ //Means that the Session was completed
-				workerSessionMap.remove(session.getId()); //remove from active map
-				overwriteActiveWorkerSessionMap(workerSessionMap); //overwrite active map 
-				if(addClosedWorkerSession(session)) //Move to closed list
+			if(!session.hasCurrent()){ //it means that the Session was completed
+				workerSessionMap.remove(session.getId()); //removes from active map
+				overwriteActiveWorkerSessionMap(workerSessionMap); //overwrites active map 
+				if(addClosedWorkerSession(session)) //moves to closed list
 					return true;
 				else
 					return false;
 			}
 			else{//Session still have uncompleted microtasks
 				workerSessionMap.put(session.getId(),session);
-				overwriteActiveWorkerSessionMap(workerSessionMap); //overwrite active map
+				overwriteActiveWorkerSessionMap(workerSessionMap); //overwrites active map
 				return true;
 			}
 		}
 		else
 			return false;
 	}
-
+	
+	/**
+	 * @param sessionId the identifier for the session
+	 * @param microtaskId the identifier of a microtask in that session
+	 * @param answer the answer provided by a user
+	 * @return true if operation was successful, otherwise false
+	 */
+	public boolean setSessionMicrotaskAnswer(Integer sessionId,Integer microtaskId, Answer answer) {
+		
+		WorkerSession session = this.readActiveWorkerSessionByID(sessionId);
+		if(session==null)
+			return false;
+		else{
+			if(session.insertMicrotaskAnswer(microtaskId,answer))
+				return(this.updateActiveWorkerSession(session));
+			else
+				return false;
+		}
+	}
+	
 	/** Retrieves a WorkerSession
 	 * 
 	 * @param id the unique identifier for a WorkerSession
@@ -271,8 +291,8 @@ public class WorkerSessionStorage {
 		else
 			return null;
 	}
-
-
+	
+		
 	private HashMap<Integer, WorkerSession> retrieveActiveWorkerSessionMap(){
 
 		try{
@@ -421,4 +441,6 @@ public class WorkerSessionStorage {
 			return false;
 		}
 	}
+
 }
+	

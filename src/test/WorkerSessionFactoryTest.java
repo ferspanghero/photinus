@@ -76,7 +76,8 @@ public class WorkerSessionFactoryTest {
 			Assert.fail("Null list of snippets or file does not match test data, actual size is: "+list.size());
 		else{
 			QuestionFactory questionFactory = new QuestionFactory();
-			HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(list);
+			 questionFactory.generateQuestions(list);
+			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions();
 
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
@@ -160,8 +161,8 @@ public class WorkerSessionFactoryTest {
 			Assert.fail("Null list of snippets or file does not match test data, actual size is: "+list.size());
 		else{
 			QuestionFactory questionFactory = new QuestionFactory();
-			HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(list);
-
+			questionFactory.generateQuestions(list);
+			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions(); 
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
@@ -316,7 +317,8 @@ public class WorkerSessionFactoryTest {
 			Assert.fail("Null list of snippets or file does not match test data, actual size is: "+list.size());
 		else{
 			QuestionFactory questionFactory = new QuestionFactory();
-			HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(list);
+			questionFactory.generateQuestions(list);
+			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions(); 
 
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 

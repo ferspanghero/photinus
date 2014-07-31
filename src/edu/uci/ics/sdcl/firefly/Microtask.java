@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Microtask implements Serializable
 {	
 	private String question;
-	private String bugReport;
+	private String failureDescription;
 	private CodeSnippet method;
 	private String codeElementType;
 	private ArrayList<Answer> answerList;
@@ -16,6 +16,7 @@ public class Microtask implements Serializable
 	private Integer endingLine;
 	private Integer endingColumn;
 	private Integer ID;
+	private Integer sessionId;
 	
 	/**
 	 * 
@@ -48,6 +49,14 @@ public class Microtask implements Serializable
 
 	public Integer getID(){
 		return this.ID;
+	}
+	
+	public Integer getSessionId(){
+		return this.sessionId;
+	}
+	
+	public void setSessionId(Integer sessionId){
+		this.sessionId = sessionId;
 	}
 	
 	public String getQuestion()
@@ -115,12 +124,12 @@ public class Microtask implements Serializable
 		return this.answerList.size();
 	}
 
-	public String getBugReport() {
-		return bugReport;
+	public String getFailureDescription() {
+		return failureDescription;
 	}
 
-	public void setBugReport(String bugReport) {
-		this.bugReport = bugReport;
+	public void setFailureDescription(String bugReport) {
+		this.failureDescription = bugReport;
 	}
 
 

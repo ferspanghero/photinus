@@ -316,7 +316,7 @@ public class QuestionFactory {
 		while(i.hasNext()) 
 		{
 			Map.Entry<Integer, Microtask> me = (Map.Entry<Integer, Microtask>)i.next();
-			me.getValue().setBugReport(bugReport);
+			me.getValue().setFailureDescription(bugReport);
 			successful = true;
 		}
 		return successful;

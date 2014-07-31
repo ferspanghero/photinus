@@ -88,8 +88,9 @@ public class MicrotaskStorage {
 	 * @param fileName  the file from which the codesnippet was obtained
 	 * @param microtaskId the unique identifier for the microtask
 	 * @param answer the answer obtained from the user
+	 * @return true if operation was successful, false otherwise
 	 */
-	public void insertAnswer(String fileName, Integer microtaskId, Answer answer){ 
+	public boolean insertAnswer(String fileName, Integer microtaskId, Answer answer){ 
 
 		FileDebugSession fileDebuggingSession = this.read(fileName);
 		Microtask mtask = fileDebuggingSession.getMicrotask(microtaskId);
@@ -97,7 +98,7 @@ public class MicrotaskStorage {
 		fileDebuggingSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
 		//TODO change this system.out to be a log
 		System.out.println("Inserting microtask id:"+mtask.getID()+" answers: "+mtask.getNumberOfAnswers()+" : "+mtask.getAnswerList().toString());
-		this.insert(fileName, fileDebuggingSession);
+		return this.insert(fileName, fileDebuggingSession);
 	}
 
 	/** Insert a new List of Microtasks. It overwrites any existing one for the same file.

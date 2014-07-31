@@ -80,10 +80,10 @@ public class MicrotaskServlet extends HttpServlet {
 
 			Microtask task = returnValues.task;
 			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
-			System.out.println("Retrieved microtask bug report:" + task.getBugReport());
+			System.out.println("Retrieved microtask bug report:" + task.getFailureDescription());
 			fileName = returnValues.fileName;
 			String fileContent = task.getMethod().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
-			request.setAttribute("bugReport", task.getBugReport());
+			request.setAttribute("bugReport", task.getFailureDescription());
 			request.setAttribute("question", task.getQuestion());
 			request.setAttribute("source", fileContent); 	// content displayed on the first ACE Editor
 			/* preparing the second ACE Editor - callers */

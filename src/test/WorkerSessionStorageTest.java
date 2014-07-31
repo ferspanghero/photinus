@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
@@ -277,7 +278,8 @@ public class WorkerSessionStorageTest {
 			Assert.fail("Null list of snippets or file does not match test data, actual size is: "+list.size());
 		else{
 			QuestionFactory questionFactory = new QuestionFactory();
-			HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(list);
+			questionFactory.generateQuestions(list);
+			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions(); 
 
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
@@ -327,7 +329,7 @@ public class WorkerSessionStorageTest {
 
 		Microtask microtask = session.getCurrentMicrotask();
 		while(microtask!=null){
-			session.storeCurrentMicrotask(microtask);
+			session.insertMicrotaskAnswer(microtask.getID(), new Answer(null, null)); //For the test it does not matter that the answer has null content.
 			microtask = session.getCurrentMicrotask();
 		}
 		return session;
