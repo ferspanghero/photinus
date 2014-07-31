@@ -156,7 +156,6 @@ public class MyVisitor extends ASTVisitor {
 		if (null == node.getBody())
 		{
 			body = null;
-			setupElementEndPosition();
 			/* Creating new object without body */
 			this.newMethod = new CodeSnippet(this.packageName, this.className, signature, body, hasReturnStatement,
 					this.elementStartingLine, this.elementStartingColumn,

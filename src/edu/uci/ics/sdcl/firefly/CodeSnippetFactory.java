@@ -35,6 +35,9 @@ public class CodeSnippetFactory {
 		JavaParser parser = new JavaParser(this);
 		this.setCallers(this.codeSnippetList);
 		this.setMethodTexts(this.codeSnippetList, this.fileContentPerLine);
+		for (CodeSnippet codeSnippet : this.codeSnippetList) {
+			codeSnippet.setFileName(fileName);
+		}
 		return this.codeSnippetList;
 	}
 

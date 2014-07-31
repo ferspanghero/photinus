@@ -17,6 +17,7 @@ public class SourceFileReader {
 				readFileToString("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap_buggy.java")); // file name and file content
 		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippetsForFile();
 		for (CodeSnippet codeSnippet : methodsParsed) {
+			System.out.println("fileName: " + codeSnippet.getFileName());
 			System.out.println("--> " + codeSnippet.getMethodSignature().getName());
 			System.out.println("callers: ");
 			for (CodeSnippet caller : codeSnippet.getCallers())

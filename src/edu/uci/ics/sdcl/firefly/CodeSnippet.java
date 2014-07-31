@@ -5,11 +5,13 @@ import java.util.ArrayList;
 public class CodeSnippet implements Serializable
 {
 	protected String packageName;					// package name
-	protected String className; 					// file
+	protected String className; 					// class name
+	protected String fileName;						// file name
+	protected String methodBody;					// whole content of method
+	
 	protected ArrayList<CodeSnippet> callers;		// all callers of this method within the file
 	protected ArrayList<CodeSnippet> callees;		// all callees of this method within the file
 	
-	protected String methodBody;					// whole content of method
 	/* finding starting and ending position */
 	/* Element position */
 	protected Integer elementStartingLine;	// line number for the element beginning (not the body)
@@ -213,5 +215,13 @@ public class CodeSnippet implements Serializable
 
 	public void setCodeSnippetFromFileContent(String codeSnippetFromFileContent) {
 		this.codeSnippetFromFileContent = codeSnippetFromFileContent;
+	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }
