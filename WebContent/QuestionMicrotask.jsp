@@ -144,15 +144,13 @@
 
 	<div id="failurePrompt" align="center">
 	
-		"Thank you for using 'BugFinderName'.  By answering the question <br>
+		Thank you for using FireFly.  By answering the question <br>
    		below, you will help us debug software from all over the world.<br>
 <br>
 	   	The bug we specifically could use your help with today is the following:<br>
 <br>
       	<b>${requestScope["bugReport"]}</b><br>
-<br>
-   		Thank you"
-		
+   		
 		<br><br>
 	</div>
 	
@@ -170,8 +168,13 @@
 			</a> <a id="option4"> <input type="radio" name="answer" value="4">Probably not
 			</a> <a id="option5"> <input type="radio" name="answer" value="5">No
 			</a> <span class="stretch"></span> 
+			
+			<!-- Hidden fields -->
 			<input type="hidden" name="fileName" value=${requestScope["fileName"]}> 
-			<input type="hidden" name="id" value=${requestScope["id"]}> 
+			<input type="hidden" name="sessionId" value=${requestScope["sessionId"]}> 
+			<input type="hidden" name="userId" value=${requestScope["userId"]}> 
+			<input type="hidden" name="hitId" value=${requestScope["hitId"]}> 
+			<input type="hidden" name="microtaskId" value=${requestScope["microtaskId"]}> 
 			<br><br> Please	provide an explanation for your answer: <br>
 			<textarea name="explanation" id="explanation" rows="3" cols="72"></textarea>
 			
@@ -314,7 +317,7 @@
 					document.getElementById('space').innerHTML = '<br>';
 				// just to fill the label about the Editors
 				if (highlightCaller || highlightCallee)
-					document.getElementById('context').innerHTML = 'Below is the context in which the suspicious method is used';
+					document.getElementById('context').innerHTML = 'Below is the context in which the suspicious method is used:';
 					
 			}, 100); 
 			

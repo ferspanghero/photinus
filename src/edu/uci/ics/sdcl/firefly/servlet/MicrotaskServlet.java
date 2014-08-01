@@ -1,9 +1,9 @@
 package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException; 
-
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +13,9 @@ import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.PositionFinder;
+import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
+import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 /**
@@ -27,30 +29,31 @@ public class MicrotaskServlet extends HttpServlet {
 	 */
 	public MicrotaskServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * 	Collects and persist the answer. Also marks the microtask as already answered
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-
-		//Collect and persist the answer
-		//Mark the microtask as already answered
 
 		String fileName = request.getParameter("fileName");
 		int answer = new Integer(request.getParameter("answer")).intValue();
-		String id = request.getParameter("id");
+		String microtaskId = request.getParameter("microtaskId");
 		String explanation = request.getParameter("explanation");
+		request.setAttribute("userId",  request.getParameter("userId"));
+		request.setAttribute("hitId", request.getParameter("hitId"));
 
 		MicrotaskStorage storage = new MicrotaskStorage();
-		storage.insertAnswer(fileName, new Integer(id), new Answer(Answer.mapToString(answer),explanation));
+		storage.insertAnswer(fileName, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation));
 
-		settingACEEditors(request, fileName);
+		HttpServletRequest newRequest = settingACEEditors(request, fileName);
 
-		//display a new microtask
-		request.getRequestDispatcher("/QuestionMicrotask.jsp").include(request, response);
+		if(newRequest == null) //No more microtasks, move to the Survey page
+			request.getRequestDispatcher("/Survey.jsp").include(request, response);
+		else
+			//Displays a new microtask
+			request.getRequestDispatcher("/QuestionMicrotask.jsp").include(newRequest, response);
 	}
 
 
@@ -60,28 +63,47 @@ public class MicrotaskServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String fileName = new String();
-		settingACEEditors(request, fileName);
+		HttpServletRequest newRequest = settingACEEditors(request, fileName);
 
-		//Calls the microtask page
-		request.getRequestDispatcher("/QuestionMicrotask.jsp").forward(request, response);
+		if(newRequest == null) //No more microtasks, move to the Survey page
+			request.getRequestDispatcher("/Survey.jsp").include(request, response);
+		else
+			//Displays a new microtask
+			request.getRequestDispatcher("/QuestionMicrotask.jsp").include(newRequest, response);
+			
 	}
 
 
-	protected void settingACEEditors(HttpServletRequest request, String fileName)
+	protected HttpServletRequest settingACEEditors(HttpServletRequest request, String fileName)
 	{
-		//Prepare next microtask request
-		MicrotaskSelector selector = new MicrotaskSelector();
-		MicrotaskSelector.SelectorReturn returnValues = selector.selectAnyMicrotask();
+		//Prepare  microtask request
+		//MicrotaskSelector selector = new MicrotaskSelector();
+		//MicrotaskSelector.SelectorReturn returnValues = selector.selectAnyMicrotask();
 
-		if(returnValues==null){
-			request.setAttribute("return_message","No microtasks available");
+		StorageManager manager = new StorageManager();
+		WorkerSession session;
+		String sessionId = request.getParameter("sessionId");
+
+		//Obtain a session (first time or the active one)
+		if(sessionId==null || sessionId.length()==0){ //First microtask of the user
+			String userId = "chris";//request.getParameter("userId"); //TODO
+			String hitId = "mturk";//request.getParameter("hitId");
+			session = manager.readNewSession(userId, hitId);
 		}
 		else{
+			session = manager.readActiveSession(new Integer(sessionId));
+		}
 
-			Microtask task = returnValues.task;
+
+		if(session==null){
+			return null;
+		}
+		else{
+			//display a new microtask
+			Microtask task = session.getCurrentMicrotask();
 			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
 			System.out.println("Retrieved microtask bug report:" + task.getFailureDescription());
-			fileName = returnValues.fileName;
+			fileName = task.getMethod().getFileName();
 			String fileContent = task.getMethod().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
 			request.setAttribute("bugReport", task.getFailureDescription());
 			request.setAttribute("question", task.getQuestion());
@@ -98,7 +120,7 @@ public class MicrotaskServlet extends HttpServlet {
 				request.setAttribute("calleesOnMain", callesOnMainCommand);
 			} else
 				request.setAttribute("calleesOnMain", null);
-			
+
 			/* preparing the second ACE Editor - callers */
 			StringBuilder newFileContent;
 			StringBuilder highlight;
@@ -126,9 +148,9 @@ public class MicrotaskServlet extends HttpServlet {
 					}
 				}
 				// chasing method positions for highlighting purposes
-//				for (CodeSnippet caller : task.getMethod().getCallers()) {
-//					highlight.append( methodChaser(caller.getMethodSignature().getName(), newFileContent.toString(), true) );
-//				}  // now I just want to hightlight where the method is called on the caller method
+				//				for (CodeSnippet caller : task.getMethod().getCallers()) {
+				//					highlight.append( methodChaser(caller.getMethodSignature().getName(), newFileContent.toString(), true) );
+				//				}  // now I just want to hightlight where the method is called on the caller method
 				highlight.append( methodChaser(task.getMethod().getMethodSignature().getName(), newFileContent.toString(), false) );
 				highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
 				System.out.println("Command to be executed: " + highlightCallerCommand);
@@ -144,8 +166,8 @@ public class MicrotaskServlet extends HttpServlet {
 				newFileContent = null;
 				highlightCalleeCommand = null;
 				request.setAttribute("callee", null);
-			} else 
-			{
+			} 
+			else{
 				newFileContent = new StringBuilder();
 				highlight = new StringBuilder();
 				highlightCalleeCommand = new String();
@@ -171,7 +193,10 @@ public class MicrotaskServlet extends HttpServlet {
 			// passing to jsp
 			request.setAttribute("positionsCallee", highlightCalleeCommand);
 
-			request.setAttribute("id", task.getID());
+			request.setAttribute("userId", session.getUserId());
+			request.setAttribute("hitId", session.getHitId());
+			request.setAttribute("sessionId", session.getId());
+			request.setAttribute("microtaskId", task.getID());
 			request.setAttribute("fileName", fileName);
 			request.setAttribute("explanation",""); //clean up the explanation field.
 
@@ -181,6 +206,8 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("endColumn", task.getEndingColumn());
 
 			request.setAttribute("methodStartingLine", task.getMethod().getMethodSignature().getLineNumber());
+
+			return request;
 		}
 	}
 
@@ -192,10 +219,10 @@ public class MicrotaskServlet extends HttpServlet {
 		StringBuilder highlightCommand = new StringBuilder();
 		String stringLines[] = fileContent.split("\r\n|\r|\n");
 		int currentLine = 0;
-//		System.out.println("method name: " + methodName);
+		//		System.out.println("method name: " + methodName);
 		for (String line : stringLines) {
 			currentLine++;
-//			System.out.println("Line " + currentLine + ": " + line);
+			//			System.out.println("Line " + currentLine + ": " + line);
 			if (line == null || line.length() <= 0)	continue;	// if line does not have any content, just skip it
 			if (methodCallStrict)
 				if (!line.contains("public") && !line.contains("protected") && !line.contains("private"))
@@ -217,21 +244,21 @@ public class MicrotaskServlet extends HttpServlet {
 						if ( wordsPerLine.get(index+1).contains("(") )
 						{	// its also a method call for sure
 							isMethodCall = true;
-//							System.out.println("Method call.2 at word - " + wordsPerLine.get(index+1) + "- at line " + currentLine + ": " + line);
+							//							System.out.println("Method call.2 at word - " + wordsPerLine.get(index+1) + "- at line " + currentLine + ": " + line);
 						}	// otherwise continue false, it is not a method call
 					}
 				}
 				if (isMethodCall)
 				{
-//					System.out.println("passing column: " + line.indexOf(methodName, wordLengthAcumulator) + " W.A.: " + wordLengthAcumulator);
+					//					System.out.println("passing column: " + line.indexOf(methodName, wordLengthAcumulator) + " W.A.: " + wordLengthAcumulator);
 					invocationPosition = 
 							new PositionFinder(currentLine, line.indexOf(methodName, wordLengthAcumulator), stringLines, '(', ')');
 					highlightCommand.append(invocationPosition.getStartingLineNumber()+"#");
 					highlightCommand.append(line.indexOf(methodName, wordLengthAcumulator)+"#");// because I want the start column of the word
 					highlightCommand.append(invocationPosition.getEndingLineNumber()+"#");
 					highlightCommand.append(invocationPosition.getEndingColumnNumber()+"#");
-//					wordLengthAcumulator = invocationPosition.getStartingColumnNumber();
-//					System.out.println("Positions appended: " + highlightCommand + " WA: " + wordLengthAcumulator);
+					//					wordLengthAcumulator = invocationPosition.getStartingColumnNumber();
+					//					System.out.println("Positions appended: " + highlightCommand + " WA: " + wordLengthAcumulator);
 				}
 				wordLengthAcumulator = line.indexOf(wordsPerLine.get(index), wordLengthAcumulator) + wordsPerLine.get(index).length();
 			}

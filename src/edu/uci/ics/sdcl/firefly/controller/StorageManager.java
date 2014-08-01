@@ -53,7 +53,7 @@ public class StorageManager {
 	 * @param hitIT is used to associate the WorkerSession with the Mechanical Turk HIT
 	 * @return a new session, if there aren't new sessions available return null
 	 */
-	public WorkerSession readNewSession(Integer userId, Integer hitId){
+	public WorkerSession readNewSession(String userId, String hitId){
 		WorkerSession session = sessionStorage.readNewWorkerSession();
 		if(session!=null){
 			session.setUserId(userId);
@@ -62,7 +62,7 @@ public class StorageManager {
 			return session;
 		}
 		else
-			return null; //TO DO treat the in the GUI empty list of microtasks.		
+			return null;	
 	}
 	
 	/**

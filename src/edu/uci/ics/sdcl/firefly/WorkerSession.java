@@ -17,10 +17,10 @@ public class WorkerSession implements Serializable{
 	private Integer currentIndex;
 
 	/** Associates a session with an anonymous user */
-	private Integer userId;
+	private String userId;
 
 	/** Associates a session with a Mechanical Turk Hit */
-	private Integer hitId;
+	private String hitId;
 
 	/** 
 	 * Initializes the array and the counter to the first position in 
@@ -106,12 +106,20 @@ public class WorkerSession implements Serializable{
 		}
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;		
+	public void setUserId(String id) {
+		this.userId = id;		
 	}
 
-	public void setHitId(Integer hitId) {
-		this.hitId = hitId;		
+	public void setHitId(String id) {
+		this.hitId = id;		
+	}
+	
+	public String getUserId() {
+		return this.userId;		
+	}
+
+	public String getHitId() {
+		return this.hitId;		
 	}
 	
 }

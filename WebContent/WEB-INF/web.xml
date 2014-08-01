@@ -39,4 +39,14 @@
     <servlet-name>ResultsServlet</servlet-name>
     <url-pattern>/results</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>SurveyServlet</display-name>
+    <servlet-name>SurveyServlet</servlet-name>
+    <servlet-class>edu.uci.ics.sdcl.firefly.servlet.SurveyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SurveyServlet</servlet-name>
+    <url-pattern>/survey</url-pattern>
+  </servlet-mapping>
 </web-app>

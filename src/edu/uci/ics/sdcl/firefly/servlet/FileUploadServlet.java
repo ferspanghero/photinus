@@ -16,7 +16,10 @@ import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.QuestionFactory;
+import edu.uci.ics.sdcl.firefly.WorkerSession;
+import edu.uci.ics.sdcl.firefly.WorkerSessionFactory;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
+import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 
 import java.util.*; 
 
@@ -143,11 +146,25 @@ public class FileUploadServlet extends HttpServlet {
 				results = "Number of code snippets: "+numberOfCodeSnippets+ "<br> Microtasks generated: " + numberOfMicrotasks+"<br>";
 			}
 			else
-				results = "No Microtasks were generated. Please review the file uploaded";
+				results = "No Microtasks were generated! Please review the file uploaded.";
 		}
 		else
-			results = "No Microtasks were generated. The method name was not found on the file";
+			results = "No Microtasks were generated! The method name was not found in the file.";
 
+		
+		
+		//WorkerSessions
+		//Generate the stack of New and Duplicated WorkerSession
+		WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
+		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(2);
+		Stack<WorkerSession> duplicatedStack = sessionFactory.duplicateSessions(originalStack,2);
+		WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
+		sessionStorage.appendNewWorkerSessionStack(originalStack,sessionStorage.NEW);
+		sessionStorage.appendNewWorkerSessionStack(duplicatedStack,sessionStorage.NEW_COPIES);
+		
+		int totalSessions = originalStack.size()+duplicatedStack.size(); 
+		results = results + "Worker sessions generated: " +totalSessions;
+		
 		System.out.println("Results: "+results);
 		return results;
 	}
