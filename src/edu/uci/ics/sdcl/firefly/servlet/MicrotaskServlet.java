@@ -86,6 +86,19 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("bugReport", task.getFailureDescription());
 			request.setAttribute("question", task.getQuestion());
 			request.setAttribute("source", fileContent); 	// content displayed on the first ACE Editor
+			// chasing method positions for highlighting callees on Main Ace Editor
+			if (!task.getMethod().getCallees().isEmpty()){
+				StringBuilder commandStorage = new StringBuilder();
+				String callesOnMainCommand = new String();
+				for (CodeSnippet callee : task.getMethod().getCallees()) {
+					commandStorage.append( methodChaser(callee.getMethodSignature().getName(), fileContent, false) );
+				}
+				callesOnMainCommand = commandStorage.toString().substring(0, commandStorage.length()-1);	// -1 to remove last '#'
+				System.out.println("Command to be executed: " + callesOnMainCommand);
+				request.setAttribute("calleesOnMain", callesOnMainCommand);
+			} else
+				request.setAttribute("calleesOnMain", null);
+			
 			/* preparing the second ACE Editor - callers */
 			StringBuilder newFileContent;
 			StringBuilder highlight;
@@ -113,9 +126,9 @@ public class MicrotaskServlet extends HttpServlet {
 					}
 				}
 				// chasing method positions for highlighting purposes
-				for (CodeSnippet caller : task.getMethod().getCallers()) {
-					highlight.append( methodChaser(caller.getMethodSignature().getName(), newFileContent.toString(), true) );
-				}
+//				for (CodeSnippet caller : task.getMethod().getCallers()) {
+//					highlight.append( methodChaser(caller.getMethodSignature().getName(), newFileContent.toString(), true) );
+//				}  // now I just want to hightlight where the method is called on the caller method
 				highlight.append( methodChaser(task.getMethod().getMethodSignature().getName(), newFileContent.toString(), false) );
 				highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
 				System.out.println("Command to be executed: " + highlightCallerCommand);
@@ -197,14 +210,14 @@ public class MicrotaskServlet extends HttpServlet {
 					if ( wordsPerLine.get(index).contains("(") )
 					{	// also contains an opening parenthesis - method call for sure
 						isMethodCall = true;
-//						System.out.println("Method call at line " + currentLine + ": " + line);
+						System.out.println("Method call.1 WLA- " + wordLengthAcumulator +"- at line " + currentLine + ": " + line);
 					}
 					else if ( index < (wordsPerLine.size()-1) )	// if it is NOT the last word
 					{	// look for parenthesis on the next word
-						if ( wordsPerLine.get(index).contains("(") )
+						if ( wordsPerLine.get(index+1).contains("(") )
 						{	// its also a method call for sure
 							isMethodCall = true;
-//							System.out.println("Method call at line " + currentLine + ": " + line);
+//							System.out.println("Method call.2 at word - " + wordsPerLine.get(index+1) + "- at line " + currentLine + ": " + line);
 						}	// otherwise continue false, it is not a method call
 					}
 				}
@@ -217,9 +230,10 @@ public class MicrotaskServlet extends HttpServlet {
 					highlightCommand.append(line.indexOf(methodName, wordLengthAcumulator)+"#");// because I want the start column of the word
 					highlightCommand.append(invocationPosition.getEndingLineNumber()+"#");
 					highlightCommand.append(invocationPosition.getEndingColumnNumber()+"#");
-					wordLengthAcumulator = invocationPosition.getStartingColumnNumber();
+//					wordLengthAcumulator = invocationPosition.getStartingColumnNumber();
 //					System.out.println("Positions appended: " + highlightCommand + " WA: " + wordLengthAcumulator);
 				}
+				wordLengthAcumulator = line.indexOf(wordsPerLine.get(index), wordLengthAcumulator) + wordsPerLine.get(index).length();
 			}
 		}
 		return highlightCommand.toString();

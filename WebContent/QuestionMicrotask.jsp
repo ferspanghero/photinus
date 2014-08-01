@@ -29,13 +29,13 @@
 
 .callers {
 	position: absolute;
-	background: rgba(27, 132, 249, 0.4);
+	background: rgba(27, 132, 249, 0.3);
 	z-index: 20
 }
 
 .callees {
 	position: absolute;
-	background: rgba(27, 132, 249, 0.4);
+	background: rgba(27, 132, 249, 0.3);
 	z-index: 20
 }
 
@@ -133,6 +133,8 @@
 		<input type="hidden" id="methodStartingLine" value=${requestScope["methodStartingLine"]}>
 		<input type="hidden" id="positionsCaller" value=${requestScope["positionsCaller"]}>
 		<input type="hidden" id="positionsCallee" value=${requestScope["positionsCallee"]}>
+		<input type="hidden" id="calleesOnMain" value=${requestScope["calleesOnMain"]}>
+		
 	</div>
 
 	<script
@@ -141,15 +143,22 @@
 		src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
 
 	<div id="failurePrompt" align="center">
-		Failure description: ${requestScope["bugReport"]}
+	
+		"Thank you for using 'BugFinderName'.  By answering the question <br>
+   		below, you will help us debug software from all over the world.<br>
+<br>
+	   	The bug we specifically could use your help with today is the following:<br>
+<br>
+      	<b>${requestScope["bugReport"]}</b><br>
+<br>
+   		Thank you"
+		
 		<br><br>
 	</div>
 	
 	<div id="myDiv">
-		<b>${requestScope["question"]}</b><br> <br>
+		${requestScope["question"]}<br>
 	</div>
-
-	<div id="editor"><xmp>${requestScope["source"]}</xmp></div>
 
 	<div id="thumbs" style="background-color: #FFFAEB">
 		<br>
@@ -163,7 +172,7 @@
 			</a> <span class="stretch"></span> 
 			<input type="hidden" name="fileName" value=${requestScope["fileName"]}> 
 			<input type="hidden" name="id" value=${requestScope["id"]}> 
-			<br> Please	provide an explanation for your answer: <br>
+			<br><br> Please	provide an explanation for your answer: <br>
 			<textarea name="explanation" id="explanation" rows="3" cols="72"></textarea>
 			
 			<br>
@@ -176,6 +185,12 @@
 		<INPUT TYPE="button" VALUE="Submit Answer" onclick="submitAnswer(event)">
 	
 		<br><br>
+		Suspicious Method:
+		<div id="editor"><xmp>${requestScope["source"]}</xmp></div>
+		
+		<br><br>
+		
+		<div id="context"></div>
 		
 		<div id="editorCaller"><xmp>${requestScope["caller"]}</xmp></div>
 		
@@ -205,12 +220,29 @@
 			// parameters for the others AceEditor
 	        var highlightCaller = document.getElementById("positionsCaller").value;
 	        var highlightCallee = document.getElementById("positionsCallee").value;
-	        	
+	        var calleesOnMain = document.getElementById("calleesOnMain").value;
+	        
 			setTimeout(function() {
 				// highlight regarding main method
 				editor.session.addMarker(new Range(startLine - codeSnippetStartingLine, startColumn, 
 						endLine	- codeSnippetStartingLine, endColumn), "ace_active-line", "line");
 				editor.gotoLine(startLine - codeSnippetStartingLine + 1);
+				if (calleesOnMain){		// highlighting callees
+					var numbersCalleesOnMain = calleesOnMain.split("#");
+					var lnStart = 0.0;
+					var clStart = 0.0;
+					var lnEnd = 0.0;
+					var clEnd = 0.0;
+					//document.write("Callee length: " + numbersCallee.length + "<br>");
+					for (i=0; i < numbersCalleesOnMain.length; i+=4){
+						lnStart = numbersCalleesOnMain[i]-1;
+						clStart = numbersCalleesOnMain[i+1];
+						lnEnd = numbersCalleesOnMain[i+2]-1;
+						clEnd = numbersCalleesOnMain[i+3];
+						editor.session.addMarker(new Range(lnStart, clStart, lnEnd, clEnd), "callees", "line");
+						//document.write("positions: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");
+					}	
+				}
 				
 				// other ACE Editor highlights
 				if (highlightCaller){
@@ -240,7 +272,7 @@
 						clStart = numbersCaller[i+1];
 						lnEnd = numbersCaller[i+2]-1;
 						clEnd = numbersCaller[i+3];
-						editorCaller.session.addMarker(new Range(lnStart, clStart, lnEnd, clEnd), "callers", "line");
+						editorCaller.session.addMarker(new Range(lnStart, clStart, lnEnd, clEnd), "ace_active-line", "line");
 						//document.write("positions: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");
 					}
 					//document.write("<br>");
@@ -280,6 +312,9 @@
 				// just do make a space between Editors
 				if (highlightCaller && highlightCallee)
 					document.getElementById('space').innerHTML = '<br>';
+				// just to fill the label about the Editors
+				if (highlightCaller || highlightCallee)
+					document.getElementById('context').innerHTML = 'Below is the context in which the suspicious method is used';
 					
 			}, 100); 
 			
