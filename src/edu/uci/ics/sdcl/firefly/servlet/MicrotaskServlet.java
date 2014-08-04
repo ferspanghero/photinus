@@ -43,9 +43,12 @@ public class MicrotaskServlet extends HttpServlet {
 		String explanation = request.getParameter("explanation");
 		request.setAttribute("userId",  request.getParameter("userId"));
 		request.setAttribute("hitId", request.getParameter("hitId"));
+		String sessionId = request.getParameter("sessionId");
 
-		MicrotaskStorage storage = new MicrotaskStorage();
-		storage.insertAnswer(fileName, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation));
+		//MicrotaskStorage storage = new MicrotaskStorage();
+		//storage.insertAnswer(fileName, new Integer(microtaskId), );
+		StorageManager manager = new StorageManager();
+		manager.updateMicrotaskAnswer(fileName, new Integer(sessionId), new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation));
 
 		HttpServletRequest newRequest = settingACEEditors(request, fileName);
 
