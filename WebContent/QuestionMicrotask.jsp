@@ -162,12 +162,12 @@
 		<br>
 		<form name="answerForm" action="microtask" method="get">
 
-			<a id="option1"> <input type="radio" name="answer" value="1">Yes
-			</a> <a id="option2"> <input type="radio" name="answer" value="2">Probably yes
-			</a> <a id="option3"> <input type="radio" name="answer" value="3">I can't tell
-			</a> <a id="option4"> <input type="radio" name="answer" value="4">Probably not
-			</a> <a id="option5"> <input type="radio" name="answer" value="5">No
-			</a> <span class="stretch"></span> 
+			<a id="option1"> <input type="radio" name="answer" value="1">Yes</a> 
+			<a id="option2"> <input type="radio" name="answer" value="2">Probably yes</a> 
+			<a id="option3"> <input type="radio" name="answer" value="3">I can't tell</a> 
+			<a id="option4"> <input type="radio" name="answer" value="4">Probably not</a> 
+			<a id="option5"> <input type="radio" name="answer" value="5">No</a> 
+			<span class="stretch"></span> 
 			
 			<!-- Hidden fields -->
 			<input type="hidden" name="fileName" value=${requestScope["fileName"]}> 
@@ -191,7 +191,7 @@
 		Suspicious Method:
 		<div id="editor"><xmp>${requestScope["source"]}</xmp></div>
 		
-		<br><br>
+		<br>
 		
 		<div id="context"></div>
 		
