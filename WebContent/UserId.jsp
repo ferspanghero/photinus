@@ -45,7 +45,6 @@
 
 <script type="text/javascript">
 	function checkIds(){
-		
 		var userId = document.getElementById('userId');
 		userId.value = userId.value.replace(/\s+/g, '');	// removing white spaces
 		var hitId = document.getElementById('hitId');
