@@ -75,7 +75,7 @@
 		
 		<br>
 	
-		<form name="consentForm" action="Survey.jsp" method="get">
+		<form name="consentForm" action="UserId.jsp" method="get">
 			<input type="checkbox" id="consentBox"><i>By checking this box I hereby state that I have read, understood and agreed with the terms above.</i>
 			<br><br>
 			<input type="button" value="No, thanks"		style="float: left;"	onclick="window.open('', '_self', ''); window.close();"> 
