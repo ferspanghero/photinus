@@ -12,19 +12,7 @@
 #editor {
 	position: relative;
 	height: 200px;
-	width: 700px;
-}
-
-#editorCallerNotUsingAnymore {
-	position: relative;
-	height: 200px;
-	width: 700px;
-}
-
-#editorCalleeNotUsingAnymore {
-	position: relative;
-	height: 200px;
-	width: 700px;
+	width: 680px;
 }
 
 .callers {
@@ -38,25 +26,56 @@
 	background: rgba(27, 132, 249, 0.3);
 	z-index: 20
 }
+ 
 
-#myDiv {
+#welcomeHeader {
 	max-width: 700px;
-	background-color: #FFFAEB
+	background-color: #FFFFFF;
+	text-align: justify;
+	 margin: 0 auto;
 }
 
 #failurePrompt {
 	max-width: 700px;
-	background-color: #FFFAEB
+	background-color: #D1EEEE;
+	 text-align: justify;
+	 margin: 0 auto;
+	 text-justify: distribute-all-lines;
 }
 
+#internalText {
+	 margin-left: 10px;
+	margin-right: 10px;
+	
+}
+
+#questionPrompt {
+	max-width: 700px;
+	background-color: #B4CDCD;
+	 margin: 0 auto;
+	 text-align: justify;
+	  text-justify: distribute-all-lines;
+}
+
+#questionCode {
+	max-width: 700px;
+	background-color: #D1EEEE;
+	margin: 0 auto;
+	 text-align: justify;
+}
+
+#buttons { 
+background-color: #B4CDCD;
+margin: 0 auto;
+max-width: 700px;
+}
+ 
 #thumbs {
 	width: 700px;
-	margin-top: 0px;
-	margin-left: 0px;
-	margin-right: 10px;
-	background-color: #FFFAEB text-align: justify;
-	-ms-text-justify: distribute-all-lines;
+	background-color: #B4CDCD;
+	text-align: justify;
 	text-justify: distribute-all-lines;
+	 margin: 0 auto;
 }
 
 #thumbs a {
@@ -121,7 +140,7 @@
 		}
 	</script>
 
-	<div id="myDiv">
+ 
 
 		<form name="skipForm" action="microtask" value="skip" method="post"></form>
 		<br>
@@ -135,30 +154,32 @@
 		<input type="hidden" id="positionsCallee" value=${requestScope["positionsCallee"]}>
 		<input type="hidden" id="calleesOnMain" value=${requestScope["calleesOnMain"]}>
 		
-	</div>
-
+ 
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script
 		src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
 
-	<div id="failurePrompt" align="center">
-	
-		Thank you for using FireFly.  By answering the question <br>
-   		below, you will help us debug software from all over the world.<br>
-<br>
-	   	The bug we specifically could use your help with today is the following:<br>
-<br>
+	<div id="failurePrompt">
+		 	<div id="internalText">
+			Thanks for using FireFly! By answering the question below, you will help us debug software from all over the world. 
+   			The bug we specifically could use your help with today is the following: 
       	<b>${requestScope["bugReport"]}</b><br>
-   		
-		<br><br>
+      	<br>
+   		</div>
 	</div>
 	
-	<div id="myDiv">
+	
+	<div id="questionPrompt">
+		<div id="internalText">
+		<br>
 		${requestScope["question"]}<br>
+		</div>
 	</div>
 
-	<div id="thumbs" style="background-color: #FFFAEB">
+	
+	<div id="thumbs">
+		<div id="internalText">
 		<br>
 		<form name="answerForm" action="microtask" method="get">
 
@@ -175,20 +196,28 @@
 			<input type="hidden" name="userId" value=${requestScope["userId"]}> 
 			<input type="hidden" name="hitId" value=${requestScope["hitId"]}> 
 			<input type="hidden" name="microtaskId" value=${requestScope["microtaskId"]}> 
-			<br><br> Please	provide an explanation for your answer: <br>
-			<textarea name="explanation" id="explanation" rows="3" cols="72"></textarea>
-			
-			<br>
+			<center><br>Please provide an explanation for your answer: <br>
+			<textarea name="explanation" id="explanation" rows="3" cols="82"></textarea>
+			</center>
+	 		<br>
 			
 		</form>
+	 	</div>
+	 </div>
+	 
+	 <div id="buttons">
+	 	<center>
+			<INPUT TYPE="button" VALUE="Skip this"	onclick="skipAnswer()"> 
+			<INPUT TYPE="button" VALUE="Submit answer" onclick="submitAnswer(event)">
+		</center>
+		<br>
 	</div>
+
 	
-	<div id=myDiv>
-		<br> <INPUT TYPE="button" VALUE="Skip this"	onclick="skipAnswer()"> 
-		<INPUT TYPE="button" VALUE="Submit Answer" onclick="submitAnswer(event)">
-	
-		<br><br>
-		Suspicious Method:
+	<div id="questionCode">
+		<div id="internalText">
+		<br> 
+		<b>The source code:</b> 
 		<div id="editor"><xmp>${requestScope["source"]}</xmp></div>
 		
 		<br>
@@ -253,7 +282,7 @@
 					var divCaller = document.getElementById('editorCaller');
 					divCaller.style.position='relative';
 					divCaller.style.height='200px';
-					divCaller.style.width='700px';
+					divCaller.style.width='680px';
 					 
 					/* Second and caller ACE Editor */
 					var editorCaller = ace.edit('editorCaller');
@@ -286,7 +315,7 @@
 					var divCallee = document.getElementById('editorCallee');
 					divCallee.style.position='relative';
 					divCallee.style.height='200px';
-					divCallee.style.width='700px';
+					divCallee.style.width='680px';
 					
 					/* Third and callee ACE Editor */
 					var editorCallee = ace.edit('editorCallee');
@@ -317,11 +346,13 @@
 					document.getElementById('space').innerHTML = '<br>';
 				// just to fill the label about the Editors
 				if (highlightCaller || highlightCallee)
-					document.getElementById('context').innerHTML = 'Below is the context in which the suspicious method is used:';
+					document.getElementById('context').innerHTML = '<b>Functions that call and are called by this method:</b>';
 					
 			}, 100); 
 			
 		</script>
+		<br>
+		</div>
 
 	</div>
 </body>
