@@ -129,8 +129,11 @@ max-width: 700px;
 		}
 
 		function skipAnswer() {
-			document.forms["skipForm"].submit();
+			if(confirm('Confirm skipping this question ?')){
+				document.forms["skipForm"].submit();				
+			}
 		}
+		
 	</script>
 
  
