@@ -8,24 +8,24 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
-import edu.uci.ics.sdcl.firefly.ScreeningTest;
+import edu.uci.ics.sdcl.firefly.Worker;
 
-public class ConsentStorage {
+public class WorkerStorage {
 	private String persistentFileName = "consent.ser";
 
-	public ConsentStorage() {
+	public WorkerStorage() {
 		try{
 			File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 
 
 				// Create a sample object, that contains the default values.
-				HashMap<String, ScreeningTest> consentMap = new HashMap<String, ScreeningTest>();
+				HashMap<String, Worker> workerMap = new HashMap<String, Worker>();
 
 				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 						new FileOutputStream(new File(this.persistentFileName)));
 
-				objOutputStream.writeObject( consentMap );
+				objOutputStream.writeObject( workerMap );
 				objOutputStream.close();
 			}
 		}
@@ -37,46 +37,46 @@ public class ConsentStorage {
 		}
 	}
 	
-	public boolean insert(String userId, ScreeningTest subjectTest){
+	public boolean insert(String userId, Worker worker){
 
-		HashMap<String, ScreeningTest> consentMap = this.retrieveIndex();
+		HashMap<String, Worker> workerMap = this.retrieveIndex();
 
-		if(consentMap!=null){
-			consentMap.put(userId, subjectTest);
-			return this.updateIndex(consentMap);	
+		if(workerMap!=null){
+			workerMap.put(userId, worker);
+			return this.updateIndex(workerMap);	
 		}		
 		else
 			return false;
 	}
 	
-	public ScreeningTest read(String userId){
+	public Worker read(String userId){
 
-		HashMap<String, ScreeningTest> consentMap = this.retrieveIndex();
+		HashMap<String, Worker> workerMap = this.retrieveIndex();
 
-		if(consentMap!=null && consentMap.containsKey(userId))
-			return consentMap.get(userId);
+		if(workerMap!=null && workerMap.containsKey(userId))
+			return workerMap.get(userId);
 		else
 			return null;
 	}
 	
 	public boolean remove(String userId) {
 
-		HashMap<String, ScreeningTest> consentMap = this.retrieveIndex();
+		HashMap<String, Worker> workerMap = this.retrieveIndex();
 
-		if(consentMap!=null && !consentMap.isEmpty()){
-			consentMap.remove(userId);
-			return this.updateIndex(consentMap);				
+		if(workerMap!=null && !workerMap.isEmpty()){
+			workerMap.remove(userId);
+			return this.updateIndex(workerMap);				
 		}		
 		else
 			return false;
 	}
 	
-	private boolean updateIndex(HashMap<String, ScreeningTest> consentMap){
+	private boolean updateIndex(HashMap<String, Worker> workerMap){
 		try{
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(new File(this.persistentFileName)));
 
-			objOutputStream.writeObject( consentMap );
+			objOutputStream.writeObject( workerMap );
 			objOutputStream.close();
 			return true;
 		}
@@ -91,16 +91,16 @@ public class ConsentStorage {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private HashMap<String, ScreeningTest> retrieveIndex(){
+	private HashMap<String, Worker> retrieveIndex(){
 		try{
-			HashMap<String,ScreeningTest> consentMap;
+			HashMap<String,Worker> workerMap;
 			ObjectInputStream objInputStream = new ObjectInputStream( 
 					new FileInputStream(new File(this.persistentFileName)));
 
-			consentMap = (HashMap<String, ScreeningTest>) objInputStream.readObject();
+			workerMap = (HashMap<String, Worker>) objInputStream.readObject();
 
 			objInputStream.close();
-			return consentMap;
+			return workerMap;
 		}
 		catch(IOException exception){
 			exception.printStackTrace();

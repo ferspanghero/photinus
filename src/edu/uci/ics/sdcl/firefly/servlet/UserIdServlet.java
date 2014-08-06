@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.uci.ics.sdcl.firefly.ScreeningTest;
-import edu.uci.ics.sdcl.firefly.storage.ConsentStorage;
+import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 
 /**
  * Servlet implementation class UserIdServlet
@@ -33,8 +33,8 @@ public class UserIdServlet extends HttpServlet {
 		String userId = request.getParameter("userId");	
 		String hitId = request.getParameter("hitId");
 		Date currentDate = new Date();
-		ScreeningTest testSubject = new ScreeningTest(userId, hitId, currentDate);
-		ConsentStorage consentStore = new ConsentStorage();
+		Worker testSubject = new Worker(userId, hitId, currentDate);
+		WorkerStorage consentStore = new WorkerStorage();
 		consentStore.insert(userId, testSubject);
 		System.out.println("User Id: " + consentStore.read(userId).getUserId());
 		System.out.println("HIT Id: " + consentStore.read(userId).getHitId());

@@ -7,9 +7,13 @@
 <title>Survey</title>
 
 <style type="text/css" media="screen">
-#myDiv {
+
+#myDiv  {
 	max-width: 700px;
-	background-color: #FFFAEB
+	background-color: #D1EEEE;
+	 text-align: justify;
+	 margin: 0 auto;
+	 text-justify: distribute-all-lines;
 }
 </style>
 
@@ -19,49 +23,53 @@
 <body>
 
 	<script>
+	
+		function isEmpty(value) {
+	 	   return (value.length === 0 || !value.trim());
+		}
+	
 		function checkAnswers() {
-			var radiosLearnedHow = document.getElementsByName('learnedHow');
-
-			var learnedOption = -1;
+			
+			var gender = document.getElementsByName("gender");
+			var genderOption = -1;
 			var i = 0;
 
-			for (i = 0; i < radiosLearnedHow.length; i++) {
-				if (radiosLearnedHow[i].checked) {
-					learnedOption = i;
+			for (i = 0; i < gender.length; i++) {
+				if (gender[i].checked) {
+					genderOption = i;
 					break;
 				}
 			}
+			if (genderOption == -1) {
+				alert("Please select a gender option.");
+				return -1;
+			}
+			
+			if(isEmpty(document.getElementsByName("age"))){
+				alert("Please enter your age.");
+				return -1;
+			}
+			
+			if(isEmpty(document.getElementsByName("experience"))){
+				alert("Please enter your years of experience.");
+				return -1;
+			}
+		 
 
-			var radiosCodingYears = document.getElementsByName('codingYears');
-			var codingYearsOption = -1;
-			for (i = 0; i < radiosCodingYears.length; i++) {
-				if (radiosCodingYears[i].checked) {
-					codingYearsOption = i;
+			var difficulty = document.getElementsByName("difficulty");
+			var difficultyOption = -1;
+			for (i = 0; i < difficulty.length; i++) {
+				if (difficulty[i].checked) {
+					difficultyOption = i;
 					break;
 				}
 			}
-
-			var radiosWorking = document
-					.getElementsByName('workingAsProgrammer');
-			var workingOption = -1;
-			for (i = 0; i < radiosWorking.length; i++) {
-				if (radiosWorking[i].checked) {
-					workingOption = i;
-					break;
-				}
+			if (difficultyOption == -1) {
+				alert("Please select a level of difficulty.");
+				return -1;
 			}
-
-			if (learnedOption == -1) {
-				alert("Please select the option you used to learn computer programming.");
-				return -1;
-			} else if (codingYearsOption == -1) {
-				alert("Please select the option of number of years of coding.");
-				return -1;
-			} else if (workingOption == -1) {
-				alert("Please select the option of whether you are working as a programmer.");
-				return -1;
-			} else
-				return 1;
+ 
+			return 1;
 		}
 
 		function submitAnswer() {
@@ -73,39 +81,47 @@
 			}
 		}
 	</script>
+	
 <div id="myDiv">
-	<b>Your final task is to answer the following survey. After
-		that the HIT will be considered completed.</b>
+	<b>Your final task is to answer the following survey. After that the HIT will be considered completed.</b>
 
 
 	<form name="surveyForm" method="get" action="survey">
 		
 		<br>
 		
-		How many years of computer programming do you have?
+		What is your gender?
 		<ul>
-		<li><a id="codingYears1"> <input type="radio" name="codingYears" value="1">Less than 1 year</a></li> 
-		<li><a id="codingYears1"> <input type="radio" name="codingYears" value="2">Between 1 and 2 years</a></li>
-		<li><a id="codingYears1"> <input type="radio" name="codingYears" value="2">Between 2 and 3 years</a> </li>
-		<li><a id="codingYears1"> <input type="radio" name="codingYears" value="3">More than 3 years</a> </li>
+		<li><a id="Female"> <input type="radio" name="gender" value="1">Female</a></li> 
+		<li><a id="Male"> <input type="radio" name="gender" value="2">Male</a></li>
+		<li><a id="Other"> <input type="radio" name="gender" value="3">Other</a> </li>
+		<li><a id="PreferNotTell"> <input type="radio" name="gender" value="4">Prefer not to tell</a> </li>
 		</ul>
-
+		
+		What is your age?
+		<input type=text name="age" id="age" />
+		
+		How many years of programming experience do you have?
+		<input type=text name="experience" id="experience" />
+		
 		<br> 
 		
-		How did you learn how to program?   
+		On a scale of difficulty from 1(easy) to 7(hard), how would you rank this task?
 		<ul>
-			<li><a id="learned1"> <input type="radio" name="learnedHow" value="1">High school course</a></li> 
-			<li><a id="learned2"> <input type="radio" name="learnedHow" value="2">University course</a> </li>
-			<li><a id="learned3"> <input type="radio" name="learnedHow" value="3">Web-based course</a> </li>
-			<li><a id="learned4"> <input type="radio" name="learnedHow" value="4"> Books and Web references</a></li>  
+		<li><a id="difficulty"> <input type="radio" name="difficulty" value="1">1</a></li> 
+		<li><a id="difficulty"> <input type="radio" name="difficulty" value="2">2</a></li>
+		<li><a id="difficulty"> <input type="radio" name="difficulty" value="3">3</a> </li>
+		<li><a id="difficulty"> <input type="radio" name="difficulty" value="4">4</a> </li>
+		<li><a id="difficulty"> <input type="radio" name="difficulty" value="5">5</a> </li>
+		<li><a id="difficulty"> <input type="radio" name="difficulty" value="6">6</a> </li>
+		<li><a id="difficulty"> <input type="radio" name="difficulty" value="7">7</a> </li>
 		</ul>
-		<br>
+		
 
- 		Do you currently work as a computer programmer?
- 		<ul>
- 		<li><a id="workYes"> <input type="radio" name="workingAsProgrammer" value="1">Yes</a></li>
- 		<li><a id="workDont"> <input type="radio" name="workingAsProgrammer" value="2">No</a></li>
- 		</ul>
+		<br>
+		Please provide any additional feedback:
+		<textarea name="feedback" id="feedback" rows="6" cols="50"></textarea> 
+
  		<!-- Hidden fields -->
  		<input type="hidden" name="sessionId" value=${requestScope["sessionId"]}> 
 		<input type="hidden" name="userId" value=${requestScope["userId"]}> 

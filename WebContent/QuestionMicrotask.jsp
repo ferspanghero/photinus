@@ -26,14 +26,7 @@
 	background: rgba(27, 132, 249, 0.3);
 	z-index: 20
 }
- 
 
-#welcomeHeader {
-	max-width: 700px;
-	background-color: #FFFFFF;
-	text-align: justify;
-	 margin: 0 auto;
-}
 
 #failurePrompt {
 	max-width: 700px;
