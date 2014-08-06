@@ -151,6 +151,7 @@ public class MicrotaskStorage {
 	 * 
 	 * @return the index of microtasks stored in the file
 	 */
+	@SuppressWarnings("unchecked")
 	private HashMap<String,FileDebugSession> retrieveIndex(){
 		try{
 			HashMap<String,FileDebugSession> debugSessionMap;

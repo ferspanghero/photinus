@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.uci.ics.sdcl.firefly.ScreeningTest;
+import edu.uci.ics.sdcl.firefly.storage.ConsentStorage;
 
 /**
  * Servlet implementation class UserIdServlet
@@ -33,9 +34,11 @@ public class UserIdServlet extends HttpServlet {
 		String hitId = request.getParameter("hitId");
 		Date currentDate = new Date();
 		ScreeningTest testSubject = new ScreeningTest(userId, hitId, currentDate);
-		System.out.println("User Id: " + testSubject.getUserId());
-		System.out.println("HIT Id: " + testSubject.getHitId());
-		System.out.println("Date: " + testSubject.getConsentDate());
+		ConsentStorage consentStore = new ConsentStorage();
+		consentStore.insert(userId, testSubject);
+		System.out.println("User Id: " + consentStore.read(userId).getUserId());
+		System.out.println("HIT Id: " + consentStore.read(userId).getHitId());
+		System.out.println("Date: " + consentStore.read(userId).getConsentDate());
 		request.getRequestDispatcher("/Survey.jsp").include(request, response);
 	}
 
