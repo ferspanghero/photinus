@@ -1,10 +1,14 @@
 package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 
 /**
  * Servlet implementation class SurveyServlet
@@ -17,16 +21,25 @@ public class SurveyServlet extends HttpServlet {
      */
     public SurveyServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		//TODO Store the survey answers
-		
+		WorkerStorage subjectStore = new WorkerStorage();	// to retrieve date from database
+		Worker subject = subjectStore.read(request.getParameter("userId"));
+		if (null != subject){
+			subject.addAnswer("gender", request.getParameter("gender"));
+			subject.addAnswer("age", request.getParameter("age"));
+			subject.addAnswer("years of programming experience", request.getParameter("experience"));
+			subject.addAnswer("difficulty", request.getParameter("difficulty"));
+			subject.addAnswer("feedback", request.getParameter("feedback"));
+			System.out.println("Survey: " + subject.getSurveyAnswers());
+			subjectStore.insert(request.getParameter("userId"), subject);
+		} else{
+			// TODO ERROR PAGE
+		}
 		//Displays the Thanks message
 		request.getRequestDispatcher("/Thanks.html").forward(request, response);
 	}

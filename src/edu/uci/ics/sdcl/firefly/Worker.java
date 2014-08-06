@@ -85,4 +85,9 @@ public class Worker implements Serializable{
 	public void setGrade(int grade) {
 		this.grade = grade;
 	}
+	
+	public HashMap<String, String> getSurveyAnswers() {
+		return surveyAnswers;
+	}
+
 }

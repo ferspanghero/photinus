@@ -39,6 +39,10 @@ public class UserIdServlet extends HttpServlet {
 		System.out.println("User Id: " + consentStore.read(userId).getUserId());
 		System.out.println("HIT Id: " + consentStore.read(userId).getHitId());
 		System.out.println("Date: " + consentStore.read(userId).getConsentDate());
+		// now passing parameters to the next page
+		request.setAttribute("userId", userId);
+		request.setAttribute("hitId", hitId);
+		
 		request.getRequestDispatcher("/Survey.jsp").include(request, response);
 	}
 
