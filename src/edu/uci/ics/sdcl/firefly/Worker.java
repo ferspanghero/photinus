@@ -10,6 +10,10 @@ public class Worker implements Serializable{
 	private String hitId;
 	private Date consentDate;
 	private HashMap<String,String> surveyAnswers;
+	private HashMap<String, String> rubricMap;
+	private HashMap<String, Boolean> gradeMap;
+	private int grade;
+	
 	
 	public Worker(String userId, String hitId, Date consentDate) {
 		this.userId = userId;
@@ -48,5 +52,37 @@ public class Worker implements Serializable{
 	
 	public String getAnswer(String question){
 		return this.surveyAnswers.get(question);
+	}
+
+	public void setSkillAnswers(HashMap<String, String> rubricMap,
+			HashMap<String, Boolean> gradeMap, int grade) {
+		this.setRubricMap(rubricMap);
+		this.setGradeMap(gradeMap);
+		this.setGrade(grade);
+		
+	}
+
+	public HashMap<String, String> getRubricMap() {
+		return rubricMap;
+	}
+
+	public void setRubricMap(HashMap<String, String> rubricMap) {
+		this.rubricMap = rubricMap;
+	}
+
+	public HashMap<String, Boolean> getGradeMap() {
+		return gradeMap;
+	}
+
+	public void setGradeMap(HashMap<String, Boolean> gradeMap) {
+		this.gradeMap = gradeMap;
+	}
+
+	public int getGrade() {
+		return grade;
+	}
+
+	public void setGrade(int grade) {
+		this.grade = grade;
 	}
 }
