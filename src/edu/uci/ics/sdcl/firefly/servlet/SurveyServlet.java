@@ -37,11 +37,17 @@ public class SurveyServlet extends HttpServlet {
 			subject.addAnswer("feedback", request.getParameter("feedback"));
 			System.out.println("Survey: " + subject.getSurveyAnswers());
 			subjectStore.insert(request.getParameter("userId"), subject);
+			System.out.println("UserId: " + subject.getUserId());
+			//Displays the Thanks message
+			request.getRequestDispatcher("/Thanks.html").forward(request, response);
 		} else{
-			// TODO ERROR PAGE
+			request.setAttribute("userId", request.getParameter("userId"));
+			request.setAttribute("hitId", request.getParameter("hitId"));
+			request.setAttribute("error", "@SurveyServelet - object 'subject' is null");
+			//Displays the error page
+			request.getRequestDispatcher("/ErrorPage.jsp").forward(request, response);
 		}
-		//Displays the Thanks message
-		request.getRequestDispatcher("/Thanks.html").forward(request, response);
+		
 	}
 
 	/**

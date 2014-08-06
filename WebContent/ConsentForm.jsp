@@ -11,14 +11,14 @@
 
 	#consentText {
 		margin: 0 auto;
-		background-color: #FFFAEB;
+		background-color: #D1EEEE;
 		width: 800px;
 		text-align: justify;
 	}
 
 	#consentPage {
 		margin: 10px;
-		background-color: #FFFAEB;
+		background-color: #D1EEEE;
 	}
 	
 </style>

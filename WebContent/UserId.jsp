@@ -9,12 +9,12 @@
 <style>
 	#container {
 		margin: 10px;
-		background-color: #FFFAEB;
+		background-color: #D1EEEE;
 	}
 	
 	#content {
 		margin: 0 auto;
-		background-color: #FFFAEB;
+		background-color: #D1EEEE;
 		width: 400px;
 		text-align: justify;
 	}
