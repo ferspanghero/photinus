@@ -9,12 +9,12 @@
 <style>
 	#container {
 		margin: 10px;
-		background-color: #FFFAEB;
+		background-color: #D1EEEE;
 	}
 	
 	#content {
 		margin: 0 auto;
-		background-color: #FFFAEB;
+		background-color: #D1EEEE;
 		width: 400px;
 		text-align: justify;
 	}
@@ -33,7 +33,7 @@
 				<tr><td>User ID: </td><td><input type="text" id="userId" name="userId" size="40"/></td></tr>
 				<tr><td>HIT ID: </td><td><input type="text" id="hitId" name="hitId" size="40"/></td></tr>
 				<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>	<!-- blank line -->
-				<tr><td align=left><input type="button" value="Quit"	onclick="window.open('', '_self', ''); window.close();"></td>
+				<tr><td align=left><input type="button" value="Quit"	onclick="quit()"></td>
 					<td align=right><input type="button" value="Proceed"	onclick="checkIds()"></td>
 			</table>
 			<br>
@@ -58,6 +58,13 @@
 			alert("Please enter a valid User ID");
 		}
 	}
+	
+	function quit(){
+		if(confirm('Confirm quitting the study ?')){
+			window.open('', '_self', ''); window.close();
+		}
+	}
+	
 </script>
 
 </body>

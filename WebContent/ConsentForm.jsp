@@ -11,14 +11,14 @@
 
 	#consentText {
 		margin: 0 auto;
-		background-color: #FFFAEB;
+		background-color: #D1EEEE;
 		width: 800px;
 		text-align: justify;
 	}
 
 	#consentPage {
 		margin: 10px;
-		background-color: #FFFAEB;
+		background-color: #D1EEEE;
 	}
 	
 </style>
@@ -78,7 +78,7 @@
 		<form name="consentForm" action="UserId.jsp" method="get">
 			<input type="checkbox" id="consentBox"><i>By checking this box I hereby state that I have read, understood and agreed with the terms above.</i>
 			<br><br>
-			<input type="button" value="No, thanks"		style="float: left;"	onclick="window.open('', '_self', ''); window.close();"> 
+			<input type="button" value="No, thanks"		style="float: left;"	onclick="quit()"> 
 			<input type="button" value="Proceed"	style="float: right;"	onclick="proceed()"> 
 			<br>
 		</form>
@@ -96,6 +96,13 @@
 			alert("You have to agree with the terms before proceeding");
 		}
 	}
+	
+	function quit(){
+		if(confirm('Confirm quitting the study ?')){
+			window.open('', '_self', ''); window.close();
+		}
+	}
+	
 </script>
 
 </body>
