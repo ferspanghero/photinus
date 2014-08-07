@@ -42,8 +42,9 @@ public class UserIdServlet extends HttpServlet {
 		// now passing parameters to the next page
 		request.setAttribute("userId", userId);
 		request.setAttribute("hitId", hitId);
+		request.setAttribute("subAction", "loadQuestions");
 		
-		request.getRequestDispatcher("/Survey.jsp").include(request, response);
+		request.getRequestDispatcher("/SkillTest.jsp").include(request, response);
 	}
 
 	/**

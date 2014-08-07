@@ -19,7 +19,7 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 /**
  * Servlet implementation class SkillTestServlet
  */
-@WebServlet("/SkillTestServlet")
+@WebServlet("/skillTest")
 public class SkillTestServlet extends HttpServlet {
 	
 		
@@ -31,6 +31,7 @@ public class SkillTestServlet extends HttpServlet {
 	private String QUESTION4="QUESTION4";
 	private String QUESTION5="QUESTION5";
 	private HashMap<String, String> rubricMap = new HashMap<String,String>();
+	
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -53,8 +54,40 @@ public class SkillTestServlet extends HttpServlet {
 		
 		String userId = request.getParameter("userId");
 		String hitId = request.getParameter("hitId");
-				
+		String subAction = request.getParameter("subAction");
 		
+		request.setAttribute("userId", userId);
+		request.setAttribute("hitId", hitId);
+		request.setAttribute("subAction", "submitAnswers");
+		
+ 
+		if(subAction.compareTo("loadQuestions")==0){
+			//request = this.loadQuestions(request);
+			request.getRequestDispatcher("/SkillTest.jsp").include(request, response);
+		}
+		else{
+			int grade = this.retrieveAnswers(request, userId);
+			if (grade>=3){
+				request.setAttribute("userId", userId);
+				request.setAttribute("hitId", hitId);
+				request.getRequestDispatcher("/QuestionMicrotask.jsp").include(request, response);
+			}
+			else{ 
+				request.getRequestDispatcher("/Sorry.html").include(request, response);
+			}
+		}
+	}
+		
+	
+
+	/**
+	 * Not used
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
+
+		
+	private int retrieveAnswers(HttpServletRequest request, String userId){
 		//Retrieve answers
 		HashMap<String, String> answerMap = new HashMap<String, String>();
 		String answer1 = request.getParameter("question1");
@@ -73,27 +106,9 @@ public class SkillTestServlet extends HttpServlet {
 		WorkerStorage workerStorage =  new WorkerStorage();
 		Worker worker = workerStorage.read(userId);
 		worker.setSkillAnswers(rubricMap,gradeMap,grade);
-		
-		if (grade>=3){
-			request.setAttribute("userId", userId);
-			request.setAttribute("hitId", hitId);
-			request.getRequestDispatcher("/QuestionMicrotask.jsp").include(request, response);
-		}
-		else{ 
-			request.getRequestDispatcher("/Sorry.html").include(request, response);
-		}
-		
-		
-		
-		
+				
+		return grade;
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	}
-
 	
 	private HashMap<String,Boolean> gradeAnswers(HashMap<String, String> answerMap){
 		
@@ -107,7 +122,7 @@ public class SkillTestServlet extends HttpServlet {
 			String key = keyIterator.next();
 			String answer = answerMap.get(key);
 			String rubric = rubricMap.get(key);
-			if(answer.compareTo(rubric)==0)
+			if(answer!=null && answer.compareTo(rubric)==0)
 				result=true;
 			else
 				result=false;
