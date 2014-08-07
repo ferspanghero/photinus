@@ -40,11 +40,11 @@ public class SkillTestServlet extends HttpServlet {
         super();
         
         //Initialize rubric map
-		rubricMap.put(QUESTION1,"1");
-		rubricMap.put(QUESTION2,"1");
-		rubricMap.put(QUESTION3,"1");
-		rubricMap.put(QUESTION4,"1");
-		rubricMap.put(QUESTION5,"1");
+		rubricMap.put(QUESTION1,"a");
+		rubricMap.put(QUESTION2,"a");
+		rubricMap.put(QUESTION3,"a");
+		rubricMap.put(QUESTION4,"a");
+		rubricMap.put(QUESTION5,"a");
     }
 
 	/**
@@ -106,13 +106,13 @@ public class SkillTestServlet extends HttpServlet {
 		WorkerStorage workerStorage =  new WorkerStorage();
 		Worker worker = workerStorage.read(userId);
 		worker.setSkillAnswers(rubricMap,gradeMap,grade);
-				
+		workerStorage.insert(userId, worker);
+
 		return grade;
 	}
 	
 	private HashMap<String,Boolean> gradeAnswers(HashMap<String, String> answerMap){
 		
-		HashMap<String, String> rubricMap = getRubricMap();
 		HashMap<String, Boolean> gradeMap= new HashMap<String, Boolean>();
 		
 		Boolean result=false;
@@ -131,11 +131,6 @@ public class SkillTestServlet extends HttpServlet {
 		return gradeMap;
 	}
 	
-	
-	private HashMap<String, String> getRubricMap(){
-		
-		return rubricMap;
-	}
 	
 	private int countCorrectAnswers(HashMap<String, Boolean> gradeMap){
 		int grade = 0;
