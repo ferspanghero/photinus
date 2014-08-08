@@ -1,7 +1,6 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
