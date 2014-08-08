@@ -16,10 +16,12 @@ import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.QuestionFactory;
+import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.WorkerSessionFactory;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
+import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 
 import java.util.*; 
 
@@ -50,8 +52,13 @@ public class FileUploadServlet extends HttpServlet {
 		String bugReport = new String();
 		String fileName = new String();
 		String fileContent = new String();
+		String userId= new String();
+		String hitId = new String();
 		boolean gotBugReport = false;		// assuming that not all parameters that are necessary are known
 		boolean gotSpecificMethod = false;
+		
+		
+		
 		if(ServletFileUpload.isMultipartContent(request)){
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
@@ -72,9 +79,7 @@ public class FileUploadServlet extends HttpServlet {
 						else
 							return_message = "File <b>"+ fileName+"</b> is empty!";
 
-						request.setAttribute("return_message",return_message);
-						request.setAttribute("fileName", fileName); 
-						//request.setAttribute("source", source);
+						request.setAttribute("fileName", fileName);  
 					}
 					else{
 						// getting bug report
@@ -87,17 +92,31 @@ public class FileUploadServlet extends HttpServlet {
 							targetName = item.getString();
 							gotSpecificMethod = true;
 						}
-						// generating microtasks if...
-						if (gotBugReport && gotSpecificMethod){
-							String results = generateMicrotasks(fileName, fileContent, targetName, bugReport);
-							return_message = return_message + results;
-						}
-
-
-						request.setAttribute("return_message", return_message);
+						if (item.getFieldName().equalsIgnoreCase("userId"))
+							userId = item.getString();
+						
+						if (item.getFieldName().equalsIgnoreCase("hitId"))
+							hitId = item.getString();	
 					}
 				}
-			} catch (FileUploadException e) {
+						
+				// generating microtasks if...
+				if (gotBugReport && gotSpecificMethod){
+					String results = generateMicrotasks(fileName, fileContent, targetName, bugReport);
+						
+					//Store the UserId and HitId of the Researcher
+					WorkerStorage workerStorage = new WorkerStorage();
+					Worker worker = new Worker(userId,hitId,new Date());
+					workerStorage.insert(userId, worker);
+							
+					return_message = return_message + results;
+				}
+						
+
+				request.setAttribute("return_message", return_message);
+				
+			}
+			catch (FileUploadException e) {
 				request.setAttribute("return_message", "File upload failed. " + e);
 			}
 		}

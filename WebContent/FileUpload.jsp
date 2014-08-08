@@ -2,12 +2,20 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Upload Suspicious File</title>
+<title>Upload Suspicious Files</title>
 		<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 </head>
-<body> 
+<body>
+
+	<script>
+		function openMicrotask() {
+			var subAction = document.getElementById("subAction");
+			subAction.value = "loadFirst";
+			document.forms["openMicrotask"].submit()
+		}
+	</script>
 
 	<table border="0">
 		<tr>
@@ -18,13 +26,16 @@
 					<td><img src="./images/UploadsButton-blue.jpg"></td>
 					
 					<td>
-						<form method="POST" action="microtask" name="openMicrotask">
+						<form method="GET" action="microtask" name="openMicrotask">
 							<input type="image" src="./images/MicrotasksButton.jpg"
-								value="Open Microtask" name="openMicrotask" align="bottom">
+								value="Open Microtask" name="openMicrotask" align="bottom" onclick="openMicrotask()">
+							<input type="hidden" id="subAction" name="subAction" value="loadFirst"> 	
+							<input type="hidden" id="userId" name="userId" value="researcher"> 	
+							<input type="hidden" id="hitId" name="hitId" value="researchSession"> 	
 						</form>
 					</td>
 					
-					<td><form method="POST" action='results' name="results">
+					<td><form method="POST" action="results" name="results">
 					<input type="image" src="./images/ResultsButton.jpg"
 						value="results" name="results">
 				</form></td>
@@ -55,10 +66,12 @@
 						<tr>
 							<td align="right">Method Name:</td>
 							<td><input type="text" name="targetMethod" size="54"/></td>
-							<td><input type="submit" value="Generate Microtasks"/></td>				 
+							<td><input type="submit" value="Generate Microtasks"/></td>	
+		 
 						</tr>
 					</table>
-
+							<input type="hidden" id="userId" name="userId" value="researcher"> 	
+							<input type="hidden" id="hitId" name="hitId" value="researchSession"> 	
 					<br>
 				</form>
 			

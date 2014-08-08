@@ -69,7 +69,7 @@ public class MicrotaskStorage {
 			return null;
 	}
 
-	/** Retrieves the all the file debugging sessions .
+	/** Retrieves all file debugging sessions .
 	 * A debugging session is identified by a file name
 	 * 
 	 * @return a set of debugging sessions

@@ -62,7 +62,6 @@ public class SkillTestServlet extends HttpServlet {
 		
  
 		if(subAction.compareTo("loadQuestions")==0){
-			//request = this.loadQuestions(request);
 			request.getRequestDispatcher("/SkillTest.jsp").include(request, response);
 		}
 		else{
@@ -70,6 +69,7 @@ public class SkillTestServlet extends HttpServlet {
 			if (grade>=3){
 				request.setAttribute("userId", userId);
 				request.setAttribute("hitId", hitId);
+				request.setAttribute("subAction", "loadFirst");
 				request.getRequestDispatcher("/QuestionMicrotask.jsp").include(request, response);
 			}
 			else{ 

@@ -122,6 +122,8 @@ max-width: 700px;
 		function submitAnswer() {
 			var checked = checkAnswer();
 			if (checked != -1) {
+				var subAction = document.getElementById("subAction");
+				subAction.value = "loadNext";
 				document.forms["answerForm"].submit();
 			} else {
 				//nothing to do.
@@ -130,15 +132,14 @@ max-width: 700px;
 
 		function skipAnswer() {
 			if(confirm('Confirm skipping this question ?')){
-				document.forms["skipForm"].submit();				
+				var subAction = document.getElementById("subAction");
+				subAction.value = "skip";
+				document.forms["answerForm"].submit();				
 			}
 		}
 		
 	</script>
 
- 
-
-		<form name="skipForm" action="microtask" value="skip" method="post"></form>
 		<br>
 		<!-- Hidden fields -->
 		<input type="hidden" id="startLine" value=${requestScope["startLine"]}>
@@ -158,6 +159,7 @@ max-width: 700px;
 
 	<div id="failurePrompt"><br>
 		 	<div id="internalText">
+		 	<br>
 			Thanks for using FireFly! By answering the question below, you will help us debug software from all over the world. 
    			The bug we specifically could use your help with today is the following: 
       	<b>${requestScope["bugReport"]}</b><br>
@@ -192,6 +194,8 @@ max-width: 700px;
 			<input type="hidden" name="userId" value=${requestScope["userId"]}> 
 			<input type="hidden" name="hitId" value=${requestScope["hitId"]}> 
 			<input type="hidden" name="microtaskId" value=${requestScope["microtaskId"]}> 
+			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
+			
 			<center><br>Please provide an explanation for your answer: <br>
 			<textarea name="explanation" id="explanation" rows="3" cols="82"></textarea>
 			</center>

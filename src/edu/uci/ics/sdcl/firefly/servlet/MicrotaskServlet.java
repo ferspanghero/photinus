@@ -21,7 +21,14 @@ import edu.uci.ics.sdcl.firefly.controller.StorageManager;
  */
 public class MicrotaskServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	
+	private String SurveyPage = "/Survey.jsp";
+	private String ErrorPage = "/ErrorPage.jsp";
+	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
+ 
+	private String userId;
+	private String hitId;
+	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -30,192 +37,245 @@ public class MicrotaskServlet extends HttpServlet {
 	}
 
 	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
+	
+	/**
 	 * 	Collects and persist the answer. Also marks the microtask as already answered
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String fileName = request.getParameter("fileName");
+		this.userId = request.getParameter("userId");
+		this.hitId = request.getParameter("hitId");
+		
+		//Restore data for next Request
+		request.setAttribute("userId",this.userId);
+		request.setAttribute("hitId",this.hitId);
+		
+		String subAction = request.getParameter("subAction");
+				
+		if(subAction.compareTo("loadFirst")==0)
+			loadFirstMicrotask(request, response);
+		else
+			if(subAction.compareTo("loadNext")==0)
+				loadNextMicrotask(request, response);
+			else				
+				if(subAction.compareTo("skip")==0)
+					skipMicrotask(request, response);
+				else
+					showErrorPage(request, response);
+
+	}
+		
+	
+	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	 		
+		StorageManager manager = new StorageManager();
+		WorkerSession  session = manager.readNewSession(this.userId, this.hitId);
+		
+		if(session==null || !session.hasCurrent())
+		 	//Means that it is the first user session. There should be at least one microtask. If not it is an Error.
+			request.getRequestDispatcher(ErrorPage).include(request, response);
+		else{
+			//Restore data for next Request
+			request.setAttribute("sessionId",session.getId());
+			
+			//load the new Microtask data into the Request
+			request = generateRequest(request, session.getCurrentMicrotask());
+			request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
+		}
+	}
+	
+	
+	private void loadNextMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		 
 		int answer = new Integer(request.getParameter("answer")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
 		String explanation = request.getParameter("explanation");
-		request.setAttribute("userId",  request.getParameter("userId"));
-		request.setAttribute("hitId", request.getParameter("hitId"));
-		String sessionId = request.getParameter("sessionId");
-		request.setAttribute("sessionId", sessionId);
+	 	String sessionId = request.getParameter("sessionId");
+	 	String fileName = request.getParameter("fileName");
 		
+		//Restore data for next Request
+		request.setAttribute("sessionId",sessionId);
 
-		//MicrotaskStorage storage = new MicrotaskStorage();
-		//storage.insertAnswer(fileName, new Integer(microtaskId), );
+		//Save answers from the previous microtask
 		StorageManager manager = new StorageManager();
 		manager.updateMicrotaskAnswer(fileName, new Integer(sessionId), new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation));
 
-		HttpServletRequest newRequest = settingACEEditors(request, fileName);
-
-		if(newRequest == null) //No more microtasks, move to the Survey page
-			request.getRequestDispatcher("/Survey.jsp").include(request, response);
-		else
+		//Continue working on existing session
+		WorkerSession session = manager.readActiveSession(new Integer(sessionId));	
+		
+		if(session==null || !session.hasCurrent())
+			//No more microtasks, move to the Survey page
+			request.getRequestDispatcher(SurveyPage).include(request, response);
+		else{
 			//Displays a new microtask
-			request.getRequestDispatcher("/QuestionMicrotask.jsp").include(newRequest, response);
+			request = generateRequest(request, session.getCurrentMicrotask());
+			request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
+		}
 	}
-
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		String fileName = new String();
-		HttpServletRequest newRequest = settingACEEditors(request, fileName);
-
-		if(newRequest == null) //No more microtasks, move to the Survey page
-			request.getRequestDispatcher("/Survey.jsp").include(request, response);
-		else
-			//Displays a new microtask
-			request.getRequestDispatcher("/QuestionMicrotask.jsp").include(newRequest, response);
-			
-	}
-
-
-	protected HttpServletRequest settingACEEditors(HttpServletRequest request, String fileName)
-	{
-		//Prepare  microtask request
-		//MicrotaskSelector selector = new MicrotaskSelector();
-		//MicrotaskSelector.SelectorReturn returnValues = selector.selectAnyMicrotask();
-
-		StorageManager manager = new StorageManager();
-		WorkerSession session;
+	
+	
+	private void skipMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String microtaskId = request.getParameter("microtaskId");
 		String sessionId = request.getParameter("sessionId");
+		String fileName = request.getParameter("fileName");
+		
+		//Restore data for next Request
+		request.setAttribute("sessionId",sessionId);
 
-		//Obtain a session (first time or the active one)
-		if(sessionId==null || sessionId.length()==0){ //First microtask of the user
-			String userId = "chris";//request.getParameter("userId"); //TODO
-			String hitId = "mturk";//request.getParameter("hitId");
-			session = manager.readNewSession(userId, hitId);
-		}
+		//Save answers from the previous microtask
+		StorageManager manager = new StorageManager();
+		manager.updateMicrotaskAnswer(fileName, new Integer(sessionId), new Integer(microtaskId), new Answer(Answer.SKIPPED,null));
+
+		//Continue working on existing session
+		WorkerSession session = manager.readActiveSession(new Integer(sessionId));	
+		
+		if(session==null || !session.hasCurrent())
+			//No more microtasks, move to the Survey page
+			request.getRequestDispatcher(SurveyPage).include(request, response);
 		else{
-			session = manager.readActiveSession(new Integer(sessionId));
-		}
-
-
-		if(session==null){
-			return null;
-		}
-		else{
-			//display a new microtask
-			Microtask task = session.getCurrentMicrotask();
-			System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
-			System.out.println("Retrieved microtask bug report:" + task.getFailureDescription());
-			fileName = task.getMethod().getFileName();
-			String fileContent = task.getMethod().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
-			request.setAttribute("bugReport", task.getFailureDescription());
-			request.setAttribute("question", task.getQuestion());
-			request.setAttribute("source", fileContent); 	// content displayed on the first ACE Editor
-			// chasing method positions for highlighting callees on Main Ace Editor
-			if (!task.getMethod().getCallees().isEmpty()){
-				StringBuilder commandStorage = new StringBuilder();
-				String callesOnMainCommand = new String();
-				for (CodeSnippet callee : task.getMethod().getCallees()) {
-					commandStorage.append( methodChaser(callee.getMethodSignature().getName(), fileContent, false) );
-				}
-				callesOnMainCommand = commandStorage.toString().substring(0, commandStorage.length()-1);	// -1 to remove last '#'
-				System.out.println("Command to be executed: " + callesOnMainCommand);
-				request.setAttribute("calleesOnMain", callesOnMainCommand);
-			} else
-				request.setAttribute("calleesOnMain", null);
-
-			/* preparing the second ACE Editor - callers */
-			StringBuilder newFileContent;
-			StringBuilder highlight;
-			String highlightCallerCommand;
-
-			String newline = System.getProperty("line.separator");
-			if ( task.getMethod().getCallers().isEmpty() ){
-				newFileContent = null;
-				highlightCallerCommand = null;
-				request.setAttribute("caller", null);
-			} else 
-			{
-				newFileContent = new StringBuilder();
-				highlight = new StringBuilder();
-				highlightCallerCommand = new String();
-				newFileContent.append("METHOD '" + task.getMethod().getMethodSignature().getName() + 
-						"' IS CALLED BY THE FOLLOWING METHOD(S):");
-				newFileContent.append(newline);
-				newFileContent.append(newline);
-				for (CodeSnippet caller : task.getMethod().getCallers()) {
-					newFileContent.append(caller.getCodeSnippetFromFileContent());	// appending caller
-					if ( task.getMethod().getCallers().indexOf(caller) < (task.getMethod().getCallers().size()-1) ){
-						newFileContent.append(newline);	// appending two new lines in case it is NOT the last caller 
-						newFileContent.append(newline);
-					}
-				}
-				// chasing method positions for highlighting purposes
-				//				for (CodeSnippet caller : task.getMethod().getCallers()) {
-				//					highlight.append( methodChaser(caller.getMethodSignature().getName(), newFileContent.toString(), true) );
-				//				}  // now I just want to hightlight where the method is called on the caller method
-				highlight.append( methodChaser(task.getMethod().getMethodSignature().getName(), newFileContent.toString(), false) );
-				highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
-				System.out.println("Command to be executed: " + highlightCallerCommand);
-				request.setAttribute("caller", newFileContent.toString());
-			}
-			// passing to jsp
-			request.setAttribute("positionsCaller", highlightCallerCommand);
-
-
-			/* preparing the third ACE Editor - callees */
-			String highlightCalleeCommand;
-			if ( task.getMethod().getCallees().isEmpty() ){
-				newFileContent = null;
-				highlightCalleeCommand = null;
-				request.setAttribute("callee", null);
-			} 
-			else{
-				newFileContent = new StringBuilder();
-				highlight = new StringBuilder();
-				highlightCalleeCommand = new String();
-				newFileContent.append("METHOD '" + task.getMethod().getMethodSignature().getName() + 
-						"' CALLS THE FOLLOWING METHOD(S):");
-				newFileContent.append(newline);
-				newFileContent.append(newline);
-				for (CodeSnippet callee : task.getMethod().getCallees()) {
-					newFileContent.append(callee.getCodeSnippetFromFileContent());	// appending callee
-					if ( task.getMethod().getCallees().indexOf(callee) < (task.getMethod().getCallees().size()-1) ){
-						newFileContent.append(newline);	// appending two new lines in case it is NOT the last callee 
-						newFileContent.append(newline);
-					}
-				}	
-				// chasing method positions for highlighting purposes
-				for (CodeSnippet callee : task.getMethod().getCallees()) {
-					highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString(), true) );
-				}
-				highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
-				System.out.println("Command to be executed: " + highlightCalleeCommand);
-				request.setAttribute("callee", newFileContent.toString());
-			}
-			// passing to jsp
-			request.setAttribute("positionsCallee", highlightCalleeCommand);
-
-			request.setAttribute("userId", session.getUserId());
-			request.setAttribute("hitId", session.getHitId());
-			request.setAttribute("sessionId", session.getId());
-			request.setAttribute("microtaskId", task.getID());
-			request.setAttribute("fileName", fileName);
-			request.setAttribute("explanation",""); //clean up the explanation field.
-
-			request.setAttribute("startLine", task.getStartingLine());
-			request.setAttribute("startColumn", task.getStartingColumn());
-			request.setAttribute("endLine", task.getEndingLine());
-			request.setAttribute("endColumn", task.getEndingColumn());
-
-			request.setAttribute("methodStartingLine", task.getMethod().getMethodSignature().getLineNumber());
-
-			return request;
+			//Displays a new microtask
+			request = generateRequest(request, session.getCurrentMicrotask());
+			request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
 		}
 	}
+	
+	
+	private void showErrorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.getRequestDispatcher(ErrorPage).include(request, response);
+	}
+	
 
-	// return the position of all the methodName occurrences on the following format:
-	// startingLine#startingColumn#endingLine#endingColumn#... and so on
+
+	/** Load all data from a microtask to the request 
+	 * 
+	 * @param request
+	 * @param task
+	 * @return the new request with data to be displayed on the web page
+	 */
+	private HttpServletRequest generateRequest(HttpServletRequest request, Microtask task){
+		
+		System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
+		System.out.println("Retrieved microtask bug report:" + task.getFailureDescription());
+		
+		request.setAttribute("microtaskId", task.getID());  
+		request.setAttribute("fileName", task.getMethod().getFileName());
+		
+		String fileContent = task.getMethod().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
+		request.setAttribute("bugReport", task.getFailureDescription());
+		request.setAttribute("question", task.getQuestion());
+		request.setAttribute("source", fileContent); 	// content displayed on the first ACE Editor
+		// chasing method positions for highlighting callees on Main Ace Editor
+		if (!task.getMethod().getCallees().isEmpty()){
+			StringBuilder commandStorage = new StringBuilder();
+			String callesOnMainCommand = new String();
+			for (CodeSnippet callee : task.getMethod().getCallees()) {
+				commandStorage.append( methodChaser(callee.getMethodSignature().getName(), fileContent, false) );
+			}
+			callesOnMainCommand = commandStorage.toString().substring(0, commandStorage.length()-1);	// -1 to remove last '#'
+			System.out.println("Command to be executed: " + callesOnMainCommand);
+			request.setAttribute("calleesOnMain", callesOnMainCommand);
+		} else
+			request.setAttribute("calleesOnMain", null);
+
+		/* preparing the second ACE Editor - callers */
+		StringBuilder newFileContent;
+		StringBuilder highlight;
+		String highlightCallerCommand;
+
+		String newline = System.getProperty("line.separator");
+		if ( task.getMethod().getCallers().isEmpty() ){
+			newFileContent = null;
+			highlightCallerCommand = null;
+			request.setAttribute("caller", null);
+		} 
+		else{
+			newFileContent = new StringBuilder();
+			highlight = new StringBuilder();
+			highlightCallerCommand = new String();
+			newFileContent.append("METHOD '" + task.getMethod().getMethodSignature().getName() + 
+					"' IS CALLED BY THE FOLLOWING METHOD(S):");
+			newFileContent.append(newline);
+			newFileContent.append(newline);
+			for (CodeSnippet caller : task.getMethod().getCallers()) {
+				newFileContent.append(caller.getCodeSnippetFromFileContent());	// appending caller
+				if ( task.getMethod().getCallers().indexOf(caller) < (task.getMethod().getCallers().size()-1) ){
+					newFileContent.append(newline);	// appending two new lines in case it is NOT the last caller 
+					newFileContent.append(newline);
+				}
+			}
+			// chasing method positions for highlighting purposes
+			highlight.append( methodChaser(task.getMethod().getMethodSignature().getName(), newFileContent.toString(), false) );
+			highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
+			System.out.println("Command to be executed: " + highlightCallerCommand);
+			request.setAttribute("caller", newFileContent.toString());
+		}
+		// passing to jsp
+		request.setAttribute("positionsCaller", highlightCallerCommand);
+
+
+		/* preparing the third ACE Editor - callees */
+		String highlightCalleeCommand;
+		if ( task.getMethod().getCallees().isEmpty() ){
+			newFileContent = null;
+			highlightCalleeCommand = null;
+			request.setAttribute("callee", null);
+		} 
+		else{
+			newFileContent = new StringBuilder();
+			highlight = new StringBuilder();
+			highlightCalleeCommand = new String();
+			newFileContent.append("METHOD '" + task.getMethod().getMethodSignature().getName() + 
+					"' CALLS THE FOLLOWING METHOD(S):");
+			newFileContent.append(newline);
+			newFileContent.append(newline);
+			for (CodeSnippet callee : task.getMethod().getCallees()) {
+				newFileContent.append(callee.getCodeSnippetFromFileContent());	// appending callee
+				if ( task.getMethod().getCallees().indexOf(callee) < (task.getMethod().getCallees().size()-1) ){
+					newFileContent.append(newline);	// appending two new lines in case it is NOT the last callee 
+					newFileContent.append(newline);
+				}
+			}	
+			// chasing method positions for highlighting purposes
+			for (CodeSnippet callee : task.getMethod().getCallees()) {
+				highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString(), true) );
+			}
+			highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
+			System.out.println("Command to be executed: " + highlightCalleeCommand);
+			request.setAttribute("callee", newFileContent.toString());
+		}
+		// passing to jsp
+		request.setAttribute("positionsCallee", highlightCalleeCommand);
+
+		 
+
+		
+		request.setAttribute("explanation",""); //clean up the explanation field.
+
+		request.setAttribute("startLine", task.getStartingLine());
+		request.setAttribute("startColumn", task.getStartingColumn());
+		request.setAttribute("endLine", task.getEndingLine());
+		request.setAttribute("endColumn", task.getEndingColumn());
+
+		request.setAttribute("methodStartingLine", task.getMethod().getMethodSignature().getLineNumber());
+		
+		return request;
+	}
+	
+	
+	
+	/**
+	 * @return the position of all the methodName occurrences on the following 
+	 * format: startingLine#startingColumn#endingLine#endingColumn#... and so on
+	 * @param methodName
+	 * @param fileContent
+	 * @param methodCallStrict
+	 * @return
+	 */
 	protected String methodChaser(String methodName, String fileContent, boolean methodCallStrict)
 	{
 		PositionFinder invocationPosition;
