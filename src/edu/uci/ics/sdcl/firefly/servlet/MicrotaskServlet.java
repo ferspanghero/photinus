@@ -65,7 +65,7 @@ public class MicrotaskServlet extends HttpServlet {
 				if(subAction.compareTo("skip")==0)
 					skipMicrotask(request, response);
 				else
-					showErrorPage(request, response);
+					showErrorPage(request, response,"@ MicrotaskServlet - subAction not recognized");
 
 	}
 		
@@ -77,7 +77,7 @@ public class MicrotaskServlet extends HttpServlet {
 		
 		if(session==null || !session.hasCurrent())
 		 	//Means that it is the first user session. There should be at least one microtask. If not it is an Error.
-			request.getRequestDispatcher(ErrorPage).include(request, response);
+			showErrorPage(request, response,"@ MicrotaskServlet - no microtask available");
 		else{
 			//Restore data for next Request
 			request.setAttribute("sessionId",session.getId());
@@ -145,7 +145,8 @@ public class MicrotaskServlet extends HttpServlet {
 	}
 	
 	
-	private void showErrorPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
+		request.setAttribute("error", message);
 		request.getRequestDispatcher(ErrorPage).include(request, response);
 	}
 	
