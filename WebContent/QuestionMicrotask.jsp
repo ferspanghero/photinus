@@ -156,7 +156,7 @@ max-width: 700px;
 	<script
 		src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
 
-	<div id="failurePrompt">
+	<div id="failurePrompt"><br>
 		 	<div id="internalText">
 			Thanks for using FireFly! By answering the question below, you will help us debug software from all over the world. 
    			The bug we specifically could use your help with today is the following: 

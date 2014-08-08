@@ -62,7 +62,7 @@ public class MicrotaskStorage {
 	public FileDebugSession read(String fileName){
 
 		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
-
+		System.out.println(debugSessionMap);
 		if(debugSessionMap!=null && debugSessionMap.containsKey(fileName))
 			return debugSessionMap.get(fileName);
 		else

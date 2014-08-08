@@ -17,7 +17,7 @@ public class FileDebugSession implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String fileName;
+	private String fileName;	// with path and extension
 	
 	private String fileContent;
 	
