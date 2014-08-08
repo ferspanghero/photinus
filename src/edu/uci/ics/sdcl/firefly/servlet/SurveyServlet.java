@@ -43,7 +43,7 @@ public class SurveyServlet extends HttpServlet {
 		} else{
 			request.setAttribute("userId", request.getParameter("userId"));
 			request.setAttribute("hitId", request.getParameter("hitId"));
-			request.setAttribute("error", "@SurveyServelet - object 'subject' is null");
+			request.setAttribute("error", "@SurveyServlet - object 'subject' is null");
 			//Displays the error page
 			request.getRequestDispatcher("/ErrorPage.jsp").forward(request, response);
 		}

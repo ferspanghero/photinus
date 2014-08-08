@@ -7,17 +7,19 @@
 <title>Java Skill Test</title>
 
 <style type="text/css" media="screen">
-
-	#content  {
+	#container  {
 		max-width: 700px;
 		background-color: #D1EEEE;
 		text-align: justify;
 		margin: 0 auto;
+		
 	}
 	
-	#container  {
+	#content  {
 		background-color: #D1EEEE;
 		text-align: justify;
+		 margin-left: 10px;
+		margin-right: 10px;
 	}
 </style>
 
@@ -82,7 +84,7 @@
 		}
 	</script>
 
-	<div id="container"><br>
+<div id="container"><br>
 	<div id="content">
 		<b>Thank you for interest to participate the study. We need to evaluate your 
 		programming skills before we allow you to continue. Please answer the following questions. </b>
@@ -144,6 +146,7 @@
 			<INPUT TYPE="button" VALUE="Submit answers" onclick="submitAnswers(event)">
 
 		</form>
+		<br>
 </div>
 </div>
 

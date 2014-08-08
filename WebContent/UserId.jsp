@@ -7,12 +7,14 @@
 <title>User Identification</title>
 
 <style>
-	#container {
-		margin: 10px;
+	#content {
 		background-color: #D1EEEE;
+		text-align: justify;
+		 margin-left: 10px;
+		margin-right: 5px;
 	}
 	
-	#content {
+	#container {
 		margin: 0 auto;
 		background-color: #D1EEEE;
 		width: 400px;
@@ -26,8 +28,8 @@
 <div id='container'>
 	<br>
 	<div id='content'>
-	
-		<p style="font-size:20px"><b>Please enter the following information</b></p>
+		<center>
+		<b>Please enter the following information</b><br><br>
 		<form name="userIdForm" action="UserIdServlet" method="get">
 			<table>
 				<tr><td>User ID: </td><td><input type="text" id="userId" name="userId" size="40"/></td></tr>
@@ -36,11 +38,11 @@
 				<tr><td align=left><input type="button" value="Quit"	onclick="quit()"></td>
 					<td align=right><input type="button" value="Proceed"	onclick="checkIds()"></td>
 			</table>
-			<br>
+
 		</form>
-		
+	</center>
 	</div>
-	<br><br>
+	<br>
 </div>
 
 <script type="text/javascript">

@@ -8,16 +8,19 @@
 
 <style type="text/css" media="screen">
 
-	#content  {
+	#container  {
 		max-width: 700px;
 		background-color: #D1EEEE;
 		text-align: justify;
 		margin: 0 auto;
+		
 	}
 	
-	#container  {
+	#content  {
 		background-color: #D1EEEE;
 		text-align: justify;
+		 margin-left: 10px;
+		margin-right: 10px;
 	}
 
 </style>
@@ -94,34 +97,30 @@
 		<form name="surveyForm" method="get" action="survey">
 			
 			<br>
+								
+			What is your gender?<br>
+			&nbsp;&nbsp;<input type="radio" name="gender" value="Female">Female<br>
+			&nbsp;&nbsp;<input type="radio" name="gender" value="Male">Male<br>
+			&nbsp;&nbsp;<input type="radio" name="gender" value="Other">Other<br>
+			&nbsp;&nbsp;<input type="radio" name="gender" value="Prefer not to tell">Prefer not to tell<br><br>
 			
-			What is your gender? <br><br>
-			<input type="radio" name="gender" value="Female">Female<br>
-			<input type="radio" name="gender" value="Male">Male<br>
-			<input type="radio" name="gender" value="Other">Other<br>
-			<input type="radio" name="gender" value="Prefer not to tell">Prefer not to tell<br><br>
 			
+			What is your age?</b> <input type=text name="age" id="age" size="4" /><br><br>
 			
-			What is your age?<br>
-			<input type=text name="age" id="age" /><br><br>
+			How many years of programming experience do you have?</b> <input type=text name="experience" id="experience" size="4" /><br><br>
 			
-			How many years of programming experience do you have?<br>
-			<input type=text name="experience" id="experience" /><br>
+			On a scale of difficulty from 1(easy) to 7(hard), how would you rank this task? <br>
+			&nbsp;&nbsp;<input type="radio" name="difficulty" value="1">1 &nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;<input type="radio" name="difficulty" value="2">2 &nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;<input type="radio" name="difficulty" value="3">3 &nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;<input type="radio" name="difficulty" value="4">4 &nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;<input type="radio" name="difficulty" value="5">5 &nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;<input type="radio" name="difficulty" value="6">6 &nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;<input type="radio" name="difficulty" value="7">7 
+			<br><br>
 			
-			<br> 
-			
-			On a scale of difficulty from 1(easy) to 7(hard), how would you rank this task?<br>
-			<input type="radio" name="difficulty" value="1">1 
-			<input type="radio" name="difficulty" value="2">2
-			<input type="radio" name="difficulty" value="3">3
-			<input type="radio" name="difficulty" value="4">4
-			<input type="radio" name="difficulty" value="5">5
-			<input type="radio" name="difficulty" value="6">6
-			<input type="radio" name="difficulty" value="7">7<br>
-	
-			<br>
 			Please provide any additional feedback: <br>
-			<textarea name="feedback" id="feedback" rows="6" cols="50"></textarea><br>
+			&nbsp;&nbsp;<textarea name="feedback" id="feedback" rows="6" cols="50"></textarea><br>
 	
 	 		<!-- Hidden fields -->
 	 		<input type="hidden" name="sessionId" value=${requestScope["sessionId"]}> 

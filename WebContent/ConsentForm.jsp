@@ -9,16 +9,19 @@
 
 <style type="text/css" media="screen">
 
-	#consentText {
-		margin: 0 auto;
+	#container  {
+		max-width: 700px;
 		background-color: #D1EEEE;
-		width: 800px;
 		text-align: justify;
+		margin: 0 auto;
+		
 	}
-
-	#consentPage {
-		margin: 10px;
+	
+	#content  {
 		background-color: #D1EEEE;
+		text-align: justify;
+		 margin-left: 10px;
+		margin-right: 15px;
 	}
 	
 </style>
@@ -27,9 +30,8 @@
 
 <body>
  
-<div id=consentPage>
-	<br>
-	<div id='consentText' >
+<div id="container"><br>
+	<div id="content">
 		<center>
 			<b>University of California, Irvine<br>
 			Study Information Sheet<br>
