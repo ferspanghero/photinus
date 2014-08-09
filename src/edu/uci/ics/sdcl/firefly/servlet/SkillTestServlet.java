@@ -103,10 +103,20 @@ public class SkillTestServlet extends HttpServlet {
 		int grade = this.countCorrectAnswers(gradeMap);
 		WorkerStorage workerStorage =  new WorkerStorage();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 9e5aabb284f4944301ba3991178ff5ed9663de9e
 		Worker worker = workerStorage.readSingleWorker(userId);
 =======
 		Worker worker = workerStorage.read(this.userId);
 >>>>>>> origin/master
+<<<<<<< HEAD
+=======
+=======
+		Worker worker = workerStorage.read(userId);
+>>>>>>> parent of e6e144a... Reports 1 and 2
+>>>>>>> 9e5aabb284f4944301ba3991178ff5ed9663de9e
 		worker.setSkillAnswers(rubricMap,gradeMap,grade);
 		workerStorage.insert(userId, worker);
 
