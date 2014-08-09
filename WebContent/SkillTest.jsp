@@ -24,14 +24,14 @@
 	
 	#editor1 {
 	position: relative;
-	height: 150px;
-	width: 480px;
+	height: 180px;
+	width: 580px;
 	}
 	
 	#editor2 {
 	position: relative;
-	height: 150px;
-	width: 480px;
+	height: 180px;
+	width: 580px;
 	}
 	
 }

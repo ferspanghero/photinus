@@ -95,8 +95,7 @@
 		var consented = document.getElementById('consentBox').checked;
 		if (consented){
 			var subAction = document.getElementById("subAction");
-			subAction.value = "consentObtained";
-			alert(subAction.value);
+			subAction.value = "consentObtained"; 
 			document.forms["consentForm"].submit();
 		} else{
 			alert("You have to agree with the terms before proceeding");
