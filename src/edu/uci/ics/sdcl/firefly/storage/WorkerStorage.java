@@ -49,7 +49,7 @@ public class WorkerStorage {
 			return false;
 	}
 	
-	public Worker read(String userId){
+	public Worker readSingleWorker(String userId){
 
 		HashMap<String, Worker> workerMap = this.retrieveIndex();
 
@@ -57,6 +57,10 @@ public class WorkerStorage {
 			return workerMap.get(userId);
 		else
 			return null;
+	}
+	
+	public HashMap<String, Worker> readAllWorkers(){
+		return this.retrieveIndex();
 	}
 	
 	public boolean remove(String userId) {

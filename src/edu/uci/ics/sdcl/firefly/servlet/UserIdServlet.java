@@ -33,24 +33,8 @@ public class UserIdServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-<<<<<<< HEAD
-		String userId = request.getParameter("userId");	
-		String hitId = request.getParameter("hitId");
-		Date currentDate = new Date();
-		Worker testSubject = new Worker(userId, hitId, currentDate);
-		WorkerStorage consentStore = new WorkerStorage();
-		consentStore.insert(userId, testSubject);
-		System.out.println("User Id: " + consentStore.read(userId).getUserId());
-		System.out.println("HIT Id: " + consentStore.read(userId).getHitId());
-		System.out.println("Date: " + consentStore.read(userId).getConsentDate());
-		// now passing parameters to the next page
-		request.setAttribute("userId", userId);
-		request.setAttribute("hitId", hitId);
-		request.setAttribute("subAction", "loadQuestions");
-=======
 
 		String subAction = request.getParameter("subAction");
->>>>>>> origin/master
 		
 		if(subAction.compareTo("consentObtained") == 0){
 			Date currentDate = new Date();
@@ -74,9 +58,9 @@ public class UserIdServlet extends HttpServlet {
 				Worker testSubject = new Worker(userId, hitId, currentDate);
 				WorkerStorage consentStore = new WorkerStorage();
 				consentStore.insert(userId, testSubject);
-				System.out.println("User Id: " + consentStore.read(userId).getUserId());
-				System.out.println("HIT Id: " + consentStore.read(userId).getHitId());
-				System.out.println("Date: " + consentStore.read(userId).getConsentDate());
+				System.out.println("User Id: " + consentStore.readSingleWorker(userId).getUserId());
+				System.out.println("HIT Id: " + consentStore.readSingleWorker(userId).getHitId());
+				System.out.println("Date: " + consentStore.readSingleWorker(userId).getConsentDate());
 				// now passing parameters to the next page
 				request.setAttribute("userId", userId);
 				request.setAttribute("hitId", hitId);
