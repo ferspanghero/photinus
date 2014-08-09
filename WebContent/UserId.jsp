@@ -38,7 +38,8 @@
 				<tr><td align=left><input type="button" value="Quit"	onclick="quit()"></td>
 					<td align=right><input type="button" value="Proceed"	onclick="checkIds()"></td>
 			</table>
-
+		<input type="hidden" id="subAction" name="subAction" value="createWorker"> 
+		<input type="hidden" id="dateOfConsent" name="dateOfConsent" value=${requestScope["dateOfConsent"]}> 
 		</form>
 	</center>
 	</div>
@@ -47,6 +48,10 @@
 
 <script type="text/javascript">
 	function checkIds(){
+		
+		var subAction = document.getElementById("subAction");
+		subAction.value = "loadQuestions";
+		
 		var userId = document.getElementById('userId');
 		userId.value = userId.value.replace(/\s+/g, '');	// removing white spaces
 		var hitId = document.getElementById('hitId');
