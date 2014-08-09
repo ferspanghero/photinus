@@ -24,13 +24,13 @@
 	
 	#editor1 {
 	position: relative;
-	height: 180px;
+	height: 280px;
 	width: 580px;
 	}
 	
 	#editor2 {
 	position: relative;
-	height: 180px;
+	height: 500px;
 	width: 580px;
 	}
 	
@@ -130,29 +130,28 @@
 				</script>
 
 			<br>
-			Question-1
-			<br><br>
-			<input type="radio" name="question1" value="a">a<br>
-			<input type="radio" name="question1" value="b">b<br>
-			<input type="radio" name="question1" value="c">d<br>
-			<input type="radio" name="question1" value="d">I don't know<br><br>
+			1- What is the output of the code?
+			<br>
+			<input type="radio" name="question1" value="a">0<br>
+			<input type="radio" name="question1" value="b">1<br>
+			<input type="radio" name="question1" value="c">2<br>
+			<input type="radio" name="question1" value="d">3<br>
 			
 			<br>
+			2- At line 20, if we substitute "Ciao" for "Hola", what would be the output? 
 			<br>
-			Question-2
-			<br><br>
-			<input type="radio" name="question2" value="a">a<br>
-			<input type="radio" name="question2" value="b">b<br>
-			<input type="radio" name="question2" value="c">d<br>
-			<input type="radio" name="question2" value="d">I don't know<br><br>
+			<input type="radio" name="question2" value="a">0<br>
+			<input type="radio" name="question2" value="b">1<br>
+			<input type="radio" name="question2" value="c">2<br>
+			<input type="radio" name="question2" value="d">3<br>
 
-			<br><br>
-			Question-3
-			<br><br>
-			<input type="radio" name="question3" value="a">a<br>
-			<input type="radio" name="question3" value="b">b<br>
-			<input type="radio" name="question3" value="c">d<br>
-			<input type="radio" name="question3" value="d">I don't know<br><br>
+			<br>
+			3- At line 20, if we substitute "Ciao" for an empty String (e.g., " "), what would be the output? 
+			<br>
+			<input type="radio" name="question3" value="a">0<br>
+			<input type="radio" name="question3" value="b">1<br>
+			<input type="radio" name="question3" value="c">2<br>
+			<input type="radio" name="question3" value="d">3<br>
 			
 			<br> The source code below is used in the questions 4 and 5<br>
 			<div id="editor2"><xmp>${requestScope["editor2"]}</xmp></div>
@@ -170,20 +169,20 @@
 				</script>
 
 			<br>
-			Question-4
-			<br><br>
-			<input type="radio" name="question4" value="a">a<br>
-			<input type="radio" name="question4" value="b">b<br>
-			<input type="radio" name="question4" value="c">d<br>
-			<input type="radio" name="question4" value="d">I don't know<br><br>
+			4- What is the output of the code?
+			<br>
+			<input type="radio" name="question4" value="a">2!1!0BA;<br>
+			<input type="radio" name="question4" value="b">2!1!0AB;<br>
+			<input type="radio" name="question4" value="c">012!!AB;<br>
+			<input type="radio" name="question4" value="d">OAB1!2!;<br>
 			
 			<br>
-			Question-5
-			<br><br>
-			<input type="radio" name="question5" value="a">a<br>
-			<input type="radio" name="question5" value="b">b<br>
-			<input type="radio" name="question5" value="c">d<br>
-			<input type="radio" name="question5" value="d">I don't know<br><br>
+			5- If we remove the "else" clause at line 28, what would be the new output of the code?
+			<br>
+			<input type="radio" name="question5" value="a">Exception<br>
+			<input type="radio" name="question5" value="b">;<br>
+			<input type="radio" name="question5" value="c">2!1Exception<br>
+			<input type="radio" name="question5" value="d">OAB1!2Exception<br><br>
 
 			<INPUT TYPE="button" VALUE="Quit"	onclick="quit()"> 
 			<INPUT TYPE="button" VALUE="Submit answers" onclick="submitAnswers(event)">

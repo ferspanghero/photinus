@@ -88,7 +88,7 @@ public class SkillTestSource {
 		buffer.append("		}");		buffer.append("\n");
 		buffer.append("		System.out.println(\";\");");				buffer.append("\n");
 		buffer.append("	}");		buffer.append("\n");
-		buffer.append("}");		buffer.append("\n");
+		buffer.append("}");		
 
 
 		return buffer;
