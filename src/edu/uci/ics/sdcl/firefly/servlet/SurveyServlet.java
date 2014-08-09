@@ -15,8 +15,7 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
  */
 public class SurveyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    public static String question[] = {"Gender", "Age", "Years progr.", "Difficulty", "Feedback"};   
-
+       
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -29,14 +28,13 @@ public class SurveyServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		WorkerStorage subjectStore = new WorkerStorage();	// to retrieve date from database
-//		Worker subject = subjectStore.readSingleWorker(request.getParameter("userId"));
-		Worker subject = subjectStore.readSingleWorker(request.getParameter("userId"));
+		Worker subject = subjectStore.read(request.getParameter("userId"));
 		if (null != subject){
-			subject.addAnswer(question[0], request.getParameter("gender"));
-			subject.addAnswer(question[1], request.getParameter("age"));
-			subject.addAnswer(question[2], request.getParameter("experience"));
-			subject.addAnswer(question[3], request.getParameter("difficulty"));
-			subject.addAnswer(question[4], request.getParameter("feedback"));
+			subject.addAnswer("gender", request.getParameter("gender"));
+			subject.addAnswer("age", request.getParameter("age"));
+			subject.addAnswer("years of programming experience", request.getParameter("experience"));
+			subject.addAnswer("difficulty", request.getParameter("difficulty"));
+			subject.addAnswer("feedback", request.getParameter("feedback"));
 			System.out.println("Survey: " + subject.getSurveyAnswers());
 			subjectStore.insert(request.getParameter("userId"), subject);
 			System.out.println("UserId: " + subject.getUserId());

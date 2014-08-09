@@ -40,9 +40,9 @@ public class UserIdServlet extends HttpServlet {
 		Worker testSubject = new Worker(userId, hitId, currentDate);
 		WorkerStorage consentStore = new WorkerStorage();
 		consentStore.insert(userId, testSubject);
-		System.out.println("User Id: " + consentStore.readSingleWorker(userId).getUserId());
-		System.out.println("HIT Id: " + consentStore.readSingleWorker(userId).getHitId());
-		System.out.println("Date: " + consentStore.readSingleWorker(userId).getConsentDate());
+		System.out.println("User Id: " + consentStore.read(userId).getUserId());
+		System.out.println("HIT Id: " + consentStore.read(userId).getHitId());
+		System.out.println("Date: " + consentStore.read(userId).getConsentDate());
 		// now passing parameters to the next page
 		request.setAttribute("userId", userId);
 		request.setAttribute("hitId", hitId);

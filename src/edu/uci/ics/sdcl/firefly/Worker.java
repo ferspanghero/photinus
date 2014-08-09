@@ -12,7 +12,7 @@ public class Worker implements Serializable{
 	private HashMap<String,String> surveyAnswers;
 	private HashMap<String, String> rubricMap;
 	private HashMap<String, Boolean> gradeMap;
-	private int skillTestScore;
+	private int grade;
 	
 	
 	public Worker(String userId, String hitId, Date consentDate) {
@@ -79,11 +79,11 @@ public class Worker implements Serializable{
 	}
 
 	public int getGrade() {
-		return skillTestScore;
+		return grade;
 	}
 
 	public void setGrade(int grade) {
-		this.skillTestScore = grade;
+		this.grade = grade;
 	}
 	
 	public HashMap<String, String> getSurveyAnswers() {
