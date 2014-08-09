@@ -11,15 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.uci.ics.sdcl.firefly.Worker;
+
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
-
-
-
 
 /**
  * Servlet implementation class SkillTestServlet
  */
-@WebServlet("/skillTest")
+//@WebServlet("/skillTest")
 public class SkillTestServlet extends HttpServlet {
 	
 		
@@ -38,19 +36,12 @@ public class SkillTestServlet extends HttpServlet {
      */
     public SkillTestServlet() {
         super();
-        
-        //Initialize rubric map
-		rubricMap.put(QUESTION1,"a");
-		rubricMap.put(QUESTION2,"a");
-		rubricMap.put(QUESTION3,"a");
-		rubricMap.put(QUESTION4,"a");
-		rubricMap.put(QUESTION5,"a");
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String userId = request.getParameter("userId");
 		String hitId = request.getParameter("hitId");
@@ -61,10 +52,7 @@ public class SkillTestServlet extends HttpServlet {
 		request.setAttribute("subAction", "submitAnswers");
 		
  
-		if(subAction.compareTo("loadQuestions")==0){
-			request.getRequestDispatcher("/SkillTest.jsp").include(request, response);
-		}
-		else{
+		if(subAction.compareTo("gradeAnswers")==0){
 			int grade = this.retrieveAnswers(request, userId);
 			if (grade>=3){
 				request.setAttribute("userId", userId);
@@ -77,8 +65,6 @@ public class SkillTestServlet extends HttpServlet {
 			}
 		}
 	}
-		
-	
 
 	/**
 	 * Not used
@@ -86,8 +72,18 @@ public class SkillTestServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
 
+	
+
+	
 		
 	private int retrieveAnswers(HttpServletRequest request, String userId){
+		//Initialize rubric map
+		rubricMap.put(QUESTION1,"a");
+		rubricMap.put(QUESTION2,"a");
+		rubricMap.put(QUESTION3,"a");
+		rubricMap.put(QUESTION4,"a");
+		rubricMap.put(QUESTION5,"a");
+		
 		//Retrieve answers
 		HashMap<String, String> answerMap = new HashMap<String, String>();
 		String answer1 = request.getParameter("question1");
