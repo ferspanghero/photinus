@@ -20,7 +20,7 @@ public class WorkerStorage {
 				// No files has been created yet. 
 
 				// Create a sample object, that contains the default values.
-				HashMap<String, Worker> workerMap = new HashMap<String, Worker>();
+				HashMap<String, Worker> workerMap = new HashMap<String, Worker>();	// String = userId
 
 				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 						new FileOutputStream(new File(this.persistentFileName)));
@@ -49,7 +49,7 @@ public class WorkerStorage {
 			return false;
 	}
 	
-	public Worker read(String userId){
+	public Worker readSingleWorker(String userId){
 
 		HashMap<String, Worker> workerMap = this.retrieveIndex();
 
@@ -57,6 +57,10 @@ public class WorkerStorage {
 			return workerMap.get(userId);
 		else
 			return null;
+	}
+	
+	public HashMap<String, Worker> readAllWorkers(){
+		return this.retrieveIndex();
 	}
 	
 	public boolean remove(String userId) {

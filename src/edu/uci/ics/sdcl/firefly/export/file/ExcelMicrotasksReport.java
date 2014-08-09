@@ -28,7 +28,7 @@ public class ExcelMicrotasksReport
 	{
 		int numberOfQuestions = 0;
 		int numberOfAnswers = 0;
-		
+
 		String fileName = Features.removePath(microtasksPerFile.getFileName(), true);
 
 		/* creating excel workbook (per file) */
@@ -46,9 +46,9 @@ public class ExcelMicrotasksReport
 		while(i.hasNext())
 		{
 			Map.Entry<String, ArrayList<Microtask>> me = (Map.Entry<String, ArrayList<Microtask>>)i.next();
-			
+
 			numberOfQuestions += me.getValue().size();
-			
+
 			//Create a blank sheet for the method
 			XSSFSheet methodSheet = workbook.createSheet(me.getKey());
 
@@ -64,19 +64,18 @@ public class ExcelMicrotasksReport
 			cell.setCellValue("Questions");
 			cell = row.createCell(cellnum2);
 			cell.setCellValue("Answers");
-
+			// preparing the TreeMap for later fill the method sheet
+			Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
 			// iterating questions (per method)
 			for (Microtask microtask : me.getValue())
 			{	
 				numberOfAnswers += microtask.getNumberOfAnswers();
 
-				/* filling the method sheet */
-				Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
 				// preparing line (object), which index is a cell
 				Object[] lineContent = new Object[microtask.getNumberOfAnswers()+3]; // ID(1) + question(1) + explanations(1) + answers(size)
 				lineContent[0] = microtask.getID();			// ID (cell 0)
 				lineContent[1] = microtask.getQuestion();	// Question (cell 1)
-				String cellOne = "";
+				String cellOne = new String();
 				int k = 3;
 				for (Answer singleAnswer : microtask.getAnswerList()) {
 					cellOne += singleAnswer.getOption() + "{" + singleAnswer.getExplanation() + "}; ";
@@ -84,35 +83,35 @@ public class ExcelMicrotasksReport
 				}
 				lineContent[2] = cellOne;					// setting cell at index 2
 				data.put(new Integer(key++), lineContent);	// putting customized line 
-
-				//Iterate over data and write to method sheet
-				Set<Integer> keyset = data.keySet();
-				for (Integer singleKey : keyset)
-				{	// new row for each entry
-					row = methodSheet.createRow(rownum++);
-					Object [] objArr = data.get(singleKey);
-					int cellnum = 0;
-					for (Object obj : objArr)
-					{	// new cell for each object on the object Array
-						cell = row.createCell(cellnum++);
-						if(obj instanceof String)
-						{
-							String text = (String)obj;
-							if (text.length() > 30)	// wraping text
-							{
-								CellStyle style = workbook.createCellStyle(); //Create new style
-								style.setWrapText(true); 	//Set wordwrap
-								cell.setCellStyle(style); 	//Apply style to cell
-							}
-							cell.setCellValue(text);
-						}
-						else if(obj instanceof Integer)
-							cell.setCellValue((Integer)obj);
-
-					}
-				}
-				//row = methodSheet.createRow(rownum++);	// blank row
 			}
+			/* filling the method sheet */
+			//Iterate over data and write to method sheet
+			Set<Integer> keyset = data.keySet();
+			for (Integer singleKey : keyset)
+			{	// new row for each entry
+				row = methodSheet.createRow(rownum++);
+				Object [] objArr = data.get(singleKey);
+				int cellnum = 0;
+				for (Object obj : objArr)
+				{	// new cell for each object on the object Array
+					cell = row.createCell(cellnum++);
+					if(obj instanceof String)
+					{
+						String text = (String)obj;
+						if (text.length() > 30)	// wraping text
+						{
+							CellStyle style = workbook.createCellStyle(); //Create new style
+							style.setWrapText(true); 	//Set wordwrap
+							cell.setCellStyle(style); 	//Apply style to cell
+						}
+						cell.setCellValue(text);
+					}
+					else if(obj instanceof Integer)
+						cell.setCellValue((Integer)obj);
+				}
+			}
+			//row = methodSheet.createRow(rownum++);	// blank row
+
 			// sizing columns for method sheet
 			methodSheet.autoSizeColumn(0);
 			methodSheet.setColumnWidth(1, 30000);

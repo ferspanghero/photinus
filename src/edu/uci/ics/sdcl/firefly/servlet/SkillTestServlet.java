@@ -104,7 +104,7 @@ public class SkillTestServlet extends HttpServlet {
 		HashMap<String, Boolean> gradeMap = this.gradeAnswers(answerMap);
 		int grade = this.countCorrectAnswers(gradeMap);
 		WorkerStorage workerStorage =  new WorkerStorage();
-		Worker worker = workerStorage.read(userId);
+		Worker worker = workerStorage.readSingleWorker(userId);
 		worker.setSkillAnswers(rubricMap,gradeMap,grade);
 		workerStorage.insert(userId, worker);
 
