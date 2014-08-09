@@ -48,5 +48,22 @@
   <servlet-mapping>
     <servlet-name>SurveyServlet</servlet-name>
     <url-pattern>/survey</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping><servlet>
+  	<display-name>SkillTestServlet</display-name>
+  	<servlet-name>SkillTestServlet</servlet-name>
+  	<servlet-class>edu.uci.ics.sdcl.firefly.servlet.SkillTestServlet</servlet-class>
+  </servlet>
+	<servlet-mapping>
+		<servlet-name>SkillTestServlet</servlet-name>
+		<url-pattern>/skillTest</url-pattern>
+	</servlet-mapping><servlet>
+		<servlet-name>UserIdServlet</servlet-name>
+		<servlet-class>edu.uci.ics.sdcl.firefly.servlet.UserIdServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UserIdServlet</servlet-name>
+		<url-pattern>/UserIdServlet</url-pattern>
+	</servlet-mapping>
+	
+	
 </web-app>

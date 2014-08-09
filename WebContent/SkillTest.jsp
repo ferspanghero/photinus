@@ -21,9 +21,23 @@
 		 margin-left: 10px;
 		margin-right: 10px;
 	}
+	
+	#editor1 {
+	position: relative;
+	height: 180px;
+	width: 580px;
+	}
+	
+	#editor2 {
+	position: relative;
+	height: 180px;
+	width: 580px;
+	}
+	
+}
 </style>
-
 </head>
+
 <body>
 	<script>
 		function isEmpty(value) {
@@ -83,7 +97,12 @@
 			}
 		}
 	</script>
-
+	
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script
+		src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
+		
 <div id="container"><br>
 	<div id="content">
 		<b>Thank you for interest to participate the study. We need to evaluate your 
@@ -95,8 +114,21 @@
 			<input type="hidden" name="hitId" value=${requestScope["hitId"]}> 
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
 			
-			<br> The source code below is used in the questions 1 and 2<br>
-			<i> SOURCE CODE </i>
+			<br> The source code below is used in the questions 1, 2, and 3<br>
+			<div id="editor1"><xmp>${requestScope["editor1"]}</xmp></div>
+
+				<script>
+					//Editor for Questions 1, 2, and 3
+					var editor1 = ace.edit("editor1");
+					editor1.setReadOnly(true);
+					editor1.setSelection(false);
+					editor1.setTheme("ace/theme/github");
+					editor1.getSession().setMode("ace/mode/java");
+					editor1.setBehavioursEnabled(false);
+					editor1.setOption("highlightActiveLine", false); // disable highligthing on the active line
+					editor1.setShowPrintMargin(false); // disable printing margin
+				</script>
+
 			<br>
 			Question-1
 			<br><br>
@@ -114,9 +146,6 @@
 			<input type="radio" name="question2" value="c">d<br>
 			<input type="radio" name="question2" value="d">I don't know<br><br>
 
-			<br> The source code below is used in the questions 3, 4, and 5<br>
-			<i> SOURCE CODE </i>
-			
 			<br><br>
 			Question-3
 			<br><br>
@@ -125,7 +154,21 @@
 			<input type="radio" name="question3" value="c">d<br>
 			<input type="radio" name="question3" value="d">I don't know<br><br>
 			
-			
+			<br> The source code below is used in the questions 4 and 5<br>
+			<div id="editor2"><xmp>${requestScope["editor2"]}</xmp></div>
+
+				<script>
+					//Editor for Questions 4 and 5
+					var editor2 = ace.edit("editor2");
+					editor2.setReadOnly(true);
+					editor2.setSelection(false);
+					editor2.setTheme("ace/theme/github");
+					editor2.getSession().setMode("ace/mode/java");
+					editor2.setBehavioursEnabled(false);
+					editor2.setOption("highlightActiveLine", false); // disable highligthing on the active line
+					editor2.setShowPrintMargin(false); // disable printing margin
+				</script>
+
 			<br>
 			Question-4
 			<br><br>
@@ -147,7 +190,7 @@
 
 		</form>
 		<br>
-</div>
+	</div>
 </div>
 
 </body>
