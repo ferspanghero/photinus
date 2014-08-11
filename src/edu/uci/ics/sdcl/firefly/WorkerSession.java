@@ -7,8 +7,11 @@ public class WorkerSession implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	/** unique identifier for the working session object. It uniquely maps to a HIT in Mechanical Turk */
+	/** Unique identifier for the working session object. It uniquely maps to a HIT in Mechanical Turk */
 	private Integer id;
+	
+	/** The id of the workerSession that was copied to generate the current one */
+	private Integer originalId;
 	
 	/** All microtask package in the same worker session. See WorkerSessionFactory for better context. */
 	private ArrayList<Microtask> microtaskList;
@@ -23,11 +26,14 @@ public class WorkerSession implements Serializable{
 	private String hitId;
 
 	/** 
-	 * Initializes the array and the counter to the first position in 
+	 * Initializes the array and the counter to the first position in the array 
+	 * @param id
+	 * @param originalId 
 	 * @param microtaskList
-	 * the array */
-	public WorkerSession(Integer id, ArrayList<Microtask> microtaskList){
+	 */
+	public WorkerSession(Integer id, Integer originalId, ArrayList<Microtask> microtaskList){
 		this.id = id;
+		this.originalId = originalId;
 		this.microtaskList = microtaskList;
 		if(this.microtaskList!=null && this.microtaskList.size()>0)
 			this.currentIndex = 0; //points to the first element
@@ -120,6 +126,14 @@ public class WorkerSession implements Serializable{
 
 	public String getHitId() {
 		return this.hitId;		
+	}
+
+	public Integer getOriginalId() {
+		return originalId;
+	}
+
+	public void setOriginalId(Integer originalId) {
+		this.originalId = originalId;
 	}
 	
 }

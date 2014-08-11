@@ -57,7 +57,7 @@ public class WorkerSessionFactory {
 		ArrayList<Microtask> mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		//Generate the original WorkerSessions
 		while(mtaskList.size()>0){
-			WorkerSession session = new WorkerSession(sessionID,mtaskList);
+			WorkerSession session = new WorkerSession(sessionID, sessionID, mtaskList);
 			this.sessionID = this.sessionID + 1;
 			originalList.add(session);
 			mtaskList = this.nextMicrotaskList(microtaskPerSession);
@@ -86,7 +86,7 @@ public class WorkerSessionFactory {
 			//Generate the duplicated WorkerSessions
 			for(int i=0;i<originalStack.size();i++){
 				WorkerSession originalSession = originalStack.elementAt(i);
-				WorkerSession duplicateSession =  new WorkerSession(this.sessionID, originalSession.getMicrotaskList());
+				WorkerSession duplicateSession =  new WorkerSession(this.sessionID, originalSession.getId(), originalSession.getMicrotaskList());
 				this.sessionID = this.sessionID + 1;
 				duplicateStack.push(duplicateSession);
 			}
