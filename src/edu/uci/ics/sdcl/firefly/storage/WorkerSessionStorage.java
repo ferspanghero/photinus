@@ -441,6 +441,27 @@ public class WorkerSessionStorage {
 			return false;
 		}
 	}
+	
+	public HashMap<String, Object> readStorage(){
+		try{
+			File file = new File(this.persistentFileName); 
+
+			ObjectInputStream objInputStream = new ObjectInputStream( 
+					new FileInputStream(file));
+
+			HashMap<String,Object> storage  = (HashMap<String,Object>) objInputStream.readObject();
+			objInputStream.close();
+			return storage;
+		}
+		catch(IOException exception){
+			exception.printStackTrace();
+			return null;
+		}
+		catch(Exception exception){
+			exception.printStackTrace();
+			return null;
+		}
+	}
 
 }
 	

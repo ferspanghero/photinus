@@ -14,8 +14,9 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 public class CreateReports {
 
 	public static void main(String[] args) {
-		System.out.println(createMicrotasksReport("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap_buggy.java"));
-		System.out.println(createWorkersReport());
+//		System.out.println(createMicrotasksReport("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap_buggy.java"));
+//		System.out.println(createWorkersReport());
+		System.out.println(createAnswersReport());
 	}
 	
 	public static boolean createMicrotasksReport(String fileNameWithPathAndExtension){
@@ -45,5 +46,10 @@ public class CreateReports {
 			return true;
 		} else
 			return false;
+	}
+	
+	public static boolean createAnswersReport(){
+		ExcelAnswersReport.writeToXlsx();
+		return true;
 	}
 }
