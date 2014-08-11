@@ -34,10 +34,10 @@ import edu.uci.ics.sdcl.firefly.WorkerSession;
  */
 public class WorkerSessionStorage {
 
-	public final String NEW = "NEW"; //Key for the original Stack<WorkerSession>
-	public final String NEW_COPIES = "NEW_COPIES"; //Key for the Stack of copies
-	public final String ACTIVE = "ACTIVE"; //Key for a Map<Integer, WorkerSession> 
-	public final String CLOSED = "CLOSED"; //Key for an ArrayList<WorkerSession>
+	public static final String NEW = "NEW"; //Key for the original Stack<WorkerSession>
+	public static final String NEW_COPIES = "NEW_COPIES"; //Key for the Stack of copies
+	public static final String ACTIVE = "ACTIVE"; //Key for a Map<Integer, WorkerSession> 
+	public static final String CLOSED = "CLOSED"; //Key for an ArrayList<WorkerSession>
 	
 	private String persistentFileName = "workersession.ser"; 
 
@@ -53,10 +53,10 @@ public class WorkerSessionStorage {
 				Stack<WorkerSession> copiesStack = new Stack<WorkerSession>();
 				HashMap<Integer, WorkerSession> map = new HashMap<Integer,WorkerSession>();
 				ArrayList<WorkerSession> list = new ArrayList<WorkerSession>();
-				storage.put(this.NEW,stack);
-				storage.put(this.NEW_COPIES,copiesStack);
-				storage.put(this.ACTIVE, map);
-				storage.put(this.CLOSED, list);
+				storage.put(NEW,stack);
+				storage.put(NEW_COPIES,copiesStack);
+				storage.put(ACTIVE, map);
+				storage.put(CLOSED, list);
 
 				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 						new FileOutputStream(new File(this.persistentFileName)));
@@ -87,7 +87,7 @@ public class WorkerSessionStorage {
 	public boolean appendNewWorkerSessionStack(Stack<WorkerSession> newStack, String type){
 
 		try{
-			if(!type.equals(this.NEW) && !type.equals(this.NEW_COPIES))
+			if(!type.equals(NEW) && !type.equals(NEW_COPIES))
 				return false; //Wrong type was provided
 			else{	
 				File file = new File(this.persistentFileName); 
@@ -125,7 +125,7 @@ public class WorkerSessionStorage {
 	 */
 	private boolean overwriteNewWorkerSessionStack(Stack<WorkerSession> newStack, String type){
 	try{
-		if(!type.equals(this.NEW) && !type.equals(this.NEW_COPIES))
+		if(!type.equals(NEW) && !type.equals(NEW_COPIES))
 			return false; //Wrong type was provided
 		else{	
 			File file = new File(this.persistentFileName); 
@@ -163,11 +163,11 @@ public class WorkerSessionStorage {
 	public WorkerSession readNewWorkerSession(){
 
 		String type;
-		if(this.getNumberOfNewWorkerSessions(this.NEW)>0)
-			type = this.NEW;
+		if(this.getNumberOfNewWorkerSessions(NEW)>0)
+			type = NEW;
 		else
-			if(this.getNumberOfNewWorkerSessions(this.NEW_COPIES)>0)
-				type = this.NEW_COPIES;
+			if(this.getNumberOfNewWorkerSessions(NEW_COPIES)>0)
+				type = NEW_COPIES;
 			else
 				return null; //There aren't any NEW WorkerSessions Available
 
@@ -213,7 +213,7 @@ public class WorkerSessionStorage {
 			HashMap<String,Object> storage = (HashMap<String, Object>) objInputStream.readObject();
 			objInputStream.close();
 
-			if(!type.equals(this.NEW) && !type.equals(this.NEW_COPIES))
+			if(!type.equals(NEW) && !type.equals(NEW_COPIES))
 				return null; //Error, the stack should always be there, even when the stack is empty.
 			else
 				return (Stack<WorkerSession>)storage.get(type);
@@ -304,8 +304,8 @@ public class WorkerSessionStorage {
 			HashMap<String,Object> storage  = (HashMap<String,Object>) objInputStream.readObject();
 			objInputStream.close();
 
-			if(storage.containsKey(this.ACTIVE))
-				return (HashMap<Integer,WorkerSession>) storage.get(this.ACTIVE);
+			if(storage.containsKey(ACTIVE))
+				return (HashMap<Integer,WorkerSession>) storage.get(ACTIVE);
 			else
 				return null; //Error, the map should always be there, even when the map is empty.
 		}
@@ -344,7 +344,7 @@ public class WorkerSessionStorage {
 			HashMap<String,Object> storage = (HashMap<String,Object>) objInputStream.readObject();
 			objInputStream.close();
 			
-			storage.put(this.ACTIVE, newWorkerSessionMap);
+			storage.put(ACTIVE, newWorkerSessionMap);
 			
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(new File(this.persistentFileName)));
@@ -396,7 +396,7 @@ public class WorkerSessionStorage {
 			HashMap<String,Object> storage = (HashMap<String,Object>) objInputStream.readObject();
 			objInputStream.close();
 			
-			return (ArrayList<WorkerSession>) storage.get(this.CLOSED);
+			return (ArrayList<WorkerSession>) storage.get(CLOSED);
 		}
 		catch(IOException exception){
 			exception.printStackTrace();
@@ -423,7 +423,7 @@ public class WorkerSessionStorage {
 			HashMap<String,Object> storage = (HashMap<String,Object>) objInputStream.readObject();
 			objInputStream.close();
 			
-			storage.put(this.CLOSED, closedSessionList);
+			storage.put(CLOSED, closedSessionList);
 			
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(new File(this.persistentFileName)));

@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
+import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 
 public class CreateReports {
@@ -49,7 +50,12 @@ public class CreateReports {
 	}
 	
 	public static boolean createAnswersReport(){
-		ExcelAnswersReport.writeToXlsx();
-		return true;
+		WorkerSessionStorage workerSessionStorage = new WorkerSessionStorage();
+		HashMap<String, Object> storage = workerSessionStorage.readStorage();
+		if (null != storage){
+			ExcelAnswersReport.writeToXlsx(storage);
+			return true;
+		} else
+			return false;
 	}
 }

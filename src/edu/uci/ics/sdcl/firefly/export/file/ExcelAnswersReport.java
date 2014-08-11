@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.export.file;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,10 +17,25 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.WorkerSession;
+import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 
 public class ExcelAnswersReport {
-	public static void writeToXlsx()
+	@SuppressWarnings("unchecked")
+	public static void writeToXlsx(HashMap<String, Object> allWorkerSessions)
 	{
+		/* preparing the data structure */
+		int key = 0;	// for the 'data' below
+		Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
+		Object[] lineContent = new Object[13];	// represents the lines on the sheet
+		/* starting by the closed sessions */
+		ArrayList<WorkerSession> closedSessions = (ArrayList<WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.CLOSED);
+		for (WorkerSession workerSession : closedSessions) {
+			lineContent[0] = workerSession.getId();				// first column
+			lineContent[1] = workerSession.getOriginalId();		// second column
+			
+		}
+		
 		/* creating excel workbook */
 		//Blank workbook
 		XSSFWorkbook workbook = new XSSFWorkbook();
@@ -27,18 +43,24 @@ public class ExcelAnswersReport {
 		//Create a blank sheet (for the scores)
 		XSSFSheet answerSheet = workbook.createSheet("Answers");
 
-		int key = 0;	// for the 'data' below
+		
 		int rownum = 0;	
 		Row row;
+		
+		
 
 		/* creating first header line */
 		row = answerSheet.createRow(rownum++);
 		int cellNum = 0;
 		Cell cell = row.createCell(cellNum++);
-		cell.setCellValue("User ID");
+		cell.setCellValue("Worker ID");
 		cell = row.createCell(cellNum++);
 		cell.setCellValue("HIT ID");
 		cell = row.createCell(cellNum++);
+		cell.setCellValue("ID");
+		cell = row.createCell(cellNum++);
+		
+		
 		// creating new columns for the questions
 		for (Integer k=1; k<=250; k++){				// this number should be a variable
 			cell.setCellValue("Q" + k.toString());
