@@ -18,7 +18,6 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 /**
  * Servlet implementation class SkillTestServlet
  */
-//@WebServlet("/skillTest")
 public class SkillTestServlet extends HttpServlet {
 	
 		
@@ -80,11 +79,11 @@ public class SkillTestServlet extends HttpServlet {
 		
 	private int retrieveAnswers(HttpServletRequest request){
 		//Initialize rubric map
-		rubricMap.put(QUESTION1,"a");
+		rubricMap.put(QUESTION1,"c");
 		rubricMap.put(QUESTION2,"a");
-		rubricMap.put(QUESTION3,"a");
+		rubricMap.put(QUESTION3,"d");
 		rubricMap.put(QUESTION4,"a");
-		rubricMap.put(QUESTION5,"a");
+		rubricMap.put(QUESTION5,"c");
 		
 		//Retrieve answers
 		HashMap<String, String> answerMap = new HashMap<String, String>();
