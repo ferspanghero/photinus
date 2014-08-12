@@ -15,7 +15,7 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
  */
 public class SurveyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    public static String question[] = {"Gender", "Age", "Years progr.", "Difficulty", "Feedback"};   
+    public static String question[] = {"Gender", "Age", "Country", "Years progr.", "Difficulty", "Feedback"};   
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -34,9 +34,10 @@ public class SurveyServlet extends HttpServlet {
 		if (null != subject){
 			subject.addAnswer(question[0], request.getParameter("gender"));
 			subject.addAnswer(question[1], request.getParameter("age"));
-			subject.addAnswer(question[2], request.getParameter("experience"));
-			subject.addAnswer(question[3], request.getParameter("difficulty"));
-			subject.addAnswer(question[4], request.getParameter("feedback"));
+			subject.addAnswer(question[2], request.getParameter("country"));
+			subject.addAnswer(question[3], request.getParameter("experience"));
+			subject.addAnswer(question[4], request.getParameter("difficulty"));
+			subject.addAnswer(question[5], request.getParameter("feedback"));
 			System.out.println("Survey: " + subject.getSurveyAnswers());
 			subjectStore.insert(request.getParameter("userId"), subject);
 			System.out.println("UserId: " + subject.getUserId());

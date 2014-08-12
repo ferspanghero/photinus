@@ -19,8 +19,8 @@
 	#content  {
 		background-color: #D1EEEE;
 		text-align: justify;
-		 margin-left: 10px;
-		margin-right: 10px;
+		 margin-left: 100px;
+		margin-right: 100px;
 	}
 
 </style>
@@ -53,6 +53,13 @@
 			ageField.value = ageField.value.trim();
 			if(!ageField.value){
 				alert("Please enter your age.");
+				return -1;
+			}
+			
+			var countryField = document.getElementById("country");
+			countryField.value = countryField.value.trim();
+			if(!countryField.value){
+				alert("Please enter your country of residence.");
 				return -1;
 			}
 			
@@ -97,19 +104,20 @@
 		<form name="surveyForm" method="get" action="survey">
 			
 			<br>
-								
+			 				
 			What is your gender?<br>
 			&nbsp;&nbsp;<input type="radio" name="gender" value="Female">Female<br>
 			&nbsp;&nbsp;<input type="radio" name="gender" value="Male">Male<br>
 			&nbsp;&nbsp;<input type="radio" name="gender" value="Other">Other<br>
 			&nbsp;&nbsp;<input type="radio" name="gender" value="Prefer not to tell">Prefer not to tell<br><br>
+		 
+			What is your age?</b> <input type=text name="age" id="age" size="2" /><br><br>
+			 			
+			What is your country of residence?</b> <input type=text name="country" id="country" size="25" /><br><br>
 			
+			How many years of programming experience do you have?</b> <input type=text name="experience" id="experience" size="2" /><br><br>
 			
-			What is your age?</b> <input type=text name="age" id="age" size="4" /><br><br>
-			
-			How many years of programming experience do you have?</b> <input type=text name="experience" id="experience" size="4" /><br><br>
-			
-			On a scale of difficulty from 1(easy) to 7(hard), how would you rank this task? <br>
+			From 1(easy) to 7(hard), how do you rank this task? <br>
 			&nbsp;&nbsp;<input type="radio" name="difficulty" value="1">1 &nbsp;&nbsp;&nbsp;&nbsp;
 			&nbsp;&nbsp;<input type="radio" name="difficulty" value="2">2 &nbsp;&nbsp;&nbsp;&nbsp;
 			&nbsp;&nbsp;<input type="radio" name="difficulty" value="3">3 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -120,7 +128,7 @@
 			<br><br>
 			
 			Please provide any additional feedback: <br>
-			&nbsp;&nbsp;<textarea name="feedback" id="feedback" rows="6" cols="50"></textarea><br>
+			&nbsp;&nbsp;<textarea name="feedback" id="feedback" rows="6" cols="45"></textarea><br>
 	
 	 		<!-- Hidden fields -->
 	 		<input type="hidden" name="sessionId" value=${requestScope["sessionId"]}> 
