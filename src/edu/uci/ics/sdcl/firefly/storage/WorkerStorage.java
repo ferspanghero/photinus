@@ -75,6 +75,20 @@ public class WorkerStorage {
 			return false;
 	}
 	
+	/**
+	 * @return a user identifier that does not exist in the storage yet.
+	 */
+	public String getNewWorkerKey() {
+		HashMap<String, Worker> indexMap = this.retrieveIndex();
+		Integer keyInt = new Integer(indexMap.size()); 
+		String key = keyInt.toString();
+		while(indexMap.containsKey(key)){
+			keyInt++;
+			key = keyInt.toString();
+		}
+		return key;
+	}
+	
 	private boolean updateIndex(HashMap<String, Worker> workerMap){
 		try{
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
@@ -115,6 +129,8 @@ public class WorkerStorage {
 			return null;
 		}
 	}
+
+	
 	
 
 }

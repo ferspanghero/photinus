@@ -1,10 +1,14 @@
 package edu.uci.ics.sdcl.firefly.controller;
 
+import java.util.Date;
+
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
+import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 
 /**
  * Manages all the write and read operations to the persistent objects.
@@ -74,6 +78,16 @@ public class StorageManager {
 	public WorkerSession readActiveSession(Integer sessionId){
 		WorkerSession session = sessionStorage.readActiveWorkerSessionByID(sessionId);
 		return session;
+	}
+
+	
+	public String generateWorkerID(Date currentDate){
+		WorkerStorage storage = new WorkerStorage();
+		String workerId = storage.getNewWorkerKey();
+		String hitId = "hitId";
+		Worker worker = new Worker(workerId, hitId, currentDate);
+		storage.insert(workerId, worker);
+		return workerId;
 	}
 	
 	private void writeLog(String operation, String data){

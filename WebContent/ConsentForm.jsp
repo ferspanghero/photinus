@@ -77,7 +77,7 @@
 		
 		<br>
 	
-		<form name="consentForm"  action="UserIdServlet" method="get">
+		<form name="consentForm"  action="ConsentServlet" method="get">
 			<input type="hidden" id="subAction" name="subAction" value="loadConsentForm"}> 
 			<input type="checkbox" id="consentBox"><i>By checking this box I hereby state that I have read, understood and agreed with the terms above.</i>
 			<br><br>
@@ -95,7 +95,7 @@
 		var consented = document.getElementById('consentBox').checked;
 		if (consented){
 			var subAction = document.getElementById("subAction");
-			subAction.value = "consentObtained"; 
+			subAction.value = "loadQuestions"; 
 			document.forms["consentForm"].submit();
 		} else{
 			alert("You have to agree with the terms before proceeding");
