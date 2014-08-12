@@ -57,6 +57,7 @@
 		<servlet-name>SkillTestServlet</servlet-name>
 		<url-pattern>/skillTest</url-pattern>
 	</servlet-mapping><servlet>
+		<display-name>UserIdServlet</display-name>
 		<servlet-name>UserIdServlet</servlet-name>
 		<servlet-class>edu.uci.ics.sdcl.firefly.servlet.UserIdServlet</servlet-class>
 	</servlet>

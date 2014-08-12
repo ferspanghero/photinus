@@ -77,7 +77,7 @@
 		
 		<br>
 	
-		<form name="consentForm" action="UserIdServlet" method="get">
+		<form name="consentForm"  action="UserIdServlet" method="get">
 			<input type="hidden" id="subAction" name="subAction" value="loadConsentForm"}> 
 			<input type="checkbox" id="consentBox"><i>By checking this box I hereby state that I have read, understood and agreed with the terms above.</i>
 			<br><br>
