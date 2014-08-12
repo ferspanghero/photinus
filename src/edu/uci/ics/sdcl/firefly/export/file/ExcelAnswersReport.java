@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
@@ -16,24 +17,66 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 
 public class ExcelAnswersReport {
+	private HashMap<Integer, Integer> questionsInSheet;
+	private Integer columnNumber;
+	
+	public ExcelAnswersReport() {
+		this.questionsInSheet = new HashMap<Integer, Integer>();
+		this.columnNumber = 0;
+	}
+	
 	@SuppressWarnings("unchecked")
-	public static void writeToXlsx(HashMap<String, Object> allWorkerSessions)
+	public boolean writeToXlsx(HashMap<String, Object> allWorkerSessions)
 	{
+		/* setting a HashMap with the microtask's ID and respective column number */
+		// reading closed session's questions
+		ArrayList<WorkerSession> closedSessions = (ArrayList<WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.CLOSED);
+		for (WorkerSession workerSession : closedSessions) {
+			this.populateQuestionMap(workerSession.getMicrotaskList());
+		}
+		// reading active sessions questions
+		HashMap<Integer, WorkerSession> activeSessions = (HashMap<Integer, WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.ACTIVE);
+		Set<Map.Entry<Integer, WorkerSession>> setActiveSessions = activeSessions.entrySet();
+		Iterator<Entry<Integer, WorkerSession>> iterateActiveSessions = setActiveSessions.iterator();
+		while(iterateActiveSessions.hasNext())
+		{
+			Map.Entry<Integer, WorkerSession> mapEntryActiveSessions = (Map.Entry<Integer, WorkerSession>)iterateActiveSessions.next();
+			this.populateQuestionMap(mapEntryActiveSessions.getValue().getMicrotaskList());
+		}
+		// reading new session's questions
+		Stack<WorkerSession> newCopiesSessions = (Stack<WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.NEW_COPIES);
+		for (WorkerSession workerSession : newCopiesSessions) {
+			this.populateQuestionMap(workerSession.getMicrotaskList());
+		}
+		Stack<WorkerSession> newSessions = (Stack<WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.NEW);
+		for (WorkerSession workerSession : newSessions) {
+			this.populateQuestionMap(workerSession.getMicrotaskList());
+		}
+		
 		/* preparing the data structure */
 		int key = 0;	// for the 'data' below
 		Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
-		Object[] lineContent = new Object[13];	// represents the lines on the sheet
-		/* starting by the closed sessions */
-		ArrayList<WorkerSession> closedSessions = (ArrayList<WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.CLOSED);
+		Object[] lineContent = new Object[this.questionsInSheet.size()+2];	// represents the lines on the sheet
+		/* starting by the closed sessions */								// +2 for the 2 IDs before questions
 		for (WorkerSession workerSession : closedSessions) {
 			lineContent[0] = workerSession.getId();				// first column
 			lineContent[1] = workerSession.getOriginalId();		// second column
-			
+			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
+			for (Microtask microtask : microtasks) {
+				Integer currentColumn = this.questionsInSheet.get(microtask.getID());
+				if (null == currentColumn)
+					return false;
+				if (microtask.getAnswerList().isEmpty())
+					lineContent[currentColumn] = "?";	// getting the one single answer
+				else
+					lineContent[currentColumn] = microtask.getAnswerList().get(0);	// the one single answer
+			}
 		}
 		
 		/* creating excel workbook */
@@ -144,10 +187,20 @@ public class ExcelAnswersReport {
 			out.flush();
 			out.close();
 			System.out.println("AnswersReport.xlsx written successfully on disk.");
+			return true;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	private void populateQuestionMap(ArrayList<Microtask> microtasksPerWorker){
+		for (Microtask microtask : microtasksPerWorker) {
+			if ( !this.questionsInSheet.containsKey(microtask.getID()) ){	
+				this.questionsInSheet.put(microtask.getID(), this.columnNumber++);
+			}	// if contains the question, do nothing
 		}
 	}
 }
