@@ -3,6 +3,7 @@ package edu.uci.ics.sdcl.firefly.export.file;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -18,17 +19,20 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 
 public class ExcelAnswersReport {
-	private HashMap<Integer, Integer> questionsInSheet;
-	private Integer columnNumber;
+	private HashMap<Integer, Integer> questionsInSheet;	// HashMap with the microtask's ID and respective column number
+	private Integer columnNumber, key;
+	private Map<Integer, Object[]> data;
+	private Object[] lineContent;
 	
 	public ExcelAnswersReport() {
 		this.questionsInSheet = new HashMap<Integer, Integer>();
-		this.columnNumber = 0;
+		this.columnNumber = 2;
+		this.key = 0;	// for the 'data' map
+		data = new TreeMap<Integer, Object[]>();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -42,42 +46,66 @@ public class ExcelAnswersReport {
 		}
 		// reading active sessions questions
 		HashMap<Integer, WorkerSession> activeSessions = (HashMap<Integer, WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.ACTIVE);
+		ArrayList<WorkerSession> activeSessionsAL = new ArrayList<WorkerSession>();	// to cache all the workerSessions
 		Set<Map.Entry<Integer, WorkerSession>> setActiveSessions = activeSessions.entrySet();
 		Iterator<Entry<Integer, WorkerSession>> iterateActiveSessions = setActiveSessions.iterator();
 		while(iterateActiveSessions.hasNext())
 		{
 			Map.Entry<Integer, WorkerSession> mapEntryActiveSessions = (Map.Entry<Integer, WorkerSession>)iterateActiveSessions.next();
 			this.populateQuestionMap(mapEntryActiveSessions.getValue().getMicrotaskList());
+			activeSessionsAL.add(mapEntryActiveSessions.getValue());	// storing worker sessions to not loop again
 		}
 		// reading new session's questions
 		Stack<WorkerSession> newCopiesSessions = (Stack<WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.NEW_COPIES);
+		ArrayList<WorkerSession> newSessionsAL = new ArrayList<WorkerSession>();
 		for (WorkerSession workerSession : newCopiesSessions) {
 			this.populateQuestionMap(workerSession.getMicrotaskList());
+			newSessionsAL.add(workerSession);		// converting to array list (AL)
 		}
 		Stack<WorkerSession> newSessions = (Stack<WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.NEW);
 		for (WorkerSession workerSession : newSessions) {
 			this.populateQuestionMap(workerSession.getMicrotaskList());
+			newSessionsAL.add(workerSession);		// converting to array list (AL)
 		}
 		
 		/* preparing the data structure */
-		int key = 0;	// for the 'data' below
-		Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
-		Object[] lineContent = new Object[this.questionsInSheet.size()+2];	// represents the lines on the sheet
-		/* starting by the closed sessions */								// +2 for the 2 IDs before questions
-		for (WorkerSession workerSession : closedSessions) {
-			lineContent[0] = workerSession.getId();				// first column
-			lineContent[1] = workerSession.getOriginalId();		// second column
+		this.lineContent = new Object[this.questionsInSheet.size()+2];	// represents the lines on the sheet
+		/* creating first header line */								// +2 for the 2 IDs before questions
+		this.lineContent[0] = "Worker ID";
+		this.lineContent[1] = "Orig. ID";
+		Set<Map.Entry<Integer, Integer>> setQIS = this.questionsInSheet.entrySet();
+		Iterator<Entry<Integer, Integer>> iterateQIS = setQIS.iterator();
+		while(iterateQIS.hasNext())
+		{
+			Map.Entry<Integer, Integer> mapEntryQIS = (Map.Entry<Integer, Integer>)iterateQIS.next();
+			Integer currentColumn = mapEntryQIS.getValue();
+			if (null == currentColumn)	// critical error
+				return false;
+			this.lineContent[currentColumn] = mapEntryQIS.getKey();	
+		}
+		this.data.put(this.key++, lineContent);
+		/* getting data from the closed sessions */								
+		if (!this.populateDataLines(closedSessions))
+			return false;
+		/* now from the active sessions */								
+		if (!this.populateDataLines(activeSessionsAL))
+			return false;
+		/* now for the new sessions implement the not answered counter */
+		this.lineContent = new Object[questionsInSheet.size()+2];
+		Arrays.fill(this.lineContent, (Integer)0);	// populating the array with 0's
+		this.lineContent[0] = "Unanswered";
+		for (WorkerSession workerSession : newSessionsAL) {
+			// counting unanswered questions 
 			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
 			for (Microtask microtask : microtasks) {
 				Integer currentColumn = this.questionsInSheet.get(microtask.getID());
 				if (null == currentColumn)
 					return false;
 				if (microtask.getAnswerList().isEmpty())
-					lineContent[currentColumn] = "?";	// getting the one single answer
-				else
-					lineContent[currentColumn] = microtask.getAnswerList().get(0);	// the one single answer
+					this.lineContent[currentColumn] = (Integer)this.lineContent[currentColumn] + 1;	
 			}
 		}
+		this.data.put(this.key++, this.lineContent);
 		
 		/* creating excel workbook */
 		//Blank workbook
@@ -86,74 +114,16 @@ public class ExcelAnswersReport {
 		//Create a blank sheet (for the scores)
 		XSSFSheet answerSheet = workbook.createSheet("Answers");
 
-		
 		int rownum = 0;	
 		Row row;
-		
-		
+		Cell cell;
 
-		/* creating first header line */
-		row = answerSheet.createRow(rownum++);
-		int cellNum = 0;
-		Cell cell = row.createCell(cellNum++);
-		cell.setCellValue("Worker ID");
-		cell = row.createCell(cellNum++);
-		cell.setCellValue("HIT ID");
-		cell = row.createCell(cellNum++);
-		cell.setCellValue("ID");
-		cell = row.createCell(cellNum++);
-		
-		
-		// creating new columns for the questions
-		for (Integer k=1; k<=250; k++){				// this number should be a variable
-			cell.setCellValue("Q" + k.toString());
-			cell = row.createCell(cellNum++);
-		}
-		
-		/*
-		// populating new data structure to later fill score sheet
-		Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
-		// iterating users
-		Set<Map.Entry<String, Worker>> setWorkers = workers.entrySet();
-		Iterator<Entry<String, Worker>> iterateWorkers = setWorkers.iterator();
-		while(iterateWorkers.hasNext())
-		{
-			Map.Entry<String, Worker> mapEntryWorker = (Map.Entry<String, Worker>)iterateWorkers.next();
-			
-			// preparing line (object), which index is a cell
-			Object[] lineContent = new Object[13]; 		// 13 columns
-			lineContent[0] = mapEntryWorker.getKey();	// user ID (cell 0)
-			lineContent[1] = mapEntryWorker.getValue().getHitId();	// hit ID (cell 1)
-			lineContent[2] = mapEntryWorker.getValue().getGrade();	// Skill score (cell 2)
-			// iterating over the skill questions
-			int j = 3;
-			if (null != mapEntryWorker.getValue().getGradeMap()){
-				Set<Map.Entry<String, Boolean>> setSkillTest = mapEntryWorker.getValue().getGradeMap().entrySet();
-				Iterator<Entry<String, Boolean>> iterateSkillTest = setSkillTest.iterator();
-				while(iterateSkillTest.hasNext()){
-					Map.Entry<String, Boolean> mapEntrySkillTest = (Map.Entry<String, Boolean>)iterateSkillTest.next();
-					lineContent[j++] = mapEntrySkillTest.getValue() ? "OK" : "Not";
-				}
-			} else j = 8;
-			// iterating over the Survey questions
-			HashMap<String, String> survey = mapEntryWorker.getValue().getSurveyAnswers();
-			for (int i=0; i<SurveyServlet.question.length; i++){
-				if (survey.containsKey(SurveyServlet.question[i])){
-					lineContent[j++] = survey.get(SurveyServlet.question[i]);
-				} else
-					lineContent[j++] = "No Answer";
-			}
-
-			// putting customized line
-			data.put(new Integer(key++), lineContent); 
-		}
-		
-		/* filling the score sheet /
+		/* filling the Answer sheet */
 		// Iterate over data and write to score sheet
 		Set<Integer> keyset = data.keySet();
 		for (Integer singleKey : keyset)
 		{	// new row for each entry
-			row = scoreSheet.createRow(rownum++);
+			row = answerSheet.createRow(rownum++);
 			Object [] objArr = data.get(singleKey);
 			int cellnum = 0;
 			for (Object obj : objArr)
@@ -173,15 +143,14 @@ public class ExcelAnswersReport {
 				else if(obj instanceof Integer)
 					cell.setCellValue((Integer)obj);
 			}
-		} */
+		}
 		// sizing columns for method sheet
-		for (short c=0; c<253; c++){
+		for (short c=0; c<questionsInSheet.size(); c++){
 			answerSheet.autoSizeColumn(c);
 		}
 
 		try
-		{
-			//Write the workbook in file system
+		{	//Write the workbook in file system
 			FileOutputStream out = new FileOutputStream(new File("AnswersReport.xlsx"));
 			workbook.write(out);
 			out.flush();
@@ -194,6 +163,26 @@ public class ExcelAnswersReport {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	private boolean populateDataLines(ArrayList<WorkerSession> workerSessions){
+		this.lineContent = new Object[this.questionsInSheet.size()+2]; 
+		for (WorkerSession workerSession : workerSessions) {
+			this.lineContent[0] = workerSession.getId();				// first column
+			this.lineContent[1] = workerSession.getOriginalId();		// second column
+			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
+			for (Microtask microtask : microtasks) {
+				Integer currentColumn = this.questionsInSheet.get(microtask.getID());
+				if (null == currentColumn)
+					return false;
+				if (microtask.getAnswerList().isEmpty())
+					this.lineContent[currentColumn] = "?";	
+				else
+					this.lineContent[currentColumn] = microtask.getAnswerList().get(0).getOption();	// the one single answer
+			}
+			this.data.put(this.key++, this.lineContent);
+		}
+		return true;
 	}
 	
 	private void populateQuestionMap(ArrayList<Microtask> microtasksPerWorker){

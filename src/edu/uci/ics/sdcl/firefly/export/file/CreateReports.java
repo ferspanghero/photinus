@@ -1,10 +1,6 @@
 package edu.uci.ics.sdcl.firefly.export.file;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Worker;
@@ -53,8 +49,8 @@ public class CreateReports {
 		WorkerSessionStorage workerSessionStorage = new WorkerSessionStorage();
 		HashMap<String, Object> storage = workerSessionStorage.readStorage();
 		if (null != storage){
-			ExcelAnswersReport.writeToXlsx(storage);
-			return true;
+			ExcelAnswersReport excelAnswersReport = new ExcelAnswersReport();
+			return excelAnswersReport.writeToXlsx(storage);
 		} else
 			return false;
 	}
