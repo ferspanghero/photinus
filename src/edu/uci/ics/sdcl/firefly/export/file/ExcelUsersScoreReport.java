@@ -38,8 +38,6 @@ public class ExcelUsersScoreReport {
 		Cell cell = row.createCell(cellNum++);
 		cell.setCellValue("User ID");
 		cell = row.createCell(cellNum++);
-		cell.setCellValue("HIT ID");
-		cell = row.createCell(cellNum++);
 		cell.setCellValue("Skill Score");
 		cell = row.createCell(cellNum++);
 		// creating 5 new columns for the skill questions
@@ -64,10 +62,9 @@ public class ExcelUsersScoreReport {
 			// preparing line (object), which index is a cell
 			Object[] lineContent = new Object[13]; 		// 13 columns
 			lineContent[0] = mapEntryWorker.getKey();	// user ID (cell 0)
-			lineContent[1] = mapEntryWorker.getValue().getHitId();	// hit ID (cell 1)
-			lineContent[2] = mapEntryWorker.getValue().getGrade();	// Skill score (cell 2)
+			lineContent[1] = mapEntryWorker.getValue().getGrade();	// Skill score (cell 1)
 			// iterating over the skill questions
-			int j = 3;
+			int j = 2;
 			if (null != mapEntryWorker.getValue().getGradeMap()){
 				Set<Map.Entry<String, Boolean>> setSkillTest = mapEntryWorker.getValue().getGradeMap().entrySet();
 				Iterator<Entry<String, Boolean>> iterateSkillTest = setSkillTest.iterator();
@@ -75,7 +72,7 @@ public class ExcelUsersScoreReport {
 					Map.Entry<String, Boolean> mapEntrySkillTest = (Map.Entry<String, Boolean>)iterateSkillTest.next();
 					lineContent[j++] = mapEntrySkillTest.getValue() ? "OK" : "Not";
 				}
-			} else j = 8;
+			} else j = 7;
 			// iterating over the Survey questions
 			HashMap<String, String> survey = mapEntryWorker.getValue().getSurveyAnswers();
 			for (int i=0; i<SurveyServlet.question.length; i++){

@@ -30,7 +30,7 @@
 	<div id='content'>
 		<center>
 		<b>Please enter the following information</b><br><br>
-		<form name="userIdForm" action="UserIdServlet" method="get">
+		<form name="userIdForm" action="ConsentServlet" method="get">
 			<table>
 				<tr><td>User ID: </td><td><input type="text" id="userId" name="userId" size="40"/></td></tr>
 				<tr><td>HIT ID: </td><td><input type="text" id="hitId" name="hitId" size="40"/></td></tr>

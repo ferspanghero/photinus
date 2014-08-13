@@ -24,7 +24,7 @@ import edu.uci.ics.sdcl.firefly.Features;
 
 public class ExcelMicrotasksReport
 {
-	public static void writeToXlsx(FileDebugSession microtasksPerFile)
+	public boolean writeToXlsx(FileDebugSession microtasksPerFile)
 	{
 		int numberOfQuestions = 0;
 		int numberOfAnswers = 0;
@@ -164,11 +164,12 @@ public class ExcelMicrotasksReport
 			out.close();
 
 			System.out.println(fileName + ".xlsx written successfully on disk.");
-
+			return true;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			return false;
 		}
 	}
 }

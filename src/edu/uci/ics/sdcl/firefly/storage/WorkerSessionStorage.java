@@ -449,7 +449,7 @@ public class WorkerSessionStorage {
 			ObjectInputStream objInputStream = new ObjectInputStream( 
 					new FileInputStream(file));
 
-			HashMap<String,Object> storage  = (HashMap<String,Object>) objInputStream.readObject();
+			HashMap<String, Object> storage  = (HashMap<String, Object>) objInputStream.readObject();
 			objInputStream.close();
 			return storage;
 		}

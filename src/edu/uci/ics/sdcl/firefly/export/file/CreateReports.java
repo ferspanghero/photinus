@@ -11,22 +11,20 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 public class CreateReports {
 
 	public static void main(String[] args) {
-//		System.out.println(createMicrotasksReport("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap_buggy.java"));
-//		System.out.println(createWorkersReport());
-		System.out.println(createAnswersReport());
+		CreateReports reports = new CreateReports();
+		System.out.println(reports.createMicrotasksReport("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap_buggy.java"));
+		System.out.println(reports.createWorkersReport());
+		System.out.println(reports.createAnswersReport());
 	}
 	
-	public static boolean createMicrotasksReport(String fileNameWithPathAndExtension){
+	public boolean createMicrotasksReport(String fileNameWithPathAndExtension){
 		MicrotaskStorage microtaskStore = new MicrotaskStorage();
 		FileDebugSession microtasks = microtaskStore.read(fileNameWithPathAndExtension);
-		if (null != microtasks){
-			ExcelMicrotasksReport.writeToXlsx(microtasks);
-			return true;
-		} else
-			return false;
+		ExcelMicrotasksReport microtaskReport = new ExcelMicrotasksReport();
+		return microtaskReport.writeToXlsx(microtasks);
 	}
 
-	public static boolean createWorkersReport(){
+	public boolean createWorkersReport(){
 		WorkerStorage workersStore = new WorkerStorage();
 		HashMap<String, Worker> workers= workersStore.readAllWorkers();
 		// for debug purposes:
@@ -45,7 +43,7 @@ public class CreateReports {
 			return false;
 	}
 	
-	public static boolean createAnswersReport(){
+	public boolean createAnswersReport(){
 		WorkerSessionStorage workerSessionStorage = new WorkerSessionStorage();
 		HashMap<String, Object> storage = workerSessionStorage.readStorage();
 		if (null != storage){
