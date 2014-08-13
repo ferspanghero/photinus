@@ -12,7 +12,7 @@ public class CreateReports {
 
 	public static void main(String[] args) {
 		CreateReports reports = new CreateReports();
-		System.out.println(reports.createMicrotasksReport("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap_buggy.java"));
+		System.out.println(reports.createMicrotasksReport("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\ArrayIterator.java"));
 		System.out.println(reports.createWorkersReport());
 		System.out.println(reports.createAnswersReport());
 	}

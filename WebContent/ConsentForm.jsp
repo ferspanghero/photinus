@@ -14,7 +14,6 @@
 		background-color: #D1EEEE;
 		text-align: justify;
 		margin: 0 auto;
-		
 	}
 	
 	#content  {
