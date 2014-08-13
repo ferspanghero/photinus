@@ -22,7 +22,10 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 public class WorkerSessionFactory {
 
 	/** Starts with 0. It is used to uniquely identify each new WorkerSession */
-	private Integer sessionID;
+	private String sessionID;
+	
+	/** Just counts the number of sessions. It is use as part of the sessionID generation */
+	private RandomKeyGenerator keyGenerator;
 	
 	/** The map of all microtasks that will be used to generate WorkerSession objects */
 	private HashMap<String,HashMap<String,ArrayList<Microtask>>> fileMethodMap;
@@ -35,9 +38,12 @@ public class WorkerSessionFactory {
 	
 	public WorkerSessionFactory(){
 		this.sessionStorage = new WorkerSessionStorage();
-		this.sessionID= 0;
 		this.workerSessionMap = new HashMap<Integer, WorkerSession>();
 		this.fileMethodMap = this.buildMethodMap();
+		WorkerSessionStorage storage = new WorkerSessionStorage();
+		int currentNumber = storage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW) + 
+		 storage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW_COPIES);
+		this.keyGenerator = new RandomKeyGenerator(currentNumber);
 	}
 	
 	/** 
@@ -58,7 +64,7 @@ public class WorkerSessionFactory {
 		//Generate the original WorkerSessions
 		while(mtaskList.size()>0){
 			WorkerSession session = new WorkerSession(sessionID, sessionID, mtaskList);
-			this.sessionID = this.sessionID + 1;
+			this.sessionID = this.keyGenerator.randomSequence();
 			originalList.add(session);
 			mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		}
@@ -86,9 +92,11 @@ public class WorkerSessionFactory {
 			//Generate the duplicated WorkerSessions
 			for(int i=0;i<originalStack.size();i++){
 				WorkerSession originalSession = originalStack.elementAt(i);
+				if(originalSession.getId() == null)
+					System.out.println("ERROR originalSession is NULL for i="+i+ " sessionID= "+sessionID);
 				WorkerSession duplicateSession =  new WorkerSession(this.sessionID, originalSession.getId(), originalSession.getMicrotaskList());
 				System.out.println("WSF @90: " + originalSession.getId());
-				this.sessionID = this.sessionID + 1;
+				this.sessionID = this.keyGenerator.randomSequence();
 				duplicateStack.push(duplicateSession);
 			}
 		}

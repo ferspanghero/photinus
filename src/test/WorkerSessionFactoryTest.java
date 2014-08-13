@@ -255,29 +255,29 @@ public class WorkerSessionFactoryTest {
 		ArrayList<Microtask> mtaskList6= new ArrayList<Microtask>();	
 		mtaskList6.add(mtaskMap.get(10));
 
-		WorkerSession original0 = new WorkerSession(0,0,mtaskList0);
-		WorkerSession original1 = new WorkerSession(1,1,mtaskList1);
-		WorkerSession original2 = new WorkerSession(2,2,mtaskList2);
-		WorkerSession original3 = new WorkerSession(3,3,mtaskList3);
-		WorkerSession original4 = new WorkerSession(4,4,mtaskList4);
-		WorkerSession original5 = new WorkerSession(5,5,mtaskList5);
-		WorkerSession original6 = new WorkerSession(6,6,mtaskList6);
+		WorkerSession original0 = new WorkerSession("0","0",mtaskList0);
+		WorkerSession original1 = new WorkerSession("1","1",mtaskList1);
+		WorkerSession original2 = new WorkerSession("2","2",mtaskList2);
+		WorkerSession original3 = new WorkerSession("3","3",mtaskList3);
+		WorkerSession original4 = new WorkerSession("4","4",mtaskList4);
+		WorkerSession original5 = new WorkerSession("5","5",mtaskList5);
+		WorkerSession original6 = new WorkerSession("6","6",mtaskList6);
 
-		WorkerSession copy0 = new WorkerSession(7,0,mtaskList0);
-		WorkerSession copy1 = new WorkerSession(8,1,mtaskList1);
-		WorkerSession copy2 = new WorkerSession(9,2,mtaskList2);
-		WorkerSession copy3 = new WorkerSession(10,3,mtaskList3);
-		WorkerSession copy4 = new WorkerSession(11,4,mtaskList4);
-		WorkerSession copy5 = new WorkerSession(12,5,mtaskList5);
-		WorkerSession copy6 = new WorkerSession(13,6,mtaskList6);
+		WorkerSession copy0 = new WorkerSession("7","0",mtaskList0);
+		WorkerSession copy1 = new WorkerSession("8","1",mtaskList1);
+		WorkerSession copy2 = new WorkerSession("9","2",mtaskList2);
+		WorkerSession copy3 = new WorkerSession("10","3",mtaskList3);
+		WorkerSession copy4 = new WorkerSession("11","4",mtaskList4);
+		WorkerSession copy5 = new WorkerSession("12","5",mtaskList5);
+		WorkerSession copy6 = new WorkerSession("13","6",mtaskList6);
 
-		WorkerSession copy00 = new WorkerSession(14,0,mtaskList0);
-		WorkerSession copy11 = new WorkerSession(15,1,mtaskList1);
-		WorkerSession copy22 = new WorkerSession(16,2,mtaskList2);
-		WorkerSession copy33 = new WorkerSession(17,3,mtaskList3);
-		WorkerSession copy44 = new WorkerSession(18,4,mtaskList4);
-		WorkerSession copy55 = new WorkerSession(19,5,mtaskList5);
-		WorkerSession copy66 = new WorkerSession(20,6,mtaskList6);
+		WorkerSession copy00 = new WorkerSession("14","0",mtaskList0);
+		WorkerSession copy11 = new WorkerSession("15","1",mtaskList1);
+		WorkerSession copy22 = new WorkerSession("16","2",mtaskList2);
+		WorkerSession copy33 = new WorkerSession("17","3",mtaskList3);
+		WorkerSession copy44 = new WorkerSession("18","4",mtaskList4);
+		WorkerSession copy55 = new WorkerSession("19","5",mtaskList5);
+		WorkerSession copy66 = new WorkerSession("20","6",mtaskList6);
 
 		this.expectedStackCopy.push(copy66);
 		this.expectedStackCopy.push(copy55);
@@ -335,7 +335,7 @@ public class WorkerSessionFactoryTest {
 			while(!actualStackOriginal.isEmpty() && !expectedStackOriginal.isEmpty()){
 				WorkerSession actual = actualStackOriginal.pop();
 				WorkerSession expected = expectedStackOriginal.pop();
-				Assert.assertEquals("WorkerSession ID: "+ expected.getId()+" does not match", actual.getId().intValue(),expected.getId().intValue());
+				Assert.assertEquals("WorkerSession ID: "+ expected.getId()+" does not match", actual.getId(),expected.getId());
 
 			}
 			
@@ -344,7 +344,7 @@ public class WorkerSessionFactoryTest {
 			while(!actualStackCopy.isEmpty() && !expectedStackCopy.isEmpty()){
 				WorkerSession actual = actualStackCopy.pop();
 				WorkerSession expected = expectedStackCopy.pop();
-				Assert.assertEquals("WorkerSession ID: "+ expected.getId()+" does not match", actual.getId().intValue(),expected.getId().intValue());
+				Assert.assertEquals("WorkerSession ID: "+ expected.getId()+" does not match", actual.getId(),expected.getId());
 
 			}
 		}

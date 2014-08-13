@@ -238,7 +238,7 @@ public class WorkerSessionStorage {
 	 * @return true if operation succeeded, otherwise false.
 	 */
 	public boolean updateActiveWorkerSession(WorkerSession session){
-		HashMap<Integer,WorkerSession> workerSessionMap =this.retrieveActiveWorkerSessionMap();
+		HashMap<String,WorkerSession> workerSessionMap =this.retrieveActiveWorkerSessionMap();
 		if(workerSessionMap!=null){
 			if(!session.hasCurrent()){ //it means that the Session was completed
 				workerSessionMap.remove(session.getId()); //removes from active map
@@ -264,7 +264,7 @@ public class WorkerSessionStorage {
 	 * @param answer the answer provided by a user
 	 * @return true if operation was successful, otherwise false
 	 */
-	public boolean setSessionMicrotaskAnswer(Integer sessionId,Integer microtaskId, Answer answer) {
+	public boolean setSessionMicrotaskAnswer(String sessionId,Integer microtaskId, Answer answer) {
 		
 		WorkerSession session = this.readActiveWorkerSessionByID(sessionId);
 		if(session==null)
@@ -282,9 +282,9 @@ public class WorkerSessionStorage {
 	 * @param id the unique identifier for a WorkerSession
 	 * @return a WorkerSession, in case any was found, return null.
 	 */
-	public WorkerSession readActiveWorkerSessionByID(Integer id){
+	public WorkerSession readActiveWorkerSessionByID(String id){
 
-		HashMap<Integer,WorkerSession> workerSessionMap =this.retrieveActiveWorkerSessionMap();
+		HashMap<String,WorkerSession> workerSessionMap =this.retrieveActiveWorkerSessionMap();
 
 		if(workerSessionMap!=null && workerSessionMap.containsKey(id))
 			return workerSessionMap.get(id);
@@ -293,7 +293,7 @@ public class WorkerSessionStorage {
 	}
 	
 		
-	private HashMap<Integer, WorkerSession> retrieveActiveWorkerSessionMap(){
+	private HashMap<String, WorkerSession> retrieveActiveWorkerSessionMap(){
 
 		try{
 			File file = new File(this.persistentFileName); 
@@ -305,7 +305,7 @@ public class WorkerSessionStorage {
 			objInputStream.close();
 
 			if(storage.containsKey(ACTIVE))
-				return (HashMap<Integer,WorkerSession>) storage.get(ACTIVE);
+				return (HashMap<String,WorkerSession>) storage.get(ACTIVE);
 			else
 				return null; //Error, the map should always be there, even when the map is empty.
 		}
@@ -334,7 +334,7 @@ public class WorkerSessionStorage {
 	 * @param the index of WorkerSession objects stored
 	 * @return true if operation succeeded, otherwise false.
 	 */
-	private boolean overwriteActiveWorkerSessionMap(HashMap<Integer,WorkerSession> newWorkerSessionMap){
+	private boolean overwriteActiveWorkerSessionMap(HashMap<String,WorkerSession> newWorkerSessionMap){
 		try{
 			File file = new File(this.persistentFileName); 
 

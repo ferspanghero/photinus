@@ -29,7 +29,6 @@ public class SurveyServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		WorkerStorage subjectStore = new WorkerStorage();	// to retrieve date from database
-//		Worker subject = subjectStore.readSingleWorker(request.getParameter("userId"));
 		Worker subject = subjectStore.readSingleWorker(request.getParameter("userId"));
 		if (null != subject){
 			subject.addAnswer(question[0], request.getParameter("gender"));
@@ -42,7 +41,9 @@ public class SurveyServlet extends HttpServlet {
 			subjectStore.insert(request.getParameter("userId"), subject);
 			System.out.println("UserId: " + subject.getUserId());
 			//Displays the Thanks message
-			request.getRequestDispatcher("/Thanks.html").forward(request, response);
+			request.setAttribute("key", request.getParameter("sessionId"));
+			System.out.println("key: " + request.getParameter("sessionId"));
+			request.getRequestDispatcher("/Thanks.jsp").forward(request, response);
 		} else{
 			request.setAttribute("userId", request.getParameter("userId"));
 			request.setAttribute("hitId", request.getParameter("hitId"));

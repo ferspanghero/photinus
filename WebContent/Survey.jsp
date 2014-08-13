@@ -132,6 +132,7 @@
 	
 	 		<!-- Hidden fields -->
 	 		<input type="hidden" name="sessionId" value=${requestScope["sessionId"]}> 
+	 		
 			<input type="hidden" name="userId" value=${requestScope["userId"]}> 
 			<input type="hidden" name="hitId" value=${requestScope["hitId"]}> 
 	 
@@ -139,7 +140,6 @@
 			<INPUT TYPE="button" VALUE="Submit Answer" onclick="submitAnswer(event)">
 	 
 		</form>
-
 	</div><br>
 </div>
 </body>

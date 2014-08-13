@@ -106,10 +106,10 @@ public class MicrotaskServlet extends HttpServlet {
 
 		//Save answers from the previous microtask
 		StorageManager manager = new StorageManager();
-		manager.updateMicrotaskAnswer(fileName, new Integer(sessionId), new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation));
+		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation));
 
 		//Continue working on existing session
-		WorkerSession session = manager.readActiveSession(new Integer(sessionId));	
+		WorkerSession session = manager.readActiveSession(sessionId);	
 		
 		if(session==null || !session.hasCurrent())
 			//No more microtasks, move to the Survey page
@@ -133,10 +133,10 @@ public class MicrotaskServlet extends HttpServlet {
 
 		//Save answers from the previous microtask
 		StorageManager manager = new StorageManager();
-		manager.updateMicrotaskAnswer(fileName, new Integer(sessionId), new Integer(microtaskId), new Answer(Answer.SKIPPED,null));
+		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.SKIPPED,null));
 
 		//Continue working on existing session
-		WorkerSession session = manager.readActiveSession(new Integer(sessionId));	
+		WorkerSession session = manager.readActiveSession(sessionId);	
 		
 		if(session==null || !session.hasCurrent())
 			//No more microtasks, move to the Survey page

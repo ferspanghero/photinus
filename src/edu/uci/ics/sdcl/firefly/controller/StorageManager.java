@@ -38,7 +38,7 @@ public class StorageManager {
 	 * 
 	 * @return true if all three operations succeeded, false if any of them failed.
 	 */
-	public boolean updateMicrotaskAnswer(String fileName, Integer sessionId, Integer microtaskId, Answer answer){
+	public boolean updateMicrotaskAnswer(String fileName, String sessionId, Integer microtaskId, Answer answer){
 		//set answer to the microtask in the WorkerSession
 		boolean success1 = sessionStorage.setSessionMicrotaskAnswer(sessionId,microtaskId,answer);
 		
@@ -75,7 +75,7 @@ public class StorageManager {
 	 * @return a session that is already active (received at least one answer), otherwise null 
 	 * if the session is not active anymore or if the session ID is invalid
 	 */
-	public WorkerSession readActiveSession(Integer sessionId){
+	public WorkerSession readActiveSession(String sessionId){
 		WorkerSession session = sessionStorage.readActiveWorkerSessionByID(sessionId);
 		return session;
 	}
