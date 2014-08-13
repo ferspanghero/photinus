@@ -3,19 +3,47 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Upload Suspicious Files</title>
-		<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<style type="text/css" media="screen">
+	#external {
+		max-width: 700px;
+		text-align: justify;
+		margin: 0 auto;	
+	}
+
+	#container  {
+		max-width: 700px;
+		background-color: #D1EEEE;
+		text-align: justify;
+		margin: 0 auto;
+		
+	}
+	
+	#content  {
+		background-color: #D1EEEE;
+		text-align: justify;
+		 margin-left: 10px;
+		margin-right: 10px;
+	}
+	
+</style>
 
 </head>
+
+
 <body>
 
 	<script>
 		function openMicrotask() {
 			var subAction = document.getElementById("subAction");
 			subAction.value = "loadFirst";
-			document.forms["openMicrotask"].submit()
+			document.forms["openMicrotaskForm"].submit()
 		}
+		
 	</script>
+	
+	
+<div id="external">
 
 	<table border="0">
 		<tr>
@@ -26,7 +54,7 @@
 					<td><img src="./images/UploadsButton-blue.jpg"></td>
 					
 					<td>
-						<form method="GET" action="microtask" name="openMicrotask">
+						<form method="GET" action="microtask" name="openMicrotaskForm">
 							<input type="image" src="./images/MicrotasksButton.jpg"
 								value="Open Microtask" name="openMicrotask" align="bottom" onclick="openMicrotask()">
 							<input type="hidden" id="subAction" name="subAction" value="loadFirst"> 	
@@ -44,16 +72,19 @@
 		</tr>
 
 	</table>
-
+	
+<div id='container'>
+	<br>
+	<div id = 'content'>
  
 	<table cellspacing="0">
 
-		<tr bgcolor="#FFFAEB">
+		<tr>
               <td>&nbsp;&nbsp;&nbsp; </td>
               <td>&nbsp;&nbsp;&nbsp; </td>
 		
-				 	<td bgcolor="#FFFAEB">
-				<form action="upload" method="post" enctype="multipart/form-data">
+				 	<td>
+				<form action="upload" method="post" enctype="multipart/form-data" name="uploadForm">
 					<table border="0">
 						<tr>
 							<td align="right">Suspicious file:</td>
@@ -65,9 +96,11 @@
 						</tr>
 						<tr>
 							<td align="right">Method Name:</td>
-							<td><input type="text" name="targetMethod" size="54"/></td>
+							<td><input type="text" name="targetMethod" size="54"/></td>		 
+						</tr>
+						<tr>
 							<td><input type="submit" value="Generate Microtasks"/></td>	
-		 
+							<td>${requestScope["microtasks_message"]}</td>
 						</tr>
 					</table>
 							<input type="hidden" id="userId" name="userId" value="researcher"> 	
@@ -75,16 +108,34 @@
 					<br>
 				</form>
 			
-
-				<div id="result"> 
-					 ${requestScope["return_message"]} 
-				</div>
-			<td>
-			 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </td> 
+			
+			</td>
+			 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </td>
+			  
+			 
 		</tr>
 	</table>
+	<table>
+		<tr>
+		  <td>&nbsp;&nbsp;&nbsp; </td>
+          <td>&nbsp;&nbsp;&nbsp; </td>
+		  <td>
+				<form action ="upload" method="get" name="sessionForm">
+			 		<input type="submit" value="Generate Worker Sessions"/>	
+				 </form>
+				 </td>
+				 <td>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${requestScope["workerSessions_message"]}
+		  </td>		
+		  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </td>
+		 </tr>
+	</table>
 
+</div>
+<br>
 
+</div>
+</div>
 
 </body>
 </html>

@@ -33,14 +33,17 @@ public class FileUploadServlet extends HttpServlet {
 	 */
 	public FileUploadServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		String return_message = this.generateWorkerSessions();
+		String microtasks_message = request.getParameter("microtasks_message");
+		request.setAttribute("microtasks_message", microtasks_message);
+		request.setAttribute("workerSessions_message", return_message);
+		request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 	}
 
 	/**
@@ -56,9 +59,7 @@ public class FileUploadServlet extends HttpServlet {
 		String hitId = new String();
 		boolean gotBugReport = false;		// assuming that not all parameters that are necessary are known
 		boolean gotSpecificMethod = false;
-		
-		
-		
+
 		if(ServletFileUpload.isMultipartContent(request)){
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
@@ -94,34 +95,34 @@ public class FileUploadServlet extends HttpServlet {
 						}
 						if (item.getFieldName().equalsIgnoreCase("userId"))
 							userId = item.getString();
-						
+
 						if (item.getFieldName().equalsIgnoreCase("hitId"))
 							hitId = item.getString();	
 					}
 				}
-						
+
 				// generating microtasks if...
 				if (gotBugReport && gotSpecificMethod){
 					String results = generateMicrotasks(fileName, fileContent, targetName, bugReport);
-						
+
 					//Store the UserId and HitId of the Researcher
 					WorkerStorage workerStorage = new WorkerStorage();
 					Worker worker = new Worker(userId,hitId,new Date());
 					workerStorage.insert(userId, worker);
-							
+
 					return_message = return_message + results;
 				}
-						
 
-				request.setAttribute("return_message", return_message);
-				
+
+				request.setAttribute("microtasks_message", return_message);
+
 			}
 			catch (FileUploadException e) {
-				request.setAttribute("return_message", "File upload failed. " + e);
+				request.setAttribute("microtasks_message", "File upload failed. " + e);
 			}
 		}
 		else
-			request.setAttribute("return_message","");
+			request.setAttribute("microtasks_message","");
 
 		request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 	}
@@ -145,7 +146,7 @@ public class FileUploadServlet extends HttpServlet {
 			}
 		}
 		System.out.println();
-		
+
 		String results = "";
 		if (foundMatch){
 			//calls QuestionFactory
@@ -163,6 +164,8 @@ public class FileUploadServlet extends HttpServlet {
 				int numberOfCodeSnippets = snippetList.size();
 				int numberOfMicrotasks = microtaskMap.size();
 				results = "Number of code snippets: "+numberOfCodeSnippets+ "<br> Microtasks generated: " + numberOfMicrotasks+"<br>";
+				
+				System.out.println("Results: "+results);
 			}
 			else
 				results = "No Microtasks were generated! Please review the file uploaded.";
@@ -170,25 +173,31 @@ public class FileUploadServlet extends HttpServlet {
 		else
 			results = "No Microtasks were generated! The method name was not found in the file.";
 
-		
-		
-		//WorkerSessions
-		//Generate the stack of New and Duplicated WorkerSession
-		WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
-		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(2);
-		Stack<WorkerSession> duplicatedStack = sessionFactory.duplicateSessions(originalStack,2);
-		WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
-		sessionStorage.appendNewWorkerSessionStack(originalStack,sessionStorage.NEW);
-		sessionStorage.appendNewWorkerSessionStack(duplicatedStack,sessionStorage.NEW_COPIES);
-		
-		int totalSessions = originalStack.size()+duplicatedStack.size(); 
-		results = results + "Worker sessions generated: " +totalSessions;
-		
-		System.out.println("Results: "+results);
+
+
+
 		return results;
 	}
 
 
+	private String generateWorkerSessions(){
 
+		String results = new String();
+		//WorkerSessions
+		//Generate the stack of New and Duplicated WorkerSession
+		WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
+		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(10);
+		Stack<WorkerSession> duplicatedStack = sessionFactory.duplicateSessions(originalStack,2);
+		WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
+		sessionStorage.appendNewWorkerSessionStack(originalStack,sessionStorage.NEW);
+		sessionStorage.appendNewWorkerSessionStack(duplicatedStack,sessionStorage.NEW_COPIES);
+
+		int totalSessions = originalStack.size()+duplicatedStack.size(); 
+		results = results + "Worker sessions generated: " +totalSessions;
+
+		System.out.println("Results: "+results);
+
+		return results;
+	}
 }
 
