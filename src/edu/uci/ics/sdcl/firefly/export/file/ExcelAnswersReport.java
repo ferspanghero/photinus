@@ -30,7 +30,7 @@ public class ExcelAnswersReport {
 	
 	public ExcelAnswersReport() {
 		this.questionsInSheet = new HashMap<Integer, Integer>();
-		this.columnNumber = 2;
+		this.columnNumber = 3;
 		this.key = 0;	// for the 'data' map
 		data = new TreeMap<Integer, Object[]>();
 	}
@@ -69,10 +69,12 @@ public class ExcelAnswersReport {
 		}
 		
 		/* preparing the data structure */
-		this.lineContent = new Object[this.questionsInSheet.size()+2];	// represents the lines on the sheet
+		this.lineContent = new Object[this.questionsInSheet.size()+3];	// represents the lines on the sheet
 		/* creating first header line */								// +2 for the 2 IDs before questions
-		this.lineContent[0] = "Worker ID";
-		this.lineContent[1] = "Orig. ID";
+		this.lineContent[0] = "User ID";
+		this.lineContent[1] = "Session ID";
+		this.lineContent[2] = "Orig. ID";
+		
 		Set<Map.Entry<Integer, Integer>> setQIS = this.questionsInSheet.entrySet();
 		Iterator<Entry<Integer, Integer>> iterateQIS = setQIS.iterator();
 		while(iterateQIS.hasNext())
@@ -91,12 +93,15 @@ public class ExcelAnswersReport {
 		if (!this.populateDataLines(activeSessionsAL))
 			return false;
 		/* now for the new sessions implement the not answered counter */
-		this.lineContent = new Object[questionsInSheet.size()+2];
+		this.lineContent = new Object[questionsInSheet.size()+3];
 		Arrays.fill(this.lineContent, (Integer)0);	// populating the array with 0's
 		this.lineContent[0] = "Unanswered";
+		this.lineContent[1] = "-";
+		this.lineContent[2] = "-";
 		for (WorkerSession workerSession : newSessionsAL) {
 			// counting unanswered questions 
 			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
+			System.out.println("@104 -" + workerSession.getId() + " - M.size() = " + microtasks.size() );
 			for (Microtask microtask : microtasks) {
 				Integer currentColumn = this.questionsInSheet.get(microtask.getID());
 				if (null == currentColumn)
@@ -166,13 +171,15 @@ public class ExcelAnswersReport {
 	}
 	
 	private boolean populateDataLines(ArrayList<WorkerSession> workerSessions){
-		this.lineContent = new Object[this.questionsInSheet.size()+2]; 
 		for (WorkerSession workerSession : workerSessions) {
-			this.lineContent[0] = workerSession.getId();				// first column
-			this.lineContent[1] = workerSession.getOriginalId();		// second column
+			this.lineContent = new Object[this.questionsInSheet.size()+3]; 
+			this.lineContent[0] = workerSession.getUserId();			// first column
+			this.lineContent[1] = workerSession.getId();				// worker ID
+			this.lineContent[2] = workerSession.getOriginalId();		// third column
 			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
 			for (Microtask microtask : microtasks) {
 				Integer currentColumn = this.questionsInSheet.get(microtask.getID());
+				
 				if (null == currentColumn)
 					return false;
 				if (microtask.getAnswerList().isEmpty())
@@ -181,6 +188,21 @@ public class ExcelAnswersReport {
 					this.lineContent[currentColumn] = microtask.getAnswerList().get(0).getOption();	// the one single answer
 			}
 			this.data.put(this.key++, this.lineContent);
+			/* for debug purposes 
+			Set<Map.Entry<Integer, Object[]>> setActiveSessions = data.entrySet();
+			Iterator<Entry<Integer, Object[]>> iterateActiveSessions = setActiveSessions.iterator();
+			while(iterateActiveSessions.hasNext())
+			{
+				Map.Entry<Integer, Object[]> me = (Map.Entry<Integer, Object[]>)iterateActiveSessions.next();
+				System.out.print(me.getKey() + " | ");
+				for(Object obj : me.getValue()){
+					System.out.print(obj + " | ");
+				}
+				System.out.println();
+				
+			}
+			System.out.println();
+			System.out.println(); */
 		}
 		return true;
 	}

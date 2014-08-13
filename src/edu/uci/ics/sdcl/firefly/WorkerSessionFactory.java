@@ -87,6 +87,7 @@ public class WorkerSessionFactory {
 			for(int i=0;i<originalStack.size();i++){
 				WorkerSession originalSession = originalStack.elementAt(i);
 				WorkerSession duplicateSession =  new WorkerSession(this.sessionID, originalSession.getId(), originalSession.getMicrotaskList());
+				System.out.println("WSF @90: " + originalSession.getId());
 				this.sessionID = this.sessionID + 1;
 				duplicateStack.push(duplicateSession);
 			}
