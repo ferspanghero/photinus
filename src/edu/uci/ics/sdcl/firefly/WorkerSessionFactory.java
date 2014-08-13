@@ -63,8 +63,8 @@ public class WorkerSessionFactory {
 		ArrayList<Microtask> mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		//Generate the original WorkerSessions
 		while(mtaskList.size()>0){
+			this.sessionID = this.keyGenerator.generate();
 			WorkerSession session = new WorkerSession(sessionID, sessionID, mtaskList);
-			this.sessionID = this.keyGenerator.randomSequence();
 			originalList.add(session);
 			mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		}
@@ -94,9 +94,10 @@ public class WorkerSessionFactory {
 				WorkerSession originalSession = originalStack.elementAt(i);
 				if(originalSession.getId() == null)
 					System.out.println("ERROR originalSession is NULL for i="+i+ " sessionID= "+sessionID);
+				this.sessionID = this.keyGenerator.generate();
 				WorkerSession duplicateSession =  new WorkerSession(this.sessionID, originalSession.getId(), originalSession.getMicrotaskList());
 				System.out.println("WSF @90: " + originalSession.getId());
-				this.sessionID = this.keyGenerator.randomSequence();
+
 				duplicateStack.push(duplicateSession);
 			}
 		}

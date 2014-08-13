@@ -14,11 +14,11 @@ public class RandomKeyGenerator {
 	
 	public static void main(String [] args){
 		RandomKeyGenerator gen =  new RandomKeyGenerator(0);
-		System.out.println("randomSequence = "+ gen.randomSequence());
+		System.out.println("randomSequence = "+ gen.generate());
 	}
 	
 	
-	public String randomSequence(){
+	public String generate(){
 		
 		//Five Random numbers and Four random letters.
 		Random rand = new Random(); 
