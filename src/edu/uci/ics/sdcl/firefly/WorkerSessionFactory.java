@@ -96,7 +96,7 @@ public class WorkerSessionFactory {
 					System.out.println("ERROR originalSession is NULL for i="+i+ " sessionID= "+sessionID);
 				this.sessionID = this.keyGenerator.generate();
 				WorkerSession duplicateSession =  new WorkerSession(this.sessionID, originalSession.getId(), originalSession.getMicrotaskList());
-				System.out.println("WSF @90: " + originalSession.getId());
+//				System.out.println("WSF @99: " + originalSession.getId());
 
 				duplicateStack.push(duplicateSession);
 			}

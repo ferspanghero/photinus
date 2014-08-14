@@ -121,7 +121,6 @@
 					//Editor for Questions 1, 2, and 3
 					var editor1 = ace.edit("editor1");
 					editor1.setReadOnly(true);
-					editor1.setSelection(false);
 					editor1.setTheme("ace/theme/github");
 					editor1.getSession().setMode("ace/mode/java");
 					editor1.setBehavioursEnabled(false);
@@ -160,7 +159,6 @@
 					//Editor for Questions 4 and 5
 					var editor2 = ace.edit("editor2");
 					editor2.setReadOnly(true);
-					editor2.setSelection(false);
 					editor2.setTheme("ace/theme/github");
 					editor2.getSession().setMode("ace/mode/java");
 					editor2.setBehavioursEnabled(false);
