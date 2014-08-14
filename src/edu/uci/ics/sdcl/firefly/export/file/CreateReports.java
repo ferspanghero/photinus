@@ -12,12 +12,12 @@ public class CreateReports {
 
 	public static void main(String[] args) {
 		CreateReports reports = new CreateReports();
-		System.out.println(reports.createMicrotasksReport("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\ArrayIterator.java"));
+		System.out.println(reports.createMicrotasksReport());
 		System.out.println(reports.createWorkersReport());
 		System.out.println(reports.createAnswersReport());
 	}
 	
-	public boolean createMicrotasksReport(String fileNameWithPathAndExtension){
+	public boolean createMicrotasksReport(){
 		MicrotaskStorage microtaskStore = new MicrotaskStorage();
 		HashMap<String, FileDebugSession> microtasks = microtaskStore.readAllDebugSessions();
 		ExcelMicrotasksReport microtaskReport = new ExcelMicrotasksReport();
@@ -33,8 +33,8 @@ public class CreateReports {
 		while(iterateWorkers.hasNext())
 		{
 			Map.Entry<String, Worker> mapEntryWorker = (Map.Entry<String, Worker>)iterateWorkers.next();
-			System.out.println(mapEntryWorker.getKey() + " " + mapEntryWorker.getValue().getHitId() + " " + mapEntryWorker.getValue().getGradeMap()
-					+ "  " + mapEntryWorker.getValue().getSurveyAnswers());
+			System.out.println(mapEntryWorker.getKey() + " " + mapEntryWorker.getValue().getHitId() + 
+				" " + mapEntryWorker.getValue().getGradeMap() + "  " + mapEntryWorker.getValue().getSurveyAnswers());
 		} */
 		if (null != workers){
 			ExcelUsersScoreReport.writeToXlsx(workers);

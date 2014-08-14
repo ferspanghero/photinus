@@ -30,14 +30,14 @@ public class ExcelMicrotasksReport
 		int numberOfQuestions = 0;
 		int numberOfAnswers = 0;
 		int numberOfFiles = microtasksMappedPerFile.size();
-		
+
 		/* creating excel workbook */
 		//Blank workbook
 		XSSFWorkbook workbook = new XSSFWorkbook();
 
 		//Create a blank sheet for the summary
 		XSSFSheet summarySheet = workbook.createSheet("Summary");
-		
+
 		Integer mapKey = 0;
 		// creating a map containing all the microtasks obtained from all files uploaded
 		HashMap<Integer, Microtask> allMicrotasksMap = new HashMap<>();
@@ -86,6 +86,8 @@ public class ExcelMicrotasksReport
 			cell.setCellValue("Answers - options");
 			// preparing the TreeMap for later fill the method sheet
 			Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
+			int lastOptionColumn = 3;			// for auto sizing later
+			int lastExplanationColumn = 4;
 			// iterating questions (per method)
 			for (Microtask microtask : me.getValue())
 			{	
@@ -93,19 +95,25 @@ public class ExcelMicrotasksReport
 
 				// preparing line (object), which index is a cell
 				Object[] lineContent = new Object[(microtask.getNumberOfAnswers()*2)+3]; // FileName(1) + ID(1) + question(1) + explanations(size) + answers(size)
-				lineContent[0] = microtask.getMethod().getFileName();	// FileName (cell 0)
+				lineContent[0] = Features.removePath(microtask.getMethod().getFileName(), true);	// FileName (cell 0)
 				lineContent[1] = microtask.getID();						// ID (cell 1)
 				lineContent[2] = microtask.getQuestion();				// Question (cell 2)
 				int k = 3;
 				for (Answer singleAnswer : microtask.getAnswerList()) {
 					lineContent[k++] = singleAnswer.getOption();		// adding answers per question
 				}
-				cell = row.createCell(k);
-				cell.setCellValue("Explanations");
-				for (Answer singleAnswer : microtask.getAnswerList()) {
-					lineContent[k++] = singleAnswer.getExplanation();	// adding explanation per question
+				lastOptionColumn = lastOptionColumn < k ? k : lastOptionColumn;
+				if (k > 3){	// got some answers, now the explanation:
+					cell = row.createCell(k);
+					cell.setCellValue("Explanations");
+
+					for (Answer singleAnswer : microtask.getAnswerList()) {
+						lineContent[k++] = singleAnswer.getExplanation();	// adding explanation per question
+					}
+					lastExplanationColumn = lastExplanationColumn < k ? k : lastExplanationColumn;		
 				}
 				data.put(new Integer(dataKey++), lineContent);	// putting customized line 
+				
 			}
 			/* filling the method sheet */
 			//Iterate over data and write to method sheet
@@ -136,9 +144,15 @@ public class ExcelMicrotasksReport
 			//row = methodSheet.createRow(rownum++);	// blank row
 
 			// sizing columns for method sheet
-			methodSheet.autoSizeColumn(0);
-			methodSheet.autoSizeColumn(1);
+			for (int j=0; j < lastOptionColumn; j++){
+				methodSheet.autoSizeColumn(j);
+			}
 			methodSheet.setColumnWidth(2, 30000);
+			if (lastExplanationColumn > 4){
+				for (int j=4; j < lastExplanationColumn; j++){
+					methodSheet.setColumnWidth(j, 15000);
+				}
+			}
 			/*
 				CellStyle cs = workbook.createCellStyle();
 				XSSFFont f = workbook.createFont();
