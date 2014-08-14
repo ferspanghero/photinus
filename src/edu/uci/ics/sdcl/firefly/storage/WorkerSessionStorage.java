@@ -47,16 +47,7 @@ public class WorkerSessionStorage {
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 
 
-				// Create a empty storage for ALL three datastructures (NEW, NEW_COPIES, ACTIVE, CLOSED)
-				HashMap<String,Object> storage = new HashMap<String,Object>();
-				Stack<WorkerSession> stack = new Stack<WorkerSession>();
-				Stack<WorkerSession> copiesStack = new Stack<WorkerSession>();
-				HashMap<Integer, WorkerSession> map = new HashMap<Integer,WorkerSession>();
-				ArrayList<WorkerSession> list = new ArrayList<WorkerSession>();
-				storage.put(NEW,stack);
-				storage.put(NEW_COPIES,copiesStack);
-				storage.put(ACTIVE, map);
-				storage.put(CLOSED, list);
+				HashMap<String,Object> storage= initializeEmptyStorage();
 
 				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 						new FileOutputStream(new File(this.persistentFileName)));
@@ -74,7 +65,45 @@ public class WorkerSessionStorage {
 	}
 
 
+	/** Delete all data from the Storage */
+	public void cleanUp(){
 
+		try{
+			File file = new File(this.persistentFileName);
+			// No files has been created yet. 
+			HashMap<String,Object> storage= initializeEmptyStorage();
+
+			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
+					new FileOutputStream(new File(this.persistentFileName)));
+
+			objOutputStream.writeObject( storage );
+			objOutputStream.close();
+		}
+		catch(IOException exception){
+			exception.printStackTrace();
+		}
+		catch(Exception exception){
+			exception.printStackTrace();
+		}
+	}
+	
+	private HashMap<String,Object> initializeEmptyStorage(){
+		// Create a empty storage for ALL three datastructures (NEW, NEW_COPIES, ACTIVE, CLOSED)
+		HashMap<String,Object> storage = new HashMap<String,Object>();
+		Stack<WorkerSession> stack = new Stack<WorkerSession>();
+		Stack<WorkerSession> copiesStack = new Stack<WorkerSession>();
+		HashMap<Integer, WorkerSession> map = new HashMap<Integer,WorkerSession>();
+		ArrayList<WorkerSession> list = new ArrayList<WorkerSession>();
+		storage.put(NEW,stack);
+		storage.put(NEW_COPIES,copiesStack);
+		storage.put(ACTIVE, map);
+		storage.put(CLOSED, list);
+		
+		return storage;
+	}
+	
+	
+		
 	//-----------------------------------------------------------------------------------------------------------
 	// Manage the Storage of New WorkerSession 
 
@@ -441,6 +470,8 @@ public class WorkerSessionStorage {
 			return false;
 		}
 	}
+	
+
 	
 	public HashMap<String, Object> readStorage(){
 		try{

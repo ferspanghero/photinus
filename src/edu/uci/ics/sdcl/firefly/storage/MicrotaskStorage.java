@@ -172,6 +172,12 @@ public class MicrotaskStorage {
 			return false;
 	}
 
+	/** Delete all data from the Storage */
+	public void cleanUp(){
+		HashMap<String,FileDebugSession> debugSessionMap= new HashMap<String,FileDebugSession>();
+		this.updateIndex(debugSessionMap);
+	}
+	
 	/**
 	 * 
 	 * @return the index of microtasks stored in the file
@@ -222,6 +228,7 @@ public class MicrotaskStorage {
 		}
 	}
 
+	
 
 	
 

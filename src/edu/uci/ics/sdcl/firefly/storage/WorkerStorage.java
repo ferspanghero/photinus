@@ -37,6 +37,10 @@ public class WorkerStorage {
 		}
 	}
 	
+	public void cleanUp(){
+		this.updateIndex(new HashMap<String,Worker>());
+	}
+	
 	public boolean insert(String userId, Worker worker){
 
 		HashMap<String, Worker> workerMap = this.retrieveIndex();

@@ -90,6 +90,20 @@ public class StorageManager {
 		return workerId;
 	}
 	
+	/** Clean repositories by substituting current data structures
+	 * with empty ones.
+	 */
+	public void cleanUpRepositories(){
+		WorkerStorage workerStorage = new WorkerStorage();
+		workerStorage.cleanUp();
+		
+		WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
+		sessionStorage.cleanUp();
+		
+		MicrotaskStorage microtaskStorage = new MicrotaskStorage();
+		microtaskStorage.cleanUp();
+	}
+	
 	private void writeLog(String operation, String data){
 		//TODO
 	}
