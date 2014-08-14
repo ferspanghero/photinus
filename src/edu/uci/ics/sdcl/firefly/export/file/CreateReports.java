@@ -19,7 +19,7 @@ public class CreateReports {
 	
 	public boolean createMicrotasksReport(String fileNameWithPathAndExtension){
 		MicrotaskStorage microtaskStore = new MicrotaskStorage();
-		FileDebugSession microtasks = microtaskStore.read(fileNameWithPathAndExtension);
+		HashMap<String, FileDebugSession> microtasks = microtaskStore.readAllDebugSessions();
 		ExcelMicrotasksReport microtaskReport = new ExcelMicrotasksReport();
 		return microtaskReport.writeToXlsx(microtasks);
 	}

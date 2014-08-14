@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.export.file;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,22 +25,41 @@ import edu.uci.ics.sdcl.firefly.Features;
 
 public class ExcelMicrotasksReport
 {
-	public boolean writeToXlsx(FileDebugSession microtasksPerFile)
+	public boolean writeToXlsx(HashMap<String, FileDebugSession> microtasksMappedPerFile)
 	{
 		int numberOfQuestions = 0;
 		int numberOfAnswers = 0;
-
-		String fileName = Features.removePath(microtasksPerFile.getFileName(), true);
-
-		/* creating excel workbook (per file) */
+		int numberOfFiles = microtasksMappedPerFile.size();
+		
+		/* creating excel workbook */
 		//Blank workbook
 		XSSFWorkbook workbook = new XSSFWorkbook();
 
 		//Create a blank sheet for the summary
 		XSSFSheet summarySheet = workbook.createSheet("Summary");
+		
+		Integer mapKey = 0;
+		// creating a map containing all the microtasks obtained from all files uploaded
+		HashMap<Integer, Microtask> allMicrotasksMap = new HashMap<>();
+		// keep in mind that each file is a key for a HashMap and I want to read the microtasks Map inside it
+		Set<Map.Entry<String, FileDebugSession>> setMPF = microtasksMappedPerFile.entrySet();	// MPF = microtasks per File
+		Iterator<Entry<String, FileDebugSession>> iMPF = setMPF.iterator();
+		while(iMPF.hasNext())
+		{
+			Map.Entry<String, FileDebugSession> meMPF = (Map.Entry<String, FileDebugSession>)iMPF.next();
+			// iterating microtasks per file
+			Set<Map.Entry<Integer, Microtask>> setMPF2 = meMPF.getValue().getMicrotaskMap().entrySet();
+			Iterator<Entry<Integer, Microtask>> iMPF2 = setMPF2.iterator();
+			while(iMPF2.hasNext())
+			{
+				Map.Entry<Integer, Microtask> meMPF2 = (Map.Entry<Integer, Microtask>)iMPF2.next();
+				allMicrotasksMap.put(new Integer(mapKey++), meMPF2.getValue());
+			}
+		}
+		numberOfQuestions = allMicrotasksMap.size();
 
 		// converting microtasks per file into microtasks per method
-		HashMap<String, ArrayList<Microtask>> microtasksPerMethod = Features.convertToMicrotasksPerMethod(microtasksPerFile.getMicrotaskMap());
+		HashMap<String, ArrayList<Microtask>> microtasksPerMethod = Features.convertToMicrotasksPerMethod(allMicrotasksMap);
 		// iterating methods
 		Set<Map.Entry<String, ArrayList<Microtask>>> set = microtasksPerMethod.entrySet();
 		Iterator<Entry<String, ArrayList<Microtask>>> i = set.iterator();
@@ -47,23 +67,23 @@ public class ExcelMicrotasksReport
 		{
 			Map.Entry<String, ArrayList<Microtask>> me = (Map.Entry<String, ArrayList<Microtask>>)i.next();
 
-			numberOfQuestions += me.getValue().size();
-
 			//Create a blank sheet for the method
 			XSSFSheet methodSheet = workbook.createSheet(me.getKey());
 
-			int key = 0;	// for the 'data' below
+			int dataKey = 0;	// for the 'data' below
 			int rownum = 0;	
 			Row row;
 			/* creating first header line */
 			row = methodSheet.createRow(rownum++);
 			int cellnum2 = 0;
 			Cell cell = row.createCell(cellnum2++);
+			cell.setCellValue("File Name");
+			cell = row.createCell(cellnum2++);
 			cell.setCellValue("ID");
 			cell = row.createCell(cellnum2++);
 			cell.setCellValue("Questions");
 			cell = row.createCell(cellnum2);
-			cell.setCellValue("Answers");
+			cell.setCellValue("Answers - options");
 			// preparing the TreeMap for later fill the method sheet
 			Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
 			// iterating questions (per method)
@@ -72,17 +92,20 @@ public class ExcelMicrotasksReport
 				numberOfAnswers += microtask.getNumberOfAnswers();
 
 				// preparing line (object), which index is a cell
-				Object[] lineContent = new Object[microtask.getNumberOfAnswers()+3]; // ID(1) + question(1) + explanations(1) + answers(size)
-				lineContent[0] = microtask.getID();			// ID (cell 0)
-				lineContent[1] = microtask.getQuestion();	// Question (cell 1)
-				String cellOne = new String();
+				Object[] lineContent = new Object[(microtask.getNumberOfAnswers()*2)+3]; // FileName(1) + ID(1) + question(1) + explanations(size) + answers(size)
+				lineContent[0] = microtask.getMethod().getFileName();	// FileName (cell 0)
+				lineContent[1] = microtask.getID();						// ID (cell 1)
+				lineContent[2] = microtask.getQuestion();				// Question (cell 2)
 				int k = 3;
 				for (Answer singleAnswer : microtask.getAnswerList()) {
-					cellOne += singleAnswer.getOption() + "{" + singleAnswer.getExplanation() + "}; ";
-					lineContent[k++] = singleAnswer.getOption();	// adding answers per question
+					lineContent[k++] = singleAnswer.getOption();		// adding answers per question
 				}
-				lineContent[2] = cellOne;					// setting cell at index 2
-				data.put(new Integer(key++), lineContent);	// putting customized line 
+				cell = row.createCell(k);
+				cell.setCellValue("Explanations");
+				for (Answer singleAnswer : microtask.getAnswerList()) {
+					lineContent[k++] = singleAnswer.getExplanation();	// adding explanation per question
+				}
+				data.put(new Integer(dataKey++), lineContent);	// putting customized line 
 			}
 			/* filling the method sheet */
 			//Iterate over data and write to method sheet
@@ -114,9 +137,8 @@ public class ExcelMicrotasksReport
 
 			// sizing columns for method sheet
 			methodSheet.autoSizeColumn(0);
-			methodSheet.setColumnWidth(1, 30000);
-			methodSheet.autoSizeColumn(2);
-			methodSheet.autoSizeColumn(3);
+			methodSheet.autoSizeColumn(1);
+			methodSheet.setColumnWidth(2, 30000);
 			/*
 				CellStyle cs = workbook.createCellStyle();
 				XSSFFont f = workbook.createFont();
@@ -128,7 +150,7 @@ public class ExcelMicrotasksReport
 		/* filling the summary sheet */
 		//This data needs to be written (Object[])
 		Map<String, Object[]> data = new TreeMap<String, Object[]>();
-		data.put("1", new Object[] {"File name: ", fileName});
+		data.put("1", new Object[] {"Number of files: ", numberOfFiles});
 		data.put("2", new Object[] {"Number of Snippets: ", microtasksPerMethod.size()});
 		data.put("3", new Object[] {"Total number of questions: ", numberOfQuestions});
 		data.put("4", new Object[] {"Total number of answers: ", numberOfAnswers});
@@ -158,12 +180,12 @@ public class ExcelMicrotasksReport
 		{
 			//Write the workbook in file system
 
-			FileOutputStream out = new FileOutputStream(new File(fileName + ".xlsx"));
+			FileOutputStream out = new FileOutputStream(new File("MicrotasksReport.xlsx"));
 			workbook.write(out);
 			out.flush();
 			out.close();
 
-			System.out.println(fileName + ".xlsx written successfully on disk.");
+			System.out.println("MicrotasksReport.xlsx written successfully on disk.");
 			return true;
 		}
 		catch (Exception e)

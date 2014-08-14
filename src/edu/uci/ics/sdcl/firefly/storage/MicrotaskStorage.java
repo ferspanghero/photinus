@@ -68,6 +68,15 @@ public class MicrotaskStorage {
 		else
 			return null;
 	}
+	
+	/** Retrieves a map with all FileDebugSessions indexed by file name
+	 * 
+	 * @param 
+	 * @return  HashMap<String,FileDebugSession>
+	 */
+	public HashMap<String,FileDebugSession> readAllDebugSessions(){
+		return this.retrieveIndex();
+	}
 
 	/** Retrieves all file debugging sessions .
 	 * A debugging session is identified by a file name
