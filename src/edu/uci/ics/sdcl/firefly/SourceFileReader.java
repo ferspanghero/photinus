@@ -45,7 +45,7 @@ public class SourceFileReader {
 		//		codeSnippets.printAll();
 		QuestionFactory questionFactory = new QuestionFactory();
 		System.out.println("----------Printing Concrete Questions-------------");
-		questionFactory.generateQuestions(methodsParsed);
+		questionFactory.generateQuestions(methodsParsed,"Debug Report Message", 0);
 		HashMap<Integer, Microtask> concreteQuestionsMade = questionFactory.getConcreteQuestions();
 		Set<Map.Entry<Integer, Microtask>> set = concreteQuestionsMade.entrySet();
 		Iterator<Entry<Integer, Microtask>> i = set.iterator();
@@ -59,7 +59,7 @@ public class SourceFileReader {
 		System.out.println("~~~~~~~~~~~~~Reports~~~~~~~~~~~~~~~~");
 		System.out.println("Number of Snippets: " + methodsParsed.size());
 		System.out.println("Number of questions: " + concreteQuestionsMade.size());
-		System.out.println("Number of statements: " + questionFactory.getNumberOfStatements());
+		
 
 		System.out.println("****************Method callers****************");
 		for (CodeSnippet snippet : methodsParsed) {

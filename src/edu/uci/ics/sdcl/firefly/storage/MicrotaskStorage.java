@@ -107,12 +107,18 @@ public class MicrotaskStorage {
 	 * @param fileDebugSession the list of microtasks associated to the file
 	 * @return true if operation succeeded, otherwise false.
 	 */
-	public boolean insert(String fileName, FileDebugSession fileDebuggingSession){
+	public boolean insert(String fileName, FileDebugSession newfileDebuggingSession){
 
+		
 		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
-
+		
 		if(debugSessionMap!=null){
-			debugSessionMap.put(fileName, fileDebuggingSession);
+			
+			if(debugSessionMap.containsKey(fileName))
+				//Has to merge the new one with the existing
+				newfileDebuggingSession.append(debugSessionMap.get(fileName));	
+			
+			debugSessionMap.put(fileName, newfileDebuggingSession);
 			return this.updateIndex(debugSessionMap);	
 		}		
 		else
@@ -129,6 +135,25 @@ public class MicrotaskStorage {
 		this.insert(fileName, fileDebuggingSession);
 	}
 
+	/** 
+	 * Index is used to create the unique ID for the microtasks within the same file
+	 * @param fileName
+	 * @return the number of existing microtask for the file
+	 */
+	public int getNumberOfMicrotask(String fileName) {
+		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
+		
+		if(debugSessionMap!=null){
+			
+			if(debugSessionMap.containsKey(fileName))
+				//Has to merge the new one with the existing
+				return (debugSessionMap.get(fileName).getNumberOfMicrotasks());	
+			else
+				return 0;
+		}		
+		else
+			return 0;
+	}
 
 	/**
 	 * Removes the debug session data associated to the provided file name
@@ -196,5 +221,8 @@ public class MicrotaskStorage {
 			return false;
 		}
 	}
+
+
+	
 
 }

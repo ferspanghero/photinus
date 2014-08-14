@@ -7,23 +7,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
+
 public class QuestionFactory {
-	/* public final static String FOR_LOOP = "FOR_LOOP"; 
-	public final static String WHILE_LOOP = "WHILE_LOOP"; 
-	public final static String IF_CONDITIONAL = "IF_CONDITIONAL"; 
-	public final static String SWITCH_CONDITIONAL = "SWITCH_CONDITIONAL"; 
-	public final static String METHOD_CALL = "METHOD_CALL"; 
-	public final static String METHOD_PARAMETERS = "METHOD_PARAMETERS"; 
-	public final static String METHOD_NAME = "METHOD_NAME";
-	public static final String RETURN_STATEMENT = "RETURN_STATEMENT"; */
+	
 	/* Template Lists */
 	public ArrayList<String> templateMethodDeclaration = new ArrayList<String>();
 	public ArrayList<String> templateMethodInvocation = new ArrayList<String>();
 	public ArrayList<String> templateConditional = new ArrayList<String>();
 	public ArrayList<String> templateLoop = new ArrayList<String>();
 
-	public Integer numberOfStatements; 
-	public Integer concreteQuestionID = 0;
+	public Integer microtaskId = 0;
 	private String questionPrompt;
 	private Microtask question;
 
@@ -33,13 +27,11 @@ public class QuestionFactory {
 	private Integer endingLine;
 	private Integer endingColumn;
 
-	private HashMap<Integer, Microtask> concreteQuestions;
+	private HashMap<Integer, Microtask> microtaskMap;
 
 	public QuestionFactory()
 	{
-		this.numberOfStatements = 0;
-		this.concreteQuestionID = new Integer(0);
-		this.concreteQuestions = new HashMap<Integer, Microtask>();
+		this.microtaskMap = new HashMap<Integer, Microtask>();
 		/* Method Declaration */
 		templateMethodDeclaration.add("Is there maybe something wrong in the declaration of function '<F>' at line <#> " 
 				+ "(e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?");
@@ -64,22 +56,18 @@ public class QuestionFactory {
 				+ "possibly not producing what it is supposed to (e.g., does not compute the expected result, does not exit at the expected iteration, etc.)?");
 	}
 
-	public Integer getNumberOfStatements()
-	{
-		return this.numberOfStatements;
-	}
-
+	
 	/**
 	 * 
 	 * @param methodsArg only the code snippets for which microtasks will be generated
+	 * @param i 
+	 * @param bugReport 
 	 * @return the map of microtasks
 	 */
 	
-	public void generateQuestions(ArrayList<CodeSnippet> methodsArg)
+	private void generateQuestions(ArrayList<CodeSnippet> methodsArg)
 	{
-		this.numberOfStatements = 0;	// initializing variable
-		this.concreteQuestions = new  HashMap<Integer, Microtask>();
-		this.concreteQuestionID = new Integer(0);
+		this.microtaskMap = new  HashMap<Integer, Microtask>();
 		for (CodeSnippet codeSnippet : methodsArg)
 		{
 			for (String templateForQuestion : templateMethodDeclaration)
@@ -117,10 +105,10 @@ public class QuestionFactory {
 				}
 				/* setting and adding a concrete question */
 				question = new Microtask(CodeElement.METHOD_DECLARATION, codeSnippet, questionPrompt,
-						this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,concreteQuestionID);
+						this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,microtaskId);
 
-				this.concreteQuestions.put(question.getID(),question);
-				this.concreteQuestionID++;
+				this.microtaskMap.put(question.getID(),question);
+				this.microtaskId++;
 
 			}
 
@@ -129,7 +117,6 @@ public class QuestionFactory {
 
 			for (CodeElement element : statements)
 			{
-				this.numberOfStatements++;
 				switch (element.getType())
 				{
 				case CodeElement.METHOD_INVOCATION:
@@ -161,9 +148,9 @@ public class QuestionFactory {
 							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 							
 							question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, questionPrompt, 
-									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.concreteQuestionID);
-							this.concreteQuestions.put(question.getID(),question);
-							this.concreteQuestionID++;
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.microtaskId);
+							this.microtaskMap.put(question.getID(),question);
+							this.microtaskId++;
 						}
 					}
 					break;
@@ -208,10 +195,10 @@ public class QuestionFactory {
 							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 						}
 						question = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippet, questionPrompt, 
-								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.concreteQuestionID);
+								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.microtaskId);
 
-						this.concreteQuestions.put(question.getID(),question);
-						this.concreteQuestionID++;
+						this.microtaskMap.put(question.getID(),question);
+						this.microtaskId++;
 
 					}
 					break;
@@ -222,10 +209,10 @@ public class QuestionFactory {
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = this.setUpQuestionPrompt(questionPrompt, element);
 						question = new Microtask(CodeElement.SWITCH_CONDITIONAL, codeSnippet, questionPrompt, 
-								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,this.concreteQuestionID);
+								this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,this.microtaskId);
 
-						this.concreteQuestions.put(question.getID(),question);
-						this.concreteQuestionID++;
+						this.microtaskMap.put(question.getID(),question);
+						this.microtaskId++;
 					}
 					break;
 
@@ -240,21 +227,21 @@ public class QuestionFactory {
 						case CodeElement.FOR_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "For");
 							question = new Microtask(CodeElement.FOR_LOOP, codeSnippet, questionPrompt, 
-									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.concreteQuestionID);
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, this.microtaskId);
 							break;
 						case CodeElement.DO_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "Do");
 							question = new Microtask(CodeElement.DO_LOOP, codeSnippet, questionPrompt, 
-									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,this.concreteQuestionID);
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,this.microtaskId);
 							break;
 						case CodeElement.WHILE_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "While");
 							question = new Microtask(CodeElement.WHILE_LOOP, codeSnippet, questionPrompt, 
-									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,this.concreteQuestionID);
+									this.startingLine, this.startingColumn, this.endingLine, this.endingColumn,this.microtaskId);
 							break;
 						}
-						this.concreteQuestions.put(question.getID(),question);
-						this.concreteQuestionID++;
+						this.microtaskMap.put(question.getID(),question);
+						this.microtaskId++;
 					}
 					break;
 					// Add more cases here 
@@ -267,7 +254,8 @@ public class QuestionFactory {
 		}
 	}
 	
-	public void generateQuestions(ArrayList<CodeSnippet> methodsArg, String bugReport){
+	public void generateQuestions(ArrayList<CodeSnippet> methodsArg, String bugReport, int numberOfExistingMicrotasks){
+		this.microtaskId = new Integer(numberOfExistingMicrotasks);
 		generateQuestions(methodsArg);
 		setUpBugReport(bugReport);
 	}
@@ -311,7 +299,7 @@ public class QuestionFactory {
 
 	public boolean setUpBugReport(String bugReport){
 		boolean successful = false;	// assuming none microtasks were generated
-		Set<Map.Entry<Integer, Microtask>> set = this.concreteQuestions.entrySet();
+		Set<Map.Entry<Integer, Microtask>> set = this.microtaskMap.entrySet();
 		Iterator<Entry<Integer, Microtask>> i = set.iterator();
 		while(i.hasNext()) 
 		{
@@ -323,6 +311,6 @@ public class QuestionFactory {
 	}
 	
 	public HashMap<Integer, Microtask> getConcreteQuestions() {
-		return concreteQuestions;
+		return microtaskMap;
 	}
 }

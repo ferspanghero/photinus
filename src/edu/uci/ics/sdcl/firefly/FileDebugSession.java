@@ -59,6 +59,9 @@ public class FileDebugSession implements Serializable {
 		return fileContent;
 	}
 	 
+	public int getNumberOfMicrotasks(){
+		return this.microtaskMap.size();
+	}
 	
 	/** 
 	 * If the provided number is smaller then maximumAnswerCount, then 
@@ -78,6 +81,10 @@ public class FileDebugSession implements Serializable {
 	
 	public boolean isEmpty(){
 		return (this.microtaskMap == null || this.microtaskMap.isEmpty());
+	}
+
+	public void append(FileDebugSession sourceFileDebugSession) {
+		this.microtaskMap.putAll(sourceFileDebugSession.getMicrotaskMap());
 	}
 	
 }

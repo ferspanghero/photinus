@@ -150,16 +150,18 @@ public class FileUploadServlet extends HttpServlet {
 		String results = "";
 		if (foundMatch){
 			//calls QuestionFactory
+			
 			QuestionFactory questionFactory = new QuestionFactory ();
-			questionFactory.generateQuestions(filteredCodeSnippets, bugReport);
+			MicrotaskStorage storage = new MicrotaskStorage();
+			questionFactory.generateQuestions(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask(fileName));
 			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions();
 
 			if (microtaskMap!= null && microtaskMap.size() > 0){
 				FileDebugSession fileDebuggingSession = new FileDebugSession(fileName, fileContent, microtaskMap);
 
 				//Persist data
-				MicrotaskStorage memento = new MicrotaskStorage();
-				memento.replace(fileName, fileDebuggingSession);
+
+				storage.insert(fileName, fileDebuggingSession); //append to existing fileDebugSessions
 
 				int numberOfCodeSnippets = snippetList.size();
 				int numberOfMicrotasks = microtaskMap.size();
