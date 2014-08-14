@@ -33,13 +33,28 @@
 
 <body>
 
-	<script>
+<script>
 		function openMicrotask() {
 			var subAction = document.getElementById("subAction");
 			subAction.value = "loadFirst";
-			document.forms["openMicrotaskForm"].submit()
+			document.forms["openMicrotaskForm"].submit();
+		}
+	
+		
+		function generateWorkerSessions(){
+			var subAction = document.getElementById("subAction");
+			subAction.value = "generateWorkerSessions";
+			document.forms["sessionForm"].submit();
 		}
 		
+		
+		function deleteAll(){
+			if (confirm('Confirm deleting all data?')) {
+				var subAction = document.getElementById("subAction");
+				subAction.value = "delete";
+				document.forms["deleteForm"].submit();
+			}
+		}
 	</script>
 	
 	
@@ -121,12 +136,31 @@
           <td>&nbsp;&nbsp;&nbsp; </td>
 		  <td>
 				<form action ="upload" method="get" name="sessionForm">
-			 		<input type="submit" value="Generate Worker Sessions"/>	
+			 		<input type="button" value="Generate Worker Sessions" onclick="generateWorkerSessions()" />	
+		 			<input type="hidden" id="subAction" name="subAction" value="generateWorkerSessions" /> 	
 				 </form>
 				 </td>
 				 <td>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${requestScope["workerSessions_message"]}
 		  </td>		
+		  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </td>
+		 </tr>
+	</table>
+	
+	<br>
+	<br>
+	
+	<table>
+		<tr>
+		  <td>&nbsp;&nbsp;&nbsp; </td>
+          <td>&nbsp;&nbsp;&nbsp; </td>
+		  <td>
+				<form action ="upload" method="get" name="deleteForm">
+			 		<input type="button" value="Delete All Data" onclick="deleteAll()" />	
+			 		<input type="hidden" id="subAction" name="subAction" value="delete" /> 	
+				 </form>
+				 </td>
+	      <td>&nbsp;&nbsp;&nbsp; </td>		
 		  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </td>
 		 </tr>
 	</table>

@@ -19,6 +19,7 @@ import edu.uci.ics.sdcl.firefly.QuestionFactory;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.WorkerSessionFactory;
+import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
@@ -39,11 +40,30 @@ public class FileUploadServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String return_message = this.generateWorkerSessions();
-		String microtasks_message = request.getParameter("microtasks_message");
-		request.setAttribute("microtasks_message", microtasks_message);
-		request.setAttribute("workerSessions_message", return_message);
-		request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
+
+		String subAction = request.getParameter("subAction");
+
+		if(subAction!=null){
+
+			if(subAction.compareTo("generateWorkerSessions")==0){
+
+				String return_message = this.generateWorkerSessions();
+				String microtasks_message = request.getParameter("microtasks_message");
+				request.setAttribute("microtasks_message", microtasks_message);
+				request.setAttribute("workerSessions_message", return_message);
+				request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
+			}
+			else
+				if(subAction.compareTo("delete")==0){
+					this.delete();
+					request.setAttribute("workerSessions_message", "");
+					request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
+				}
+				else{
+					request.setAttribute("error", "SubAction unknown");
+					request.getRequestDispatcher("/ErrorPage.jsp").include(request, response);
+				}
+		}
 	}
 
 	/**
@@ -113,7 +133,7 @@ public class FileUploadServlet extends HttpServlet {
 					return_message = return_message + results;
 				}
 
-
+				request.setAttribute("workerSessions_message", "");
 				request.setAttribute("microtasks_message", return_message);
 
 			}
@@ -200,6 +220,11 @@ public class FileUploadServlet extends HttpServlet {
 		System.out.println("Results: "+results);
 
 		return results;
+	}
+	
+	private void delete(){
+		StorageManager manager = new StorageManager();
+		manager.cleanUpRepositories();
 	}
 }
 
