@@ -173,7 +173,7 @@ public class FileUploadServlet extends HttpServlet {
 			
 			QuestionFactory questionFactory = new QuestionFactory ();
 			MicrotaskStorage storage = new MicrotaskStorage();
-			questionFactory.generateQuestions(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask(fileName));
+			questionFactory.generateQuestions(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
 			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions();
 
 			if (microtaskMap!= null && microtaskMap.size() > 0){

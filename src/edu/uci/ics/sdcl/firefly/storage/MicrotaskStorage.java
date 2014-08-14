@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
 import edu.uci.ics.sdcl.firefly.Answer;
@@ -149,19 +150,19 @@ public class MicrotaskStorage {
 	 * @param fileName
 	 * @return the number of existing microtask for the file
 	 */
-	public int getNumberOfMicrotask(String fileName) {
-		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
+	public int getNumberOfMicrotask() {
 		
-		if(debugSessionMap!=null){
-			
+		int total=0;
+		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
+		Iterator<String> iter = debugSessionMap.keySet().iterator();
+		
+		while(iter.hasNext()){
+			String fileName = iter.next();
 			if(debugSessionMap.containsKey(fileName))
 				//Has to merge the new one with the existing
-				return (debugSessionMap.get(fileName).getNumberOfMicrotasks());	
-			else
-				return 0;
-		}		
-		else
-			return 0;
+			total = total + debugSessionMap.get(fileName).getNumberOfMicrotasks();
+		}
+		return total;
 	}
 
 	/**
