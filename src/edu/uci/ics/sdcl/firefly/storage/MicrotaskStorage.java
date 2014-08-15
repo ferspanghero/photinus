@@ -108,7 +108,7 @@ public class MicrotaskStorage {
 		fileDebuggingSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
 		//TODO change this system.out to be a log
 		System.out.println("Inserting microtask id:"+mtask.getID()+" answers: "+mtask.getNumberOfAnswers()+" : "+mtask.getAnswerList().toString());
-		return this.insert(fileName, fileDebuggingSession);
+		return this.replace(fileName, fileDebuggingSession);
 	}
 
 	/** Insert a new List of Microtasks. It overwrites any existing one for the same file.
@@ -140,9 +140,10 @@ public class MicrotaskStorage {
 	 * @param fileName
 	 * @param microtaskList
 	 */
-	public void replace(String fileName, FileDebugSession fileDebuggingSession){
-		this.remove(fileName);
-		this.insert(fileName, fileDebuggingSession);
+	public boolean replace(String fileName, FileDebugSession fileDebuggingSession){
+		boolean success1 = this.remove(fileName);
+		boolean success2 = this.insert(fileName, fileDebuggingSession);
+		return success1&&success2;
 	}
 
 	/** 
