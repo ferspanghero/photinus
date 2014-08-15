@@ -216,3 +216,4 @@ pip-log.txt
 WebContent/Question.jsp
 WebContent/QuestionMicrotask.jsp
 *.ser
+*.xlsx

@@ -31,7 +31,7 @@ public class ExcelMicrotasksReport
 		int numberOfAnswers = 0;
 		int numberOfFiles = microtasksMappedPerFile.size();
 
-		/* creating excel workbook */
+		/* creating the excel workbook */
 		//Blank workbook
 		XSSFWorkbook workbook = new XSSFWorkbook();
 
@@ -83,11 +83,11 @@ public class ExcelMicrotasksReport
 			cell = row.createCell(cellnum2++);
 			cell.setCellValue("Questions");
 			cell = row.createCell(cellnum2);
-			cell.setCellValue("Answers - options");
+			cell.setCellValue("Answers");
 			// preparing the TreeMap for later fill the method sheet
 			Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
-			int lastOptionColumn = 3;			// for auto sizing later
-			int lastExplanationColumn = 4;
+			
+			int lastColumn = 0;		// for auto sizing later
 			// iterating questions (per method)
 			for (Microtask microtask : me.getValue())
 			{	
@@ -102,18 +102,13 @@ public class ExcelMicrotasksReport
 				for (Answer singleAnswer : microtask.getAnswerList()) {
 					lineContent[k++] = singleAnswer.getOption();		// adding answers per question
 				}
-				lastOptionColumn = lastOptionColumn < k ? k : lastOptionColumn;
 				if (k > 3){	// got some answers, now the explanation:
-					cell = row.createCell(k);
-					cell.setCellValue("Explanations");
-
 					for (Answer singleAnswer : microtask.getAnswerList()) {
 						lineContent[k++] = singleAnswer.getExplanation();	// adding explanation per question
-					}
-					lastExplanationColumn = lastExplanationColumn < k ? k : lastExplanationColumn;		
+					}	
 				}
 				data.put(new Integer(dataKey++), lineContent);	// putting customized line 
-				
+				lastColumn = lastColumn < k ? k : lastColumn;	
 			}
 			/* filling the method sheet */
 			//Iterate over data and write to method sheet
@@ -144,15 +139,10 @@ public class ExcelMicrotasksReport
 			//row = methodSheet.createRow(rownum++);	// blank row
 
 			// sizing columns for method sheet
-			for (int j=0; j < lastOptionColumn; j++){
+			for (int j=0; j < lastColumn; j++){
 				methodSheet.autoSizeColumn(j);
 			}
 			methodSheet.setColumnWidth(2, 30000);
-			if (lastExplanationColumn > 4){
-				for (int j=4; j < lastExplanationColumn; j++){
-					methodSheet.setColumnWidth(j, 15000);
-				}
-			}
 			/*
 				CellStyle cs = workbook.createCellStyle();
 				XSSFFont f = workbook.createFont();
