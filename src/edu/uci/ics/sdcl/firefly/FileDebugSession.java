@@ -2,7 +2,6 @@ package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Class to persist the information of debugging one file
@@ -85,22 +84,7 @@ public class FileDebugSession implements Serializable {
 	}
 
 	public void append(FileDebugSession sourceFileDebugSession) {
-		Iterator<Integer> iterator = sourceFileDebugSession.getMicrotaskMap().keySet().iterator();
-		
-		while(iterator.hasNext()){
-			Integer mtaskID = iterator.next();
-			Microtask sourceMicrotask = sourceFileDebugSession.getMicrotask(mtaskID);
-			Microtask mtask = this.getMicrotask(mtaskID);
-			
-			if(mtask!=null){
-				//Add all answers from the source Microtask to the existing one.
-				for(Answer answer: sourceMicrotask.getAnswerList())
-					mtask.addAnswer(answer);
-				this.microtaskMap.put(mtaskID,mtask);
-			}
-			else//Just add the new microtask
-				this.microtaskMap.put(mtaskID, sourceMicrotask);
-		}
+		this.microtaskMap.putAll(sourceFileDebugSession.getMicrotaskMap());
 	}
 	
 }

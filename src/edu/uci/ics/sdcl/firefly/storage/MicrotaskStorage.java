@@ -108,7 +108,7 @@ public class MicrotaskStorage {
 		fileDebuggingSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
 		//TODO change this system.out to be a log
 		System.out.println("Inserting microtask id:"+mtask.getID()+" answers: "+mtask.getNumberOfAnswers()+" : "+mtask.getAnswerList().toString());
-		return this.replace(fileName, fileDebuggingSession);
+		return this.insert(fileName, fileDebuggingSession);
 	}
 
 	/** Insert a new List of Microtasks. It overwrites any existing one for the same file.
@@ -117,21 +117,18 @@ public class MicrotaskStorage {
 	 * @param fileDebugSession the list of microtasks associated to the file
 	 * @return true if operation succeeded, otherwise false.
 	 */
-	public boolean insert(String fileName, FileDebugSession newfileDebugSession){
+	public boolean insert(String fileName, FileDebugSession newfileDebuggingSession){
 
 		
 		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
 		
 		if(debugSessionMap!=null){
 			
-			if(debugSessionMap.containsKey(fileName)){
+			if(debugSessionMap.containsKey(fileName))
 				//Has to merge the new one with the existing
-				FileDebugSession existingSession = debugSessionMap.get(fileName); 
-				existingSession.append(newfileDebugSession);	
-				debugSessionMap.put(fileName, existingSession);
-			}
-			else
-				debugSessionMap.put(fileName, newfileDebugSession);
+				newfileDebuggingSession.append(debugSessionMap.get(fileName));	
+			
+			debugSessionMap.put(fileName, newfileDebuggingSession);
 			return this.updateIndex(debugSessionMap);	
 		}		
 		else
@@ -143,10 +140,9 @@ public class MicrotaskStorage {
 	 * @param fileName
 	 * @param microtaskList
 	 */
-	public boolean replace(String fileName, FileDebugSession fileDebuggingSession){
-		boolean success1 = this.remove(fileName);
-		boolean success2 = this.insert(fileName, fileDebuggingSession);
-		return success1&&success2;
+	public void replace(String fileName, FileDebugSession fileDebuggingSession){
+		this.remove(fileName);
+		this.insert(fileName, fileDebuggingSession);
 	}
 
 	/** 
