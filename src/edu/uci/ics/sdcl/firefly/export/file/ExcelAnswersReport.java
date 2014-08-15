@@ -75,7 +75,7 @@ public class ExcelAnswersReport {
 		this.lineContent[1] = "Session ID";
 		this.lineContent[2] = "Orig. ID";
 		
-		Set<Map.Entry<Integer, Integer>> setQIS = this.questionsInSheet.entrySet();
+		Set<Map.Entry<Integer, Integer>> setQIS = this.questionsInSheet.entrySet();	// QIS same as question in sheet
 		Iterator<Entry<Integer, Integer>> iterateQIS = setQIS.iterator();
 		while(iterateQIS.hasNext())
 		{
@@ -85,7 +85,7 @@ public class ExcelAnswersReport {
 				return false;
 			this.lineContent[currentColumn] = mapEntryQIS.getKey();	
 		}
-		this.data.put(this.key++, lineContent);
+		this.data.put(new Integer(this.key++), lineContent);
 		/* getting data from the closed sessions */								
 		if (!this.populateDataLines(closedSessions))
 			return false;
@@ -101,7 +101,6 @@ public class ExcelAnswersReport {
 		for (WorkerSession workerSession : newSessionsAL) {
 			// counting unanswered questions 
 			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
-			System.out.println("@104 -" + workerSession.getId() + " - M.size() = " + microtasks.size() );
 			for (Microtask microtask : microtasks) {
 				Integer currentColumn = this.questionsInSheet.get(microtask.getID());
 				if (null == currentColumn)
@@ -110,7 +109,7 @@ public class ExcelAnswersReport {
 					this.lineContent[currentColumn] = (Integer)this.lineContent[currentColumn] + 1;	
 			}
 		}
-		this.data.put(this.key++, this.lineContent);
+		this.data.put(new Integer(this.key++), this.lineContent);
 		
 		/* creating excel workbook */
 		//Blank workbook
@@ -187,7 +186,7 @@ public class ExcelAnswersReport {
 				else
 					this.lineContent[currentColumn] = microtask.getAnswerList().get(0).getOption();	// the one single answer
 			}
-			this.data.put(this.key++, this.lineContent);
+			this.data.put(new Integer(this.key++), this.lineContent);
 			/* for debug purposes 
 			Set<Map.Entry<Integer, Object[]>> setActiveSessions = data.entrySet();
 			Iterator<Entry<Integer, Object[]>> iterateActiveSessions = setActiveSessions.iterator();
