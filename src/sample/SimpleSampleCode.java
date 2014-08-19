@@ -1,4 +1,4 @@
-package sample.JustOneSample;
+package sample;
 
 public class SimpleSampleCode {
 
