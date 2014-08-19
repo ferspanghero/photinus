@@ -38,7 +38,7 @@
 
 #internalText {
 	 margin-left: 10px;
-	margin-right: 10px;
+	margin-right: 15px;
 	
 }
 
@@ -140,7 +140,6 @@ max-width: 700px;
 		
 	</script>
 
-		<br>
 		<!-- Hidden fields -->
 		<input type="hidden" id="startLine" value=${requestScope["startLine"]}>
 		<input type="hidden" id="startColumn" value=${requestScope["startColumn"]}> 
@@ -157,10 +156,10 @@ max-width: 700px;
 	<script
 		src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
 
-	<div id="failurePrompt"><br>
+	<div id="failurePrompt">
 		 	<div id="internalText">
 		 	<br>
-			Thanks for using FireFly! By answering the question below, you will help us debug software from all over the world. 
+			Thanks for using <b>FireFly!</b> By answering the question below, you will help us debug software from all over the world. 
    			The bug we specifically could use your help with today is the following: 
       	<b>${requestScope["bugReport"]}</b><br>
       	<br>
@@ -186,7 +185,7 @@ max-width: 700px;
 			<a id="option3"> <input type="radio" name="answer" value="3">I can't tell</a> 
 			<a id="option4"> <input type="radio" name="answer" value="4">Probably not</a> 
 			<a id="option5"> <input type="radio" name="answer" value="5">No</a> 
-			<span class="stretch"></span> 
+		
 			
 			<!-- Hidden fields -->
 			<input type="hidden" name="fileName" value=${requestScope["fileName"]}> 
