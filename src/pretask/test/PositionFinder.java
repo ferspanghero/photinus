@@ -3,7 +3,7 @@ public class PositionFinder {
 
 	public static void findPosition(String[] NameArray, String term){
 
-		if (NameArray.length==0)
+		if (NameArray.length==0 && NameArray==null)
 			System.out.print("Empty array");
 		else{ 
 			int position=-1;
@@ -18,6 +18,6 @@ public class PositionFinder {
 
 	public static void main(String[] args){
 		String[] NameArray = {"Hola", "Kumusta", "Hello", "Ciao"};
-		findPosition(NameArray, " ");
+		findPosition(NameArray, "Ciao");
 	}
 }

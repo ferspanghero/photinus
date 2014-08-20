@@ -27,7 +27,7 @@ public class SkillTestServlet extends HttpServlet {
 	private String QUESTION2="QUESTION2";
 	private String QUESTION3="QUESTION3";
 	private String QUESTION4="QUESTION4";
-	private String QUESTION5="QUESTION5";
+	//private String QUESTION5="QUESTION5";
 	private HashMap<String, String> rubricMap = new HashMap<String,String>();
 
 	private String SorryPage = "/Sorry.html";
@@ -60,7 +60,7 @@ public class SkillTestServlet extends HttpServlet {
  
 		if(subAction.compareTo("gradeAnswers")==0){
 			int grade = this.retrieveAnswers(request);
-			if (grade>=3){
+			if (grade>=2){
 				request.setAttribute("subAction", "loadFirst");
 				loadFirstMicrotask(request,response);
 			}
@@ -82,8 +82,8 @@ public class SkillTestServlet extends HttpServlet {
 		rubricMap.put(QUESTION1,"c");
 		rubricMap.put(QUESTION2,"a");
 		rubricMap.put(QUESTION3,"d");
-		rubricMap.put(QUESTION4,"a");
-		rubricMap.put(QUESTION5,"c");
+		rubricMap.put(QUESTION4,"b");
+		//rubricMap.put(QUESTION5,"c");
 		
 		//Retrieve answers
 		HashMap<String, String> answerMap = new HashMap<String, String>();
@@ -95,8 +95,8 @@ public class SkillTestServlet extends HttpServlet {
 		answerMap.put(QUESTION3, answer3);
 		String answer4 = request.getParameter("question4");
 		answerMap.put(QUESTION4, answer4);
-		String answer5 = request.getParameter("question5");
-		answerMap.put(QUESTION5, answer5);
+		//String answer5 = request.getParameter("question5");
+		//answerMap.put(QUESTION5, answer5);
 		String path = getServletContext().getRealPath("/");
 		HashMap<String, Boolean> gradeMap = this.gradeAnswers(answerMap);
 		int grade = this.countCorrectAnswers(gradeMap);

@@ -12,11 +12,11 @@ public class SkillTestSource {
 
 
 	private StringBuffer createSourceOne(){
-		StringBuffer buffer = new StringBuffer("package pretask.test;");
-		buffer.append("\n");
+		StringBuffer buffer = new StringBuffer("public class PositionFinder {");
+		buffer.append("\n\n");
 		buffer.append("	public static void findPosition(String[] NameArray, String term){");
 		buffer.append("\n");
-		buffer.append("		if (NameArray.length==0)");
+		buffer.append("		if (NameArray.length==0 && NameArray==null)");
 		buffer.append("\n");
 		buffer.append("			System.out.print(\"Empty array\");");
 		buffer.append("\n");
@@ -44,7 +44,7 @@ public class SkillTestSource {
 		buffer.append("\n");
 		buffer.append("		String[] NameArray = {\"Hola\", \"Kumusta\", \"Hello\", \"Ciao\"};");
 		buffer.append("\n");
-		buffer.append("		findPosition(NameArray, \" \");");
+		buffer.append("		findPosition(NameArray, \"Ciao\");");
 		buffer.append("\n");
 		buffer.append("	}");
 		buffer.append("\n");
@@ -55,7 +55,7 @@ public class SkillTestSource {
 
 
 	private StringBuffer createSourceTwo(){
-		StringBuffer buffer = new StringBuffer("package pretask.test;");		buffer.append("\n\n");
+		StringBuffer buffer = new StringBuffer();		buffer.append("\n\n");
 		buffer.append("import java.util.*;");		buffer.append("\n\n");
 
 		buffer.append("public class PrintDatastructure {");		buffer.append("\n\n");

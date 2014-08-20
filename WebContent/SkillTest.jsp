@@ -73,8 +73,8 @@
 			if (!isSelected(document.getElementsByName("question4"), 4))
 				return false;
 
-			if (!isSelected(document.getElementsByName("question5"), 5))
-				return false;
+			//if (!isSelected(document.getElementsByName("question5"), 5))
+			//	return false;
 
 			return true;
 		}
@@ -137,7 +137,7 @@
 			<input type="radio" name="question1" value="d">3<br>
 			
 			<br>
-			2- At line 20, if we substitute "Ciao" for "Hola", what would be the output? 
+			2- At line 18, what would be the output if instead of "Ciao" we have "Hola"? 
 			<br>
 			<input type="radio" name="question2" value="a">0<br>
 			<input type="radio" name="question2" value="b">1<br>
@@ -145,14 +145,14 @@
 			<input type="radio" name="question2" value="d">3<br>
 
 			<br>
-			3- At line 20, if we substitute "Ciao" for an empty String (e.g., " "), what would be the output? 
+			3- At line 18, what would be the output if instead of "Ciao" we have an empty String (e.g., " ")? 
 			<br>
 			<input type="radio" name="question3" value="a">0<br>
 			<input type="radio" name="question3" value="b">1<br>
 			<input type="radio" name="question3" value="c">2<br>
 			<input type="radio" name="question3" value="d">3<br>
 			
-			<br> The source code below is used in the questions 4 and 5<br>
+			<!--  <br> The source code below is used in the questions 4 and 5<br>
 			<div id="editor2"><xmp>${requestScope["editor2"]}</xmp></div>
 
 				<script>
@@ -167,26 +167,30 @@
 				</script>
 
 			<br>
-			4- What is the output of the code?
+			-->
 			<br>
-			<input type="radio" name="question4" value="a">2!1!0BA;<br>
-			<input type="radio" name="question4" value="b">2!1!0AB;<br>
-			<input type="radio" name="question4" value="c">012!!AB;<br>
-			<input type="radio" name="question4" value="d">OAB1!2!;<br>
-			
+			4-At line 18, what would be the output if instead of "NameArray" we have null? 
 			<br>
+			<input type="radio" name="question4" value="a">Empty array<br>
+			<input type="radio" name="question4" value="b">NullPointer Exception<br>
+			<input type="radio" name="question4" value="c">0<br>
+			<input type="radio" name="question4" value="d">1<br>
+			<br>
+		<!--	
 			5- If we remove the "else" clause at line 28, what would be the new output of the code?
 			<br>
 			<input type="radio" name="question5" value="a">Exception<br>
 			<input type="radio" name="question5" value="b">;<br>
 			<input type="radio" name="question5" value="c">2!1Exception<br>
 			<input type="radio" name="question5" value="d">OAB1!2Exception<br><br>
-
+		-->
 			<INPUT TYPE="button" VALUE="Quit"	onclick="quit()"> 
 			<INPUT TYPE="button" VALUE="Submit answers" onclick="submitAnswers(event)">
 
 		</form>
 		<br>
+		
+
 	</div>
 </div>
 

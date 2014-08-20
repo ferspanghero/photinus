@@ -37,7 +37,6 @@ public class ConsentServlet extends HttpServlet {
 		if(subAction.compareTo("loadQuestions")==0){
 				Date currentDate = new Date();
 				String path = getServletContext().getRealPath("/");
-				System.out.println("path = "+path);
 				StorageManager manager = new StorageManager(path);
 				String userId = manager.generateWorkerID(currentDate);
 				String hitId = "hitID";
@@ -62,7 +61,7 @@ public class ConsentServlet extends HttpServlet {
 	private HttpServletRequest loadQuestions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		SkillTestSource source = new SkillTestSource();
 		request.setAttribute("editor1", source.getSourceOne());
-		request.setAttribute("editor2", source.getSourceTwo());
+		//request.setAttribute("editor2", source.getSourceTwo());
 		request.setAttribute("subAction", "gradeAnswers");
 		return request;
 	}
