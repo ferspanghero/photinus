@@ -114,7 +114,7 @@
 			<input type="hidden" name="hitId" value=${requestScope["hitId"]}> 
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
 			
-			<br> The source code below is used in the questions 1, 2, and 3<br>
+			<br> The source code below is used for all the questions.<br>
 			<div id="editor1"><xmp>${requestScope["editor1"]}</xmp></div>
 
 				<script>
