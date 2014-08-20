@@ -13,8 +13,9 @@ import edu.uci.ics.sdcl.firefly.Worker;
 public class WorkerStorage {
 	private String persistentFileName = "consent.ser";
 
-	public WorkerStorage() {
+	public WorkerStorage(String path) {
 		try{
+			this.persistentFileName = path+"/../" + this.persistentFileName;
 			File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 

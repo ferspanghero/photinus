@@ -23,6 +23,7 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 
 public class WorkerSessionStorageTest {
 
+	private String path = ".";
 	private HashMap <String, WorkerSession>  expectedActiveMap = new HashMap <String, WorkerSession> ();
 
 	@Before
@@ -133,16 +134,16 @@ public class WorkerSessionStorageTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage microtaskStorage = new MicrotaskStorage();
+			MicrotaskStorage microtaskStorage = new MicrotaskStorage(path);
 			microtaskStorage.replace(fileName, fileDebuggingSession);
 
 			//Generate the stack of WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(path);
 			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(10);
 			Stack<WorkerSession> actualDuplicateStack = sessionFactory.duplicateSessions(actualStack,2);
 
 
-			WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
+			WorkerSessionStorage sessionStorage = new WorkerSessionStorage(path);
 
 			boolean successNew = sessionStorage.appendNewWorkerSessionStack(actualStack,sessionStorage.NEW);
 			boolean successNewCopies = sessionStorage.appendNewWorkerSessionStack(actualDuplicateStack,sessionStorage.NEW_COPIES);
@@ -284,14 +285,14 @@ public class WorkerSessionStorageTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage microtaskStorage = new MicrotaskStorage();
+			MicrotaskStorage microtaskStorage = new MicrotaskStorage(path);
 			microtaskStorage.replace(fileName, fileDebuggingSession);
 
 			//Generate the stack of New and Duplicated WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(path);
 			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(10);
 			Stack<WorkerSession> actualDuplicateStack = sessionFactory.duplicateSessions(actualStack,2);
-			WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
+			WorkerSessionStorage sessionStorage = new WorkerSessionStorage(path);
 			sessionStorage.appendNewWorkerSessionStack(actualStack,sessionStorage.NEW);
 			sessionStorage.appendNewWorkerSessionStack(actualDuplicateStack,sessionStorage.NEW_COPIES);
 

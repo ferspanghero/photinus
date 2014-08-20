@@ -20,10 +20,11 @@ import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 public class MicrotaskSelectorTest {
 
+	private String path = ".";
 	private  HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
 	private HashMap<Integer, Microtask> microtaskMap;
-	MicrotaskStorage memento = new MicrotaskStorage();
-	MicrotaskSelector selector = new MicrotaskSelector();
+	MicrotaskStorage memento = new MicrotaskStorage(path);
+	MicrotaskSelector selector = new MicrotaskSelector(path);
 	String fileName = "SimpleSampleCode.java";
 
 	@Before

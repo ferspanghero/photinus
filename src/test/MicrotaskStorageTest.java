@@ -3,6 +3,7 @@ package test;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +18,7 @@ public class MicrotaskStorageTest {
 	FileDebugSession session1;
 	FileDebugSession session2;
 	String fileName = "SimpleSampleCode";
+	private String path = ".";
 	
 	@Before
 	public void setup(){
@@ -60,7 +62,7 @@ public class MicrotaskStorageTest {
 	public void test() {
 		
 		//Clean up the storage
-		MicrotaskStorage storage = new MicrotaskStorage();
+		MicrotaskStorage storage = new MicrotaskStorage(path);
 		storage.remove(fileName);
 		
 		storage.insert(fileName, session1);

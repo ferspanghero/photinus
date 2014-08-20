@@ -41,8 +41,9 @@ public class WorkerSessionStorage {
 	
 	private String persistentFileName = "workersession.ser"; 
 
-	public WorkerSessionStorage(){
+	public WorkerSessionStorage(String path){
 		try{
+			this.persistentFileName = path+"/../" + this.persistentFileName;
 			File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 

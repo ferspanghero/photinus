@@ -21,10 +21,12 @@ public class StorageManager {
 	
 	private WorkerSessionStorage sessionStorage;
 	private MicrotaskStorage microtaskStorage;
+	private WorkerStorage workerStorage;
 	
-	public StorageManager(){
-		sessionStorage = new WorkerSessionStorage();
-		microtaskStorage = new MicrotaskStorage();
+	public StorageManager(String path){
+		this.sessionStorage = new WorkerSessionStorage(path);
+		this.microtaskStorage = new MicrotaskStorage(path);
+		this.workerStorage = new WorkerStorage(path);
 	}
 	
 	/**
@@ -40,10 +42,10 @@ public class StorageManager {
 	 */
 	public boolean updateMicrotaskAnswer(String fileName, String sessionId, Integer microtaskId, Answer answer){
 		//set answer to the microtask in the WorkerSession
-		boolean success1 = sessionStorage.setSessionMicrotaskAnswer(sessionId,microtaskId,answer);
+		boolean success1 = this.sessionStorage.setSessionMicrotaskAnswer(sessionId,microtaskId,answer);
 		
 		//add another answer to the microtask 
-		boolean success2 = microtaskStorage.insertAnswer(fileName, microtaskId, answer);
+		boolean success2 = this.microtaskStorage.insertAnswer(fileName, microtaskId, answer);
 		 
 		//log the operations in a text file
 		//writeLog (Session, Method Name, Question, Answer, Time Duration);
@@ -58,11 +60,11 @@ public class StorageManager {
 	 * @return a new session, if there aren't new sessions available return null
 	 */
 	public WorkerSession readNewSession(String userId, String hitId){
-		WorkerSession session = sessionStorage.readNewWorkerSession();
+		WorkerSession session = this.sessionStorage.readNewWorkerSession();
 		if(session!=null){
 			session.setUserId(userId);
 			session.setHitId(hitId);
-			sessionStorage.updateActiveWorkerSession(session);
+			this.sessionStorage.updateActiveWorkerSession(session);
 			return session;
 		}
 		else
@@ -82,11 +84,10 @@ public class StorageManager {
 
 	
 	public String generateWorkerID(Date currentDate){
-		WorkerStorage storage = new WorkerStorage();
-		String workerId = storage.getNewWorkerKey();
+		String workerId = this.workerStorage.getNewWorkerKey();
 		String hitId = "hitId";
 		Worker worker = new Worker(workerId, hitId, currentDate);
-		storage.insert(workerId, worker);
+		this.workerStorage.insert(workerId, worker);
 		return workerId;
 	}
 	
@@ -94,14 +95,11 @@ public class StorageManager {
 	 * with empty ones.
 	 */
 	public void cleanUpRepositories(){
-		WorkerStorage workerStorage = new WorkerStorage();
-		workerStorage.cleanUp();
+		this.workerStorage.cleanUp();
 		
-		WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
-		sessionStorage.cleanUp();
+		this.sessionStorage.cleanUp();
 		
-		MicrotaskStorage microtaskStorage = new MicrotaskStorage();
-		microtaskStorage.cleanUp();
+		this.microtaskStorage.cleanUp();
 	}
 	
 	private void writeLog(String operation, String data){

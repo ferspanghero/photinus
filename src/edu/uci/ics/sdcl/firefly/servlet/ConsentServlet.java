@@ -35,8 +35,10 @@ public class ConsentServlet extends HttpServlet {
 		String subAction = request.getParameter("subAction");
 		
 		if(subAction.compareTo("loadQuestions")==0){
-				Date currentDate = new Date();	
-				StorageManager manager = new StorageManager();
+				Date currentDate = new Date();
+				String path = getServletContext().getRealPath("/");
+				System.out.println("path = "+path);
+				StorageManager manager = new StorageManager(path);
 				String userId = manager.generateWorkerID(currentDate);
 				String hitId = "hitID";
 				// now passing parameters to the next page

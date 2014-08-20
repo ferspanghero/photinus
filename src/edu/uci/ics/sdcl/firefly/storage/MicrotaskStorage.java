@@ -29,9 +29,10 @@ public class MicrotaskStorage {
 	private String persistentFileName = "microtasks.ser";
 
 
-	public MicrotaskStorage(){
+	public MicrotaskStorage(String path){
 	
 	 try{
+		this.persistentFileName = path+"/../" + this.persistentFileName;
 	 	File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 

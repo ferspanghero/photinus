@@ -97,10 +97,10 @@ public class SkillTestServlet extends HttpServlet {
 		answerMap.put(QUESTION4, answer4);
 		String answer5 = request.getParameter("question5");
 		answerMap.put(QUESTION5, answer5);
-		
+		String path = getServletContext().getRealPath("/");
 		HashMap<String, Boolean> gradeMap = this.gradeAnswers(answerMap);
 		int grade = this.countCorrectAnswers(gradeMap);
-		WorkerStorage workerStorage =  new WorkerStorage();
+		WorkerStorage workerStorage =  new WorkerStorage(path);
 
 		Worker worker = workerStorage.readSingleWorker(this.userId);
 
@@ -143,8 +143,8 @@ public class SkillTestServlet extends HttpServlet {
 	
 	
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
- 		
-		StorageManager manager = new StorageManager();
+		String path = getServletContext().getRealPath("/");
+		StorageManager manager = new StorageManager(path);
 		WorkerSession  session = manager.readNewSession(this.userId, this.hitId);
 		
 		if(session==null || !session.hasCurrent())

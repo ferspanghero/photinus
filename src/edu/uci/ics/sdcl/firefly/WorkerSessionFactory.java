@@ -33,16 +33,19 @@ public class WorkerSessionFactory {
 	/** Storage of WorkerSessions */
 	private WorkerSessionStorage sessionStorage;
 	
+	/** Storage for Microtasks */
+	private MicrotaskStorage microtaskStorage;
+	
 	/** The worker session datastructure that will be generated */
 	HashMap<Integer, WorkerSession> workerSessionMap;
 	
-	public WorkerSessionFactory(){
-		this.sessionStorage = new WorkerSessionStorage();
+	public WorkerSessionFactory(String path){
+		this.microtaskStorage = new MicrotaskStorage(path);
+		this.sessionStorage = new WorkerSessionStorage(path);
 		this.workerSessionMap = new HashMap<Integer, WorkerSession>();
 		this.fileMethodMap = this.buildMethodMap();
-		WorkerSessionStorage storage = new WorkerSessionStorage();
-		int currentNumber = storage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW) + 
-		 storage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW_COPIES);
+		int currentNumber = this.sessionStorage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW) + 
+		this.sessionStorage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW_COPIES);
 		this.keyGenerator = new RandomKeyGenerator(currentNumber);
 	}
 	
@@ -153,8 +156,8 @@ public class WorkerSessionFactory {
 		//indexed by fileName and method name and List of microtasks
 		HashMap<String,HashMap<String,ArrayList<Microtask>>> fileMethodMap = new HashMap<String,HashMap<String,ArrayList<Microtask>>> ();
 
-		MicrotaskStorage storage = new MicrotaskStorage();
-		Set<String> sessionSet= storage.retrieveDebuggingSessionNames();
+		
+		Set<String> sessionSet= microtaskStorage.retrieveDebuggingSessionNames();
 		if((sessionSet==null) || (!sessionSet.iterator().hasNext())){
 			//EMPTY!!!
 			System.out.println("DebugSession empty!!");
@@ -163,7 +166,7 @@ public class WorkerSessionFactory {
 			Iterator<String> sessionIterator = sessionSet.iterator();
 			while(sessionIterator.hasNext()){
 				String fileName = (String) sessionIterator.next();
-				FileDebugSession map = storage.read(fileName);
+				FileDebugSession map = this.microtaskStorage.read(fileName);
 				
 				if(fileMethodMap.get(fileName)==null){
 					fileMethodMap.put(fileName, new HashMap<String,ArrayList<Microtask>>());

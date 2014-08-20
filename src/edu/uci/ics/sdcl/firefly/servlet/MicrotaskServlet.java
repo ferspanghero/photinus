@@ -75,8 +75,8 @@ public class MicrotaskServlet extends HttpServlet {
 	
 	
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	 		
-		StorageManager manager = new StorageManager();
+		String path = getServletContext().getRealPath("/");
+		StorageManager manager = new StorageManager(path);
 		WorkerSession  session = manager.readNewSession(this.userId, this.hitId);
 		
 		if(session==null || !session.hasCurrent())
@@ -100,12 +100,12 @@ public class MicrotaskServlet extends HttpServlet {
 		String explanation = request.getParameter("explanation");
 	 	String sessionId = request.getParameter("sessionId");
 	 	String fileName = request.getParameter("fileName");
-		
+	 	String path = getServletContext().getRealPath("/");
 		//Restore data for next Request
 		request.setAttribute("sessionId",sessionId);
 
 		//Save answers from the previous microtask
-		StorageManager manager = new StorageManager();
+		StorageManager manager = new StorageManager(path);
 		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation));
 
 		//Continue working on existing session
@@ -127,12 +127,12 @@ public class MicrotaskServlet extends HttpServlet {
 		String microtaskId = request.getParameter("microtaskId");
 		String sessionId = request.getParameter("sessionId");
 		String fileName = request.getParameter("fileName");
-		
+		String path = getServletContext().getRealPath("/");
 		//Restore data for next Request
 		request.setAttribute("sessionId",sessionId);
 
 		//Save answers from the previous microtask
-		StorageManager manager = new StorageManager();
+		StorageManager manager = new StorageManager(path);
 		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.SKIPPED,null));
 
 		//Continue working on existing session

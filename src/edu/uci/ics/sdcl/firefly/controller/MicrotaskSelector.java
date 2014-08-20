@@ -22,12 +22,18 @@ import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
  */
 public class MicrotaskSelector {
 
+	String path="";
+	
+	public MicrotaskSelector(String path){
+		this.path = path;
+	}
+	
 	/** 
 	 * @return a list with a microtask and the fileName identifying a debugging session.
 	 * @see selectMicrotask(String fileName)
 	 */
 	public SelectorReturn selectAnyMicrotask(){
-		MicrotaskStorage memento = new MicrotaskStorage();
+		MicrotaskStorage memento = new MicrotaskStorage(this.path);
 		Set<String> debuggingSessionNameSet = memento.retrieveDebuggingSessionNames();
 		if((debuggingSessionNameSet==null) || (!debuggingSessionNameSet.iterator().hasNext())){
 			return null;
@@ -61,7 +67,7 @@ public class MicrotaskSelector {
 	 */
 	public Microtask selectMicrotask(String fileName){
 
-		MicrotaskStorage memento = new MicrotaskStorage();
+		MicrotaskStorage memento = new MicrotaskStorage(this.path);
 		FileDebugSession debugSession = memento.read(fileName);
 		if( (debugSession==null) || (debugSession.isEmpty()) ){
 			return null;

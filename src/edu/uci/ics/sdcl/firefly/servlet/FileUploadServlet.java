@@ -126,7 +126,8 @@ public class FileUploadServlet extends HttpServlet {
 					String results = generateMicrotasks(fileName, fileContent, targetName, bugReport);
 
 					//Store the UserId and HitId of the Researcher
-					WorkerStorage workerStorage = new WorkerStorage();
+					String path = getServletContext().getRealPath("/");
+					WorkerStorage workerStorage = new WorkerStorage(path);
 					Worker worker = new Worker(userId,hitId,new Date());
 					workerStorage.insert(userId, worker);
 
@@ -172,7 +173,8 @@ public class FileUploadServlet extends HttpServlet {
 			//calls QuestionFactory
 			
 			QuestionFactory questionFactory = new QuestionFactory ();
-			MicrotaskStorage storage = new MicrotaskStorage();
+			String path = getServletContext().getRealPath("/");
+			MicrotaskStorage storage = new MicrotaskStorage(path);
 			questionFactory.generateQuestions(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
 			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions();
 
@@ -205,12 +207,15 @@ public class FileUploadServlet extends HttpServlet {
 	private String generateWorkerSessions(){
 
 		String results = new String();
+		String path = getServletContext().getRealPath("/");
 		//WorkerSessions
 		//Generate the stack of New and Duplicated WorkerSession
-		WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
+		
+		WorkerSessionFactory sessionFactory = new WorkerSessionFactory(path);
 		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(10);
 		Stack<WorkerSession> duplicatedStack = sessionFactory.duplicateSessions(originalStack,2);
-		WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
+		
+		WorkerSessionStorage sessionStorage = new WorkerSessionStorage(path);
 		sessionStorage.appendNewWorkerSessionStack(originalStack,sessionStorage.NEW);
 		sessionStorage.appendNewWorkerSessionStack(duplicatedStack,sessionStorage.NEW_COPIES);
 
@@ -223,7 +228,8 @@ public class FileUploadServlet extends HttpServlet {
 	}
 	
 	private void delete(){
-		StorageManager manager = new StorageManager();
+		String path = getServletContext().getRealPath("/");
+		StorageManager manager = new StorageManager(path);
 		manager.cleanUpRepositories();
 	}
 }

@@ -10,22 +10,25 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 
 public class CreateReports {
 
+	private String path;
+	
 	public static void main(String[] args) {
 		CreateReports reports = new CreateReports();
-		System.out.println(reports.createMicrotasksReport());
+		System.out.println(reports.createMicrotasksReport("."));
 		System.out.println(reports.createWorkersReport());
 		System.out.println(reports.createAnswersReport());
 	}
 	
-	public boolean createMicrotasksReport(){
-		MicrotaskStorage microtaskStore = new MicrotaskStorage();
+	public boolean createMicrotasksReport(String path){
+		this.path = path;
+		MicrotaskStorage microtaskStore = new MicrotaskStorage(path);
 		HashMap<String, FileDebugSession> microtasks = microtaskStore.readAllDebugSessions();
 		ExcelMicrotasksReport microtaskReport = new ExcelMicrotasksReport();
 		return microtaskReport.writeToXlsx(microtasks);
 	}
 
 	public boolean createWorkersReport(){
-		WorkerStorage workersStore = new WorkerStorage();
+		WorkerStorage workersStore = new WorkerStorage(this.path);
 		HashMap<String, Worker> workers= workersStore.readAllWorkers();
 		// for debug purposes:
 		/* Set<Map.Entry<String, Worker>> setWorkers = workers.entrySet();
@@ -44,7 +47,7 @@ public class CreateReports {
 	}
 	
 	public boolean createAnswersReport(){
-		WorkerSessionStorage workerSessionStorage = new WorkerSessionStorage();
+		WorkerSessionStorage workerSessionStorage = new WorkerSessionStorage(this.path);
 		HashMap<String, Object> storage = workerSessionStorage.readStorage();
 		if (null != storage){
 			ExcelAnswersReport excelAnswersReport = new ExcelAnswersReport();

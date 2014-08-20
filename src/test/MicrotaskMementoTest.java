@@ -16,7 +16,7 @@ import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 public class MicrotaskMementoTest {
-
+	private String path=".";
 	private  HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
 	private HashMap<Integer, Microtask> microtaskMap;
 	private String fileName = "SimpleSampleCode.java";
@@ -71,7 +71,7 @@ public class MicrotaskMementoTest {
 	@Test
 	public void testCreateNewPersistentFile() {
 
-		MicrotaskStorage memento = new MicrotaskStorage();
+		MicrotaskStorage memento = new MicrotaskStorage(path);
 		memento.insert(fileName, this.debugSessionMap.get(fileName));
 
 		 FileDebugSession debugMap = memento.read(fileName);
@@ -89,7 +89,7 @@ public class MicrotaskMementoTest {
 
 	@Test
 	public void testRemoveDebugSession() {
-		MicrotaskStorage memento = new MicrotaskStorage();
+		MicrotaskStorage memento = new MicrotaskStorage(path);
 		memento.insert(fileName, this.debugSessionMap.get(fileName));
 		
 		 memento.remove(fileName);
