@@ -185,7 +185,7 @@ max-width: 700px;
 			<a id="option3"> <input type="radio" name="answer" value="3">I can't tell</a> 
 			<a id="option4"> <input type="radio" name="answer" value="4">Probably not</a> 
 			<a id="option5"> <input type="radio" name="answer" value="5">No</a> 
-		
+		    <span class="strech"></span>
 			
 			<!-- Hidden fields -->
 			<input type="hidden" name="fileName" value=${requestScope["fileName"]}> 
