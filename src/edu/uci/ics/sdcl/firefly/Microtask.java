@@ -17,8 +17,10 @@ public class Microtask implements Serializable
 	private Integer endingLine;
 	private Integer endingColumn;
 	private Integer ID;
-	private String timeSpan;
-	
+	private String elapsedTime;
+	private String timeStamp;
+
+
 	/**
 	 * 
 	 * Represents a question about one element (see CodeElement class) in a code snippet. The element is 
@@ -125,11 +127,24 @@ public class Microtask implements Serializable
 		this.failureDescription = bugReport;
 	}
 
-	public void setTimeSpan(String timeSpan) {
-		this.timeSpan = timeSpan;
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
 		
 	}
 
+	public void setElapsedTime(String elapsedTime) {
+		this.elapsedTime = elapsedTime;
+		
+	}
+
+	public String getElapsedTime() {
+		return elapsedTime;
+	}
+
+	
+	public String getTimeStamp() {
+		return timeStamp;
+	}
 
 	
 }

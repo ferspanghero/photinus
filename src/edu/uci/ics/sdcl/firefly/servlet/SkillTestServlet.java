@@ -154,7 +154,7 @@ public class SkillTestServlet extends HttpServlet {
 		else{
 			//Restore data for next Request
 			request.setAttribute("sessionId",session.getId());
-			request.setAttribute("timeStamp", TimeStampUtil.getTimeStamp());
+			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 			WorkerSessionSelector selector = new WorkerSessionSelector();
 			//load the new Microtask data into the Request
 			request = selector.generateRequest(request, session.getCurrentMicrotask());

@@ -99,15 +99,17 @@ public class MicrotaskStorage {
 	 * @param fileName  the file from which the codesnippet was obtained
 	 * @param microtaskId the unique identifier for the microtask
 	 * @param answer the answer obtained from the user
-	 * @param timeSpan 
+	 * @param elapsedTime 
+	 * @param timeStamp 
 	 * @return true if operation was successful, false otherwise
 	 */
-	public boolean insertAnswer(String fileName, Integer microtaskId, Answer answer, String timeSpan){ 
+	public boolean insertAnswer(String fileName, Integer microtaskId, Answer answer, String elapsedTime, String timeStamp){ 
 
 		FileDebugSession fileDebuggingSession = this.read(fileName);
 		Microtask mtask = fileDebuggingSession.getMicrotask(microtaskId);
 		mtask.addAnswer(answer);
-		mtask.setTimeSpan(timeSpan);
+		mtask.setTimeStamp(timeStamp);
+		mtask.setElapsedTime(elapsedTime);
 		fileDebuggingSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
 		//TODO change this system.out to be a log
 		System.out.println("Inserting microtask id:"+mtask.getID()+" answers: "+mtask.getNumberOfAnswers()+" : "+mtask.getAnswerList().toString());

@@ -293,15 +293,16 @@ public class WorkerSessionStorage {
 	 * @param microtaskId the identifier of a microtask in that session
 	 * @param answer the answer provided by a user
 	 * @param timeSpan 
+	 * @param timeStamp 
 	 * @return true if operation was successful, otherwise false
 	 */
-	public boolean setSessionMicrotaskAnswer(String sessionId,Integer microtaskId, Answer answer, String timeSpan) {
+	public boolean setSessionMicrotaskAnswer(String sessionId,Integer microtaskId, Answer answer, String elapsedTime, String timeStamp) {
 		
 		WorkerSession session = this.readActiveWorkerSessionByID(sessionId);
 		if(session==null)
 			return false;
 		else{
-			if(session.insertMicrotaskAnswer(microtaskId,answer,timeSpan))
+			if(session.insertMicrotaskAnswer(microtaskId,answer,elapsedTime,timeStamp))
 				return(this.updateActiveWorkerSession(session));
 			else
 				return false;

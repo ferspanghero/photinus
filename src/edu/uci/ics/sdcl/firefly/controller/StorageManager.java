@@ -37,16 +37,15 @@ public class StorageManager {
 	 * 2. Updates the answered microtask in the respective worker session. 
 	 *  Persist the microtaks back to the Worker Session storage.
 	 * 3. Logs both operations in a text file.
-	 * @param timeSpan 
 	 * 
 	 * @return true if all three operations succeeded, false if any of them failed.
 	 */
-	public boolean updateMicrotaskAnswer(String fileName, String sessionId, Integer microtaskId, Answer answer, String timeSpan){
+	public boolean updateMicrotaskAnswer(String fileName, String sessionId, Integer microtaskId, Answer answer, String elapsedTime, String timeStamp){
 		//set answer to the microtask in the WorkerSession
-		boolean success1 = this.sessionStorage.setSessionMicrotaskAnswer(sessionId,microtaskId,answer,timeSpan);
+		boolean success1 = this.sessionStorage.setSessionMicrotaskAnswer(sessionId,microtaskId,answer,elapsedTime, timeStamp);
 		
 		//add another answer to the microtask 
-		boolean success2 = this.microtaskStorage.insertAnswer(fileName, microtaskId, answer, timeSpan);
+		boolean success2 = this.microtaskStorage.insertAnswer(fileName, microtaskId, answer, elapsedTime, timeStamp);
 		 
 		//log the operations in a text file
 		//writeLog (Session, Method Name, Question, Answer, Time Duration);

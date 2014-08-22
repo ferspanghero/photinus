@@ -10,7 +10,7 @@ public class TimeStampUtil {
 	/**
 	 * @return a string representation of current time 
 	 */
-	public static String getTimeStamp(){
+	/*public static String getTimeStamp(){
 		Date date = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
@@ -23,15 +23,35 @@ public class TimeStampUtil {
 		int seconds = cal.get(Calendar.SECOND);
 		
 		return (new String(year+":"+month+":"+dayOfMonth+":"+hourOfDay+":"+minutes+":"+seconds));
-	}
+	}*/
 
+	
+	/**  
+	 * @return current time in milliseconds in String format
+	 * */
+	public static String getTimeStampMillisec(){
+		Calendar cal = Calendar.getInstance();
+		long time = cal.getTimeInMillis();
+		return Double.toString(time);
+	}
+	
+	
+	public static String computeElapsedTime(String timeMillisec, String currentTimeMillisec){
+		
+		double timeOne = Double.parseDouble(timeMillisec);
+		double timeTwo =  Double.parseDouble(currentTimeMillisec);	
+		double elapsed = timeTwo-timeOne;
+		return Double.toString(elapsed);
+	}
+		
 	/** 
 	 * Computes the time span between now and the provided timestamp
 	 * @param initialTimeStamp
+	 * @param currentTime
 	 * @return
 	 */
-	public static String computeTimeSpan(String initialTimeStamp){
-		Date currentTime = new Date();
+	public static String computeFullTimeSpan(String initialTimeStamp, Date currentTime){
+		 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(currentTime);
 		int year = cal.get(Calendar.YEAR);

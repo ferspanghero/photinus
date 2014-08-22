@@ -91,7 +91,7 @@ public class MicrotaskServlet extends HttpServlet {
 		else{
 			//Restore data for next Request
 			request.setAttribute("sessionId",session.getId());
-			request.setAttribute("timeStamp", TimeStampUtil.getTimeStamp());
+			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 			
 			//load the new Microtask data into the Request
 			request = this.workerSessionSelector.generateRequest(request, session.getCurrentMicrotask());
@@ -108,15 +108,17 @@ public class MicrotaskServlet extends HttpServlet {
 	 	String sessionId = request.getParameter("sessionId");
 	 	String fileName = request.getParameter("fileName");
 	 	String path = getServletContext().getRealPath("/");
-	 	String timeSpan = TimeStampUtil.computeTimeSpan(request.getParameter("timeStamp"));
+	 	String timeStamp = request.getParameter("timeStamp");
+	 	String elapsedTime = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
+	 	
 	 			
 		//Save answers from the previous microtask
 		StorageManager manager = new StorageManager(path);
-		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation), timeSpan);
+		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation), elapsedTime, timeStamp);
 
 		//Restore data for next Request
 		request.setAttribute("sessionId",sessionId);
-		request.setAttribute("timeStamp", TimeStampUtil.getTimeStamp());
+		request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 		
 		//Continue working on existing session
 		WorkerSession session = manager.readActiveSession(sessionId);	
@@ -139,15 +141,16 @@ public class MicrotaskServlet extends HttpServlet {
 		String sessionId = request.getParameter("sessionId");
 		String fileName = request.getParameter("fileName");
 		String path = getServletContext().getRealPath("/");
-		String timeSpan = TimeStampUtil.computeTimeSpan(request.getParameter("timeStamp"));
+		String timeStamp = request.getParameter("timeStamp");
+	 	String elapsedTime = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
 			
 		//Save answers from the previous microtask
 		StorageManager manager = new StorageManager(path);
-		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.SKIPPED,null),timeSpan);
+		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.SKIPPED,null),elapsedTime, timeStamp);
 
 		//Restore data for next Request
 		request.setAttribute("sessionId",sessionId);
-		request.setAttribute("timeStamp", TimeStampUtil.getTimeStamp());
+		request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 		
 		//Continue working on the existing session
 		WorkerSession session = manager.readActiveSession(sessionId);	
