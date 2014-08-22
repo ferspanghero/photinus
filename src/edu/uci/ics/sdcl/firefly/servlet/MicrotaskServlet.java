@@ -2,7 +2,10 @@ package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException; 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +16,7 @@ import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.PositionFinder;
+import edu.uci.ics.sdcl.firefly.TimeStampUtil;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.controller.WorkerSessionSelector;
@@ -29,7 +33,8 @@ public class MicrotaskServlet extends HttpServlet {
  
 	private String userId;
 	private String hitId;
-
+	private String timeStamp;
+	
 	private WorkerSessionSelector workerSessionSelector;
 	
 	/**
@@ -58,6 +63,7 @@ public class MicrotaskServlet extends HttpServlet {
 		request.setAttribute("userId",this.userId);
 		request.setAttribute("hitId",this.hitId);
 		
+		
 		String subAction = request.getParameter("subAction");
 				
 		if(subAction.compareTo("loadFirst")==0)
@@ -85,6 +91,7 @@ public class MicrotaskServlet extends HttpServlet {
 		else{
 			//Restore data for next Request
 			request.setAttribute("sessionId",session.getId());
+			request.setAttribute("timeStamp", TimeStampUtil.getTimeStamp());
 			
 			//load the new Microtask data into the Request
 			request = this.workerSessionSelector.generateRequest(request, session.getCurrentMicrotask());
@@ -101,16 +108,20 @@ public class MicrotaskServlet extends HttpServlet {
 	 	String sessionId = request.getParameter("sessionId");
 	 	String fileName = request.getParameter("fileName");
 	 	String path = getServletContext().getRealPath("/");
-		//Restore data for next Request
-		request.setAttribute("sessionId",sessionId);
-
+	 	String timeSpan = TimeStampUtil.computeTimeSpan(request.getParameter("timeStamp"));
+	 			
 		//Save answers from the previous microtask
 		StorageManager manager = new StorageManager(path);
-		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation));
+		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation), timeSpan);
 
+		//Restore data for next Request
+		request.setAttribute("sessionId",sessionId);
+		request.setAttribute("timeStamp", TimeStampUtil.getTimeStamp());
+		
 		//Continue working on existing session
 		WorkerSession session = manager.readActiveSession(sessionId);	
 		
+		//Decide where to send to send the user
 		if(session==null || !session.hasCurrent())
 			//No more microtasks, move to the Survey page
 			request.getRequestDispatcher(SurveyPage).include(request, response);
@@ -128,16 +139,20 @@ public class MicrotaskServlet extends HttpServlet {
 		String sessionId = request.getParameter("sessionId");
 		String fileName = request.getParameter("fileName");
 		String path = getServletContext().getRealPath("/");
-		//Restore data for next Request
-		request.setAttribute("sessionId",sessionId);
-
+		String timeSpan = TimeStampUtil.computeTimeSpan(request.getParameter("timeStamp"));
+			
 		//Save answers from the previous microtask
 		StorageManager manager = new StorageManager(path);
-		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.SKIPPED,null));
+		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.SKIPPED,null),timeSpan);
 
-		//Continue working on existing session
+		//Restore data for next Request
+		request.setAttribute("sessionId",sessionId);
+		request.setAttribute("timeStamp", TimeStampUtil.getTimeStamp());
+		
+		//Continue working on the existing session
 		WorkerSession session = manager.readActiveSession(sessionId);	
 		
+		//Decide where to send to send the user
 		if(session==null || !session.hasCurrent())
 			//No more microtasks, move to the Survey page
 			request.getRequestDispatcher(SurveyPage).include(request, response);
@@ -155,7 +170,5 @@ public class MicrotaskServlet extends HttpServlet {
 	}
 	
 
-
-	
 
 }

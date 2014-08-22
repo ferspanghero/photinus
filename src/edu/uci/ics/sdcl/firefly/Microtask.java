@@ -17,6 +17,7 @@ public class Microtask implements Serializable
 	private Integer endingLine;
 	private Integer endingColumn;
 	private Integer ID;
+	private String timeSpan;
 	
 	/**
 	 * 
@@ -122,6 +123,11 @@ public class Microtask implements Serializable
 
 	public void setFailureDescription(String bugReport) {
 		this.failureDescription = bugReport;
+	}
+
+	public void setTimeSpan(String timeSpan) {
+		this.timeSpan = timeSpan;
+		
 	}
 
 
