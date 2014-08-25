@@ -108,8 +108,8 @@ public class MicrotaskStorage {
 		FileDebugSession fileDebuggingSession = this.read(fileName);
 		Microtask mtask = fileDebuggingSession.getMicrotask(microtaskId);
 		mtask.addAnswer(answer);
-		mtask.setTimeStamp(timeStamp);
-		mtask.setElapsedTime(elapsedTime);
+		mtask.addTimeStamp(timeStamp);
+		mtask.addElapsedTime(elapsedTime);
 		fileDebuggingSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
 		//TODO change this system.out to be a log
 		System.out.println("Inserting microtask id:"+mtask.getID()+" answers: "+mtask.getNumberOfAnswers()+" : "+mtask.getAnswerList().toString());

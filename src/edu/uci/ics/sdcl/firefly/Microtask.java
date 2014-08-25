@@ -17,8 +17,8 @@ public class Microtask implements Serializable
 	private Integer endingLine;
 	private Integer endingColumn;
 	private Integer ID;
-	private String elapsedTime;
-	private String timeStamp;
+	private ArrayList<String> elapsedTimeList;
+	private ArrayList<String> timeStampList;
 
 
 	/**
@@ -47,6 +47,8 @@ public class Microtask implements Serializable
 		this.endingLine = endingLineNumber;
 		this.endingColumn = endingColumnNumber;
 		this.answerList = new ArrayList<Answer>();
+		this.elapsedTimeList = new ArrayList<String>();
+		this.timeStampList = new ArrayList<String>();
 		this.ID = ID;
 	}
 
@@ -127,23 +129,24 @@ public class Microtask implements Serializable
 		this.failureDescription = bugReport;
 	}
 
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
+	public void addTimeStamp(String timeStamp) {
+		this.timeStampList.add(timeStamp);
 		
 	}
 
-	public void setElapsedTime(String elapsedTime) {
-		this.elapsedTime = elapsedTime;
+	public void addElapsedTime(String elapsedTime) {
+		this.elapsedTimeList.add(elapsedTime);
 		
 	}
 
-	public String getElapsedTime() {
-		return elapsedTime;
+	public ArrayList<String> getElapsedTimeList() {
+		//Todo fix
+		return elapsedTimeList;
 	}
 
 	
-	public String getTimeStamp() {
-		return timeStamp;
+	public ArrayList<String> getTimeStampList() {
+		return timeStampList;
 	}
 
 	

@@ -109,8 +109,8 @@ public class WorkerSession implements Serializable{
 			return false;
 		else{
 			microtask.addAnswer(answer);
-			microtask.setElapsedTime(elapsedTime);
-			microtask.setTimeStamp(timeStamp);
+			microtask.addElapsedTime(elapsedTime);
+			microtask.addTimeStamp(timeStamp);
 			this.storeCurrentMicrotask(microtask);
 			return true;
 		}
