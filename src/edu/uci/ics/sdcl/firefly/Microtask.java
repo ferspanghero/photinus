@@ -139,8 +139,7 @@ public class Microtask implements Serializable
 		
 	}
 
-	public ArrayList<String> getElapsedTimeList() {
-		//Todo fix
+	public ArrayList<String> getElapsedTimeList() { 
 		return elapsedTimeList;
 	}
 

@@ -25,6 +25,15 @@ import edu.uci.ics.sdcl.firefly.Features;
 
 public class ExcelMicrotasksReport
 {
+	private int maxNumberOfAnswers;
+	
+	private String persistentFileName = "MicrotasksReport.xlsx";
+	
+	public ExcelMicrotasksReport(String path, int maxAnswers){
+		this.persistentFileName = path+"/../" + this.persistentFileName;
+		this.maxNumberOfAnswers = maxAnswers;
+	}
+	
 	public boolean writeToXlsx(HashMap<String, FileDebugSession> microtasksMappedPerFile)
 	{
 		int numberOfQuestions = 0;
@@ -82,8 +91,31 @@ public class ExcelMicrotasksReport
 			cell.setCellValue("ID");
 			cell = row.createCell(cellnum2++);
 			cell.setCellValue("Questions");
-			cell = row.createCell(cellnum2);
-			cell.setCellValue("Answers");
+			//Create 10 cells for answers
+			for(int j=1;j<11;j++){
+				cell = row.createCell(cellnum2++);
+				cell.setCellValue("Answer-"+j);
+			}
+			
+			//Create 10 cells for explanations
+			for(int j=1;j<11;j++){
+				cell = row.createCell(cellnum2++);
+				cell.setCellValue("Explanation-"+j);
+			}
+			
+			//Create 10 cells for elapsed time
+			for(int j=1;j<11;j++){
+				cell = row.createCell(cellnum2++);
+				cell.setCellValue("Duration-"+j);
+			}
+			
+			//Create 10 cells for time stamp
+			for(int j=1;j<11;j++){
+				cell = row.createCell(cellnum2++);
+				cell.setCellValue("Time-"+j);
+			}
+			
+			
 			// preparing the TreeMap for later fill the method sheet
 			Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
 			
@@ -94,19 +126,45 @@ public class ExcelMicrotasksReport
 				numberOfAnswers += microtask.getNumberOfAnswers();
 
 				// preparing line (object), which index is a cell
-				Object[] lineContent = new Object[(microtask.getNumberOfAnswers()*2)+3]; // FileName(1) + ID(1) + question(1) + explanations(size) + answers(size)
+				Object[] lineContent = new Object[(4*maxNumberOfAnswers)+3]; // FileName(1) + ID(1) + question(1) + explanations(size) + answers(size) + elapsed time(size) + timestamp (size)
 				lineContent[0] = Features.removePath(microtask.getMethod().getFileName(), true);	// FileName (cell 0)
 				lineContent[1] = microtask.getID();						// ID (cell 1)
 				lineContent[2] = microtask.getQuestion();				// Question (cell 2)
+
+				//Answers
 				int k = 3;
 				for (Answer singleAnswer : microtask.getAnswerList()) {
-					lineContent[k++] = singleAnswer.getOption();		// adding answers per question
+					lineContent[k++] = singleAnswer.getOption();		// adding answers perquestion
 				}
-				if (k > 3){	// got some answers, now the explanation:
+				lineContent = completeEmptyCells(lineContent,k,maxNumberOfAnswers-microtask.getNumberOfAnswers());
+				
+				//Explanations
+				k= maxNumberOfAnswers+3;//Position for the Explanation data.
+				if (microtask.getNumberOfAnswers()>0){	// got some answers, now the explanation:
 					for (Answer singleAnswer : microtask.getAnswerList()) {
 						lineContent[k++] = singleAnswer.getExplanation();	// adding explanation per question
 					}	
 				}
+				lineContent = completeEmptyCells(lineContent,k,maxNumberOfAnswers-microtask.getNumberOfAnswers());
+				
+				//Elapsed Time
+				k= 2*maxNumberOfAnswers+3;//Position for the Elapsed time data.
+				if (microtask.getNumberOfAnswers()>0){	
+					for (String elapsedTime : microtask.getElapsedTimeList()) {
+						lineContent[k++] = elapsedTime;	// adding the elapsed time
+					}	
+				}
+				lineContent = completeEmptyCells(lineContent,k,maxNumberOfAnswers-microtask.getNumberOfAnswers());
+				
+				//Time Stamp
+				k= 3*maxNumberOfAnswers+3;//Position for the Time stamp data.
+				if (microtask.getNumberOfAnswers()>0){	
+					for (String timeStamp : microtask.getTimeStampList()) {
+						lineContent[k++] = timeStamp;	// adding the elapsed time
+					}	
+				}
+				lineContent = completeEmptyCells(lineContent,k,maxNumberOfAnswers-microtask.getNumberOfAnswers());
+				
 				data.put(new Integer(dataKey++), lineContent);	// putting customized line 
 				lastColumn = lastColumn < k ? k : lastColumn;	
 			}
@@ -143,12 +201,6 @@ public class ExcelMicrotasksReport
 				methodSheet.autoSizeColumn(j);
 			}
 			methodSheet.setColumnWidth(2, 30000);
-			/*
-				CellStyle cs = workbook.createCellStyle();
-				XSSFFont f = workbook.createFont();
-				f.setBoldweight((short) Font.BOLD);
-				cs.setFont(f);
-				methodSheet.setDefaultColumnStyle(1,cs); //set bold for column 1 */
 		}
 
 		/* filling the summary sheet */
@@ -184,12 +236,12 @@ public class ExcelMicrotasksReport
 		{
 			//Write the workbook in file system
 
-			FileOutputStream out = new FileOutputStream(new File("MicrotasksReport.xlsx"));
+			FileOutputStream out = new FileOutputStream(new File(this.persistentFileName));
 			workbook.write(out);
 			out.flush();
 			out.close();
 
-			System.out.println("MicrotasksReport.xlsx written successfully on disk.");
+			System.out.println("MicrotasksReport.xlsx written successfully on disk at: "+this.persistentFileName);
 			return true;
 		}
 		catch (Exception e)
@@ -197,5 +249,19 @@ public class ExcelMicrotasksReport
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	/**
+	 * Complete the empty cells until to the gapSize (so we keep content aligned)
+	 * It is done at the end of the array.
+	 * @param lineContent
+	 * @param gapSize
+	 * @return
+	 */
+	private Object[] completeEmptyCells(Object[] lineContent, int pos, int gapSize ) {
+		for (int j=0;j<gapSize;j++){
+			lineContent[pos++]="";
+		}
+		return lineContent;
 	}
 }

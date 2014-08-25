@@ -10,20 +10,21 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 
 public class CreateReports {
 
-	private String path;
+	private String path="C:/Users/Christian Adriano/Documents/GitHub/crowd-debug-firefly/";
+	private int maxAnswers=10;
 	
 	public static void main(String[] args) {
 		CreateReports reports = new CreateReports();
-		System.out.println(reports.createMicrotasksReport("."));
+		
+		System.out.println(reports.createMicrotasksReport());
 		System.out.println(reports.createWorkersReport());
 		System.out.println(reports.createAnswersReport());
 	}
 	
-	public boolean createMicrotasksReport(String path){
-		this.path = path;
-		MicrotaskStorage microtaskStore = new MicrotaskStorage(path);
+	public boolean createMicrotasksReport(){
+		MicrotaskStorage microtaskStore = new MicrotaskStorage(this.path);
 		HashMap<String, FileDebugSession> microtasks = microtaskStore.readAllDebugSessions();
-		ExcelMicrotasksReport microtaskReport = new ExcelMicrotasksReport();
+		ExcelMicrotasksReport microtaskReport = new ExcelMicrotasksReport(this.path,this.maxAnswers);
 		return microtaskReport.writeToXlsx(microtasks);
 	}
 
