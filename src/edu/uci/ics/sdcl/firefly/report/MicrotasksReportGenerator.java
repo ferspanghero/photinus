@@ -1,8 +1,7 @@
-package edu.uci.ics.sdcl.firefly.export.file;
+package edu.uci.ics.sdcl.firefly.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,14 +22,14 @@ import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Features;
 
 
-public class ExcelMicrotasksReport
+public class MicrotasksReportGenerator
 {
 	private int maxNumberOfAnswers;
 	
-	private String persistentFileName = "MicrotasksReport.xlsx";
+	private String fileName = "MicrotasksReport.xlsx";
 	
-	public ExcelMicrotasksReport(String path, int maxAnswers){
-		this.persistentFileName = path+"/../" + this.persistentFileName;
+	public MicrotasksReportGenerator(String path, int maxAnswers){
+		this.fileName = path+"/../" + this.fileName;
 		this.maxNumberOfAnswers = maxAnswers;
 	}
 	
@@ -236,12 +235,12 @@ public class ExcelMicrotasksReport
 		{
 			//Write the workbook in file system
 
-			FileOutputStream out = new FileOutputStream(new File(this.persistentFileName));
+			FileOutputStream out = new FileOutputStream(new File(this.fileName));
 			workbook.write(out);
 			out.flush();
 			out.close();
 
-			System.out.println("MicrotasksReport.xlsx written successfully on disk at: "+this.persistentFileName);
+			System.out.println("MicrotasksReport.xlsx written successfully on disk at: "+this.fileName);
 			return true;
 		}
 		catch (Exception e)

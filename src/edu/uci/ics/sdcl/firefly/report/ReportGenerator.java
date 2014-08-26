@@ -1,4 +1,4 @@
-package edu.uci.ics.sdcl.firefly.export.file;
+package edu.uci.ics.sdcl.firefly.report;
 
 import java.util.HashMap;
 
@@ -8,13 +8,13 @@ import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 
-public class CreateReports {
+public class ReportGenerator {
 
 	private String path="C:/Users/Christian Adriano/Documents/GitHub/crowd-debug-firefly/";
 	private int maxAnswers=10;
 	
 	public static void main(String[] args) {
-		CreateReports reports = new CreateReports();
+		ReportGenerator reports = new ReportGenerator();
 		
 		System.out.println(reports.createMicrotasksReport());
 		System.out.println(reports.createWorkersReport());
@@ -24,7 +24,7 @@ public class CreateReports {
 	public boolean createMicrotasksReport(){
 		MicrotaskStorage microtaskStore = new MicrotaskStorage(this.path);
 		HashMap<String, FileDebugSession> microtasks = microtaskStore.readAllDebugSessions();
-		ExcelMicrotasksReport microtaskReport = new ExcelMicrotasksReport(this.path,this.maxAnswers);
+		MicrotasksReportGenerator microtaskReport = new MicrotasksReportGenerator(this.path,this.maxAnswers);
 		return microtaskReport.writeToXlsx(microtasks);
 	}
 
@@ -41,7 +41,8 @@ public class CreateReports {
 				" " + mapEntryWorker.getValue().getGradeMap() + "  " + mapEntryWorker.getValue().getSurveyAnswers());
 		} */
 		if (null != workers){
-			ExcelUsersScoreReport.writeToXlsx(workers);
+			WorkersReportGenerator generator = new WorkersReportGenerator(this.path);
+			generator.writeToXlsx(workers);
 			return true;
 		} else
 			return false;
@@ -51,7 +52,7 @@ public class CreateReports {
 		WorkerSessionStorage workerSessionStorage = new WorkerSessionStorage(this.path);
 		HashMap<String, Object> storage = workerSessionStorage.readStorage();
 		if (null != storage){
-			ExcelAnswersReport excelAnswersReport = new ExcelAnswersReport();
+			SessionsReportGenerator excelAnswersReport = new SessionsReportGenerator(this.path);
 			return excelAnswersReport.writeToXlsx(storage);
 		} else
 			return false;

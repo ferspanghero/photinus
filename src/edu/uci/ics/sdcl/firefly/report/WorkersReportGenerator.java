@@ -1,4 +1,4 @@
-package edu.uci.ics.sdcl.firefly.export.file;
+package edu.uci.ics.sdcl.firefly.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,8 +18,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.servlet.SurveyServlet;
 
-public class ExcelUsersScoreReport {
-	public static void writeToXlsx(HashMap<String, Worker> workers)
+public class WorkersReportGenerator {
+	
+private String fileName = "WorkersReport.xlsx";
+	
+	public WorkersReportGenerator(String path) {
+		this.fileName = path+"/../" + this.fileName;
+	}
+	
+	public void writeToXlsx(HashMap<String, Worker> workers)
 	{
 		/* creating excel workbook */
 		//Blank workbook
@@ -121,12 +128,12 @@ public class ExcelUsersScoreReport {
 		try
 		{
 			//Write the workbook in file system
-			FileOutputStream out = new FileOutputStream(new File("WorkersReport.xlsx"));
+			FileOutputStream out = new FileOutputStream(new File(this.fileName));
 			workbook.write(out);
 			out.flush();
 			out.close();
 
-			System.out.println("WorkersReport.xlsx written successfully on disk.");
+			System.out.println("WorkerReport.xlsx written successfully on disk.");
 		}
 		catch (Exception e)
 		{

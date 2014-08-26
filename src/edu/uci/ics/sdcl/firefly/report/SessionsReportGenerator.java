@@ -1,4 +1,4 @@
-package edu.uci.ics.sdcl.firefly.export.file;
+package edu.uci.ics.sdcl.firefly.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,13 +22,16 @@ import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 
-public class ExcelAnswersReport {
+public class SessionsReportGenerator {
 	private HashMap<Integer, Integer> questionsInSheet;	// HashMap with the microtask's ID and respective column number
 	private Integer columnNumber, key;
 	private Map<Integer, Object[]> data;
 	private Object[] lineContent;
+		
+	private String fileName = "SessionsReport.xlsx";
 	
-	public ExcelAnswersReport() {
+	public SessionsReportGenerator(String path) {
+		this.fileName = path+"/../" + this.fileName;
 		this.questionsInSheet = new HashMap<Integer, Integer>();
 		this.columnNumber = 3;
 		this.key = 0;	// for the 'data' map
@@ -155,11 +158,11 @@ public class ExcelAnswersReport {
 
 		try
 		{	//Write the workbook in file system
-			FileOutputStream out = new FileOutputStream(new File("AnswersReport.xlsx"));
+			FileOutputStream out = new FileOutputStream(new File(this.fileName));
 			workbook.write(out);
 			out.flush();
 			out.close();
-			System.out.println("AnswersReport.xlsx written successfully on disk.");
+			System.out.println("SessionReport.xlsx written successfully on disk.");
 			return true;
 		}
 		catch (Exception e)
