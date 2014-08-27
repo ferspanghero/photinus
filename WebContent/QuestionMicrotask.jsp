@@ -31,36 +31,36 @@
 #failurePrompt {
 	max-width: 700px;
 	background-color: #D1EEEE;
-	 text-align: justify;
-	 margin: 0 auto;
-	 text-justify: distribute-all-lines;
+	text-align: justify;
+	margin: 0 auto;
+	text-justify: distribute-all-lines;
 }
 
 #internalText {
-	 margin-left: 10px;
+	margin-left: 10px;
 	margin-right: 15px;
-	
+	text-justify: distribute-all-lines;
 }
 
 #questionPrompt {
 	max-width: 700px;
 	background-color: #B4CDCD;
-	 margin: 0 auto;
-	 text-align: justify;
-	  text-justify: distribute-all-lines;
+	margin: 0 auto;
+	text-align: justify;
+	text-justify: distribute-all-lines;
 }
 
 #questionCode {
 	max-width: 700px;
 	background-color: #D1EEEE;
 	margin: 0 auto;
-	 text-align: justify;
+	text-align: justify;
 }
 
 #buttons { 
-background-color: #B4CDCD;
-margin: 0 auto;
-max-width: 700px;
+    background-color: #B4CDCD;
+    margin: 0 auto;
+    max-width: 700px;
 }
  
 #thumbs {
@@ -68,7 +68,7 @@ max-width: 700px;
 	background-color: #B4CDCD;
 	text-align: justify;
 	text-justify: distribute-all-lines;
-	 margin: 0 auto;
+	margin: 0 auto;
 }
 
 #thumbs a {
@@ -76,14 +76,10 @@ max-width: 700px;
 	display: inline-block;
 	*display: inline;
 	zoom: 1;
+
 }
 
-.stretch {
-	width: 100%;
-	display: inline-block;
-	font-size: 12;
-	line-height: 0
-}
+ 
 </style>
 </head>
 
@@ -177,15 +173,17 @@ max-width: 700px;
 	
 	<div id="thumbs">
 		<div id="internalText">
-		<br>
 		<form name="answerForm" action="microtask" method="get">
 
-			<a id="option1"> <input type="radio" name="answer" value="1">Yes</a> 
-			<a id="option2"> <input type="radio" name="answer" value="2">Probably yes</a> 
-			<a id="option3"> <input type="radio" name="answer" value="3">I can't tell</a> 
-			<a id="option4"> <input type="radio" name="answer" value="4">Probably not</a> 
-			<a id="option5"> <input type="radio" name="answer" value="5">No</a> 
-		    <span class="strech"></span>
+			<center>
+			 <br>
+			<a><input type="radio" name="answer" value="1" />Yes </a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+			<a><input type="radio" name="answer" value="2" />Probably yes </a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+			<a><input type="radio" name="answer" value="3" />I can't tell </a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+			<a><input type="radio" name="answer" value="4" />Probably not</a>   &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+			<a><input type="radio" name="answer" value="5" />No </a> 
+			</center>
+
 			
 			<!-- Hidden fields -->
 			<input type="hidden" name="fileName" value=${requestScope["fileName"]}> 
