@@ -47,16 +47,23 @@ private String fileName = "WorkersReport.xlsx";
 		cell = row.createCell(cellNum++);
 		cell.setCellValue("Skill Score");
 		cell = row.createCell(cellNum++);
-		// creating 5 new columns for the skill questions
-		for (Integer k=1; k<=5; k++){
+				
+		// skill test answers
+		for (Integer k=1; k<=4; k++){
 			cell.setCellValue("Q" + k.toString());
 			cell = row.createCell(cellNum++);
-		}	// now for the survey
+		}	
+		// the time the worker took to answer
+		cell.setCellValue("Test Duration");
+		cell = row.createCell(cellNum++);
+		
+		// now for the survey
 		for (int i=0; i<SurveyServlet.question.length; i++){
 			cell.setCellValue(SurveyServlet.question[i]);
 			cell = row.createCell(cellNum++);
 		}
 		
+	
 		// populating new data structure to later fill score sheet
 		Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
 		// iterating users
@@ -65,28 +72,34 @@ private String fileName = "WorkersReport.xlsx";
 		while(iterateWorkers.hasNext())
 		{
 			Map.Entry<String, Worker> mapEntryWorker = (Map.Entry<String, Worker>)iterateWorkers.next();
+			Worker worker = mapEntryWorker.getValue();
 			
 			// preparing line (object), which index is a cell
 			Object[] lineContent = new Object[13]; 		// 13 columns
-			lineContent[0] = mapEntryWorker.getKey();	// user ID (cell 0)
-			lineContent[1] = mapEntryWorker.getValue().getGrade();	// Skill score (cell 1)
+			lineContent[0] = worker.getUserId();	// user ID (cell 0)
+			lineContent[1] = worker.getGrade();	// Skill score (cell 1)
 			// iterating over the skill questions
 			int j = 2;
-			if (null != mapEntryWorker.getValue().getGradeMap()){
-				Set<Map.Entry<String, Boolean>> setSkillTest = mapEntryWorker.getValue().getGradeMap().entrySet();
+			if (null != worker.getGradeMap()){
+				Set<Map.Entry<String, Boolean>> setSkillTest = worker.getGradeMap().entrySet();
 				Iterator<Entry<String, Boolean>> iterateSkillTest = setSkillTest.iterator();
 				while(iterateSkillTest.hasNext()){
 					Map.Entry<String, Boolean> mapEntrySkillTest = (Map.Entry<String, Boolean>)iterateSkillTest.next();
 					lineContent[j++] = mapEntrySkillTest.getValue() ? "OK" : "Not";
 				}
-			} else j = 7;
+				// add the duration of the test
+				lineContent[j++] = worker.getSkillTestDuration();
+			} 
+			else{ //Not answes, so jump to the 7th cell keeping the previous ones empty.
+				j = 7;
+			}
 			// iterating over the Survey questions
 			HashMap<String, String> survey = mapEntryWorker.getValue().getSurveyAnswers();
 			for (int i=0; i<SurveyServlet.question.length; i++){
 				if (survey.containsKey(SurveyServlet.question[i])){
 					lineContent[j++] = survey.get(SurveyServlet.question[i]);
 				} else
-					lineContent[j++] = "No Answer";
+					lineContent[j++] = "-";
 			}
 
 			// putting customized line

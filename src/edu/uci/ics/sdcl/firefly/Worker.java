@@ -13,6 +13,7 @@ public class Worker implements Serializable{
 	private HashMap<String, String> rubricMap;
 	private HashMap<String, Boolean> gradeMap;
 	private int grade;
+	private String skillTestDuration;
 	
 	
 	public Worker(String userId, String hitId, Date consentDate) {
@@ -55,10 +56,21 @@ public class Worker implements Serializable{
 	}
 
 	public void setSkillAnswers(HashMap<String, String> rubricMap,
-			HashMap<String, Boolean> gradeMap, int grade) {
+			HashMap<String, Boolean> gradeMap, int grade, String duration) {
 		this.setRubricMap(rubricMap);
 		this.setGradeMap(gradeMap);
 		this.setGrade(grade);
+		this.setSkillTestDuration(duration);
+		
+	}
+
+	private void setSkillTestDuration(String duration) {
+		this.skillTestDuration = duration;
+		
+	}
+	
+	public String getSkillTestDuration() {
+		return this.skillTestDuration;
 		
 	}
 

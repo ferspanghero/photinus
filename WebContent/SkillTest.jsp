@@ -112,6 +112,7 @@
 		<form name="testForm" method="get" action="skillTest">
 			<input type="hidden" name="userId" value=${requestScope["userId"]}> 
 			<input type="hidden" name="hitId" value=${requestScope["hitId"]}> 
+			
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
 			
 			<br> The source code below is used for all the questions.<br>
@@ -127,7 +128,7 @@
 					editor1.setOption("highlightActiveLine", false); // disable highligthing on the active line
 					editor1.setShowPrintMargin(false); // disable printing margin
 				</script>
-
+			<input type="hidden" name="timeStamp" value=${requestScope["timeStamp"]}> 
 			<br>
 			1- What is the output of the code?
 			<br>

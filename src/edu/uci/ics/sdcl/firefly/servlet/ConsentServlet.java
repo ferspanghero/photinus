@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.uci.ics.sdcl.firefly.TimeStampUtil;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
 
@@ -45,6 +46,7 @@ public class ConsentServlet extends HttpServlet {
 				request.setAttribute("hitId", hitId);
 				request.setAttribute("subAction", "gradeAnswers");
 				request = this.loadQuestions(request, response);
+				request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 				request.getRequestDispatcher(SkillTestPage).include(request, response);
 			}
 			else{

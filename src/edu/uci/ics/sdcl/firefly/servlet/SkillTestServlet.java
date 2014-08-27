@@ -86,6 +86,10 @@ public class SkillTestServlet extends HttpServlet {
 		rubricMap.put(QUESTION4,"b");
 		//rubricMap.put(QUESTION5,"c");
 		
+		//Retrieve time taken to answer
+		String timeStamp = request.getParameter("timeStamp");
+	 	String duration = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
+		
 		//Retrieve answers
 		HashMap<String, String> answerMap = new HashMap<String, String>();
 		String answer1 = request.getParameter("question1");
@@ -105,7 +109,7 @@ public class SkillTestServlet extends HttpServlet {
 
 		Worker worker = workerStorage.readSingleWorker(this.userId);
 
-		worker.setSkillAnswers(rubricMap,gradeMap,grade);
+		worker.setSkillAnswers(rubricMap,gradeMap,grade, duration);
 		workerStorage.insert(userId, worker);
 
 		return grade;
