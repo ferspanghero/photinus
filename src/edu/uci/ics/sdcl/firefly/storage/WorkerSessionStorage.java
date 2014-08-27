@@ -217,16 +217,32 @@ public class WorkerSessionStorage {
 	}
 
 	/**
-	 * 
+	 * @param type NEW or NEW_COPIES
 	 * @return the size of the stack of new WorkerSessions
 	 */
-	public Integer getNumberOfNewWorkerSessions(String type){
+	public int getNumberOfNewWorkerSessions(String type){
 		Stack<WorkerSession> stack = this.retrieveWorkerSessionStack(type);
 		if(stack!=null && !stack.isEmpty())
 			return stack.size();
 		else
 			return 0;
 	}
+	
+	/**
+	 * 
+	 * @return the size of the stack of new WorkerSessions
+	 */
+	public int getNumberOfNewWorkerSessions(){
+		Stack<WorkerSession> stackNew = this.retrieveWorkerSessionStack(this.NEW);
+		Stack<WorkerSession> stackNewCopies = this.retrieveWorkerSessionStack(this.NEW_COPIES);
+		int total = 0;
+		if(stackNew!=null && !stackNew.isEmpty())
+			total = stackNew.size();
+		if(stackNewCopies!=null && !stackNewCopies.isEmpty())
+			total = total + stackNewCopies.size();
+		return total;
+	}
+
 
 	/**
 	 * 

@@ -185,9 +185,12 @@ public class FileUploadServlet extends HttpServlet {
 
 				storage.insert(fileName, fileDebuggingSession); //append to existing fileDebugSessions
 
-				int numberOfCodeSnippets = snippetList.size();
-				int numberOfMicrotasks = microtaskMap.size();
-				results = "Number of code snippets: "+numberOfCodeSnippets+ "<br> Microtasks generated: " + numberOfMicrotasks+"<br>";
+				int generatedCodeSnippets = snippetList.size();
+				int generatedMicrotasks = microtaskMap.size();
+				int numberOfMicrotasks = storage.getNumberOfMicrotask();
+				results = "Code snippets generated: "+generatedCodeSnippets+ 
+						"<br> Microtasks generated: " + generatedMicrotasks+"<br>"+
+						"Total Microtasks available now: "+ numberOfMicrotasks + "<br>";
 				
 				System.out.println("Results: "+results);
 			}
@@ -220,7 +223,10 @@ public class FileUploadServlet extends HttpServlet {
 		sessionStorage.appendNewWorkerSessionStack(duplicatedStack,sessionStorage.NEW_COPIES);
 
 		int totalSessions = originalStack.size()+duplicatedStack.size(); 
-		results = results + "Worker sessions generated: " +totalSessions;
+		int existingSessions = sessionStorage.getNumberOfNewWorkerSessions(); 
+	
+		results = results + "Sessions generated: " +totalSessions+"<br>"+ 
+					"Total Sessions available now: "+existingSessions;
 
 		System.out.println("Results: "+results);
 
