@@ -24,9 +24,9 @@ public class StorageManager {
 	private WorkerStorage workerStorage;
 	
 	public StorageManager(String path){
-		this.sessionStorage = new WorkerSessionStorage(path);
-		this.microtaskStorage = new MicrotaskStorage(path);
-		this.workerStorage = new WorkerStorage(path);
+		this.sessionStorage = new WorkerSessionStorage();
+		this.microtaskStorage = new MicrotaskStorage();
+		this.workerStorage = new WorkerStorage();
 	}
 	
 	/**

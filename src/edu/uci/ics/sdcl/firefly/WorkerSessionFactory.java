@@ -39,9 +39,9 @@ public class WorkerSessionFactory {
 	/** The worker session datastructure that will be generated */
 	HashMap<Integer, WorkerSession> workerSessionMap;
 	
-	public WorkerSessionFactory(String path){
-		this.microtaskStorage = new MicrotaskStorage(path);
-		this.sessionStorage = new WorkerSessionStorage(path);
+	public WorkerSessionFactory(){
+		this.microtaskStorage = new MicrotaskStorage();
+		this.sessionStorage = new WorkerSessionStorage();
 		this.workerSessionMap = new HashMap<Integer, WorkerSession>();
 		this.fileMethodMap = this.buildMethodMap();
 		int currentNumber = this.sessionStorage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW) + 

@@ -13,6 +13,7 @@ import java.util.Stack;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 /** 
  *  Writes, updates, and reads WorkerSession objects
@@ -41,9 +42,11 @@ public class WorkerSessionStorage {
 	
 	private String persistentFileName = "workersession.ser"; 
 
-	public WorkerSessionStorage(String path){
+	public WorkerSessionStorage(){
+		PropertyManager manager = new PropertyManager();
+		String path = manager.serializationPath;
 		try{
-			this.persistentFileName = path+"/../" + this.persistentFileName;
+			this.persistentFileName = path + this.persistentFileName;
 			File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 

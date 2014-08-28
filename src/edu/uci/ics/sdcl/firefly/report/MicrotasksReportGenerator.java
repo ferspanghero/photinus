@@ -20,21 +20,23 @@ import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Features;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 
 public class MicrotasksReportGenerator
 {
-	private int maxNumberOfAnswers;
+	private int answersPerMicrotask;
 	
 	private String fileName = "MicrotasksReport.xlsx";
 	
-	public MicrotasksReportGenerator(String path, int maxAnswers){
-		this.fileName = path+"/../" + this.fileName;
-		this.maxNumberOfAnswers = maxAnswers;
+	public MicrotasksReportGenerator(){
+		PropertyManager manager = new PropertyManager();
+		String path = manager.reportPath;
+		this.fileName = path+ this.fileName;
+		this.answersPerMicrotask = manager.answersPerMicrotask;
 	}
 	
-	public boolean writeToXlsx(HashMap<String, FileDebugSession> microtasksMappedPerFile)
-	{
+	public boolean writeToXlsx(HashMap<String, FileDebugSession> microtasksMappedPerFile){
 		int numberOfQuestions = 0;
 		int numberOfAnswers = 0;
 		int numberOfFiles = microtasksMappedPerFile.size();
@@ -125,7 +127,7 @@ public class MicrotasksReportGenerator
 				numberOfAnswers += microtask.getNumberOfAnswers();
 
 				// preparing line (object), which index is a cell
-				Object[] lineContent = new Object[(4*maxNumberOfAnswers)+3]; // FileName(1) + ID(1) + question(1) + explanations(size) + answers(size) + elapsed time(size) + timestamp (size)
+				Object[] lineContent = new Object[(4*answersPerMicrotask)+3]; // FileName(1) + ID(1) + question(1) + explanations(size) + answers(size) + elapsed time(size) + timestamp (size)
 				lineContent[0] = Features.removePath(microtask.getMethod().getFileName(), true);	// FileName (cell 0)
 				lineContent[1] = microtask.getID();						// ID (cell 1)
 				lineContent[2] = microtask.getQuestion();				// Question (cell 2)
@@ -135,34 +137,34 @@ public class MicrotasksReportGenerator
 				for (Answer singleAnswer : microtask.getAnswerList()) {
 					lineContent[k++] = singleAnswer.getOption();		// adding answers perquestion
 				}
-				lineContent = completeEmptyCells(lineContent,k,maxNumberOfAnswers-microtask.getNumberOfAnswers());
+				lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
 				
 				//Explanations
-				k= maxNumberOfAnswers+3;//Position for the Explanation data.
+				k= answersPerMicrotask+3;//Position for the Explanation data.
 				if (microtask.getNumberOfAnswers()>0){	// got some answers, now the explanation:
 					for (Answer singleAnswer : microtask.getAnswerList()) {
 						lineContent[k++] = singleAnswer.getExplanation();	// adding explanation per question
 					}	
 				}
-				lineContent = completeEmptyCells(lineContent,k,maxNumberOfAnswers-microtask.getNumberOfAnswers());
+				lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
 				
 				//Elapsed Time
-				k= 2*maxNumberOfAnswers+3;//Position for the Elapsed time data.
+				k= 2*answersPerMicrotask+3;//Position for the Elapsed time data.
 				if (microtask.getNumberOfAnswers()>0){	
 					for (String elapsedTime : microtask.getElapsedTimeList()) {
 						lineContent[k++] = elapsedTime;	// adding the elapsed time
 					}	
 				}
-				lineContent = completeEmptyCells(lineContent,k,maxNumberOfAnswers-microtask.getNumberOfAnswers());
+				lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
 				
 				//Time Stamp
-				k= 3*maxNumberOfAnswers+3;//Position for the Time stamp data.
+				k= 3*answersPerMicrotask+3;//Position for the Time stamp data.
 				if (microtask.getNumberOfAnswers()>0){	
 					for (String timeStamp : microtask.getTimeStampList()) {
 						lineContent[k++] = timeStamp;	// adding the elapsed time
 					}	
 				}
-				lineContent = completeEmptyCells(lineContent,k,maxNumberOfAnswers-microtask.getNumberOfAnswers());
+				lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
 				
 				data.put(new Integer(dataKey++), lineContent);	// putting customized line 
 				lastColumn = lastColumn < k ? k : lastColumn;	

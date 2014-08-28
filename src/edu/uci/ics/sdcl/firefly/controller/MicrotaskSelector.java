@@ -24,7 +24,7 @@ public class MicrotaskSelector {
 
 	String path="";
 	
-	public MicrotaskSelector(String path){
+	public MicrotaskSelector(){
 		this.path = path;
 	}
 	
@@ -33,7 +33,7 @@ public class MicrotaskSelector {
 	 * @see selectMicrotask(String fileName)
 	 */
 	public SelectorReturn selectAnyMicrotask(){
-		MicrotaskStorage memento = new MicrotaskStorage(this.path);
+		MicrotaskStorage memento = new MicrotaskStorage();
 		Set<String> debuggingSessionNameSet = memento.retrieveDebuggingSessionNames();
 		if((debuggingSessionNameSet==null) || (!debuggingSessionNameSet.iterator().hasNext())){
 			return null;
@@ -67,7 +67,7 @@ public class MicrotaskSelector {
 	 */
 	public Microtask selectMicrotask(String fileName){
 
-		MicrotaskStorage memento = new MicrotaskStorage(this.path);
+		MicrotaskStorage memento = new MicrotaskStorage();
 		FileDebugSession debugSession = memento.read(fileName);
 		if( (debugSession==null) || (debugSession.isEmpty()) ){
 			return null;

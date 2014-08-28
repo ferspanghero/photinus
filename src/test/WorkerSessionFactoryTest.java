@@ -84,11 +84,11 @@ public class WorkerSessionFactoryTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage memento = new MicrotaskStorage(path);
+			MicrotaskStorage memento = new MicrotaskStorage();
 			memento.replace(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(path);
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
 			HashMap<String,HashMap<String,ArrayList<Microtask>>> actualFileMethodMap = sessionFactory.buildMethodMap();
 
 			HashMap<String,ArrayList<Microtask>> methodMap = actualFileMethodMap.get("TinySample.java");
@@ -168,11 +168,11 @@ public class WorkerSessionFactoryTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage memento = new MicrotaskStorage(path);
+			MicrotaskStorage memento = new MicrotaskStorage();
 			memento.replace(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(path);
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
 			HashMap<String,HashMap<String,ArrayList<Microtask>>> actualFileMethodMap = sessionFactory.buildMethodMap();
 
 			HashMap<String,ArrayList<Microtask>> methodMap = actualFileMethodMap.get("TinySample.java");
@@ -325,11 +325,11 @@ public class WorkerSessionFactoryTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage memento = new MicrotaskStorage(path);
+			MicrotaskStorage memento = new MicrotaskStorage();
 			memento.replace(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(path);
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
 			HashMap<String,HashMap<String,ArrayList<Microtask>>> actualFileMethodMap = sessionFactory.buildMethodMap();
 
 			//Test the original Stack

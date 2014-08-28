@@ -56,8 +56,7 @@ public class ResultsServlet extends HttpServlet {
 	private HashMap<String,HashMap<String,MethodData>> buildResults(){
 		//indexed by fileName and method name
 		HashMap<String,HashMap<String,MethodData>> resultMap = new HashMap<String,HashMap<String,MethodData>> ();
-		String path = getServletContext().getRealPath("/");
-		MicrotaskStorage memento = new MicrotaskStorage(path);
+		MicrotaskStorage memento = new MicrotaskStorage();
 		Set<String> sessionSet= memento.retrieveDebuggingSessionNames();
 		if((sessionSet==null) || (!sessionSet.iterator().hasNext())){
 			//EMPTY!!!

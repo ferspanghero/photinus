@@ -23,6 +23,7 @@ import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 import java.util.*; 
 
@@ -127,7 +128,7 @@ public class FileUploadServlet extends HttpServlet {
 
 					//Store the UserId and HitId of the Researcher
 					String path = getServletContext().getRealPath("/");
-					WorkerStorage workerStorage = new WorkerStorage(path);
+					WorkerStorage workerStorage = new WorkerStorage();
 					Worker worker = new Worker(userId,hitId,new Date());
 					workerStorage.insert(userId, worker);
 
@@ -174,7 +175,7 @@ public class FileUploadServlet extends HttpServlet {
 			
 			QuestionFactory questionFactory = new QuestionFactory ();
 			String path = getServletContext().getRealPath("/");
-			MicrotaskStorage storage = new MicrotaskStorage(path);
+			MicrotaskStorage storage = new MicrotaskStorage();
 			questionFactory.generateQuestions(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
 			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions();
 
@@ -214,11 +215,14 @@ public class FileUploadServlet extends HttpServlet {
 		//WorkerSessions
 		//Generate the stack of New and Duplicated WorkerSession
 		
-		WorkerSessionFactory sessionFactory = new WorkerSessionFactory(path);
-		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(10);
-		Stack<WorkerSession> duplicatedStack = sessionFactory.duplicateSessions(originalStack,2);
+		PropertyManager manager = new PropertyManager();
 		
-		WorkerSessionStorage sessionStorage = new WorkerSessionStorage(path);
+		
+		WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
+		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(manager.microtasksPerSession);
+		Stack<WorkerSession> duplicatedStack = sessionFactory.duplicateSessions(originalStack,manager.answersPerMicrotask-1); //Because we already have the original stack.
+		
+		WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
 		sessionStorage.appendNewWorkerSessionStack(originalStack,sessionStorage.NEW);
 		sessionStorage.appendNewWorkerSessionStack(duplicatedStack,sessionStorage.NEW_COPIES);
 

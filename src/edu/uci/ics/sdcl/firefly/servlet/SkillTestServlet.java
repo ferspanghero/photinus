@@ -102,10 +102,9 @@ public class SkillTestServlet extends HttpServlet {
 		answerMap.put(QUESTION4, answer4);
 		//String answer5 = request.getParameter("question5");
 		//answerMap.put(QUESTION5, answer5);
-		String path = getServletContext().getRealPath("/");
 		HashMap<String, Boolean> gradeMap = this.gradeAnswers(answerMap);
 		int grade = this.countCorrectAnswers(gradeMap);
-		WorkerStorage workerStorage =  new WorkerStorage(path);
+		WorkerStorage workerStorage =  new WorkerStorage();
 
 		Worker worker = workerStorage.readSingleWorker(this.userId);
 

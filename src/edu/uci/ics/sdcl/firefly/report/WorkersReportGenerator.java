@@ -17,13 +17,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.servlet.SurveyServlet;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class WorkersReportGenerator {
 	
 private String fileName = "WorkersReport.xlsx";
 	
-	public WorkersReportGenerator(String path) {
-		this.fileName = path+"/../" + this.fileName;
+	public WorkersReportGenerator() {
+		PropertyManager manager = new PropertyManager();
+		String path = manager.reportPath;
+		this.fileName = path + this.fileName;
 	}
 	
 	public void writeToXlsx(HashMap<String, Worker> workers)

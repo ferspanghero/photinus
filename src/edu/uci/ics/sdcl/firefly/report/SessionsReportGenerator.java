@@ -21,6 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class SessionsReportGenerator {
 	private HashMap<Integer, Integer> questionsInSheet;	// HashMap with the microtask's ID and respective column number
@@ -30,8 +31,10 @@ public class SessionsReportGenerator {
 		
 	private String fileName = "SessionsReport.xlsx";
 	
-	public SessionsReportGenerator(String path) {
-		this.fileName = path+"/../" + this.fileName;
+	public SessionsReportGenerator() {
+		PropertyManager manager = new PropertyManager();
+		String path = manager.reportPath;
+		this.fileName = path + this.fileName;
 		this.questionsInSheet = new HashMap<Integer, Integer>();
 		this.columnNumber = 3;
 		this.key = 0;	// for the 'data' map

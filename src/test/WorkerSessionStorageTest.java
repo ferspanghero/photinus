@@ -134,16 +134,16 @@ public class WorkerSessionStorageTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage microtaskStorage = new MicrotaskStorage(path);
+			MicrotaskStorage microtaskStorage = new MicrotaskStorage();
 			microtaskStorage.replace(fileName, fileDebuggingSession);
 
 			//Generate the stack of WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(path);
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
 			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(10);
 			Stack<WorkerSession> actualDuplicateStack = sessionFactory.duplicateSessions(actualStack,2);
 
 
-			WorkerSessionStorage sessionStorage = new WorkerSessionStorage(path);
+			WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
 
 			boolean successNew = sessionStorage.appendNewWorkerSessionStack(actualStack,sessionStorage.NEW);
 			boolean successNewCopies = sessionStorage.appendNewWorkerSessionStack(actualDuplicateStack,sessionStorage.NEW_COPIES);
@@ -285,14 +285,14 @@ public class WorkerSessionStorageTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage microtaskStorage = new MicrotaskStorage(path);
+			MicrotaskStorage microtaskStorage = new MicrotaskStorage();
 			microtaskStorage.replace(fileName, fileDebuggingSession);
 
 			//Generate the stack of New and Duplicated WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(path);
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
 			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(10);
 			Stack<WorkerSession> actualDuplicateStack = sessionFactory.duplicateSessions(actualStack,2);
-			WorkerSessionStorage sessionStorage = new WorkerSessionStorage(path);
+			WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
 			sessionStorage.appendNewWorkerSessionStack(actualStack,sessionStorage.NEW);
 			sessionStorage.appendNewWorkerSessionStack(actualDuplicateStack,sessionStorage.NEW_COPIES);
 

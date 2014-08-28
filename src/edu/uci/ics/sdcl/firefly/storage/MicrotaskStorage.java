@@ -13,6 +13,7 @@ import java.util.Set;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 /** Decouples the persistence mechanism for Microtasks
  * 
@@ -29,10 +30,13 @@ public class MicrotaskStorage {
 	private String persistentFileName = "microtasks.ser";
 
 
-	public MicrotaskStorage(String path){
-	
+	public MicrotaskStorage(){
+
+	PropertyManager manager = new PropertyManager();
+	String path = manager.serializationPath;
+		
 	 try{
-		this.persistentFileName = path+"/../" + this.persistentFileName;
+		this.persistentFileName = path + this.persistentFileName;
 	 	File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 

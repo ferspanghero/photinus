@@ -6,15 +6,19 @@ import java.util.Properties;
 
 public class PropertyManager {
 
-	public String serializationPath;
-
-	public String reportPath;
-
 	private String fileName="firefly.properties";
 
 	private String devPropertyPath= "C:/firefly/";
 
-	private String serverPropertyPath ="./"; //It will be in the same place as the Webapp deployed. 
+	private String serverPropertyPath ="./"; //It will be in Webapp folder. 
+	
+	public String serializationPath;
+
+	public String reportPath;
+
+	public int answersPerMicrotask;
+
+	public int microtasksPerSession;
 
 	public PropertyManager(){
 
@@ -28,33 +32,35 @@ public class PropertyManager {
 				readServerProperties();
 			}
 			else{
-				Properties properties = new Properties();
-				this.reportPath = properties.getProperty("reportPath");
-				this.reportPath = properties.getProperty("repositoryPath");
+				System.out.println("Could not load properties, because operation system is not supported.");				
 			}	
 	}
 	
 	private void readDevelopmentProperties(){
 		try {
 			Properties properties = new Properties();
-			properties.load(new FileInputStream(this.devPropertyPath));
-			this.reportPath = properties.getProperty("developmentSerializationPath");
-			this.serializationPath = properties.getProperty("developmentSerializationPath");
+			properties.load(new FileInputStream(this.devPropertyPath+this.fileName));
+			this.reportPath = properties.getProperty("development-ReportPath");
+			this.serializationPath = properties.getProperty("development-SerializationPath");
+			this.answersPerMicrotask = new Integer(properties.getProperty("answersPerMicrotask")).intValue();
+			this.microtasksPerSession = new Integer(properties.getProperty("microtasksPerSession")).intValue();
 		} 
 		catch (IOException e) {
-			System.out.println("Could not load properties from path: "+this.devPropertyPath);
+			System.out.println("Could not load properties. Please be sure that the property file is located at: "+this.devPropertyPath);
 		}
 	}
 	
 	private void readServerProperties(){
 		try {
 			Properties properties = new Properties();
-			properties.load(new FileInputStream(this.serverPropertyPath));
-			this.reportPath = properties.getProperty("serverSerializationPath");
-			this.serializationPath = properties.getProperty("serverSerializationPath");
+			properties.load(new FileInputStream(this.serverPropertyPath+this.fileName));
+			this.reportPath = properties.getProperty("server-SerializationPath");
+			this.serializationPath = properties.getProperty("server-SerializationPath");
+			this.answersPerMicrotask = new Integer(properties.getProperty("answersPerMicrotask")).intValue();
+			this.microtasksPerSession = new Integer(properties.getProperty("microtasksPerSession")).intValue();
 		} 
 		catch (IOException e) {
-			System.out.println("Could not load properties from path: "+this.devPropertyPath);
+			System.out.println("Could not load properties. Please be sure that the property file is located at: "+this.serverPropertyPath);
 		}
 	}
 
