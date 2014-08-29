@@ -32,12 +32,13 @@ public class MicrotaskStorage {
 
 	public MicrotaskStorage(){
 
-	PropertyManager manager = new PropertyManager();
-	String path = manager.serializationPath;
-		
-	 try{
+		PropertyManager manager = new PropertyManager();
+		String path = manager.serializationPath;
 		this.persistentFileName = path + this.persistentFileName;
-	 	File file = new File(this.persistentFileName);
+
+		try{
+
+			File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 
 
@@ -58,7 +59,7 @@ public class MicrotaskStorage {
 			exception.printStackTrace();
 		}
 	}
- 
+
 
 	/** Retrieves the list of microtasks for provided file
 	 * 
@@ -74,7 +75,7 @@ public class MicrotaskStorage {
 		else
 			return null;
 	}
-	
+
 	/** Retrieves a map with all FileDebugSessions indexed by file name
 	 * 
 	 * @param 
@@ -128,15 +129,15 @@ public class MicrotaskStorage {
 	 */
 	public boolean insert(String fileName, FileDebugSession newfileDebuggingSession){
 
-		
+
 		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
-		
+
 		if(debugSessionMap!=null){
-			
+
 			if(debugSessionMap.containsKey(fileName))
 				//Has to merge the new one with the existing
 				newfileDebuggingSession.append(debugSessionMap.get(fileName));	
-			
+
 			debugSessionMap.put(fileName, newfileDebuggingSession);
 			return this.updateIndex(debugSessionMap);	
 		}		
@@ -161,16 +162,16 @@ public class MicrotaskStorage {
 	 * @return the number of existing microtask for the file
 	 */
 	public int getNumberOfMicrotask() {
-		
+
 		int total=0;
 		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
 		Iterator<String> iter = debugSessionMap.keySet().iterator();
-		
+
 		while(iter.hasNext()){
 			String fileName = iter.next();
 			if(debugSessionMap.containsKey(fileName))
 				//Has to merge the new one with the existing
-			total = total + debugSessionMap.get(fileName).getNumberOfMicrotasks();
+				total = total + debugSessionMap.get(fileName).getNumberOfMicrotasks();
 		}
 		return total;
 	}
@@ -197,7 +198,7 @@ public class MicrotaskStorage {
 		HashMap<String,FileDebugSession> debugSessionMap= new HashMap<String,FileDebugSession>();
 		this.updateIndex(debugSessionMap);
 	}
-	
+
 	/**
 	 * 
 	 * @return the index of microtasks stored in the file
@@ -248,8 +249,8 @@ public class MicrotaskStorage {
 		}
 	}
 
-	
 
-	
+
+
 
 }

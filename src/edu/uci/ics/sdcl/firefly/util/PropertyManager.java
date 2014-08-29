@@ -10,7 +10,7 @@ public class PropertyManager {
 
 	private String devPropertyPath= "C:/firefly/";
 
-	private String serverPropertyPath ="./"; //It will be in Webapp folder. 
+	private String serverPropertyPath ="/var/lib/tomcat7/webapps/crowd-debug-firefly/";   
 	
 	public String serializationPath;
 
