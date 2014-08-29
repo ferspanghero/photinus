@@ -23,45 +23,45 @@ public class WorkerSessionFactory {
 
 	/** Starts with 0. It is used to uniquely identify each new WorkerSession */
 	private String sessionID;
-	
+
 	/** Just counts the number of sessions. It is use as part of the sessionID generation */
 	private RandomKeyGenerator keyGenerator;
-	
+
 	/** The map of all microtasks that will be used to generate WorkerSession objects */
 	private HashMap<String,HashMap<String,ArrayList<Microtask>>> fileMethodMap;
-	
+
 	/** Storage of WorkerSessions */
 	private WorkerSessionStorage sessionStorage;
-	
+
 	/** Storage for Microtasks */
 	private MicrotaskStorage microtaskStorage;
-	
+
 	/** The worker session datastructure that will be generated */
 	HashMap<Integer, WorkerSession> workerSessionMap;
-	
+
 	public WorkerSessionFactory(){
 		this.microtaskStorage = new MicrotaskStorage();
 		this.sessionStorage = new WorkerSessionStorage();
 		this.workerSessionMap = new HashMap<Integer, WorkerSession>();
 		this.fileMethodMap = this.buildMethodMap();
 		int currentNumber = this.sessionStorage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW) + 
-		this.sessionStorage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW_COPIES);
+				this.sessionStorage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW_COPIES);
 		this.keyGenerator = new RandomKeyGenerator(currentNumber);
 	}
-	
+
 	/** 
 	 * @param microtaskPerSession the number of microtasks that will be included in each session
 	 * @param copies the number of times the same session should be created
 	 * 
 	 */
 	public Stack<WorkerSession> generateSessions(int microtaskPerSession){
-		
+
 		//Final stack that will be persisted
 		Stack<WorkerSession> workerSessionStack = new Stack<WorkerSession>();
-		
+
 		//Auxiliary lists
 		ArrayList<WorkerSession> originalList = new ArrayList<WorkerSession>(); 
-		
+
 		//Obtain a list of N microtasks from N different codesnippets (i.e., methods)
 		ArrayList<Microtask> mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		//Generate the original WorkerSessions
@@ -71,7 +71,7 @@ public class WorkerSessionFactory {
 			originalList.add(session);
 			mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		}
-		
+
 		//Store sessions in the final Stack
 		for(int i=originalList.size()-1;i>=0;i--){
 			//Traverses the lists from last to first to preserve an ascending order in the stack
@@ -79,7 +79,7 @@ public class WorkerSessionFactory {
 		}
 		return workerSessionStack;
 	}
-	
+
 	/** 
 	 * @param stack the original WorkerSession 
 	 * @param copies the number of times the same session should be created
@@ -87,9 +87,9 @@ public class WorkerSessionFactory {
 	 * 
 	 */
 	public Stack<WorkerSession> duplicateSessions(Stack<WorkerSession> originalStack, int copies){
-	
-	  	Stack<WorkerSession> duplicateStack = new Stack<WorkerSession>();
-		
+
+		Stack<WorkerSession> duplicateStack = new Stack<WorkerSession>();
+
 		// produce # copies of the original sessions
 		for(int j=0;j<copies;j++){
 			//Generate the duplicated WorkerSessions
@@ -99,14 +99,14 @@ public class WorkerSessionFactory {
 					System.out.println("ERROR originalSession is NULL for i="+i+ " sessionID= "+sessionID);
 				this.sessionID = this.keyGenerator.generate();
 				WorkerSession duplicateSession =  new WorkerSession(this.sessionID, originalSession.getId(), originalSession.getMicrotaskList());
-//				System.out.println("WSF @99: " + originalSession.getId());
+				//				System.out.println("WSF @99: " + originalSession.getId());
 
 				duplicateStack.push(duplicateSession);
 			}
 		}
 		return duplicateStack;	
 	}
-	
+
 	/**
 	 * Produces the next list of microtasks. The list produced is removed from the original set.
 	 * 
@@ -116,6 +116,7 @@ public class WorkerSessionFactory {
 	public ArrayList<Microtask> nextMicrotaskList(int number){
 
 		ArrayList<Microtask> resultList = new ArrayList<Microtask>();
+		HashMap<String,Microtask> methodTracker = new HashMap<String,Microtask>();// Tracks whether a method with the same signature was not already added.
 
 		Iterator<String> fileKeyIter = this.fileMethodMap.keySet().iterator();
 		int found=0;
@@ -131,13 +132,21 @@ public class WorkerSessionFactory {
 					if(microtaskList!=null && !microtaskList.isEmpty()){
 						Microtask microtask = microtaskList.get(0);
 
-						resultList.add(microtask);
-
-						microtaskList.remove(0);
-						//Put the map back with the element removed
-						methodMap.put(methodKey, microtaskList);
-						fileMethodMap.put(fileKey, methodMap);
-						found++;
+						//Avoids methods with the same name in the same session.
+						//That avoids the risk of having buggy and fixed versions of the same method in the same session.
+						if (!methodTracker.containsKey(microtask.getMethod().getMethodSignature().getName())){ 
+							methodTracker.put(microtask.getMethod().getMethodSignature().getName(), microtask);
+							resultList.add(microtask);
+							microtaskList.remove(0);
+							//Put the map back with the element removed
+							methodMap.put(methodKey, microtaskList);
+							fileMethodMap.put(fileKey, methodMap);
+							found++;
+						}
+						else{
+							System.out.println("Successfully dealt with method name collision, method:  "+
+									microtask.getMethod().getMethodSignature().getName());
+						}
 					}
 				}
 			}
@@ -145,18 +154,18 @@ public class WorkerSessionFactory {
 
 		return resultList;
 	}
-	
+
 	/** Build a datastructure to server as basis to generate the WorkerSession objects, because
 	 * each WorkerSession can have only one microtask  for the same method.
 	 * 
 	 * @return A map indexed by filename and method name
 	 */
 	public HashMap<String,HashMap<String,ArrayList<Microtask>>> buildMethodMap(){
-		
+
 		//indexed by fileName and method name and List of microtasks
 		HashMap<String,HashMap<String,ArrayList<Microtask>>> fileMethodMap = new HashMap<String,HashMap<String,ArrayList<Microtask>>> ();
 
-		
+
 		Set<String> sessionSet= microtaskStorage.retrieveDebuggingSessionNames();
 		if((sessionSet==null) || (!sessionSet.iterator().hasNext())){
 			//EMPTY!!!
@@ -167,7 +176,7 @@ public class WorkerSessionFactory {
 			while(sessionIterator.hasNext()){
 				String fileName = (String) sessionIterator.next();
 				FileDebugSession map = this.microtaskStorage.read(fileName);
-				
+
 				if(fileMethodMap.get(fileName)==null){
 					fileMethodMap.put(fileName, new HashMap<String,ArrayList<Microtask>>());
 				}
@@ -178,7 +187,7 @@ public class WorkerSessionFactory {
 					Integer mtaskID = (Integer) microtaskIter.next();
 					Microtask mtask = microtaskMap.get(mtaskID);
 					String methodName = mtask.getMethod().getMethodSignature().getName();
-									
+
 					HashMap<String,ArrayList<Microtask>> methodMap = fileMethodMap.get(fileName);
 					ArrayList<Microtask> methodMicrotaskList = methodMap.get(methodName);
 					if(methodMicrotaskList==null){
