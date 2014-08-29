@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.PositionFinder;
-import edu.uci.ics.sdcl.firefly.TimeStampUtil;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.controller.WorkerSessionSelector;
+import edu.uci.ics.sdcl.firefly.util.PositionFinder;
+import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
  * Servlet implementation class MicrotaskController

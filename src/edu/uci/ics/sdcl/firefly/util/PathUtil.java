@@ -1,4 +1,4 @@
-package edu.uci.ics.sdcl.firefly;
+package edu.uci.ics.sdcl.firefly.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-public class Features {
+import edu.uci.ics.sdcl.firefly.Microtask;
+
+public class PathUtil {
 	
 	/**	
 	 * 	Remove the path and optionally the extension of a file name with path and extension

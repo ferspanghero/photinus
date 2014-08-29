@@ -19,7 +19,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.Features;
+import edu.uci.ics.sdcl.firefly.util.PathUtil;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 
@@ -69,7 +69,7 @@ public class MicrotasksReportGenerator
 		numberOfQuestions = allMicrotasksMap.size();
 
 		// converting microtasks per file into microtasks per method
-		HashMap<String, ArrayList<Microtask>> microtasksPerMethod = Features.convertToMicrotasksPerMethod(allMicrotasksMap);
+		HashMap<String, ArrayList<Microtask>> microtasksPerMethod = PathUtil.convertToMicrotasksPerMethod(allMicrotasksMap);
 		// iterating methods
 		Set<Map.Entry<String, ArrayList<Microtask>>> set = microtasksPerMethod.entrySet();
 		Iterator<Entry<String, ArrayList<Microtask>>> i = set.iterator();
@@ -128,7 +128,7 @@ public class MicrotasksReportGenerator
 
 				// preparing line (object), which index is a cell
 				Object[] lineContent = new Object[(4*answersPerMicrotask)+3]; // FileName(1) + ID(1) + question(1) + explanations(size) + answers(size) + elapsed time(size) + timestamp (size)
-				lineContent[0] = Features.removePath(microtask.getMethod().getFileName(), true);	// FileName (cell 0)
+				lineContent[0] = PathUtil.removePath(microtask.getMethod().getFileName(), true);	// FileName (cell 0)
 				lineContent[1] = microtask.getID();						// ID (cell 1)
 				lineContent[2] = microtask.getQuestion();				// Question (cell 2)
 

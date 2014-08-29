@@ -18,6 +18,8 @@ import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.WhileStatement;
 
+import edu.uci.ics.sdcl.firefly.util.PositionFinder;
+
 public class MyVisitor extends ASTVisitor {
 	
 	private CompilationUnit cu;

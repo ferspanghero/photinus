@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.PositionFinder;
+import edu.uci.ics.sdcl.firefly.util.PositionFinder;
 
 /**
  * Selects the a WorkerSession for the first time or an active one.

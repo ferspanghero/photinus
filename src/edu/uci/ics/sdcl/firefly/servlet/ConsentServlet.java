@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.uci.ics.sdcl.firefly.TimeStampUtil;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
+import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
  * Servlet implementation class ConsentServlet

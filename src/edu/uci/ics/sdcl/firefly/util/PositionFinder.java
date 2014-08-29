@@ -1,4 +1,4 @@
-package edu.uci.ics.sdcl.firefly;
+package edu.uci.ics.sdcl.firefly.util;
 
 /* starting and ending positions of the opening and closing braces */
 public class PositionFinder {

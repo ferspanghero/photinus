@@ -1,4 +1,4 @@
-package edu.uci.ics.sdcl.firefly;
+package edu.uci.ics.sdcl.firefly.util;
 
 import java.util.Calendar;
 import java.util.Date;

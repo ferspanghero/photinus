@@ -8,7 +8,7 @@ import java.util.Calendar;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.uci.ics.sdcl.firefly.TimeStampUtil;
+import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 public class TimeStampUtilTest {
 
