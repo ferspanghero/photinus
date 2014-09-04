@@ -53,9 +53,13 @@
 			949-824-6326<br>
 		</center>
 		<ul>
-			<li>You are being asked to participate in a research study to perform some programming tasks.</li>
+			<li>You are being asked to participate in a research study to perform some programming tasks related to software design, coding, debugging, and testing.</li>
 			<br>
-			<li>You are eligible to participate in this study if you are at least 18 years of age or older; are fluent in English and live in the United States.</li>
+			<li>Programming tasks will be performed in an online tool that consists of an external website accessible via a link in a Mechanical Turk task (HIT - Human Intelligent Task)</li>
+			<br>
+			<li>The purpose of the study is to identify the challenges developers face using tools while trying to answer their questions about the code. That knowledge can inform the design of new tools to help developers to work more effectively.</li>
+			<br>
+			<li>You are eligible to participate in this study if you are at least 18 years of age or older and are fluent in English.</li>
 			<br>
 			<li>The research procedures involve using an online software development tool and will last approximately from 5 to 45 minutes.</li>
 			<br>
@@ -63,7 +67,7 @@
 			<br>
 			<li>There are no direct benefits from participation in the study. However, this study may help us to better understand how programmers work with tools.</li>
 			<br>
-			<li>You will be paid 50 cents of dollar per microtask through Amazon Mechanical Turk. At the end of the study, you will be given a code to enter in your HIT that confirms that you participated.</li> 
+			<li>You will be paid 50 cents of dollar per microtask through Amazon Mechanical Turk. At the end of the study, you will be given a code to enter in your HIT (Human Intelligent Task) that confirms that you participated.</li> 
 			<br>
 			<li>All research data collected will be stored securely and confidentially in encrypted files. At the end of the study, the original answers to demographics questions will be deleted from our files.</li> 
 			<br>
@@ -73,7 +77,7 @@
 			<br>
 			<li>Please contact UCI's Office of Research by phone, (949) 824-6662, by e-mail at IRB@research.uci.edu or at 5171 California Avenue, Suite 150, Irvine, CA 92617 if you are unable to reach the researchers listed at the top of the form and have general questions; have concerns or complaints about the research; have questions about your rights as a research subject; or have general comments or suggestions.</li>
 			<br>
-			<li>Participation in this study is voluntary.  There is no cost to you for participating.  You may refuse to participate or discontinue your involvement at any time without penalty.  You are free to withdraw from this study at any time. If you decide to withdraw from this study you should notify the research team immediately.</li>
+			<li>Participation in this study is voluntary.  There is no cost to you for participating.  You may refuse to participate or discontinue your involvement at any time without penalty.  You are free to withdraw from this study at any time. If you decide to withdraw from this study you should notify the research team immediately by clicking on the "No thanks" button below.</li>
 		</ul>	
 		
 		<br>
@@ -83,7 +87,7 @@
 			<input type="checkbox" id="consentBox"><i>By checking this box I hereby state that I have read, understood and agreed with the terms above.</i>
 			<br><br>
 			<input type="button" value="No, thanks"		style="float: left;"	onclick="quit()"> 
-			<input type="button" value="Proceed"	style="float: right;"	onclick="proceed()"> 
+			<input type="button" value="Yes, I want to participate"	style="float: right;"	onclick="proceed()"> 
 			<br>
 		</form>
 		
