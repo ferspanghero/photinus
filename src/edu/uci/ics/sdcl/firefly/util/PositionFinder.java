@@ -9,7 +9,7 @@ public class PositionFinder {
 	private char openingBrace;
 	private char closingBrace;
 	private String fileInLines[];
-	
+		
 	public PositionFinder(Integer startingLineNumberArg, Integer startingColumnNumberArg, 
 			String fileInLinesArg[], char openingBraceArg, char closingBraceArg)
 	{
@@ -19,7 +19,6 @@ public class PositionFinder {
 		this.openingBrace = openingBraceArg;
 		this.closingBrace = closingBraceArg;
 		
-		setEndPosition();
 	}
 	
 	public PositionFinder(Integer startingLineNumberArg, String fileInLinesArg[], 
@@ -30,11 +29,9 @@ public class PositionFinder {
 		this.openingBrace = openingBraceArg;
 		this.closingBrace = closingBraceArg;
 		
-		setClStartAndEndPosition();
-		
 	}
 	
-	public void setEndPosition()
+	public void computeEndPosition()
 	{
 		Integer bracesTrack = 0;	// reference to find the end counting the braces
 		int currentLine =  (this.startingLineNumber-1);	// because the vector starts at 0
@@ -95,7 +92,7 @@ public class PositionFinder {
 //		System.out.println("------------");
 	}
 	
-	public void setClStartAndEndPosition(){
+	public void computeStartEndPosition(){
 		this.startingColumnNumber = 0;	// assuming it starts from zero
 		/* finding where is the first word occurrence */
 		String words[] = this.fileInLines[this.startingLineNumber-1].split(" ");
@@ -106,7 +103,7 @@ public class PositionFinder {
 				break;
 			}
 		}
-		setEndPosition();
+		computeEndPosition();
 	}
 	
 	public Integer getStartingLineNumber() {

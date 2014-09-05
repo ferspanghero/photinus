@@ -38,7 +38,7 @@ public class MyVisitor extends ASTVisitor {
 	private Integer bodyEndingLine;			// line number for the end of the body
 	private Integer bodyEndingColumn;		// column number for the end of the body
 	/* to find the end positions */
-	private PositionFinder elementPosition;
+	private PositionFinder positionFinder;
 	private PositionFinder bodyPosition;
 	/* specific for the else-if case */
 	private Stack<MyIfStatement> ifElements;		// line numbers of if with else-if statements 
@@ -90,7 +90,8 @@ public class MyVisitor extends ASTVisitor {
 		System.out.println("-----------");
 		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());	
 		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
-		System.out.println("Method at line: " + this.elementStartingLine );
+		System.out.println("Method at starting line: " + this.elementStartingLine + ", starting column: "+ this.elementStartingColumn);
+
 		System.out.println("Method name full: " + node.getName().getFullyQualifiedName()); // FullName?
 		if ( null == node.getName() )
 		{
@@ -149,10 +150,11 @@ public class MyVisitor extends ASTVisitor {
 			System.out.println("[MV] New line: " + this.elementStartingLine);
 			
 			/* Finding the column start and the end position for the element */
-			this.elementPosition = new PositionFinder(this.elementStartingLine,
+			this.positionFinder = new PositionFinder(this.elementStartingLine,
 					snippetFactory.getFileContentPerLine(), '(', ')');
-			this.elementEndingLine = this.elementPosition.getEndingLineNumber();
-			this.elementEndingColumn = this.elementPosition.getEndingColumnNumber();
+			this.positionFinder.computeStartEndPosition();
+			this.elementEndingLine = this.positionFinder.getEndingLineNumber();
+			this.elementEndingColumn = this.positionFinder.getEndingColumnNumber();
 		}
 		setupElementEndPosition();
 		if (null == node.getBody())
@@ -210,15 +212,23 @@ public class MyVisitor extends ASTVisitor {
 				arguments = "";
 			else
 				arguments = node.arguments().toString();
+		
+			String line = this.snippetFactory.getFileContentPerLine()[this.elementStartingLine-1];
+			this.elementStartingColumn = line.indexOf(node.getName().toString());
+			System.out.println("line "+this.elementStartingLine+" content:" +line);
+			this.elementEndingColumn = this.elementStartingColumn+ node.getName().toString().length();
+			this.elementEndingLine = this.elementStartingLine;
 			
-			System.out.println(this.elementStartingLine + " - " + expression + "." + name + 
-					arguments.replace('[', '(').replace(']', ')'));	
-//			System.out.println("Method name: " + node.getName().toString());
-//			System.out.println("Method expression package: " + node.getExpression().toString());
-//			System.out.println("Method parameters " + node.arguments().toString());
+			//setupElementEndPosition();
+	
+			System.out.println("Method name: " + node.getName().toString()+" at line "+this.elementStartingLine + " - " + expression + "." + name + 
+					arguments.replace('[', '(').replace(']', ')'));
+			System.out.println("Method expression package: " + node.getExpression().toString());
+			System.out.println("Method parameters " + node.arguments().toString());
+			System.out.println("Method invocation at starting line: " + this.elementStartingLine + ", starting column: "+ this.elementStartingColumn);
+			System.out.println("Method invocation at ending line : " + this.elementEndingLine + ", ending column: "+ this.elementEndingColumn);
 			
-			setupElementEndPosition();
-
+			
 			MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, 
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
@@ -297,6 +307,7 @@ public class MyVisitor extends ASTVisitor {
 			{	/* Finding the end position for the else [not the else-if case] */
 				this.bodyPosition = new PositionFinder(elseStartingLine, elseStartingColumn, 
 						snippetFactory.getFileContentPerLine(), '{', '}');
+				this.bodyPosition.computeEndPosition();
 				Integer elseEndingLine = this.bodyPosition.getEndingLineNumber();
 				Integer elseEndingColumn = this.bodyPosition.getEndingColumnNumber();
 				ifCreated = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
@@ -482,10 +493,11 @@ public class MyVisitor extends ASTVisitor {
 	private void setupElementEndPosition()
 	{
 		/* Finding the end position for the element */
-		this.elementPosition = new PositionFinder(this.elementStartingLine, this.elementStartingColumn, 
+		this.positionFinder = new PositionFinder(this.elementStartingLine, this.elementStartingColumn, 
 				snippetFactory.getFileContentPerLine(), '(', ')');
-		this.elementEndingLine = this.elementPosition.getEndingLineNumber();
-		this.elementEndingColumn = this.elementPosition.getEndingColumnNumber();
+		this.positionFinder.computeEndPosition();
+		this.elementEndingLine = this.positionFinder.getEndingLineNumber();
+		this.elementEndingColumn = this.positionFinder.getEndingColumnNumber();
 	}
 	
 	private void setupBodyEndPostition()
@@ -493,6 +505,7 @@ public class MyVisitor extends ASTVisitor {
 		/* Finding the end position for the body */
 		this.bodyPosition = new PositionFinder(this.bodyStartingLine, this.bodyStartingColumn, 
 				snippetFactory.getFileContentPerLine(), '{', '}');
+		this.bodyPosition.computeEndPosition();
 		this.bodyEndingLine = this.bodyPosition.getEndingLineNumber();
 		this.bodyEndingColumn = this.bodyPosition.getEndingColumnNumber();
 	}

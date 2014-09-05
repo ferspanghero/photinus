@@ -95,8 +95,16 @@ public class CodeSnippet implements Serializable
 				+ newline + "className: " + className 
 				+ newline + "methodSignature: " + methodSignature 
 				+ newline + "returnStatment: " + returnStatement 
-				+ newline + "methodBody: " + newline + methodBody
-				+ "statements = "	+ statements;
+				+ newline + "methodBody: "+ methodBody
+				+ newline+ "statements: "	+ statements
+				+ newline+ "Element startingLine: "+ elementStartingLine.toString()
+				+ newline+ "Element startingColumn: "+ elementStartingColumn.toString()
+				+ newline+ "Element endingLine: "+ elementEndingLine.toString()
+				+ newline+ "Element endingColumn: "+ elementEndingColumn.toString()		
+				+ newline+ "Body startingLine: "+ bodyStartingLine.toString()
+				+ newline+ "Body startingColumn: "+ bodyStartingColumn.toString()
+				+ newline+ "Body endingLine: "+ bodyEndingLine.toString()
+				+ newline+ "Body endingColumn: "+ bodyEndingColumn.toString();
 	}
 
 	

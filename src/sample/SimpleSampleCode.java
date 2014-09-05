@@ -1,9 +1,42 @@
 package sample;
 
+import org.apache.commons.lang3.StringUtils;
+
+
+
 public class SimpleSampleCode {
 
 	Integer SeedLimit = null;
-
+	
+	Code code=null;
+	
+	
+	
+	private class Code{
+		
+		private String code;
+		
+		public void setCode(String code){
+			this.code = code;
+		}
+		
+		public int countOccurrences(CharSequence word){
+			return StringUtils.countMatches(word, this.code.subSequence(0, code.length()-1));
+		}
+	}
+	
+	
+	public Code getCode(){
+		if(code==null) this.code = new Code();
+		return code;
+	}
+	
+	public void statementChecker(String value){
+		SimpleSampleCode sample= new SimpleSampleCode();
+		sample.getCode().countOccurrences(value.subSequence(0, value.length()-1));
+	}
+	
+	
 	public void SeedVerifier(Integer seedValue) {
 		if (SeedLimit == null) this.SeedLimit = new Integer(seedValue);	// all at the same line
 		int value = seedValue.intValue();
