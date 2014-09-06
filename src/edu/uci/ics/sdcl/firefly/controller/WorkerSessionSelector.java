@@ -147,7 +147,6 @@ public class WorkerSessionSelector {
 	 */
 	protected String methodChaser(String methodName, String fileContent, boolean methodCallStrict)
 	{
-		PositionFinder invocationPosition;
 		StringBuilder highlightCommand = new StringBuilder();
 		String stringLines[] = fileContent.split("\r\n|\r|\n");
 		int currentLine = 0;
@@ -161,7 +160,7 @@ public class WorkerSessionSelector {
 					continue;	// looking just for methodCalls not other occurrences when methodStrict is true (that will be skipped)
 			String[] stringWords = line.split("\\s+");			// splitting lines into words
 			List<String> wordsPerLine = stringArraytoList(stringWords);
-			int wordLengthAcumulator = 0;	// just for the edge case of the same function being executed more than once per line
+			int wordLengthAccumulator = 0;	// just for the edge case of the same function being executed more than once per line
 			for (int index = 0; index < wordsPerLine.size(); index++) {
 				boolean isMethodCall = false;				// assuming there is NOT a method Call
 				if ( wordsPerLine.get(index).contains(methodName) )	// checking if the method name matched the word
@@ -169,7 +168,7 @@ public class WorkerSessionSelector {
 					if ( wordsPerLine.get(index).contains("(") )
 					{	// also contains an opening parenthesis - method call for sure
 						isMethodCall = true;
-						System.out.println("Method call.1 WLA- " + wordLengthAcumulator +"- at line " + currentLine + ": " + line);
+						System.out.println("Method call.1 WLA- " + wordLengthAccumulator +"- at line " + currentLine + ": " + line);
 					}
 					else if ( index < (wordsPerLine.size()-1) )	// if it is NOT the last word
 					{	// look for parenthesis on the next word
@@ -182,17 +181,26 @@ public class WorkerSessionSelector {
 				}
 				if (isMethodCall)
 				{
+					//Commented code below highlights only the method name. Current working code highlights the parameters too
+					//Integer startLine = currentLine;
+					//Integer startColumn = line.indexOf(methodName, wordLengthAccumulator);
+					//Integer endColumn = startColumn+ methodName.length();
+					//Integer endLine = startLine;
+					//System.out.println("compute for caller: "+ startLine+","+startColumn+","+endLine+ ","+ endColumn);
+					
 					//					System.out.println("passing column: " + line.indexOf(methodName, wordLengthAcumulator) + " W.A.: " + wordLengthAcumulator);
-					invocationPosition = 
-							new PositionFinder(currentLine, line.indexOf(methodName, wordLengthAcumulator), stringLines, '(', ')');
-					highlightCommand.append(invocationPosition.getStartingLineNumber()+"#");
-					highlightCommand.append(line.indexOf(methodName, wordLengthAcumulator)+"#");// because I want the start column of the word
-					highlightCommand.append(invocationPosition.getEndingLineNumber()+"#");
-					highlightCommand.append(invocationPosition.getEndingColumnNumber()+"#");
-					//					wordLengthAcumulator = invocationPosition.getStartingColumnNumber();
+					PositionFinder positionFinder = 
+							new PositionFinder(currentLine, line.indexOf(methodName, wordLengthAccumulator), stringLines, '(', ')');
+					positionFinder.computeEndPosition();
+					
+					highlightCommand.append(positionFinder.getStartingLineNumber()+"#");
+					highlightCommand.append(line.indexOf(methodName, wordLengthAccumulator)+"#");// because I want the start column of the word
+					highlightCommand.append(positionFinder.getEndingLineNumber()+"#");
+					highlightCommand.append(positionFinder.getEndingColumnNumber()+"#");
+					//					wordLengthAccumulator = invocationPosition.getStartingColumnNumber();
 					//					System.out.println("Positions appended: " + highlightCommand + " WA: " + wordLengthAcumulator);
 				}
-				wordLengthAcumulator = line.indexOf(wordsPerLine.get(index), wordLengthAcumulator) + wordsPerLine.get(index).length();
+				wordLengthAccumulator = line.indexOf(wordsPerLine.get(index), wordLengthAccumulator) + wordsPerLine.get(index).length();
 			}
 		}
 		return highlightCommand.toString();
