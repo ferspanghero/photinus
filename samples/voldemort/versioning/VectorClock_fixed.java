@@ -1,18 +1,18 @@
 /*
-* Copyright 2008-2009 LinkedIn, Inc
-*
-* Licensed under the Apache License, Version 2.0 (the "License"); you may not
-* use this file except in compliance with the License. You may obtain a copy of
-* the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-* License for the specific language governing permissions and limitations under
-* the License.
-*/
+ * Copyright 2008-2009 LinkedIn, Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 
 package voldemort.versioning;
 
@@ -26,14 +26,14 @@ import voldemort.utils.ByteUtils;
 import com.google.common.collect.Lists;
 
 /**
-* A vector of the number of writes mastered by each node. The vector is stored
-* sparely, since, in general, writes will be mastered by only one node. This
-* means implicitly all the versions are at zero, but we only actually store
-* those greater than zero.
-*
-* @author jay
-*
-*/
+ * A vector of the number of writes mastered by each node. The vector is stored
+ * sparely, since, in general, writes will be mastered by only one node. This
+ * means implicitly all the versions are at zero, but we only actually store
+ * those greater than zero.
+ * 
+ * @author jay
+ * 
+ */
 @NotThreadsafe
 public class VectorClock implements Version, Serializable {
 
@@ -45,14 +45,14 @@ public class VectorClock implements Version, Serializable {
     private final List<ClockEntry> versions;
 
     /*
-* The time of the last update on the server on which the update was
-* performed
-*/
+     * The time of the last update on the server on which the update was
+     * performed
+     */
     private volatile long timestamp;
 
     /**
-* Construct an empty VectorClock
-*/
+     * Construct an empty VectorClock
+     */
     public VectorClock() {
         this(new ArrayList<ClockEntry>(0), System.currentTimeMillis());
     }
@@ -62,34 +62,34 @@ public class VectorClock implements Version, Serializable {
     }
 
     /**
-* Create a VectorClock with the given version and timestamp
-*
-* @param versions The version to prepopulate
-* @param timestamp The timestamp to prepopulate
-*/
+     * Create a VectorClock with the given version and timestamp
+     * 
+     * @param versions The version to prepopulate
+     * @param timestamp The timestamp to prepopulate
+     */
     public VectorClock(List<ClockEntry> versions, long timestamp) {
         this.versions = versions;
         this.timestamp = timestamp;
     }
 
     /**
-* Takes the bytes of a VectorClock and creates a java object from them. For
-* efficiency reasons the extra bytes can be attached to the end of the byte
-* array that are not related to the VectorClock
-*
-* @param bytes The serialized bytes of the VectorClock
-*/
+     * Takes the bytes of a VectorClock and creates a java object from them. For
+     * efficiency reasons the extra bytes can be attached to the end of the byte
+     * array that are not related to the VectorClock
+     * 
+     * @param bytes The serialized bytes of the VectorClock
+     */
     public VectorClock(byte[] bytes) {
         this(bytes, 0);
     }
 
     /**
-* Read the vector clock from the given bytes starting from a particular
-* offset
-*
-* @param bytes The bytes to read from
-* @param offset The offset to start reading from
-*/
+     * Read the vector clock from the given bytes starting from a particular
+     * offset
+     * 
+     * @param bytes The bytes to read from
+     * @param offset The offset to start reading from
+     */
     public VectorClock(byte[] bytes, int offset) {
         if(bytes == null || bytes.length <= offset)
             throw new IllegalArgumentException("Invalid byte array for serialization--no bytes to read.");
@@ -142,10 +142,10 @@ public class VectorClock implements Version, Serializable {
     }
 
     /**
-* Increment the version info associated with the given node
-*
-* @param node The node
-*/
+     * Increment the version info associated with the given node
+     * 
+     * @param node The node
+     */
     public void incrementVersion(int node, long time) {
         if(node < 0 || node > Short.MAX_VALUE)
             throw new IllegalArgumentException(node
@@ -169,23 +169,23 @@ public class VectorClock implements Version, Serializable {
         if(found) {
             versions.set(index, versions.get(index).incremented());
         } else if(index < versions.size() - 1) {
-            versions.add(index, new ClockEntry((short) node,(short) 1));
+            versions.add(index, new ClockEntry((short) node, 1));
         } else {
             // we don't already have a version for this, so add it
             if(versions.size() > MAX_NUMBER_OF_VERSIONS)
                 throw new IllegalStateException("Vector clock is full!");
-            versions.add(index, new ClockEntry((short) node, (short)1));
+            versions.add(index, new ClockEntry((short) node, 1));
         }
 
     }
 
     /**
-* Get new vector clock based on this clock but incremented on index nodeId
-*
-* @param nodeId The id of the node to increment
-* @return A vector clock equal on each element execept that indexed by
-* nodeId
-*/
+     * Get new vector clock based on this clock but incremented on index nodeId
+     * 
+     * @param nodeId The id of the node to increment
+     * @return A vector clock equal on each element execept that indexed by
+     *         nodeId
+     */
     public VectorClock incremented(int nodeId, long time) {
         VectorClock copyClock = this.clone();
         copyClock.incrementVersion(nodeId, time);
@@ -245,7 +245,7 @@ public class VectorClock implements Version, Serializable {
             ClockEntry v1 = this.versions.get(i);
             ClockEntry v2 = clock.versions.get(j);
             if(v1.getNodeId() == v2.getNodeId()) {
-                newClock.versions.add(new ClockEntry(v1.getNodeId(), (short) Math.max(v1.getVersion(),
+                newClock.versions.add(new ClockEntry(v1.getNodeId(), Math.max(v1.getVersion(),
                                                                               v2.getVersion())));
                 i++;
                 j++;
@@ -275,16 +275,16 @@ public class VectorClock implements Version, Serializable {
     }
 
     /**
-* Is this Reflexive, AntiSymetic, and Transitive? Compare two VectorClocks,
-* the outcomes will be one of the following: -- Clock 1 is BEFORE clock 2
-* if there exists an i such that c1(i) <= c(2) and there does not exist a j
-* such that c1(j) > c2(j). -- Clock 1 is CONCURRENT to clock 2 if there
-* exists an i, j such that c1(i) < c2(i) and c1(j) > c2(j) -- Clock 1 is
-* AFTER clock 2 otherwise
-*
-* @param v1 The first VectorClock
-* @param v2 The second VectorClock
-*/
+     * Is this Reflexive, AntiSymetic, and Transitive? Compare two VectorClocks,
+     * the outcomes will be one of the following: -- Clock 1 is BEFORE clock 2
+     * if there exists an i such that c1(i) <= c(2) and there does not exist a j
+     * such that c1(j) > c2(j). -- Clock 1 is CONCURRENT to clock 2 if there
+     * exists an i, j such that c1(i) < c2(i) and c1(j) > c2(j) -- Clock 1 is
+     * AFTER clock 2 otherwise
+     * 
+     * @param v1 The first VectorClock
+     * @param v2 The second VectorClock
+     */
     public static Occured compare(VectorClock v1, VectorClock v2) {
         if(v1 == null || v2 == null)
             throw new IllegalArgumentException("Can't compare null vector clocks!");
