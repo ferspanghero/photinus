@@ -58,8 +58,6 @@ public class PublishDialog extends GerritOperationDialog {
 	private Composite approvalComposite;
 
 	private final List<Button> approvalButtons;
-	
-	private Label statusLabel;
 
 	private final String editorCommentText;
 
@@ -116,14 +114,14 @@ public class PublishDialog extends GerritOperationDialog {
 		messageEditor.getViewer().setSelectedRange(editorCommentText.length(), 0);
 		messageEditor.getControl().setFocus();
 
-		statusLabel = new Label(composite, SWT.NONE);
-		
 		int drafts = 0;
 		for (IComment comment : set.getAllComments()) {
 			drafts += comment.isDraft() ? 1 : 0;
 		}
-		
-		statusLabel.setText(NLS.bind("Publishes {0} draft{1}.", drafts, drafts > 1 ? "s" : ""));
+		if (drafts > 0) {
+			Label statusLabel = new Label(composite, SWT.NONE);
+			statusLabel.setText(NLS.bind("Publishes {0} draft{1}.", drafts, drafts > 1 ? "s" : ""));
+		}
 
 		return composite;
 	}
