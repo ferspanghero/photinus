@@ -26,13 +26,13 @@ import org.eclipse.mylyn.reviews.tasks.core.IReviewScopeItem;
  * @author mattk
  *
  */
-public class ReviewScopeNode_fix extends AbstractTreeNode {
+public class ReviewScopeNode extends AbstractTreeNode {
 
 	private ReviewScope scope;
 	private String description;
 	private List<ReviewResult> results;
 
-	public ReviewScopeNode_fix(ITaskProperties task, ReviewScope scope, List<ReviewResult> results) {
+	public ReviewScopeNode(ITaskProperties task, ReviewScope scope, List<ReviewResult> results) {
 		super(task);
 		this.scope = scope;
 		this.results = results;
@@ -72,10 +72,10 @@ public class ReviewScopeNode_fix extends AbstractTreeNode {
 				sb.append(", ");
 			}
 
-			int count = type.getValue().counter;
+			int count = counts.get(type).counter;
 			sb.append(count);
 			sb.append(" ");
-			sb.append(type.getValue().item.getType(count));
+			sb.append(counts.get(type).item.getType(count));
 		}
 		return sb.toString();
 	}

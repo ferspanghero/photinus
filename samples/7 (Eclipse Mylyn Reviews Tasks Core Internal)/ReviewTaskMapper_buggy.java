@@ -40,7 +40,7 @@ import org.eclipse.mylyn.reviews.tasks.dsl.ReviewDslScopeItem;
  * @author mattk
  * 
  */
-public class ReviewTaskMapper_fix implements IReviewMapper {
+public class ReviewTaskMapper implements IReviewMapper {
 	private IReviewDslMapper parser;
 	private IReviewDslSerializer serializer;
 
