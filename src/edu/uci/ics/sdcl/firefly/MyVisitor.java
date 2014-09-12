@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.DoStatement;
@@ -189,9 +190,10 @@ public class MyVisitor extends ASTVisitor {
 	}
 	
 	
-	public boolean visit(ConstructorInvocation node)
+	public boolean visit(ClassInstanceCreation node)
 	{
 		//Discard constructors that take not parameters.
+		System.out.println("Class instantiation..."+node.getExpression()+" type:"+node.getType());
 		if(node.arguments().size()>0){
 			String name = node.getClass().getName().toString();
 			String expression =""; //There is no expression value in ConstructionInvocation node

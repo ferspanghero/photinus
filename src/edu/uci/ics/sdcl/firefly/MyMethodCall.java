@@ -56,11 +56,11 @@ public class MyMethodCall extends CodeElement implements Serializable
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Method name: " + name+" at line "+elementStartingLine + " - " + expression + "." + name + 
 				this.parameterList.replace('[', '(').replace(']', ')'));
-		buffer.append("/n");
+		buffer.append("\n");
 		buffer.append("Method invocation at starting line: " + elementStartingLine + ", starting column: "+ elementStartingColumn);
-		buffer.append("/n");
+		buffer.append("\n");
 		buffer.append("Method invocation at ending line : " + elementEndingLine + ", ending column: "+ elementEndingColumn);
-		buffer.append("/n");
+		buffer.append("\n");
 		return buffer.toString();
 	}
 
