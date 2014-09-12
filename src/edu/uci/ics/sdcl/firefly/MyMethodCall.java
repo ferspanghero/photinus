@@ -51,5 +51,17 @@ public class MyMethodCall extends CodeElement implements Serializable
 	{
 		this.parameterList = parametersArg;
 	}
+	
+	public String toString(){
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Method name: " + name+" at line "+elementStartingLine + " - " + expression + "." + name + 
+				this.parameterList.replace('[', '(').replace(']', ')'));
+		buffer.append("/n");
+		buffer.append("Method invocation at starting line: " + elementStartingLine + ", starting column: "+ elementStartingColumn);
+		buffer.append("/n");
+		buffer.append("Method invocation at ending line : " + elementEndingLine + ", ending column: "+ elementEndingColumn);
+		buffer.append("/n");
+		return buffer.toString();
+	}
 
 } // test

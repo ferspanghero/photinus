@@ -6,6 +6,7 @@ import java.util.Stack;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.ForStatement;
@@ -76,6 +77,8 @@ public class MyVisitor extends ASTVisitor {
 		this.className = node.getName().toString();
 		return true;
 	}
+	
+	
 	
 	@SuppressWarnings("unchecked")
 	public boolean visit(MethodDeclaration node)
@@ -185,20 +188,46 @@ public class MyVisitor extends ASTVisitor {
 		return true;
 	}
 	
+	
+	public boolean visit(ConstructorInvocation node)
+	{
+		//Discard constructors that take not parameters.
+		if(node.arguments().size()>0){
+			String name = node.getClass().getName().toString();
+			String expression =""; //There is no expression value in ConstructionInvocation node
+			String arguments = node.arguments().toString();
+			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+			this.elementEndingColumn = this.elementStartingColumn+ name.length();
+			this.elementEndingLine = this.elementStartingLine;
+		
+			MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, 
+					this.elementStartingLine, this.elementStartingColumn,
+					this.elementEndingLine, this.elementEndingColumn);
+
+			this.newMethod.addElement(methodCall);
+			
+			System.out.println(methodCall.toString());
+			System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "/n");
+		}
+		return true;
+	}
+	
 	/* Method Calls */
 	public boolean visit(MethodInvocation node)
 	{
-		if(invalidCall(node)) 
+		if(isInvalidCall(node)) 
 			return true;
 		else{
 			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
 			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
 			
-			/* to avoid null pointers */
-			String name;
-			String expression;
-			String arguments;
-			if (null == node.getName())
+			String name = node.getName().toString();
+			String expression = node.getExpression().toString();
+			String arguments = node.arguments().toString();
+			
+		/*  // to avoid null pointers
+		    if (null == node.getName())
 				name = "";
 			else
 				name = node.getName().toString();
@@ -212,32 +241,22 @@ public class MyVisitor extends ASTVisitor {
 				arguments = "";
 			else
 				arguments = node.arguments().toString();
+				*/
 		
 			String line = this.snippetFactory.getFileContentPerLine()[this.elementStartingLine-1];
 			this.elementStartingColumn = line.indexOf(node.getName().toString());
-			System.out.println("line "+this.elementStartingLine+" content:" +line);
 			this.elementEndingColumn = this.elementStartingColumn+ node.getName().toString().length();
 			this.elementEndingLine = this.elementStartingLine;
-			
-			//setupElementEndPosition();
-	
-			System.out.println("Method name: " + node.getName().toString()+" at line "+this.elementStartingLine + " - " + expression + "." + name + 
-					arguments.replace('[', '(').replace(']', ')'));
-			System.out.println("Method expression package: " + node.getExpression().toString());
-			System.out.println("Method parameters " + node.arguments().toString());
-			System.out.println("Method invocation at starting line: " + this.elementStartingLine + ", starting column: "+ this.elementStartingColumn);
-			System.out.println("Method invocation at ending line : " + this.elementEndingLine + ", ending column: "+ this.elementEndingColumn);
-			
 			
 			MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, 
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
 
 			this.newMethod.addElement(methodCall);
+			
+			System.out.println(methodCall.toString());
+			System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "/n");
 		}
-		numberOfMethodInvocations++;
-		System.out.println("# of Method invocations: " + numberOfMethodInvocations);
-		System.out.println();
 		return true;
 	}
 	
@@ -479,7 +498,7 @@ public class MyVisitor extends ASTVisitor {
 	 * @param node
 	 * @return true if calls System.out, otherwise false. Also returns false if a null pointer is provided
 	 */
-	private boolean invalidCall(MethodInvocation node){
+	private boolean isInvalidCall(MethodInvocation node){
 		if((node==null))
 			return true;
 		else
