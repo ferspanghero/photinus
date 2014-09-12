@@ -11,6 +11,9 @@ public class SimpleSampleCode {
 	Code code=null;
 	
 	
+	public SimpleSampleCode(int i){
+		SeedLimit = new Integer(i);
+	}
 	
 	private class Code{
 		
@@ -32,7 +35,7 @@ public class SimpleSampleCode {
 	}
 	
 	public void statementChecker(String value){
-		SimpleSampleCode sample= new SimpleSampleCode();
+		SimpleSampleCode sample= new SimpleSampleCode(10);
 		sample.getCode().countOccurrences(value.subSequence(0, value.length()-1));
 	}
 	
