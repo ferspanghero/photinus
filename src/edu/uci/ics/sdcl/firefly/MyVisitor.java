@@ -96,7 +96,7 @@ public class MyVisitor extends ASTVisitor {
 		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
 		System.out.println("Method at starting line: " + this.elementStartingLine + ", starting column: "+ this.elementStartingColumn);
 
-		System.out.println("Method name full: " + node.getName().getFullyQualifiedName()); // FullName?
+		System.out.println("Method declaration name: " + node.getName().getFullyQualifiedName()); 
 		if ( null == node.getName() )
 		{
 			name = null;
@@ -195,7 +195,7 @@ public class MyVisitor extends ASTVisitor {
 		//Discard constructors that take not parameters.
 		System.out.println("Class instantiation..."+node.getExpression()+" type:"+node.getType());
 		if(node.arguments().size()>0){
-			String name = node.getClass().getName().toString();
+			String name = node.getType().toString();
 			String expression =""; //There is no expression value in ConstructionInvocation node
 			String arguments = node.arguments().toString();
 			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
@@ -210,7 +210,7 @@ public class MyVisitor extends ASTVisitor {
 			this.newMethod.addElement(methodCall);
 			
 			System.out.println(methodCall.toString());
-			System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "/n");
+			System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
 		}
 		return true;
 	}
@@ -257,7 +257,7 @@ public class MyVisitor extends ASTVisitor {
 			this.newMethod.addElement(methodCall);
 			
 			System.out.println(methodCall.toString());
-			System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "/n");
+			System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
 		}
 		return true;
 	}
