@@ -1,0 +1,220 @@
+TypeDeclaration at line: 33
+TypeDeclaration name: FtpChangedExclusiveReadLockStrategy
+-----------
+Method at starting line: 41, starting column: 1
+Method declaration name: prepareOnStartup
+[MV] New line: 42
+[PS] New column start: 0
+-----------
+Method at starting line: 46, starting column: 1
+Method declaration name: acquireExclusiveReadLock
+node.getName: trace
+Method name: trace at line 49 expression: LOG.trace("Waiting for exclusive read lock to file: " + file)
+Method invocation at starting line: 49, starting column: 6
+Method invocation at ending line : 49, ending column: 11
+
+# of Method invocations: 1
+
+node.getName: taken
+Method name: taken at line 58 expression: watch.taken()
+Method invocation at starting line: 58, starting column: 23
+Method invocation at ending line : 58, ending column: 28
+
+# of Method invocations: 2
+
+node.getName: log
+Method name: log at line 60 expression: CamelLogger.log(LOG, readLockLoggingLevel, "Cannot acquire read lock within " + timeout + " millis. Will skip the file: "+ file)
+Method invocation at starting line: 60, starting column: 17
+Method invocation at ending line : 60, ending column: 20
+
+# of Method invocations: 3
+
+node.getName: trace
+Method name: trace at line 73 expression: LOG.trace("Using fast exists to update file information for {}", file)
+Method invocation at starting line: 73, starting column: 8
+Method invocation at ending line : 73, ending column: 13
+
+# of Method invocations: 4
+
+node.getName: listFiles
+Method name: listFiles at line 74 expression: operations.listFiles(file.getAbsoluteFilePath())
+Method invocation at starting line: 74, starting column: 23
+Method invocation at ending line : 74, ending column: 32
+
+# of Method invocations: 5
+
+node.getName: getAbsoluteFilePath
+Method name: getAbsoluteFilePath at line 74 expression: file.getAbsoluteFilePath()
+Method invocation at starting line: 74, starting column: 38
+Method invocation at ending line : 74, ending column: 57
+
+# of Method invocations: 6
+
+node.getName: trace
+Method name: trace at line 76 expression: LOG.trace("Using full directory listing to update file information for {}. Consider enabling fastExistsCheck option.", file)
+Method invocation at starting line: 76, starting column: 8
+Method invocation at ending line : 76, ending column: 13
+
+# of Method invocations: 7
+
+node.getName: listFiles
+Method name: listFiles at line 78 expression: operations.listFiles(file.getParent())
+Method invocation at starting line: 78, starting column: 23
+Method invocation at ending line : 78, ending column: 32
+
+# of Method invocations: 8
+
+node.getName: getParent
+Method name: getParent at line 78 expression: file.getParent()
+Method invocation at starting line: 78, starting column: 38
+Method invocation at ending line : 78, ending column: 47
+
+# of Method invocations: 9
+
+node.getName: trace
+Method name: trace at line 80 expression: LOG.trace("List files {} found {} files", file.getAbsoluteFilePath(), files.size())
+Method invocation at starting line: 80, starting column: 7
+Method invocation at ending line : 80, ending column: 12
+
+# of Method invocations: 10
+
+node.getName: getAbsoluteFilePath
+Method name: getAbsoluteFilePath at line 80 expression: file.getAbsoluteFilePath()
+Method invocation at starting line: 80, starting column: 50
+Method invocation at ending line : 80, ending column: 69
+
+# of Method invocations: 11
+
+node.getName: size
+Method name: size at line 80 expression: files.size()
+Method invocation at starting line: 80, starting column: 79
+Method invocation at ending line : 80, ending column: 83
+
+# of Method invocations: 12
+
+node.getName: equals
+Method name: equals at line 82 expression: f.getName().equals(file.getFileNameOnly())
+Method invocation at starting line: 82, starting column: 16
+Method invocation at ending line : 82, ending column: 22
+
+# of Method invocations: 13
+
+node.getName: getName
+Method name: getName at line 82 expression: f.getName()
+Method invocation at starting line: 82, starting column: 6
+Method invocation at ending line : 82, ending column: 13
+
+# of Method invocations: 14
+
+node.getName: getFileNameOnly
+Method name: getFileNameOnly at line 82 expression: file.getFileNameOnly()
+Method invocation at starting line: 82, starting column: 28
+Method invocation at ending line : 82, ending column: 43
+
+# of Method invocations: 15
+
+node.getName: getSize
+Method name: getSize at line 83 expression: f.getSize()
+Method invocation at starting line: 83, starting column: 19
+Method invocation at ending line : 83, ending column: 26
+
+# of Method invocations: 16
+
+node.getName: getTimeInMillis
+Method name: getTimeInMillis at line 84 expression: f.getTimestamp().getTimeInMillis()
+Method invocation at starting line: 84, starting column: 40
+Method invocation at ending line : 84, ending column: 55
+
+# of Method invocations: 17
+
+node.getName: getTimestamp
+Method name: getTimestamp at line 84 expression: f.getTimestamp()
+Method invocation at starting line: 84, starting column: 25
+Method invocation at ending line : 84, ending column: 37
+
+# of Method invocations: 18
+
+node.getName: trace
+Method name: trace at line 88 expression: LOG.trace("Previous last modified: " + lastModified + ", new last modified: "+ newLastModified)
+Method invocation at starting line: 88, starting column: 7
+Method invocation at ending line : 88, ending column: 12
+
+# of Method invocations: 19
+
+node.getName: trace
+Method name: trace at line 89 expression: LOG.trace("Previous length: " + length + ", new length: "+ newLength)
+Method invocation at starting line: 89, starting column: 7
+Method invocation at ending line : 89, ending column: 12
+
+# of Method invocations: 20
+
+node.getName: trace
+Method name: trace at line 92 expression: LOG.trace("Read lock acquired.")
+Method invocation at starting line: 92, starting column: 8
+Method invocation at ending line : 92, ending column: 13
+
+# of Method invocations: 21
+
+node.getName: sleep
+Sep 14, 2014 4:33:26 PM org.apache.catalina.core.StandardWrapperValve invoke
+SEVERE: Servlet.service() for servlet [FileUploadServlet] in context with path [/firefly] threw exception
+java.lang.NullPointerException
+	at edu.uci.ics.sdcl.firefly.MyVisitor.visit(MyVisitor.java:243)
+	at org.eclipse.jdt.core.dom.MethodInvocation.accept0(MethodInvocation.java:237)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChild(ASTNode.java:2562)
+	at org.eclipse.jdt.core.dom.VariableDeclarationFragment.accept0(VariableDeclarationFragment.java:225)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2585)
+	at org.eclipse.jdt.core.dom.VariableDeclarationStatement.accept0(VariableDeclarationStatement.java:273)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2585)
+	at org.eclipse.jdt.core.dom.Block.accept0(Block.java:136)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChild(ASTNode.java:2562)
+	at org.eclipse.jdt.core.dom.IfStatement.accept0(IfStatement.java:191)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2585)
+	at org.eclipse.jdt.core.dom.Block.accept0(Block.java:136)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChild(ASTNode.java:2562)
+	at org.eclipse.jdt.core.dom.WhileStatement.accept0(WhileStatement.java:166)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2585)
+	at org.eclipse.jdt.core.dom.Block.accept0(Block.java:136)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChild(ASTNode.java:2562)
+	at org.eclipse.jdt.core.dom.MethodDeclaration.accept0(MethodDeclaration.java:504)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2585)
+	at org.eclipse.jdt.core.dom.TypeDeclaration.accept0(TypeDeclaration.java:484)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at org.eclipse.jdt.core.dom.ASTNode.acceptChildren(ASTNode.java:2585)
+	at org.eclipse.jdt.core.dom.CompilationUnit.accept0(CompilationUnit.java:220)
+	at org.eclipse.jdt.core.dom.ASTNode.accept(ASTNode.java:2514)
+	at edu.uci.ics.sdcl.firefly.JavaParser.<init>(JavaParser.java:38)
+	at edu.uci.ics.sdcl.firefly.CodeSnippetFactory.generateSnippetsForFile(CodeSnippetFactory.java:35)
+	at edu.uci.ics.sdcl.firefly.servlet.FileUploadServlet.generateMicrotasks(FileUploadServlet.java:156)
+	at edu.uci.ics.sdcl.firefly.servlet.FileUploadServlet.doPost(FileUploadServlet.java:127)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:647)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:305)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:222)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:123)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:502)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:171)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:100)
+	at org.apache.catalina.valves.AccessLogValve.invoke(AccessLogValve.java:953)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:408)
+	at org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1041)
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:603)
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:312)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
