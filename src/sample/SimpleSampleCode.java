@@ -6,7 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 
 public class SimpleSampleCode {
 
-	Integer SeedLimit = null;
+	Integer SeedLimit = new Integer(10);
+	
+	
 	
 	Code code=null;
 	
@@ -19,7 +21,7 @@ public class SimpleSampleCode {
 		
 		private String code;
 		
-		public void setCode(String code){
+		public void  setCode(String code){
 			this.code = code;
 		}
 		
@@ -33,6 +35,8 @@ public class SimpleSampleCode {
 		if(code==null) this.code = new Code();
 		return code;
 	}
+	
+	int limit = Integer.getInteger("10").compareTo(10);
 	
 	public void statementChecker(String value){
 		SimpleSampleCode sample= new SimpleSampleCode(10);
