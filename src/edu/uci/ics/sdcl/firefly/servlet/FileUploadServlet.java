@@ -48,7 +48,8 @@ public class FileUploadServlet extends HttpServlet {
 
 			if(subAction.compareTo("generateWorkerSessions")==0){
 
-				String return_message = this.generateWorkerSessions();
+//				String return_message = this.generateWorkerSessions();
+				String return_message = this.generateSingleWorkerSession(); //For experiment setting.
 				String microtasks_message = request.getParameter("microtasks_message");
 				request.setAttribute("microtasks_message", microtasks_message);
 				request.setAttribute("workerSessions_message", return_message);
@@ -176,18 +177,18 @@ public class FileUploadServlet extends HttpServlet {
 			QuestionFactory questionFactory = new QuestionFactory ();
 			String path = getServletContext().getRealPath("/");
 			MicrotaskStorage storage = new MicrotaskStorage();
-			questionFactory.generateQuestions(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
-			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions();
+			
+			HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
 
 			if (microtaskMap!= null && microtaskMap.size() > 0){
 				FileDebugSession fileDebuggingSession = new FileDebugSession(fileName, fileContent, microtaskMap);
-
+				int generatedMicrotasks = microtaskMap.size();
+				
 				//Persist data
-
 				storage.insert(fileName, fileDebuggingSession); //append to existing fileDebugSessions
 
 				int generatedCodeSnippets = snippetList.size();
-				int generatedMicrotasks = microtaskMap.size();
+				//int generatedMicrotasks = microtaskMap.size();
 				int numberOfMicrotasks = storage.getNumberOfMicrotask();
 				results = "Code snippets generated: "+generatedCodeSnippets+ 
 						"<br> Microtasks generated: " + generatedMicrotasks+"<br>"+
@@ -206,18 +207,15 @@ public class FileUploadServlet extends HttpServlet {
 
 		return results;
 	}
-
+	
 
 	private String generateWorkerSessions(){
 
 		String results = new String();
-		String path = getServletContext().getRealPath("/");
-		//WorkerSessions
-		//Generate the stack of New and Duplicated WorkerSession
 		
 		PropertyManager manager = new PropertyManager();
 		
-		
+		//Generate the stack of New and Duplicated WorkerSession		
 		WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
 		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(manager.microtasksPerSession);
 		Stack<WorkerSession> duplicatedStack = sessionFactory.duplicateSessions(originalStack,manager.answersPerMicrotask-1); //Because we already have the original stack.
@@ -235,6 +233,29 @@ public class FileUploadServlet extends HttpServlet {
 		System.out.println("Results: "+results);
 
 		return results;
+	}
+	
+	private String generateSingleWorkerSession(){
+
+		String results = new String();
+		PropertyManager manager = new PropertyManager();
+		
+		//Generate the stack of New and Duplicated WorkerSession
+		WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
+		Stack<WorkerSession> originalStack = sessionFactory.generateSingleSession();
+				
+		WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
+		sessionStorage.appendNewWorkerSessionStack(originalStack,sessionStorage.NEW);
+		
+		int totalSessions = originalStack.size(); 
+		int existingSessions = sessionStorage.getNumberOfNewWorkerSessions(); 
+	
+		results = results + "Sessions generated: " +totalSessions+"<br>"+ 
+					"Total Sessions available now: "+existingSessions;
+
+		System.out.println("Results: "+results);
+
+		return results;		
 	}
 	
 	private void delete(){

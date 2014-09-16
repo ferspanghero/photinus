@@ -65,7 +65,7 @@ public class QuestionFactory {
 	 * @return the map of microtasks
 	 */
 	
-	private void generateQuestions(ArrayList<CodeSnippet> methodsArg)
+	private HashMap<Integer, Microtask> generateMicrotasks(ArrayList<CodeSnippet> methodsArg)
 	{
 		this.microtaskMap = new  HashMap<Integer, Microtask>();
 		for (CodeSnippet codeSnippet : methodsArg)
@@ -252,12 +252,13 @@ public class QuestionFactory {
 				} 
 			}
 		}
+		return this.microtaskMap;
 	}
 	
-	public void generateQuestions(ArrayList<CodeSnippet> methodsArg, String bugReport, int numberOfExistingMicrotasks){
+	public HashMap<Integer, Microtask> generateQuestions(ArrayList<CodeSnippet> methodsArg, String bugReport, int numberOfExistingMicrotasks){
 		this.microtaskId = new Integer(numberOfExistingMicrotasks);
-		generateQuestions(methodsArg);
 		setUpBugReport(bugReport);
+		return generateMicrotasks(methodsArg);
 	}
 
 

@@ -29,7 +29,7 @@ public class WorkerSessionSelector {
 	public HttpServletRequest generateRequest(HttpServletRequest request, Microtask task){
 		
 		System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
-		System.out.println("Retrieved microtask bug report:" + task.getFailureDescription());
+		System.out.println("Retrieved microtask bug report:" + task.getFailureDescription() +  " from fileName: "+task.getMethod().getFileName());
 		
 		request.setAttribute("microtaskId", task.getID());  
 		request.setAttribute("fileName", task.getMethod().getFileName());

@@ -239,9 +239,9 @@ public class MyVisitor extends ASTVisitor {
 			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
 
 			String name = node.getName().toString();
-			System.out.println("node.getName: " +name);
-			String expression = node.getExpression().toString();
-			String arguments = node.arguments().toString();
+			System.out.println("node.getName: " +name+ " expression= "+node.getExpression());
+			String expression = node.getExpression()==null ? "" : node.getExpression().toString(); 
+			String arguments = node.arguments()==null ? "" : node.arguments().toString();
 
 			/*  // to avoid null pointers
 		    if (null == node.getName())
@@ -452,7 +452,7 @@ public class MyVisitor extends ASTVisitor {
 		//		System.out.println("For statement: " + node.getBody().toString());
 		return true;
 	}
-	
+
 
 	public boolean visit(DoStatement node)
 	{
@@ -517,29 +517,38 @@ public class MyVisitor extends ASTVisitor {
 	 * @param node
 	 * @return true if calls System.out, otherwise false. Also returns false if a null pointer is provided
 	 */
-	private boolean isInvalidCall(int nodeType, Expression expression){
-		
-		if(this.newMethod==null) //means that the call is not inside of a method, but a field declaration.
+	private boolean isInvalidCall(int nodeType, String methodName, Expression expression){
+
+		if(this.newMethod==null) //ignore method calls within a field declaration
 			return true;
 		else
-			if((expression!=null) && (expression.toString().equalsIgnoreCase("System.out")))	// ignoring System.out calls
+			if((expression!=null) && ( //Ignore print statements
+					(expression.toString().equalsIgnoreCase("System.out")) ||
+					(expression.toString().equalsIgnoreCase("System.err"))
+					))	
 				return true;
-			else 
-				return false;
+			else //Ignore loggers (Log4J)
+				if(methodName.equalsIgnoreCase("trace") || 
+						methodName.equalsIgnoreCase("log")||
+						methodName.equalsIgnoreCase("debug")||
+						methodName.equalsIgnoreCase("info") )
+					return true;
+				else 
+					return false;
 	}
 
 	private boolean isInvalidMethodInvocation(MethodInvocation node){
 		if(node==null)
 			return true;
 		else
-			return isInvalidCall(node.getParent().getNodeType(),node.getExpression());
+			return isInvalidCall(node.getParent().getNodeType(),node.getName().toString(), node.getExpression());
 	}
 
 	private boolean isInvalidClassInstantiation(ClassInstanceCreation node){
 		if(node==null)
 			return true;
 		else
-			return isInvalidCall(node.getParent().getNodeType(),node.getExpression());
+			return isInvalidCall(node.getParent().getNodeType(),node.getType().toString(),node.getExpression());
 	}
 
 	/* assuming the correct values for the starting position */

@@ -22,10 +22,28 @@ import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
  */
 public class MicrotaskSelector {
 
-	String path="";
 	
-	public MicrotaskSelector(){
-		this.path = path;
+	public ArrayList<Microtask> selectAllMicrotasks(){
+		
+		ArrayList<Microtask> mtaskList = new ArrayList<Microtask>();
+		MicrotaskStorage memento = new MicrotaskStorage();
+		HashMap<String, FileDebugSession> map = memento.readAllDebugSessions();
+		if((map!=null) && (map.keySet()!=null)){
+			Set<String>keySet = map.keySet();
+			for(String key: keySet){
+				FileDebugSession session = map.get(key);
+				HashMap<Integer, Microtask> mtaskMap = session.getMicrotaskMap();
+				if((mtaskMap!=null) && (mtaskMap.keySet()!=null)){
+					Set<Integer>mtaskKeySet = mtaskMap.keySet();
+					for(Integer mtaskKey: mtaskKeySet){
+						Microtask mtask = mtaskMap.get(mtaskKey);
+						if(mtask!=null)
+							mtaskList.add(mtask);
+					}
+			}
+		}
+		}
+		return mtaskList;
 	}
 	
 	/** 

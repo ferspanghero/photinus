@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 
+import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
+import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector.SelectorReturn;
 import edu.uci.ics.sdcl.firefly.servlet.MethodData;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
@@ -53,6 +55,7 @@ public class WorkerSessionFactory {
 	/** 
 	 * @param microtaskPerSession the number of microtasks that will be included in each session
 	 * @param copies the number of times the same session should be created
+	 * @return the list of worker sessions
 	 * 
 	 */
 	public Stack<WorkerSession> generateSessions(int microtaskPerSession){
@@ -80,6 +83,27 @@ public class WorkerSessionFactory {
 		}
 		return workerSessionStack;
 	}
+
+	/** Method used to generate all microtask in one single session
+	 * This method is used only for testing and experiment setup
+	 * 
+	 * @return a list with a single worker session
+	 */
+	public Stack<WorkerSession> generateSingleSession(){
+
+		//Stack for the single Session
+		Stack<WorkerSession> workerSessionStack = new Stack<WorkerSession>();
+		this.sessionID = this.keyGenerator.generate();
+
+		MicrotaskSelector selector = new MicrotaskSelector();
+		ArrayList<Microtask> mtaskList =selector.selectAllMicrotasks();
+
+		WorkerSession session = new WorkerSession(sessionID, sessionID, mtaskList);
+		workerSessionStack.push(session);
+
+		return workerSessionStack;
+	}
+
 
 	/** 
 	 * @param stack the original WorkerSession 
