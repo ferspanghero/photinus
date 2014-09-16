@@ -1,0 +1,563 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.camel.component.file.remote.strategy;
+
+import java.util.List;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
+import org.apache.camel.component.file.GenericFile;
+import org.apache.camel.component.file.GenericFileEndpoint;
+import org.apache.camel.component.file.GenericFileExclusiveReadLockStrategy;
+import org.apache.camel.component.file.GenericFileOperations;
+import org.apache.camel.util.CamelLogger;
+import org.apache.camel.util.StopWatch;
+import org.apache.commons.net.ftp.FTPFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class FtpChangedExclusiveReadLockStrategy implements GenericFileExclusiveReadLockStrategy<FTPFile> {
+	private static final Logger LOG = LoggerFactory.getLogger(FtpChangedExclusiveReadLockStrategy.class);
+	private long timeout;
+	private long checkInterval = 5000;
+	private LoggingLevel readLockLoggingLevel = LoggingLevel.WARN;
+	private long minLength = 1;
+	private boolean fastExistsCheck;
+
+	@Override
+	public void prepareOnStartup(GenericFileOperations<FTPFile> tGenericFileOperations, GenericFileEndpoint<FTPFile> tGenericFileEndpoint) throws Exception {
+		// noop
+	}
+
+	public boolean acquireExclusiveReadLock(GenericFileOperations<FTPFile> operations, GenericFile<FTPFile> file, Exchange exchange) throws Exception {
+		boolean exclusive = false;
+
+		LOG.trace("Waiting for exclusive read lock to file: " + file);
+
+		long lastModified = Long.MIN_VALUE;
+		long length = Long.MIN_VALUE;
+		StopWatch watch = new StopWatch();
+
+		while (!exclusive) {
+			// timeout check
+			if (timeout > 0) {
+				long delta = watch.taken();
+				if (delta > timeout) {
+					CamelLogger.log(LOG, readLockLoggingLevel,
+							"Cannot acquire read lock within " + timeout + " millis. Will skip the file: " + file);
+					// we could not get the lock within the timeout period, so return false
+					return false;
+				}
+			}
+
+			long newLastModified = 0;
+			long newLength = 0;
+			List<FTPFile> files;
+			if (fastExistsCheck) {
+				// use the absolute file path to only pickup the file we want to check, this avoids expensive
+				// list operations if we have a lot of files in the directory
+				LOG.trace("Using fast exists to update file information for {}", file);
+				files = operations.listFiles(file.getAbsoluteFilePath());
+			} else {
+				LOG.trace("Using full directory listing to update file information for {}. Consider enabling fastExistsCheck option.", file);
+				// fast option not enabled, so list the directory and filter the file name
+				files = operations.listFiles(file.getParent());
+			}
+			LOG.trace("List files {} found {} files", file.getAbsoluteFilePath(), files.size());
+			for (FTPFile f : files) {
+				if (f.getName().equals(file.getFileNameOnly())) {
+					newLength = f.getSize();
+					if (f.getTimestamp() != null) {
+						newLastModified = f.getTimestamp().getTimeInMillis();
+					}
+				}
+			}
+
+			LOG.trace("Previous last modified: " + lastModified + ", new last modified: " + newLastModified);
+			LOG.trace("Previous length: " + length + ", new length: " + newLength);
+
+			if (length >= minLength && (newLastModified == lastModified && newLength == length)) {
+				LOG.trace("Read lock acquired.");
+				exclusive = true;
+			} else {
+				// set new base file change information
+				lastModified = newLastModified;
+				length = newLength;
+
+				boolean interrupted = sleep();
+				if (interrupted) {
+					// we were interrupted while sleeping, we are likely being shutdown so return false
+					return false;
+				}
+			}
+		}
+
+		return exclusive;
+	}
+
+	private boolean sleep() {
+		LOG.trace("Exclusive read lock not granted. Sleeping for " + checkInterval + " millis.");
+		try {
+			Thread.sleep(checkInterval);
+			return false;
+		} catch (InterruptedException e) {
+			LOG.debug("Sleep interrupted while waiting for exclusive read lock, so breaking out");
+			return true;
+		}
+	}
+
+	@Override
+	public void releaseExclusiveReadLock(GenericFileOperations<FTPFile> operations, GenericFile<FTPFile> file, Exchange exchange) throws Exception {
+		// noop
+	}
+
+	public long getTimeout() {
+		return timeout;
+	}
+
+	@Override
+	public void setTimeout(long timeout) {
+		this.timeout = timeout;
+	}
+
+	public long getCheckInterval() {
+		return checkInterval;
+	}
+
+	@Override
+	public void setCheckInterval(long checkInterval) {
+		this.checkInterval = checkInterval;
+	}
+
+	@Override
+	public void setReadLockLoggingLevel(LoggingLevel readLockLoggingLevel) {
+		this.readLockLoggingLevel = readLockLoggingLevel;
+	}
+
+	@Override
+	public void setMarkerFiler(boolean markerFiler) {
+		// noop - not supported by ftp
+	}
+
+	public long getMinLength() {
+		return minLength;
+	}
+
+	public void setMinLength(long minLength) {
+		this.minLength = minLength;
+	}
+
+	public boolean isFastExistsCheck() {
+		return fastExistsCheck;
+	}
+
+	public void setFastExistsCheck(boolean fastExistsCheck) {
+		this.fastExistsCheck = fastExistsCheck;
+	}
+}
+
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.camel.component.file.strategy;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.component.file.GenericFile;
+import org.apache.camel.component.file.GenericFileEndpoint;
+import org.apache.camel.component.file.GenericFileOperationFailedException;
+import org.apache.camel.component.file.GenericFileOperations;
+
+public class GenericFileDeleteProcessStrategy<T> extends GenericFileProcessStrategySupport<T> {
+
+    private GenericFileRenamer<T> failureRenamer;
+    private GenericFileRenamer<T> beginRenamer;
+
+    @Override
+    public boolean begin(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint, Exchange exchange, GenericFile<T> file) throws Exception {
+
+        // must invoke super
+        boolean result = super.begin(operations, endpoint, exchange, file);
+        if (!result) {
+            return false;
+        }
+
+        // okay we got the file then execute the begin renamer
+        if (beginRenamer != null) {
+            GenericFile<T> newName = beginRenamer.renameFile(exchange, file);
+            GenericFile<T> to = renameFile(operations, file, newName);
+            if (to != null) {
+                to.bindToExchange(exchange);
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void commit(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint, Exchange exchange, GenericFile<T> file) throws Exception {
+
+        // special for file lock strategy as we must release that lock first before we can delete the file
+        boolean releaseEager = exclusiveReadLockStrategy instanceof FileLockExclusiveReadLockStrategy;
+
+        if (releaseEager) {
+            exclusiveReadLockStrategy.releaseExclusiveReadLock(operations, file, exchange);
+        }
+
+        try {
+            deleteLocalWorkFile(exchange);
+            operations.releaseRetreivedFileResources(exchange);
+
+            int retries = 3;
+            boolean deleted = false;
+
+            while (retries > 0 && !deleted) {
+                retries--;
+
+                if (operations.deleteFile(file.getAbsoluteFilePath())) {
+                    // file is deleted
+                    deleted = true;
+                    break;
+                }
+
+                // some OS can report false when deleting but the file is still deleted
+                // use exists to check instead
+                boolean exits = operations.existsFile(file.getAbsoluteFilePath());
+                if (!exits) {
+                    deleted = true;
+                } else {
+                    log.trace("File was not deleted at this attempt will try again in 1 sec.: {}", file);
+                    // sleep a bit and try again
+                    Thread.sleep(1000);
+                }
+            }
+            if (!deleted) {
+                throw new GenericFileOperationFailedException("Cannot delete file: " + file);
+            }
+        } finally {
+            // must release lock last
+            if (!releaseEager && exclusiveReadLockStrategy != null) {
+                exclusiveReadLockStrategy.releaseExclusiveReadLock(operations, file, exchange);
+            }
+        }
+    }
+
+    @Override
+    public void rollback(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint, Exchange exchange, GenericFile<T> file) throws Exception {
+        try {
+            deleteLocalWorkFile(exchange);
+            operations.releaseRetreivedFileResources(exchange);
+
+            // moved the failed file if specifying the moveFailed option
+            if (failureRenamer != null) {
+                // create a copy and bind the file to the exchange to be used by the renamer to evaluate the file name
+                Exchange copy = exchange.copy();
+                file.bindToExchange(copy);
+                // must preserve message id
+                copy.getIn().setMessageId(exchange.getIn().getMessageId());
+                copy.setExchangeId(exchange.getExchangeId());
+
+                GenericFile<T> newName = failureRenamer.renameFile(copy, file);
+                renameFile(operations, file, newName);
+            }
+        } finally {
+            // must release lock last
+            if (exclusiveReadLockStrategy != null) {
+                exclusiveReadLockStrategy.releaseExclusiveReadLock(operations, file, exchange);
+            }
+        }
+    }
+
+    public GenericFileRenamer<T> getFailureRenamer() {
+        return failureRenamer;
+    }
+
+    public void setFailureRenamer(GenericFileRenamer<T> failureRenamer) {
+        this.failureRenamer = failureRenamer;
+    }
+
+    public GenericFileRenamer<T> getBeginRenamer() {
+        return beginRenamer;
+    }
+
+    public void setBeginRenamer(GenericFileRenamer<T> beginRenamer) {
+        this.beginRenamer = beginRenamer;
+    }
+}
+
+
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.camel.component.file.strategy;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.component.file.GenericFile;
+import org.apache.camel.component.file.GenericFileEndpoint;
+import org.apache.camel.component.file.GenericFileExclusiveReadLockStrategy;
+import org.apache.camel.component.file.GenericFileOperationFailedException;
+import org.apache.camel.component.file.GenericFileOperations;
+import org.apache.camel.component.file.GenericFileProcessStrategy;
+import org.apache.camel.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Base class for implementations of {@link GenericFileProcessStrategy}.
+ */
+public abstract class GenericFileProcessStrategySupport<T> implements GenericFileProcessStrategy<T> {
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+    protected GenericFileExclusiveReadLockStrategy<T> exclusiveReadLockStrategy;
+
+    public void prepareOnStartup(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint) throws Exception {
+        if (exclusiveReadLockStrategy != null) {
+            exclusiveReadLockStrategy.prepareOnStartup(operations, endpoint);
+        }
+    }
+
+    public boolean begin(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint, Exchange exchange, GenericFile<T> file) throws Exception {
+        // if we use exclusive read then acquire the exclusive read (waiting until we got it)
+        if (exclusiveReadLockStrategy != null) {
+            boolean lock = exclusiveReadLockStrategy.acquireExclusiveReadLock(operations, file, exchange);
+            if (!lock) {
+                // do not begin since we could not get the exclusive read lock
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void abort(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint, Exchange exchange, GenericFile<T> file) throws Exception {
+        deleteLocalWorkFile(exchange);
+        operations.releaseRetreivedFileResources(exchange);
+
+        // must release lock last
+        if (exclusiveReadLockStrategy != null) {
+            exclusiveReadLockStrategy.releaseExclusiveReadLock(operations, file, exchange);
+        }
+    }
+
+    public void commit(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint, Exchange exchange, GenericFile<T> file) throws Exception {
+        deleteLocalWorkFile(exchange);
+        operations.releaseRetreivedFileResources(exchange);
+
+        // must release lock last
+        if (exclusiveReadLockStrategy != null) {
+            exclusiveReadLockStrategy.releaseExclusiveReadLock(operations, file, exchange);
+        }
+    }
+
+    public void rollback(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint, Exchange exchange, GenericFile<T> file) throws Exception {
+        deleteLocalWorkFile(exchange);
+        operations.releaseRetreivedFileResources(exchange);
+
+        // must release lock last
+        if (exclusiveReadLockStrategy != null) {
+            exclusiveReadLockStrategy.releaseExclusiveReadLock(operations, file, exchange);
+        }
+    }
+
+    public GenericFileExclusiveReadLockStrategy<T> getExclusiveReadLockStrategy() {
+        return exclusiveReadLockStrategy;
+    }
+
+    public void setExclusiveReadLockStrategy(GenericFileExclusiveReadLockStrategy<T> exclusiveReadLockStrategy) {
+        this.exclusiveReadLockStrategy = exclusiveReadLockStrategy;
+    }
+    
+    protected GenericFile<T> renameFile(GenericFileOperations<T> operations, GenericFile<T> from, GenericFile<T> to) throws IOException {
+        // deleting any existing files before renaming
+        try {
+            operations.deleteFile(to.getAbsoluteFilePath());
+        } catch (GenericFileOperationFailedException e) {
+            // ignore the file does not exists
+        }
+        
+        // make parent folder if missing
+        boolean mkdir = operations.buildDirectory(to.getParent(), to.isAbsolute());
+        
+        if (!mkdir) {
+            throw new GenericFileOperationFailedException("Cannot create directory: " + to.getParent() + " (could be because of denied permissions)");
+        }
+
+        log.debug("Renaming file: {} to: {}", from, to);
+        boolean renamed = operations.renameFile(from.getAbsoluteFilePath(), to.getAbsoluteFilePath());
+        if (!renamed) {
+            throw new GenericFileOperationFailedException("Cannot rename file: " + from + " to: " + to);
+        }
+
+        return to;
+    }
+
+    protected void deleteLocalWorkFile(Exchange exchange) {
+        // delete local work file, if it was used (eg by ftp component)
+        File local = exchange.getIn().getHeader(Exchange.FILE_LOCAL_WORK_PATH, File.class);
+        if (local != null && local.exists()) {
+            boolean deleted = FileUtil.deleteFile(local);
+            log.trace("Local work file: {} was deleted: {}", local, deleted);
+        }
+    }
+}
+
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.camel.component.file.strategy;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.component.file.GenericFile;
+import org.apache.camel.component.file.GenericFileEndpoint;
+import org.apache.camel.component.file.GenericFileOperations;
+
+public class GenericFileRenameProcessStrategy<T> extends GenericFileProcessStrategySupport<T> {
+    private GenericFileRenamer<T> beginRenamer;
+    private GenericFileRenamer<T> failureRenamer;
+    private GenericFileRenamer<T> commitRenamer;
+
+    public GenericFileRenameProcessStrategy() {
+    }
+
+    @Override
+    public boolean begin(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint, Exchange exchange, GenericFile<T> file) throws Exception {
+        // must invoke super
+        boolean result = super.begin(operations, endpoint, exchange, file);
+        if (!result) {
+            return false;
+        }
+
+        // okay we got the file then execute the begin renamer
+        if (beginRenamer != null) {
+            GenericFile<T> newName = beginRenamer.renameFile(exchange, file);
+            GenericFile<T> to = renameFile(operations, file, newName);
+            if (to != null) {
+                to.bindToExchange(exchange);
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void rollback(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint, Exchange exchange, GenericFile<T> file) throws Exception {
+        try {
+            operations.releaseRetreivedFileResources(exchange);
+
+            if (failureRenamer != null) {
+                // create a copy and bind the file to the exchange to be used by the renamer to evaluate the file name
+                Exchange copy = exchange.copy();
+                file.bindToExchange(copy);
+                // must preserve message id
+                copy.getIn().setMessageId(exchange.getIn().getMessageId());
+                copy.setExchangeId(exchange.getExchangeId());
+
+                GenericFile<T> newName = failureRenamer.renameFile(copy, file);
+                renameFile(operations, file, newName);
+            }
+        } finally {
+            if (exclusiveReadLockStrategy != null) {
+                exclusiveReadLockStrategy.releaseExclusiveReadLock(operations, file, exchange);
+            }
+            deleteLocalWorkFile(exchange);
+        }
+    }
+
+    @Override
+    public void commit(GenericFileOperations<T> operations, GenericFileEndpoint<T> endpoint, Exchange exchange, GenericFile<T> file) throws Exception {
+        try {
+            if (commitRenamer != null) {
+                // create a copy and bind the file to the exchange to be used by the renamer to evaluate the file name
+                Exchange copy = exchange.copy();
+                file.bindToExchange(copy);
+                // must preserve message id
+                copy.getIn().setMessageId(exchange.getIn().getMessageId());
+                copy.setExchangeId(exchange.getExchangeId());
+
+                GenericFile<T> newName = commitRenamer.renameFile(copy, file);
+                renameFile(operations, file, newName);
+            }
+        } finally {
+            // must invoke super
+            super.commit(operations, endpoint, exchange, file);
+        }
+    }
+
+    public GenericFileRenamer<T> getBeginRenamer() {
+        return beginRenamer;
+    }
+
+    public void setBeginRenamer(GenericFileRenamer<T> beginRenamer) {
+        this.beginRenamer = beginRenamer;
+    }
+
+    public GenericFileRenamer<T> getCommitRenamer() {
+        return commitRenamer;
+    }
+
+    public void setCommitRenamer(GenericFileRenamer<T> commitRenamer) {
+        this.commitRenamer = commitRenamer;
+    }
+
+    public GenericFileRenamer<T> getFailureRenamer() {
+        return failureRenamer;
+    }
+
+    public void setFailureRenamer(GenericFileRenamer<T> failureRenamer) {
+        this.failureRenamer = failureRenamer;
+    }
+}
