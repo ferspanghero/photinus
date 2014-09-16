@@ -22,7 +22,7 @@ public class CodeSnippetFactory {
 	//	}
 
 	public CodeSnippetFactory(String fileName, String fileContent){
-		this.fileContent = fileContent;
+		this.fileContent = fileContent;//this.sanitizeContent();
 		this.fileName = fileName;
 		this.fileContentPerLine = this.fileContent.split("\r\n|\r|\n");
 	}
@@ -34,7 +34,7 @@ public class CodeSnippetFactory {
 		@SuppressWarnings("unused")
 		JavaParser parser = new JavaParser(this);
 		this.setCallers(this.codeSnippetList);
-		this.setMethodTexts(this.codeSnippetList, this.fileContentPerLine);
+		this.setMethodTexts(this.codeSnippetList);
 		for (CodeSnippet codeSnippet : this.codeSnippetList) {
 			codeSnippet.setFileName(fileName);
 		}
@@ -135,7 +135,7 @@ public class CodeSnippetFactory {
 	}
 
 	// assuming that the method is NOT OVERLOADED
-	private void setMethodTexts(ArrayList<CodeSnippet> codeSnippetsArg, String[] fileContentPerLineArg)
+	private void setMethodTexts(ArrayList<CodeSnippet> codeSnippetsArg)
 	{
 		for (CodeSnippet codeSnippet : codeSnippetsArg) {
 			int startingLine = codeSnippet.getMethodSignature().getLineNumber() -1;	// -1 because the vector starts from 0
@@ -159,14 +159,30 @@ public class CodeSnippetFactory {
 			scanner.close();
 			/* updating on respective CodeSnippet */
 			codeSnippet.setCodeSnippetFromFileContent(builder.toString());
-//			System.out.println("@@@@@@@@@@@@@@@@@@@");
-//			System.out.println(codeSnippet.getCodeSnippetFromFileContent());
+			System.out.println("@@@@@@@@@@@@@@@@@@@");
+			System.out.println("setMethodTexts: "+ codeSnippet.getCodeSnippetFromFileContent());
 			
 			
 		}
 		System.out.println();
 	}
 
+	
+	public static String sanitizeContent(String content){
+		
+		Scanner scanner = new Scanner(content);
+		int j = 0;
+		StringBuilder builder = new StringBuilder();
+		String newline = System.getProperty("line.separator");
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			builder.append(line + newline);
+		}
+		scanner.close();
+		/* updating on respective CodeSnippet */
+		return builder.toString();
+	}
+	
 	public String getFileName(){
 		return fileName;
 	}

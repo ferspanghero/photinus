@@ -6,20 +6,32 @@ import org.apache.commons.lang3.StringUtils;
 
 public class SimpleSampleCode {
 
-	Integer SeedLimit = new Integer(10);
-	
-	
-	
+
+	Integer SeedLimit= new Integer(10);
 	Code code=null;
 	
-	
 	public SimpleSampleCode(int i){
-		SeedLimit = new Integer(i);
+		this.SeedLimit = new Integer(i);
 	}
+	
+	public void SampleCode(int i){
+        Integer SeedLimit= new Integer(i);
+		SimpleSampleCode sample= new SimpleSampleCode(10);
+		if(this.equals(SeedLimit)){
+			SeedLimit.doubleValue();
+			SimpleSampleCode.factorial(SeedLimit, SeedLimit);
+		Code code = new Code("new");
+		}
+	}
+	
 	
 	private class Code{
 		
 		private String code;
+		
+		public Code(String code){
+			this.code = code;
+		}
 		
 		public void  setCode(String code){
 			this.code = code;
@@ -32,7 +44,7 @@ public class SimpleSampleCode {
 	
 	
 	public Code getCode(){
-		if(code==null) this.code = new Code();
+		if(code==null) this.code = new Code("new");
 		return code;
 	}
 	
@@ -44,7 +56,7 @@ public class SimpleSampleCode {
 	}
 	
 	
-	public void SeedVerifier(Integer seedValue) {
+	public  void SeedVerifier(Integer seedValue) {
 		if (SeedLimit == null) this.SeedLimit = new Integer(seedValue);	// all at the same line
 		int value = seedValue.intValue();
 		if (value == 5)							// if without braces
@@ -57,7 +69,7 @@ public class SimpleSampleCode {
 		}
 	}
 
-	public Integer factorial(Integer Seed, Integer Iterations) {
+	public static Integer factorial(Integer Seed, Integer Iterations) {
 		if (Seed != null) 	// if with else
 		{	int aux = 1;
 			for (int i = 0; i < Iterations.intValue(); i++) {

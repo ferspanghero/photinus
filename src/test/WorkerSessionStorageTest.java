@@ -135,7 +135,7 @@ public class WorkerSessionStorageTest {
 
 			//Persist data
 			MicrotaskStorage microtaskStorage = new MicrotaskStorage();
-			microtaskStorage.replace(fileName, fileDebuggingSession);
+			microtaskStorage.insert(fileName, fileDebuggingSession);
 
 			//Generate the stack of WorkerSession
 			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
@@ -286,7 +286,7 @@ public class WorkerSessionStorageTest {
 
 			//Persist data
 			MicrotaskStorage microtaskStorage = new MicrotaskStorage();
-			microtaskStorage.replace(fileName, fileDebuggingSession);
+			microtaskStorage.insert(fileName, fileDebuggingSession);
 
 			//Generate the stack of New and Duplicated WorkerSession
 			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();

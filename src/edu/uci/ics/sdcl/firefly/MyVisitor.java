@@ -212,7 +212,7 @@ public class MyVisitor extends ASTVisitor {
 				String arguments = node.arguments().toString();
 				this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
 				this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
-				this.elementEndingColumn = this.elementStartingColumn+ name.length();
+				this.elementEndingColumn = this.elementStartingColumn+ node.getLength();
 				this.elementEndingLine = this.elementStartingLine;
 
 				MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, 
@@ -261,7 +261,10 @@ public class MyVisitor extends ASTVisitor {
 			 */
 
 			String line = this.snippetFactory.getFileContentPerLine()[this.elementStartingLine-1];
-			this.elementStartingColumn = line.indexOf(node.getName().toString());
+			System.out.println("node.getName():"+node.getName());
+			System.out.println("line: "+line);
+			this.elementStartingColumn = line.indexOf(node.getName().toString()); 
+			System.out.println("method position: "+ line.substring(this.elementStartingColumn));
 			this.elementEndingColumn = this.elementStartingColumn+ node.getName().toString().length();
 			this.elementEndingLine = this.elementStartingLine;
 

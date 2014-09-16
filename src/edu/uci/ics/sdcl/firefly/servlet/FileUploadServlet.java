@@ -95,7 +95,7 @@ public class FileUploadServlet extends HttpServlet {
 						if(sizeInBytes>0){
 							// reading fileContent
 							Scanner scanner = new Scanner(item.getInputStream(),"Cp1252");
-							fileContent = scanner.useDelimiter("\\A").next();		  				
+							fileContent = scanner.useDelimiter("\\A").next();		
 							return_message = "File <b>"+ fileName+"</b> was successfully uploaded.<br> Size: "+sizeInBytes+" bytes <br>";
 							scanner.close();
 						}
@@ -123,6 +123,10 @@ public class FileUploadServlet extends HttpServlet {
 					}
 				}
 
+				//Sanitize the content removing the tabs because the Javascript 
+				//editor counts a tab as one space, which a tab is actually 4 spaces.
+				fileContent = fileContent.replaceAll("\t","    ");
+				
 				// generating microtasks if...
 				if (gotBugReport && gotSpecificMethod){
 					String results = generateMicrotasks(fileName, fileContent, targetName, bugReport);
@@ -188,7 +192,6 @@ public class FileUploadServlet extends HttpServlet {
 				storage.insert(fileName, fileDebuggingSession); //append to existing fileDebugSessions
 
 				int generatedCodeSnippets = snippetList.size();
-				//int generatedMicrotasks = microtaskMap.size();
 				int numberOfMicrotasks = storage.getNumberOfMicrotask();
 				results = "Code snippets generated: "+generatedCodeSnippets+ 
 						"<br> Microtasks generated: " + generatedMicrotasks+"<br>"+

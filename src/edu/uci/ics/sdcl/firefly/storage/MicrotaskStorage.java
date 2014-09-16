@@ -69,8 +69,6 @@ public class MicrotaskStorage {
 	public FileDebugSession read(String fileName){
 
 		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
-		System.out.println(debugSessionMap);
-		System.out.println("Filename=: "+ fileName);
 		
 		if(debugSessionMap!=null && debugSessionMap.containsKey(fileName))
 			return debugSessionMap.get(fileName);
@@ -112,15 +110,16 @@ public class MicrotaskStorage {
 	 */
 	public boolean insertAnswer(String fileName, Integer microtaskId, Answer answer, String elapsedTime, String timeStamp){ 
 
-		FileDebugSession fileDebuggingSession = this.read(fileName);
-		Microtask mtask = fileDebuggingSession.getMicrotask(microtaskId);
+		FileDebugSession newfileDebugSession = this.read(fileName);
+		Microtask mtask = newfileDebugSession.getMicrotask(microtaskId);
 		mtask.addAnswer(answer);
 		mtask.addTimeStamp(timeStamp);
 		mtask.addElapsedTime(elapsedTime);
-		fileDebuggingSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
+		newfileDebugSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
+		newfileDebugSession.insertMicrotask(microtaskId, mtask);
 		//TODO change this system.out to be a log
 		System.out.println("Inserting microtask id:"+mtask.getID()+" answers: "+mtask.getNumberOfAnswers()+" : "+mtask.getAnswerList().toString());
-		return this.replace(fileName, fileDebuggingSession);
+		return this.insert(fileName, newfileDebugSession);
 	}
 
 	/** Insert a new List of Microtasks. It overwrites any existing one for the same file.
@@ -129,7 +128,7 @@ public class MicrotaskStorage {
 	 * @param fileDebugSession the list of microtasks associated to the file
 	 * @return true if operation succeeded, otherwise false.
 	 */
-	public boolean insert(String fileName, FileDebugSession newfileDebuggingSession){
+	public boolean insert(String fileName, FileDebugSession newfileDebugSession){
 
 
 		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
@@ -138,24 +137,13 @@ public class MicrotaskStorage {
 
 			if(debugSessionMap.containsKey(fileName))
 				//Has to merge the new one with the existing
-				newfileDebuggingSession.append(debugSessionMap.get(fileName));	
+				newfileDebugSession.append(debugSessionMap.get(fileName));	
 
-			debugSessionMap.put(fileName, newfileDebuggingSession);
+			debugSessionMap.put(fileName, newfileDebugSession);
 			return this.updateIndex(debugSessionMap);	
 		}		
 		else
 			return false;
-	}
-
-	/** Replaces the existing list of Microtasks for a new one. 
-	 * 
-	 * @param fileName
-	 * @param microtaskList
-	 */
-	public boolean replace(String fileName, FileDebugSession fileDebuggingSession){
-		boolean success1 = this.remove(fileName);
-		boolean success2 = this.insert(fileName, fileDebuggingSession);
-		return success1&&success2;
 	}
 
 	/** 

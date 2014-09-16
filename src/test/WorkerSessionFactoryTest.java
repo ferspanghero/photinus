@@ -85,7 +85,7 @@ public class WorkerSessionFactoryTest {
 
 			//Persist data
 			MicrotaskStorage memento = new MicrotaskStorage();
-			memento.replace(fileName, fileDebuggingSession);
+			memento.insert(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
 			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
@@ -169,7 +169,7 @@ public class WorkerSessionFactoryTest {
 
 			//Persist data
 			MicrotaskStorage memento = new MicrotaskStorage();
-			memento.replace(fileName, fileDebuggingSession);
+			memento.insert(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
 			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
@@ -326,7 +326,7 @@ public class WorkerSessionFactoryTest {
 
 			//Persist data
 			MicrotaskStorage memento = new MicrotaskStorage();
-			memento.replace(fileName, fileDebuggingSession);
+			memento.insert(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
 			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
