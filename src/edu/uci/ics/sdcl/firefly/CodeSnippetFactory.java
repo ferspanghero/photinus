@@ -159,28 +159,12 @@ public class CodeSnippetFactory {
 			scanner.close();
 			/* updating on respective CodeSnippet */
 			codeSnippet.setCodeSnippetFromFileContent(builder.toString());
-			System.out.println("@@@@@@@@@@@@@@@@@@@");
-			System.out.println("setMethodTexts: "+ codeSnippet.getCodeSnippetFromFileContent());
+			//System.out.println("@@@@@@@@@@@@@@@@@@@");
+			//System.out.println("setMethodTexts: "+ codeSnippet.getCodeSnippetFromFileContent());
 			
 			
 		}
 		System.out.println();
-	}
-
-	
-	public static String sanitizeContent(String content){
-		
-		Scanner scanner = new Scanner(content);
-		int j = 0;
-		StringBuilder builder = new StringBuilder();
-		String newline = System.getProperty("line.separator");
-		while (scanner.hasNextLine()) {
-			String line = scanner.nextLine();
-			builder.append(line + newline);
-		}
-		scanner.close();
-		/* updating on respective CodeSnippet */
-		return builder.toString();
 	}
 	
 	public String getFileName(){

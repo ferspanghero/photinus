@@ -41,12 +41,26 @@ public class WorkerSessionSelector {
 		// chasing method positions for highlighting callees on Main Ace Editor
 		if (!task.getMethod().getCallees().isEmpty()){
 			StringBuilder commandStorage = new StringBuilder();
-			String callesOnMainCommand = new String();
+			StringBuilder commandStorage2 = new StringBuilder();
+			String callesOnMainCommand = null;
+			String callesOnMainCommand2 = null;
 			for (CodeSnippet callee : task.getMethod().getCallees()) {
+				commandStorage2.append(callee.getElementStartingLine()+"#");
+				commandStorage2.append(callee.getElementStartingColumn()+"#");
+				commandStorage2.append(callee.getElementEndingLine()+"#");
+				commandStorage2.append(callee.getElementEndingColumn()+"#");
+				
+				
 				commandStorage.append( methodChaser(callee.getMethodSignature().getName(), fileContent, false) );
 			}
-			callesOnMainCommand = commandStorage.toString().substring(0, commandStorage.length()-1);	// -1 to remove last '#'
-			System.out.println("Command to be executed: " + callesOnMainCommand);
+			if(commandStorage.length()>0)
+				callesOnMainCommand = commandStorage.toString().substring(0, commandStorage.length()-1);	// -1 to remove last '#'
+			System.out.println("calleesOnMain to be executed: " + callesOnMainCommand);
+			
+			if(commandStorage2.length()>0)
+				callesOnMainCommand2 = commandStorage2.toString().substring(0, commandStorage2.length()-1);	// -1 to remove last '#'
+			System.out.println("calleesOnMain2 to be executed: " + callesOnMainCommand2);
+			
 			request.setAttribute("calleesOnMain", callesOnMainCommand);
 		} else
 			request.setAttribute("calleesOnMain", null);
@@ -78,8 +92,11 @@ public class WorkerSessionSelector {
 				}
 			}
 			// chasing method positions for highlighting purposes
+			//CodeSnippet caller = task.getMethod();
+			//hightlight.append()
 			highlight.append( methodChaser(task.getMethod().getMethodSignature().getName(), newFileContent.toString(), false) );
-			highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
+			if(highlight.length()>0)
+				highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
 			System.out.println("Command to be executed: " + highlightCallerCommand);
 			request.setAttribute("caller", newFileContent.toString());
 		}
@@ -97,7 +114,7 @@ public class WorkerSessionSelector {
 		else{
 			newFileContent = new StringBuilder();
 			highlight = new StringBuilder();
-			highlightCalleeCommand = new String();
+			highlightCalleeCommand = null;
 			newFileContent.append("METHOD '" + task.getMethod().getMethodSignature().getName() + 
 					"' CALLS THE FOLLOWING METHOD(S):");
 			newFileContent.append(newline);
@@ -113,7 +130,8 @@ public class WorkerSessionSelector {
 			for (CodeSnippet callee : task.getMethod().getCallees()) {
 				highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString(), true) );
 			}
-			highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
+			if(highlight.length()>0)
+				highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
 			System.out.println("Command to be executed: " + highlightCalleeCommand);
 			request.setAttribute("callee", newFileContent.toString());
 		}
@@ -162,9 +180,10 @@ public class WorkerSessionSelector {
 			List<String> wordsPerLine = stringArraytoList(stringWords);
 			int wordLengthAccumulator = 0;	// just for the edge case of the same function being executed more than once per line
 			for (int index = 0; index < wordsPerLine.size(); index++) {
-				boolean isMethodCall = false;				// assuming there is NOT a method Call
-				if ( wordsPerLine.get(index).contains(methodName) )	// checking if the method name matched the word
-				{	// now, to make sure its a method call, let's find the parenthesis 	
+				boolean isMethodCall = false;	// assuming there is NOT a method Call
+				if ( wordsPerLine.get(index).contains(methodName)){// && wordsPerLine.size()==methodName.length()){
+					
+					// now, to make sure its a method call, let's find the parenthesis 	
 					if ( wordsPerLine.get(index).contains("(") )
 					{	// also contains an opening parenthesis - method call for sure
 						isMethodCall = true;
@@ -187,12 +206,12 @@ public class WorkerSessionSelector {
 					//Integer endColumn = startColumn+ methodName.length();
 					//Integer endLine = startLine;
 					//System.out.println("compute for caller: "+ startLine+","+startColumn+","+endLine+ ","+ endColumn);
-					
+
 					//					System.out.println("passing column: " + line.indexOf(methodName, wordLengthAcumulator) + " W.A.: " + wordLengthAcumulator);
 					PositionFinder positionFinder = 
 							new PositionFinder(currentLine, line.indexOf(methodName, wordLengthAccumulator), stringLines, '(', ')');
 					positionFinder.computeEndPosition();
-					
+
 					highlightCommand.append(positionFinder.getStartingLineNumber()+"#");
 					highlightCommand.append(line.indexOf(methodName, wordLengthAccumulator)+"#");// because I want the start column of the word
 					highlightCommand.append(positionFinder.getEndingLineNumber()+"#");
