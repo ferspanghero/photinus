@@ -53,7 +53,7 @@ public class PathUtil {
 		{	
 			Map.Entry<Integer, Microtask> me = (Map.Entry<Integer, Microtask>)i.next();
 			// populating the new map
-			String methodName = me.getValue().getMethod().getMethodSignature().getName();
+			String methodName = me.getValue().getCodeSnippet().getMethodSignature().getName();
 			if (microtasksPerMethod.containsKey(methodName)){
 				microtasksPerMethod.get(methodName).add(me.getValue());
 			} else {

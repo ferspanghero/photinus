@@ -9,7 +9,11 @@ public class Microtask implements Serializable
 	private String question;
 	private String failureDescription;
 	private CodeSnippet method;
+	private CodeElement codeElement;
 	private String codeElementType;
+	
+
+
 	private ArrayList<Answer> answerList;
 
 	private Integer startingLine;
@@ -28,6 +32,7 @@ public class Microtask implements Serializable
 	 * 
 	 * @param codeElementTypeArg
 	 * @param methodArg
+	 * @param codeElement TODO
 	 * @param questionArg
 	 * @param startingLineNumber 
 	 * @param startingColumnNumber
@@ -35,13 +40,14 @@ public class Microtask implements Serializable
 	 * @param endingColumnNumber
 	 * @param ID
 	 */
-	public Microtask(String codeElementTypeArg, CodeSnippet methodArg, String questionArg, 
-			Integer startingLineNumber, Integer startingColumnNumber, 
-			Integer endingLineNumber, Integer endingColumnNumber, Integer ID)
+	public Microtask(String codeElementTypeArg, CodeSnippet methodArg, CodeElement codeElement, 
+			String questionArg, Integer startingLineNumber, 
+			Integer startingColumnNumber, Integer endingLineNumber, Integer endingColumnNumber, Integer ID)
 	{
-		this.setMethod(methodArg);
+		this.setCodeSnippet(methodArg);
 		this.setQuestion(questionArg);
 		this.setCodeElementType(codeElementTypeArg);
+		this.codeElement = codeElement;
 		this.startingLine = startingLineNumber;
 		this.startingColumn = startingColumnNumber;
 		this.endingLine = endingLineNumber;
@@ -51,6 +57,7 @@ public class Microtask implements Serializable
 		this.timeStampList = new ArrayList<String>();
 		this.ID = ID;
 	}
+
 
 	public Integer getID(){
 		return this.ID;
@@ -76,12 +83,16 @@ public class Microtask implements Serializable
 		this.codeElementType = type;
 	}
 
-	public CodeSnippet getMethod()
+	public CodeSnippet getCodeSnippet()
 	{
 		return method;
 	}
 
-	public void setMethod(CodeSnippet method)
+	public CodeElement getCodeElement() {
+		return codeElement;
+	}
+	
+	public void setCodeSnippet(CodeSnippet method)
 	{
 		this.method = method;
 	}

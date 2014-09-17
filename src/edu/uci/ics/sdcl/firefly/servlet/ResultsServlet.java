@@ -76,7 +76,7 @@ public class ResultsServlet extends HttpServlet {
 				Iterator<Integer> microtaskIter = microtaskMap.keySet().iterator();
 				while(microtaskIter.hasNext()){
 					Microtask mtask = microtaskMap.get((Integer) microtaskIter.next());
-					String methodName = mtask.getMethod().getMethodSignature().getName();
+					String methodName = mtask.getCodeSnippet().getMethodSignature().getName();
 									
 					HashMap<String,MethodData> methodMap = resultMap.get(fileName);
 					MethodData methodData = methodMap.get(methodName);

@@ -57,7 +57,7 @@ public class MicrotaskMementoTest {
 		
 		CodeSnippet codeSnippetFactorial = new CodeSnippet("sample", "SimpleSampleCode", signature, body, true, 
 				7, 0, 7, 27, 7, 27, 10, 0); 
-		Microtask mtask = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, questionArg, 20, 0, 20, 58, 1);
+		Microtask mtask = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, null, questionArg, 20, 0, 20, 58, 1);
 
 		//Create the data structure
 		this.microtaskMap =  new HashMap<Integer,Microtask>();
@@ -80,7 +80,7 @@ public class MicrotaskMementoTest {
 			Microtask expectedTask = this.microtaskMap.get(key);
 			Microtask actualTask = mMap.get(key);
 			
-			assertEquals(expectedTask.getMethod().getClassName(),actualTask.getMethod().getClassName().toString());
+			assertEquals(expectedTask.getCodeSnippet().getClassName(),actualTask.getCodeSnippet().getClassName().toString());
 		}
 		else
 			fail("review test setup");

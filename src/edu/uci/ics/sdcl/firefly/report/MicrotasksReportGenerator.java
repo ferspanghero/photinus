@@ -128,7 +128,7 @@ public class MicrotasksReportGenerator
 
 				// preparing line (object), which index is a cell
 				Object[] lineContent = new Object[(4*answersPerMicrotask)+3]; // FileName(1) + ID(1) + question(1) + explanations(size) + answers(size) + elapsed time(size) + timestamp (size)
-				lineContent[0] = PathUtil.removePath(microtask.getMethod().getFileName(), true);	// FileName (cell 0)
+				lineContent[0] = PathUtil.removePath(microtask.getCodeSnippet().getFileName(), true);	// FileName (cell 0)
 				lineContent[1] = microtask.getID();						// ID (cell 1)
 				lineContent[2] = microtask.getQuestion();				// Question (cell 2)
 

@@ -159,8 +159,8 @@ public class WorkerSessionFactory {
 
 						//Avoids methods with the same name in the same session.
 						//That avoids the risk of having buggy and fixed versions of the same method in the same session.
-						if (!methodTracker.containsKey(microtask.getMethod().getMethodSignature().getName())){ 
-							methodTracker.put(microtask.getMethod().getMethodSignature().getName(), microtask);
+						if (!methodTracker.containsKey(microtask.getCodeSnippet().getMethodSignature().getName())){ 
+							methodTracker.put(microtask.getCodeSnippet().getMethodSignature().getName(), microtask);
 							resultList.add(microtask);
 							microtaskList.remove(0);
 							//Put the map back with the element removed
@@ -170,7 +170,7 @@ public class WorkerSessionFactory {
 						}
 						else{
 							System.out.println("Successfully dealt with method name collision, method:  "+
-									microtask.getMethod().getMethodSignature().getName());
+									microtask.getCodeSnippet().getMethodSignature().getName());
 						}
 					}
 				}
@@ -211,7 +211,7 @@ public class WorkerSessionFactory {
 				while(microtaskIter.hasNext()){
 					Integer mtaskID = (Integer) microtaskIter.next();
 					Microtask mtask = microtaskMap.get(mtaskID);
-					String methodName = mtask.getMethod().getMethodSignature().getName();
+					String methodName = mtask.getCodeSnippet().getMethodSignature().getName();
 
 					HashMap<String,ArrayList<Microtask>> methodMap = fileMethodMap.get(fileName);
 					ArrayList<Microtask> methodMicrotaskList = methodMap.get(methodName);

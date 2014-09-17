@@ -7,6 +7,8 @@ import org.eclipse.jdt.core.dom.Expression;
 
 public class MyMethodCall extends CodeElement implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	private String name;
 	private String expression;
 	private String parameterList;

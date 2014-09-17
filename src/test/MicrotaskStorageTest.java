@@ -37,20 +37,20 @@ public class MicrotaskStorageTest {
 				7, 0, 10, 27, 7, 27, 10, 0);
 		
 		Microtask questionMethodCallConstructor = new Microtask(CodeElement.METHOD_INVOCATION, 
-				dummySnippet, "Is there maybe something wrong in the declaration of function "
-						+ "'SimpleSampleCode' at line 7 (e.g., requires a parameter that is not listed, needs "
-						+ "different parameters to produce the correct result, specifies the wrong or no return type, "
-						+ "etc .)?", 7, 0, 7, 27,1);
+				dummySnippet, null, "Is there maybe something wrong in the declaration of function "
+								+ "'SimpleSampleCode' at line 7 (e.g., requires a parameter that is not listed, needs "
+								+ "different parameters to produce the correct result, specifies the wrong or no return type, "
+								+ "etc .)?", 7, 0, 7,27, 1);
 
 		HashMap<Integer,Microtask> microtaskMap = new HashMap<Integer,Microtask>();
 		microtaskMap.put(new Integer(0),  questionMethodCallConstructor);
 		session1 =  new FileDebugSession( fileName,  fileContent,microtaskMap );
 		
 
-		Microtask constructorBody = new Microtask(CodeElement.METHOD_DECLARATION, dummySnippet, "Is there possibly "
-				+ "something wrong with the body of function 'SimpleSampleCode' between lines 7 and 9 (e.g., "
-				+ "function produces an incorrect return value, return statement is at the wrong place, does not "
-				+ "properly handle error situations, etc.)?" , 7, 27, 10, 1,2);
+		Microtask constructorBody = new Microtask(CodeElement.METHOD_DECLARATION, dummySnippet, null , "Is there possibly "
+						+ "something wrong with the body of function 'SimpleSampleCode' between lines 7 and 9 (e.g., "
+						+ "function produces an incorrect return value, return statement is at the wrong place, does not "
+						+ "properly handle error situations, etc.)?", 7, 27, 10,1, 2);
 		
 		microtaskMap = new HashMap<Integer,Microtask>();
 		microtaskMap.put(new Integer(1),  constructorBody);

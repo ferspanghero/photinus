@@ -71,9 +71,9 @@ public class MicrotaskSelectorTest {
 		CodeSnippet codeSnippetFactorial = new CodeSnippet("sample", "SimpleSampleCode", signature, body, true, 
 				7, 0, 7, 27, 7, 27, 10, 0); 
 
-		Microtask mtask1 = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, questionArg1, 20, 0, 20, 58, 1);
-		Microtask mtask2 = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippetFactorial, questionArg2, 2, 0, 2, 16, 2);
-		Microtask mtask3 = new Microtask(CodeElement.FOR_LOOP, codeSnippetFactorial, questionArg3, 4, 0, 4, 41, 3);
+		Microtask mtask1 = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, null, questionArg1, 20, 0, 20, 58, 1);
+		Microtask mtask2 = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippetFactorial, null, questionArg2, 2, 0, 2, 16, 2);
+		Microtask mtask3 = new Microtask(CodeElement.FOR_LOOP, codeSnippetFactorial, null, questionArg3, 4, 0, 4, 41, 3);
 
 		//Create the data structure
 		this.microtaskMap =  new HashMap<Integer,Microtask>();
