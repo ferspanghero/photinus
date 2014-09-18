@@ -243,28 +243,8 @@ public class MyVisitor extends ASTVisitor {
 			String expression = node.getExpression()==null ? "" : node.getExpression().toString(); 
 			String arguments = node.arguments()==null ? "" : node.arguments().toString();
 
-			/*  // to avoid null pointers
-		    if (null == node.getName())
-				name = "";
-			else
-				name = node.getName().toString();
-
-			if (null == node.getExpression())
-				expression = "";
-			else
-				expression = node.getExpression().toString();
-
-			if (null == node.arguments())
-				arguments = "";
-			else
-				arguments = node.arguments().toString();
-			 */
-
 			String line = this.snippetFactory.getFileContentPerLine()[this.elementStartingLine-1];
-			System.out.println("node.getName():"+node.getName());
-			System.out.println("line: "+line);
 			this.elementStartingColumn = line.indexOf(node.getName().toString()); 
-			System.out.println("method position: "+ line.substring(this.elementStartingColumn));
 			this.elementEndingColumn = this.elementStartingColumn+ node.getName().toString().length();
 			this.elementEndingLine = this.elementStartingLine;
 

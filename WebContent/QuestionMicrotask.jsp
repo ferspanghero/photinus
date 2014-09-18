@@ -255,13 +255,13 @@
 			divMainEditor.style.height= computeHeight(sourceLinespan);
 			divMainEditor.style.width='680px';
 			
-			var editor = ace.edit('mainEditor');
-			editor.setReadOnly(true);
-			editor.setTheme("ace/theme/github");
-			editor.getSession().setMode("ace/mode/java");
-			editor.setBehavioursEnabled(false);
-			editor.setOption("highlightActiveLine", false); // disable highligthing on the active line
-			editor.setShowPrintMargin(false); 				// disable printing margin
+			var mainEditor = ace.edit('mainEditor');
+			mainEditor.setReadOnly(true);
+			mainEditor.setTheme("ace/theme/github");
+			mainEditor.getSession().setMode("ace/mode/java");
+			mainEditor.setBehavioursEnabled(false);
+			mainEditor.setOption("highlightActiveLine", false); // disable highligthing on the active line
+			mainEditor.setShowPrintMargin(false); 				// disable printing margin
 			
 			var startLine = document.getElementById("startLine").value;
 			var startColumn = document.getElementById("startColumn").value;
@@ -270,7 +270,7 @@
 			var Range = ace.require("ace/range").Range;
 	
 			var codeSnippetStartingLine = parseInt(document.getElementById("methodStartingLine").value);
-			editor.setOption("firstLineNumber", codeSnippetStartingLine); // set the starting line to <second parameter>	
+			mainEditor.setOption("firstLineNumber", codeSnippetStartingLine); // set the starting line to <second parameter>	
 			
 			// parameters for the others AceEditor
 	        var highlightCaller = document.getElementById("positionsCaller").value;
@@ -279,9 +279,10 @@
 	        
 			setTimeout(function() {
 				// highlight regarding main method
-				editor.session.addMarker(new Range(startLine - codeSnippetStartingLine, startColumn, 
+			mainEditor.session.addMarker(new Range(startLine - codeSnippetStartingLine, startColumn, 
 						endLine	- codeSnippetStartingLine, endColumn), "ace_active-line", "line");
-				editor.gotoLine(startLine - codeSnippetStartingLine + 1);
+				
+				mainEditor.gotoLine(startLine - codeSnippetStartingLine + 1);
 				if (calleesOnMain){		// highlighting callees
 					var numbersCalleesOnMain = calleesOnMain.split("#");
 					var lnStart = 0.0;
@@ -294,10 +295,14 @@
 						clStart = numbersCalleesOnMain[i+1];
 						lnEnd = numbersCalleesOnMain[i+2]-1;
 						clEnd = numbersCalleesOnMain[i+3];
-						editor.session.addMarker(new Range(lnStart, clStart, lnEnd, clEnd), "callees", "line");
-						//document.write("positions: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");
+						mainEditor.session.addMarker(new Range(lnStart-codeSnippetStartingLine+1, 
+								clStart, lnEnd - codeSnippetStartingLine+1, clEnd), "callees", "line");
+						//alert("main: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");
 					}	
 				}
+				
+				
+				
 				
 				// other ACE Editor highlights
 				if (highlightCaller){
@@ -363,7 +368,7 @@
 						lnEnd = numbersCallee[i+2]-1;
 						clEnd = numbersCallee[i+3];
 						editorCallee.session.addMarker(new Range(lnStart, clStart, lnEnd, clEnd), "callees", "line");
-						//document.write("positions: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");
+						//alert("callee positions: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");
 					}	
 				}
 				// just do make a space between Editors

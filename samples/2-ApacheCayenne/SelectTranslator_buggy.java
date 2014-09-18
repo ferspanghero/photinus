@@ -519,7 +519,7 @@ public class SelectTranslator extends QueryAssembler {
 	 private void appendColumn(List<ColumnDescriptor> columns, ObjAttribute objAttribute, DbAttribute attribute,
 			 Set<ColumnTracker> skipSet, String label) {
 
-		 String alias = getCurrentAlias();
+         String alias = getCurrentAlias();
 		 if (skipSet.add(new ColumnTracker(alias, attribute))) {
 
 			 ColumnDescriptor column = (objAttribute != null) ? new ColumnDescriptor(objAttribute, attribute, alias)

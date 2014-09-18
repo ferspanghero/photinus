@@ -16,7 +16,7 @@ public class SimpleSampleCode {
 	
 	public void SampleCode(int i){
         Integer SeedLimit= new Integer(i);
-		SimpleSampleCode sample= new SimpleSampleCode(10);
+        SimpleSampleCode sample= new SimpleSampleCode(10);
 		if(this.equals(SeedLimit)){
 			SeedLimit.doubleValue();
 			SimpleSampleCode.factorial(SeedLimit, SeedLimit);

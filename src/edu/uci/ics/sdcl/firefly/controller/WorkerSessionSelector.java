@@ -1,12 +1,14 @@
 package edu.uci.ics.sdcl.firefly.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import edu.uci.ics.sdcl.firefly.CodeElement;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
+import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.MyMethodCall;
 import edu.uci.ics.sdcl.firefly.util.MethodMatcher;
@@ -30,44 +32,69 @@ public class WorkerSessionSelector {
 	 * @return the new request with data to be displayed on the web page
 	 */
 	public HttpServletRequest generateRequest(HttpServletRequest request, Microtask task){
-		
+
 		System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
 		System.out.println("Retrieved microtask bug report:" + task.getFailureDescription() +  " from fileName: "+task.getCodeSnippet().getFileName());
-		
+
 		request.setAttribute("microtaskId", task.getID());  
 		request.setAttribute("fileName", task.getCodeSnippet().getFileName());
-		
+
 		String fileContent = task.getCodeSnippet().getCodeSnippetFromFileContent();	// Taking the method content instead of the whole file
 		request.setAttribute("bugReport", task.getFailureDescription());
 		request.setAttribute("question", task.getQuestion());
 		request.setAttribute("source", fileContent); 	// content displayed on the first ACE Editor
-		
+
 		String sourceLines[] = fileContent.split("\r\n|\r|\n");
-		System.out.println("sourceLOCS=" + new Integer(sourceLines.length));
 		request.setAttribute("sourceLOCS", new Integer(sourceLines.length));
-		
-		
+
+
 		// chasing method positions for highlighting callees on Main Ace Editor
 		if (!task.getCodeSnippet().getCallees().isEmpty()){
 			StringBuilder commandStorage = new StringBuilder();
 			String calleesOnMainCommand = null;
 			String methodNameInQuestion = "";
+
+			System.out.println("TaskType: "+ task.getCodeElementType() );
+
+			//If the task is about a method invocation, then we should not highlight the callee is it is already highlighted.
 			boolean isMethodInvocationTask = task.getCodeElementType().matches(CodeElement.METHOD_INVOCATION);
 			if(isMethodInvocationTask){
 				methodNameInQuestion = ((MyMethodCall) task.getCodeElement()).getName();
-				System.out.println("Task Method Name: "+methodNameInQuestion); 
+				System.out.println("Task Method Name: "+methodNameInQuestion);
 			}
-			
-			for (CodeSnippet callee : task.getCodeSnippet().getCallees()) {
-			
+			else
+				methodNameInQuestion=null;
+
+
+			//prepare callees list 
+			HashMap<String,CodeSnippet> calleeMap = task.getCodeSnippet().getCalleesMap();
+
+			for (CodeElement methodCallElement : task.getCodeSnippet().getElementsOfType(CodeElement.METHOD_INVOCATION)) {
+
 				//Ignore method calls to the method that is being questioned, So we avoid highlighting it twice.
-				if((!isMethodInvocationTask) || (! methodNameInQuestion.matches(callee.getMethodSignature().getName()))) 
-					commandStorage.append( methodChaser(callee.getMethodSignature().getName(), fileContent, false) );
+				if((methodNameInQuestion==null) || (!methodNameInQuestion.matches(((MyMethodCall)methodCallElement).getName()))) {
+					System.out.println("calleeElement.getName(): "+((MyMethodCall)methodCallElement).getName());
+
+					//only add positions for methods for which we have the codeSnippets (i.e., they are listed as callees in task CodeSnippet
+					if(calleeMap.containsKey(((MyMethodCall)methodCallElement).getName())){
+
+						StringBuilder command = new StringBuilder();
+						command.append(methodCallElement.getElementStartingLine()+"#");
+						command.append(methodCallElement.getElementStartingColumn()+"#");
+						command.append(methodCallElement.getElementEndingLine()+"#");
+						command.append(methodCallElement.getElementEndingColumn()+"#");
+
+						commandStorage.append(command);
+					}
+
+					//commandStorage.append( methodChaser(callee.getMethodSignature().getName(), fileContent, false) );
+				}
 			}
+
 			if(commandStorage.length()>0)
-				calleesOnMainCommand = commandStorage.toString().substring(0, commandStorage.length()-1);	// -1 to remove last '#'
+				calleesOnMainCommand = commandStorage.toString().substring(0, commandStorage.length()-1).trim();	// -1 to remove last '#'
 			System.out.println("calleesOnMain to be executed: " + calleesOnMainCommand);
-					
+
 			request.setAttribute("calleesOnMain", calleesOnMainCommand);
 		} else
 			request.setAttribute("calleesOnMain", null);
@@ -87,7 +114,7 @@ public class WorkerSessionSelector {
 			newFileContent = new StringBuilder();
 			highlight = new StringBuilder();
 			highlightCallerCommand = new String();
-			newFileContent.append("METHOD '" + task.getCodeSnippet().getMethodSignature().getName() + 
+			newFileContent.append("//METHOD '" + task.getCodeSnippet().getMethodSignature().getName() + 
 					"' IS CALLED BY THE FOLLOWING METHOD(S):");
 			newFileContent.append(newline);
 			newFileContent.append(newline);
@@ -105,11 +132,11 @@ public class WorkerSessionSelector {
 			if(highlight.length()>0)
 				highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
 			System.out.println("Command to be executed: " + highlightCallerCommand);
-			
+
 			String callerLines[] = newFileContent.toString().split("\r\n|\r|\n");
-			System.out.println("callerLOCS=" + new Integer(callerLines.length));
+
 			request.setAttribute("callerLOCS", new Integer(callerLines.length));
-			
+
 			request.setAttribute("caller", newFileContent.toString());
 		}
 		// passing to jsp
@@ -124,39 +151,63 @@ public class WorkerSessionSelector {
 			request.setAttribute("callee", null);
 		} 
 		else{
-			newFileContent = new StringBuilder();
+			newFileContent = new StringBuilder("public class CalleesMethods {");
 			highlight = new StringBuilder();
 			highlightCalleeCommand = null;
-			newFileContent.append("METHOD '" + task.getCodeSnippet().getMethodSignature().getName() + 
+			newFileContent.append("//METHOD '" + task.getCodeSnippet().getMethodSignature().getName() + 
 					"' CALLS THE FOLLOWING METHOD(S):");
 			newFileContent.append(newline);
 			newFileContent.append(newline);
 			for (CodeSnippet callee : task.getCodeSnippet().getCallees()) {
 				newFileContent.append(callee.getCodeSnippetFromFileContent());	// appending callee
+
 				if ( task.getCodeSnippet().getCallees().indexOf(callee) < (task.getCodeSnippet().getCallees().size()-1) ){
 					newFileContent.append(newline);	// appending two new lines in case it is NOT the last callee 
 					newFileContent.append(newline);
 				}
 			}	
+			newFileContent.append("}");
+
+			//System.out.println("Callees methods: "+ newFileContent.toString());
+
+			CodeSnippetFactory factory = new CodeSnippetFactory("_callees",newFileContent.toString());
+			ArrayList<CodeSnippet> calleesList = factory.generateSnippetsForFile();
+			HashMap<String,CodeSnippet> calleeMap = new HashMap<String,CodeSnippet>();
+			for(CodeSnippet snippet: calleesList){
+				calleeMap.put(snippet.getMethodSignature().getName(), snippet);
+			}
+
 			// chasing method positions for highlighting purposes
 			for (CodeSnippet callee : task.getCodeSnippet().getCallees()) {
-				highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString(), true) );
+
+				CodeSnippet snippet = calleeMap.get(callee.getMethodSignature().getName());
+
+				StringBuilder highlightCommand = new StringBuilder();
+				highlightCommand.append(snippet.getElementStartingLine()+"#");
+				highlightCommand.append(snippet.getElementStartingColumn()+"#");
+				highlightCommand.append(snippet.getElementEndingLine()+"#");
+				highlightCommand.append(snippet.getElementEndingColumn()+"#");
+
+				highlight.append(highlightCommand);
+
+				//	highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString(), true) );
 			}
 			if(highlight.length()>0)
 				highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
 			System.out.println("Command to be executed: " + highlightCalleeCommand);
-			
+
 			String calleeLines[] = newFileContent.toString().split("\r\n|\r|\n");
-			System.out.println("calleeLOCS=" + new Integer(calleeLines.length));
 			request.setAttribute("calleeLOCS", new Integer(calleeLines.length));
+
+			//clean up newFileContent
+			newFileContent.replace(0, "public class CalleesMethods {".length(),"");
+			newFileContent.replace(newFileContent.lastIndexOf("}"), newFileContent.lastIndexOf("}"), "");
+
 			request.setAttribute("callee", newFileContent.toString());
 		}
 		// passing to jsp
 		request.setAttribute("positionsCallee", highlightCalleeCommand);
 
-		 
-
-		
 		request.setAttribute("explanation",""); //clean up the explanation field.
 
 		request.setAttribute("startLine", task.getStartingLine());
@@ -165,12 +216,15 @@ public class WorkerSessionSelector {
 		request.setAttribute("endColumn", task.getEndingColumn());
 
 		request.setAttribute("methodStartingLine", task.getCodeSnippet().getMethodSignature().getLineNumber());
-		
+
 		return request;
 	}
-	
-	
-	
+
+
+
+
+
+
 	/**
 	 * @return the position of all the methodName occurrences on the following 
 	 * format: startingLine#startingColumn#endingLine#endingColumn#... and so on
@@ -189,17 +243,18 @@ public class WorkerSessionSelector {
 			currentLine++;
 			//			System.out.println("Line " + currentLine + ": " + line);
 			if (line == null || line.length() <= 0)	continue;	// if line does not have any content, just skip it
-			if (methodCallStrict)
+			/*if (methodCallStrict)
 				if (!line.contains("public") && !line.contains("protected") && !line.contains("private"))
 					continue;	// looking just for methodCalls not other occurrences when methodStrict is true (that will be skipped)
+			 */
 			String[] stringWords = line.split("\\s+");			// splitting lines into words
 			List<String> wordsPerLine = stringArraytoList(stringWords);
 			int wordLengthAccumulator = 0;	// just for the edge case of the same function being executed more than once per line
-			
+
 			for (int index = 0; index < wordsPerLine.size(); index++) {
 				String codeLine = wordsPerLine.get(index);
 				if (( codeLine.contains(methodName)) && !MethodMatcher.containsDifferentMethod(codeLine, methodName)){
-					
+
 					//Commented code below highlights only the method name. Current working code highlights the parameters too
 					//Integer startLine = currentLine;
 					//Integer startColumn = line.indexOf(methodName, wordLengthAccumulator);
@@ -225,9 +280,9 @@ public class WorkerSessionSelector {
 		return highlightCommand.toString();
 	}
 
-	
-	
-	
+
+
+
 	private List<String> stringArraytoList( String texts[] ) 
 	{
 		List<String> list = new ArrayList<String>();
@@ -240,5 +295,5 @@ public class WorkerSessionSelector {
 		// returning the list
 		return list;
 	}
-	
+
 }

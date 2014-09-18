@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CodeSnippet implements Serializable
 {
@@ -26,9 +27,11 @@ public class CodeSnippet implements Serializable
 	
 	protected Boolean returnStatement;				// true if there is a return value
 	protected MethodSignature methodSignature;		// parsed method declaration
-	protected ArrayList<CodeElement> statements;	// list of statements
+	protected ArrayList<CodeElement> elements;	// list of statements
+	
 	
 	protected String codeSnippetFromFileContent;	// the string that has the whole body of the method
+	private HashMap<String, CodeSnippet> calleesMap;
 
 	private final static String newline = System.getProperty("line.separator");	// Just to jump line @toString
 	
@@ -54,9 +57,10 @@ public class CodeSnippet implements Serializable
 		this.bodyEndingLine = CodeElement.NO_NUMBER_ASSOCIATED;		
 		this.bodyEndingColumn = CodeElement.NO_NUMBER_ASSOCIATED;
 		
-		this.statements = new ArrayList<CodeElement>();
+		this.elements = new ArrayList<CodeElement>();
 		this.callers = new ArrayList<CodeSnippet>();
 		this.callees = new ArrayList<CodeSnippet>();
+		this.calleesMap = new HashMap<String, CodeSnippet>();
 	}
 	
 	/* constructor for methods with body */
@@ -83,9 +87,10 @@ public class CodeSnippet implements Serializable
 		this.bodyEndingLine = bodyEndingLineArg;		
 		this.bodyEndingColumn = bodyEndingColumnArg;	
 		
-		this.statements = new ArrayList<CodeElement>();
+		this.elements = new ArrayList<CodeElement>();
 		this.callers = new ArrayList<CodeSnippet>();
 		this.callees = new ArrayList<CodeSnippet>();
+		this.calleesMap = new HashMap<String, CodeSnippet>();
 	}
 
 	@Override
@@ -96,7 +101,7 @@ public class CodeSnippet implements Serializable
 				+ newline + "methodSignature: " + methodSignature 
 				+ newline + "returnStatment: " + returnStatement 
 				+ newline + "methodBody: "+ methodBody
-				+ newline+ "statements: "	+ statements
+				+ newline+ "statements: "	+ elements
 				+ newline+ "Element startingLine: "+ elementStartingLine.toString()
 				+ newline+ "Element startingColumn: "+ elementStartingColumn.toString()
 				+ newline+ "Element endingLine: "+ elementEndingLine.toString()
@@ -109,7 +114,7 @@ public class CodeSnippet implements Serializable
 
 	
 	public void addElement(CodeElement element){
-		this.statements.add(element);
+		this.elements.add(element);
 	}
 
 	public boolean isEqualTo(CodeSnippet targetSnippet) {
@@ -125,6 +130,7 @@ public class CodeSnippet implements Serializable
 	public void addCallee(CodeSnippet calleeSnippet)
 	{
 		this.callees.add(calleeSnippet);
+		this.calleesMap.put(calleeSnippet.getMethodSignature().getName(), calleeSnippet);
 	}
 	
 	public ArrayList<CodeSnippet> getCallers()
@@ -178,11 +184,11 @@ public class CodeSnippet implements Serializable
 	}
 
 	public ArrayList<CodeElement> getStatements() {
-		return statements;
+		return elements;
 	}
 
 	public void setStatements(ArrayList<CodeElement> statements) {
-		this.statements = statements;
+		this.elements = statements;
 	}
 	/* Getters for the position */
 	public Integer getElementStartingLine() {
@@ -231,5 +237,20 @@ public class CodeSnippet implements Serializable
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public ArrayList<CodeElement> getElementsOfType(String type) {
+		ArrayList<CodeElement> list = new ArrayList<CodeElement>();
+		
+		for(CodeElement element : this.elements){
+			if(element.getType().matches(type))
+				list.add(element);
+		}
+		
+		return list;
+	}
+
+	public HashMap<String, CodeSnippet> getCalleesMap() {
+		return this.calleesMap;
 	}
 }
