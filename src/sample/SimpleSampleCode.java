@@ -67,6 +67,7 @@ public class SimpleSampleCode {
 												// empty line
 			this.SeedLimit = new Integer(value); // If with curly braces
 		}
+		SimpleSampleCode.newCases();
 	}
 
 	public static Integer factorial(Integer Seed, Integer Iterations) {
@@ -81,7 +82,7 @@ public class SimpleSampleCode {
 			return null;
 	}
 
-	public void newCases() {
+	public static void newCases() {
 		Integer cases = 2;
 		cases -= 1;
 		switch (cases) // switch case
@@ -133,7 +134,7 @@ public class SimpleSampleCode {
 		Integer j = 0;
 		do {
 			System.out.println("Do While here");
-			j = this.factorial(j, j);
+			j = SimpleSampleCode.factorial(j, j);
 			j++;
 		}
 		while (j < 3);

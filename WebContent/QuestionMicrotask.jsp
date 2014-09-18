@@ -9,10 +9,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Firefly - Question-based Crowd Debugging</title>
 <style type="text/css" media="screen">
-#editor {
+#mainEditor {
 	position: relative;
-	height: 200px;
-	width: 680px;
 }
 
 .callers {
@@ -145,6 +143,9 @@
 		<input type="hidden" id="positionsCaller" value=${requestScope["positionsCaller"]}>
 		<input type="hidden" id="positionsCallee" value=${requestScope["positionsCallee"]}>
 		<input type="hidden" id="calleesOnMain" value=${requestScope["calleesOnMain"]}>
+		<input type="hidden" id="sourceLOCS" value=${requestScope["sourceLOCS"]}>
+		<input type="hidden" id="callerLOCS" value=${requestScope["callerLOCS"]}>
+		<input type="hidden" id="calleeLOCS" value=${requestScope["calleeLOCS"]}>
 		
  
 	<script
@@ -194,6 +195,7 @@
 			<input type="hidden" name="timeStamp" value=${requestScope["timeStamp"]}> 
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
 			
+			
 			<center><br>Please provide an explanation for your answer: <br>
 			<textarea name="explanation" id="explanation" rows="3" cols="82"></textarea>
 			</center>
@@ -211,12 +213,14 @@
 		<br>
 	</div>
 
+
+
 	
 	<div id="questionCode">
 		<div id="internalText">
 		<br> 
 		<b>The source code:</b> 
-		<div id="editor"><xmp>${requestScope["source"]}</xmp></div>
+		<div id="mainEditor"><xmp>${requestScope["source"]}</xmp></div>
 		
 		<br>
 		
@@ -229,15 +233,36 @@
 		<div id="editorCallee"><xmp>${requestScope["callee"]}</xmp></div>
 
 		<script>
+
+			function computeHeight(linespan){
+				if(linespan<=10)
+					return '150px';
+				else
+					if(linespan>35)
+						return '500px';
+					else{
+						var pixels = 150+(linespan-10)*100/5
+						return pixels+'px';
+					}
+			}
+		
+					
 			/* First and main ACE Editor */
-			var editor = ace.edit('editor');
+			/* setting properties of main editor */
+			var divMainEditor = document.getElementById('mainEditor');
+			divMainEditor.style.position='relative';
+			var sourceLinespan = document.getElementById("sourceLOCS").value; 
+			divMainEditor.style.height= computeHeight(sourceLinespan);
+			divMainEditor.style.width='680px';
+			
+			var editor = ace.edit('mainEditor');
 			editor.setReadOnly(true);
 			editor.setTheme("ace/theme/github");
 			editor.getSession().setMode("ace/mode/java");
 			editor.setBehavioursEnabled(false);
 			editor.setOption("highlightActiveLine", false); // disable highligthing on the active line
 			editor.setShowPrintMargin(false); 				// disable printing margin
-	
+			
 			var startLine = document.getElementById("startLine").value;
 			var startColumn = document.getElementById("startColumn").value;
 			var endLine = document.getElementById("endLine").value;
@@ -279,7 +304,8 @@
 					/* setting properties of the div caller */
 					var divCaller = document.getElementById('editorCaller');
 					divCaller.style.position='relative';
-					divCaller.style.height='200px';
+					var sourceLinespan = document.getElementById("callerLOCS").value; 
+					divCaller.style.height= computeHeight(sourceLinespan);
 					divCaller.style.width='680px';
 					 
 					/* Second and caller ACE Editor */
@@ -312,7 +338,8 @@
 					/* setting properties of the div caller */
 					var divCallee = document.getElementById('editorCallee');
 					divCallee.style.position='relative';
-					divCallee.style.height='200px';
+					var sourceLinespan = document.getElementById("calleeLOCS").value; 
+					divCallee.style.height= computeHeight(sourceLinespan);
 					divCallee.style.width='680px';
 					
 					/* Third and callee ACE Editor */
@@ -344,7 +371,7 @@
 					document.getElementById('space').innerHTML = '<br>';
 				// just to fill the label about the Editors
 				if (highlightCaller || highlightCallee)
-					document.getElementById('context').innerHTML = '<b>Functions that call and are called by this method:</b>';
+					document.getElementById('context').innerHTML = '<b>Functions that call or are called by the source code above:</b>';
 					
 			}, 100); 
 			

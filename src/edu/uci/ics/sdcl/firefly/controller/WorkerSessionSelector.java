@@ -41,6 +41,12 @@ public class WorkerSessionSelector {
 		request.setAttribute("bugReport", task.getFailureDescription());
 		request.setAttribute("question", task.getQuestion());
 		request.setAttribute("source", fileContent); 	// content displayed on the first ACE Editor
+		
+		String sourceLines[] = fileContent.split("\r\n|\r|\n");
+		System.out.println("sourceLOCS=" + new Integer(sourceLines.length));
+		request.setAttribute("sourceLOCS", new Integer(sourceLines.length));
+		
+		
 		// chasing method positions for highlighting callees on Main Ace Editor
 		if (!task.getCodeSnippet().getCallees().isEmpty()){
 			StringBuilder commandStorage = new StringBuilder();
@@ -99,6 +105,11 @@ public class WorkerSessionSelector {
 			if(highlight.length()>0)
 				highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
 			System.out.println("Command to be executed: " + highlightCallerCommand);
+			
+			String callerLines[] = newFileContent.toString().split("\r\n|\r|\n");
+			System.out.println("callerLOCS=" + new Integer(callerLines.length));
+			request.setAttribute("callerLOCS", new Integer(callerLines.length));
+			
 			request.setAttribute("caller", newFileContent.toString());
 		}
 		// passing to jsp
@@ -134,6 +145,10 @@ public class WorkerSessionSelector {
 			if(highlight.length()>0)
 				highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
 			System.out.println("Command to be executed: " + highlightCalleeCommand);
+			
+			String calleeLines[] = newFileContent.toString().split("\r\n|\r|\n");
+			System.out.println("calleeLOCS=" + new Integer(calleeLines.length));
+			request.setAttribute("calleeLOCS", new Integer(calleeLines.length));
 			request.setAttribute("callee", newFileContent.toString());
 		}
 		// passing to jsp

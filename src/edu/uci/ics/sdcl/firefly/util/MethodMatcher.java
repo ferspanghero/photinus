@@ -13,7 +13,7 @@ public class MethodMatcher {
 				int index = line.indexOf(methodName);
 				if (index>0){//checking the character before the method name
 					String prefix = String.valueOf(line.charAt(index-1));
-					isDifferentMethod = Pattern.matches("[_a-zA-Z0-9]",prefix);
+					isDifferentMethod = Pattern.matches("['_a-zA-Z0-9]",prefix);
 					/*if(isDifferentMethod)
 						System.out.println("Line: "+ line+" contains a method different from "+methodName);
 					else
@@ -22,7 +22,7 @@ public class MethodMatcher {
 				else
 					if(line.length()>(index+methodName.length())){
 						String suffix = String.valueOf(line.charAt(index+methodName.length()));
-						isDifferentMethod = Pattern.matches("[._a-zA-Z0-9]",suffix);
+						isDifferentMethod = Pattern.matches("['._a-zA-Z0-9]",suffix);
 						/*if(isDifferentMethod)
 							System.out.println("Line: "+ line+" contains a method different from "+methodName);
 						else

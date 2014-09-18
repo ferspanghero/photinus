@@ -30,6 +30,8 @@ public class MethodMatcherTest {
 		rejectList.add("0Code");
 		rejectList.add("9Code");
 		rejectList.add("Code.");
+		rejectList.add("'Code");
+		rejectList.add("Code'");
 		
 		
 
