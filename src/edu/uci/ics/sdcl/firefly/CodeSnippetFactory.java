@@ -138,7 +138,7 @@ public class CodeSnippetFactory {
 	private void setMethodTexts(ArrayList<CodeSnippet> codeSnippetsArg)
 	{
 		for (CodeSnippet codeSnippet : codeSnippetsArg) {
-			int startingLine = codeSnippet.getMethodSignature().getLineNumber() -1;	// -1 because the vector starts from 0
+			int startingLine = codeSnippet.getElementStartingLine() -1;	// -1 because the vector starts from 0
 			int endingLine = codeSnippet.getBodyEndingLine() -1;	// -1 because the vector starts from 0
 			/* getting method content */
 			Scanner scanner = new Scanner(this.fileContent);

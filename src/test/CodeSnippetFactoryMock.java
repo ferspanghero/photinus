@@ -13,7 +13,7 @@ public class CodeSnippetFactoryMock {
 	private CodeSnippet codeSnippetConstructor;
 	
 	public CodeSnippetFactoryMock(){
-		MethodSignature signature = new MethodSignature("factorial", "public", new Integer(12));
+		MethodSignature signature = new MethodSignature("factorial", "public");
 		
 		StringBuffer buffer = new StringBuffer("public Integer factorial(Integer Seed, Integer Iterations){"); //12
 		buffer.append("\n");				
@@ -52,7 +52,7 @@ public class CodeSnippetFactoryMock {
 		this.list.add(codeSnippetFactorial);
 		
 		//Second CodeSnippet
-		signature = new MethodSignature("SimpleSampleCode", "public", new Integer(7));
+		signature = new MethodSignature("SimpleSampleCode", "public");
 		
 		buffer = new StringBuffer("public SimpleSampleCode() {"); 	// 7
 		buffer.append("\n");	

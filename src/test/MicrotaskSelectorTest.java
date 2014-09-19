@@ -29,7 +29,7 @@ public class MicrotaskSelectorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		MethodSignature signature = new MethodSignature("factorial", "public", new Integer(1));
+		MethodSignature signature = new MethodSignature("factorial", "public");
 		MethodParameter arg1, arg2;
 		arg1 = new MethodParameter("Integer", "Seed");
 		arg2 = new MethodParameter("Integer", "Iterations");

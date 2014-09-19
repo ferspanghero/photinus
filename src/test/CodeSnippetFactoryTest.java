@@ -21,7 +21,7 @@ public class CodeSnippetFactoryTest {
 	@Before
 	public void setUp()  {
 					
-		MethodSignature signature = new MethodSignature("factorial", "public", new Integer(12));
+		MethodSignature signature = new MethodSignature("factorial", "public");
 		MethodParameter arg1, arg2;
 		arg1 = new MethodParameter("Integer", "Seed");
 		arg2 = new MethodParameter("Integer", "Iterations");
@@ -61,7 +61,7 @@ public class CodeSnippetFactoryTest {
 		codeSnippetFactorial.addElement(element);
 		
 		//Second CodeSnippet
-		signature = new MethodSignature("SimpleSampleCode", "public", new Integer(7));
+		signature = new MethodSignature("SimpleSampleCode", "public");
 		arg1 = new MethodParameter("Integer", "seedValue");
 		signature.addMethodParameters(arg1);
 		

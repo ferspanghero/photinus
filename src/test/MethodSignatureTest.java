@@ -14,15 +14,15 @@ public class MethodSignatureTest{
 	
 	@Before
 	public void setUp() throws Exception {
-		signatureOne = new MethodSignature("factorial", "public", new Integer (12));
+		signatureOne = new MethodSignature("factorial", "public");
 		signatureOne.addMethodParameters(new MethodParameter("Integer", "Seed"));
 		signatureOne.addMethodParameters(new MethodParameter("Integer", "Iterations"));
 		
-		signatureTwo = new MethodSignature("factorial", "public", new Integer (12));
+		signatureTwo = new MethodSignature("factorial", "public");
 		signatureTwo.addMethodParameters(new MethodParameter("Integer","Seed"));
 		signatureTwo.addMethodParameters(new MethodParameter("Integer","Iterations"));
 		
-		signatureThree = new MethodSignature("SimpleSampleCode", "public", new Integer (7));
+		signatureThree = new MethodSignature("SimpleSampleCode", "public");
 	}
 
 	@Test

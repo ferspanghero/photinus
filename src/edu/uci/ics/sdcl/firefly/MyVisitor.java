@@ -76,8 +76,8 @@ public class MyVisitor extends ASTVisitor {
 
 	public boolean visit(TypeDeclaration node)
 	{
-		System.out.println("TypeDeclaration at line: " + cu.getLineNumber(node.getStartPosition()));	
-		System.out.println("TypeDeclaration name: " + node.getName());
+		//System.out.println("TypeDeclaration at line: " + cu.getLineNumber(node.getStartPosition()));	
+	//	System.out.println("TypeDeclaration name: " + node.getName());
 		this.className = node.getName().toString();
 		return true;
 	}
@@ -94,17 +94,16 @@ public class MyVisitor extends ASTVisitor {
 	{
 		String name;
 		String body; 
-		//		String returnType;
 		Boolean hasReturnStatement; 
 		MethodSignature signature;
 		String visibility;
 		List<Object> parameters;
-		System.out.println("-----------");
+		//System.out.println("-----------");
 		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());	
 		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
-		System.out.println("Method at starting line: " + this.elementStartingLine + ", starting column: "+ this.elementStartingColumn);
+		//System.out.println("Method at starting line: " + this.elementStartingLine + ", starting column: "+ this.elementStartingColumn);
 
-		System.out.println("Method declaration name: " + node.getName().getFullyQualifiedName()); 
+		//System.out.println("Method declaration name: " + node.getName().getFullyQualifiedName()); 
 		if ( null == node.getName() )
 		{
 			name = null;
@@ -139,7 +138,7 @@ public class MyVisitor extends ASTVisitor {
 			hasReturnStatement = true;
 		//		System.out.println("Has return statement: " + hasReturnStatement);
 
-		signature = new MethodSignature(name, visibility, this.elementStartingLine);
+		signature = new MethodSignature(name, visibility);
 		parameters = node.parameters();
 		if (null != parameters)
 		{
@@ -159,7 +158,7 @@ public class MyVisitor extends ASTVisitor {
 		if (this.elementStartingLine !=  nameStartingLine)
 		{	// that means that are comment(s) before the method which is(are) misleading the starting line
 			this.elementStartingLine = nameStartingLine;	// but now I do not know the column start
-			System.out.println("[MV] New line: " + this.elementStartingLine);
+			//System.out.println("[MV] New line: " + this.elementStartingLine);
 
 			/* Finding the column start and the end position for the element */
 			this.positionFinder = new PositionFinder(this.elementStartingLine,
@@ -219,8 +218,8 @@ public class MyVisitor extends ASTVisitor {
 						this.elementStartingLine, this.elementStartingColumn,
 						this.elementEndingLine, this.elementEndingColumn);
 
-				System.out.println(methodCall.toString());
-				System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
+//				System.out.println(methodCall.toString());
+	//			System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
 
 				this.newMethod.addElement(methodCall);
 			}
@@ -252,9 +251,16 @@ public class MyVisitor extends ASTVisitor {
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
 
-			System.out.println(methodCall.toString());
-			System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
+			//System.out.println(methodCall.toString());
+			//System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
 
+			if(methodCall.getName().matches(newMethod.getMethodSignature().getName())){
+				System.out.println("Adding methodCall "+methodCall.getName()+"(" +
+							methodCall.getParameterList() +")"+ 
+								" under method "+
+									newMethod.getMethodSignature().getName()+"(" +
+									newMethod.getMethodSignature().getParameterList().size() +" parameters )");	
+			}
 			this.newMethod.addElement(methodCall);
 
 		}

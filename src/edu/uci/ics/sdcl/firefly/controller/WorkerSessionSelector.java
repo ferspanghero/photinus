@@ -54,13 +54,10 @@ public class WorkerSessionSelector {
 			String calleesOnMainCommand = null;
 			String methodNameInQuestion = "";
 
-			System.out.println("TaskType: "+ task.getCodeElementType() );
-
 			//If the task is about a method invocation, then we should not highlight the callee is it is already highlighted.
 			boolean isMethodInvocationTask = task.getCodeElementType().matches(CodeElement.METHOD_INVOCATION);
 			if(isMethodInvocationTask){
 				methodNameInQuestion = ((MyMethodCall) task.getCodeElement()).getName();
-				System.out.println("Task Method Name: "+methodNameInQuestion);
 			}
 			else
 				methodNameInQuestion=null;
@@ -86,8 +83,6 @@ public class WorkerSessionSelector {
 
 						commandStorage.append(command);
 					}
-
-					//commandStorage.append( methodChaser(callee.getMethodSignature().getName(), fileContent, false) );
 				}
 			}
 
@@ -159,12 +154,14 @@ public class WorkerSessionSelector {
 			newFileContent.append(newline);
 			newFileContent.append(newline);
 			for (CodeSnippet callee : task.getCodeSnippet().getCallees()) {
+				
 				newFileContent.append(callee.getCodeSnippetFromFileContent());	// appending callee
 
 				if ( task.getCodeSnippet().getCallees().indexOf(callee) < (task.getCodeSnippet().getCallees().size()-1) ){
 					newFileContent.append(newline);	// appending two new lines in case it is NOT the last callee 
 					newFileContent.append(newline);
 				}
+				System.out.println("callee: "+ callee.getMethodSignature().toString()+ " @"+callee.getElementStartingLine());
 			}	
 			newFileContent.append("}");
 
@@ -175,6 +172,7 @@ public class WorkerSessionSelector {
 			HashMap<String,CodeSnippet> calleeMap = new HashMap<String,CodeSnippet>();
 			for(CodeSnippet snippet: calleesList){
 				calleeMap.put(snippet.getMethodSignature().getName(), snippet);
+				System.out.println("Callee Map from newFileContent: " + snippet.getMethodSignature().toString());
 			}
 
 			// chasing method positions for highlighting purposes
@@ -194,7 +192,7 @@ public class WorkerSessionSelector {
 			}
 			if(highlight.length()>0)
 				highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
-			System.out.println("Command to be executed: " + highlightCalleeCommand);
+			System.out.println("Callees to be highlighted: " + highlightCalleeCommand);
 
 			String calleeLines[] = newFileContent.toString().split("\r\n|\r|\n");
 			request.setAttribute("calleeLOCS", new Integer(calleeLines.length));
@@ -207,23 +205,17 @@ public class WorkerSessionSelector {
 		}
 		// passing to jsp
 		request.setAttribute("positionsCallee", highlightCalleeCommand);
-
 		request.setAttribute("explanation",""); //clean up the explanation field.
-
 		request.setAttribute("startLine", task.getStartingLine());
 		request.setAttribute("startColumn", task.getStartingColumn());
 		request.setAttribute("endLine", task.getEndingLine());
 		request.setAttribute("endColumn", task.getEndingColumn());
 
-		request.setAttribute("methodStartingLine", task.getCodeSnippet().getMethodSignature().getLineNumber());
+		request.setAttribute("methodStartingLine", task.getCodeSnippet().getElementStartingLine());
 
 		return request;
 	}
-
-
-
-
-
+	
 
 	/**
 	 * @return the position of all the methodName occurrences on the following 

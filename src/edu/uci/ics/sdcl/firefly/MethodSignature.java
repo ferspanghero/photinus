@@ -8,12 +8,11 @@ public class MethodSignature implements Serializable{
 	protected String Name;
 	protected String Modifier;							//Visibility
 	protected ArrayList<MethodParameter> ParameterList;
-	protected Integer LineNumber;
 
-	public MethodSignature(String name, String modifier, Integer lineNumber) {
+
+	public MethodSignature(String name, String modifier) {
 		Name = name;
 		Modifier = modifier;
-		LineNumber = lineNumber;
 		this.ParameterList = new ArrayList<MethodParameter>();
 	}
 
@@ -80,14 +79,6 @@ public class MethodSignature implements Serializable{
 		ParameterList = parameters;
 	}
 
-	public Integer getLineNumber() {
-		return LineNumber;
-	}
-
-	public void setLineNumber(Integer lineNumber) {
-		LineNumber = lineNumber;
-	}
-	
 	public boolean hasParameters(){
 		if(this.ParameterList.size()>0)
 			return true;
@@ -111,8 +102,6 @@ public class MethodSignature implements Serializable{
 			if (parameter != ParameterList.get(ParameterList.size()-1) ) // if it is not the last one...
 				methodSignature.append(", ");
 		}		
-		methodSignature.append(") @ line ");
-		methodSignature.append(LineNumber);
 		return methodSignature.toString();
 	}
  

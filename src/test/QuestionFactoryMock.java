@@ -19,7 +19,7 @@ public class QuestionFactoryMock {
 	public static HashMap<Integer, Microtask> generateQuestions(){	
 		HashMap<Integer, Microtask> microtaskMap = new HashMap<Integer, Microtask>();
 		
-		MethodSignature signature = new MethodSignature("seedCounter", "public", new Integer(12));
+		MethodSignature signature = new MethodSignature("seedCounter", "public");
 		MethodParameter arg1, arg2;
 		arg1 = new MethodParameter("Integer", "Seed");
 		arg2 = new MethodParameter("Integer", "Iterations");
@@ -62,7 +62,7 @@ public class QuestionFactoryMock {
 
 		//---------------------------------------------
 		//Second CodeSnippet
-		signature = new MethodSignature("TinySample", "public", new Integer(7));
+		signature = new MethodSignature("TinySample", "public");
 		arg1 = new MethodParameter("Integer", "seedValue");
 		signature.addMethodParameters(arg1);
 
