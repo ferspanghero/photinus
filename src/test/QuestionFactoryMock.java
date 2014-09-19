@@ -90,63 +90,63 @@ public class QuestionFactoryMock {
 				codeSnippetConstructor, null, "Is there maybe something wrong in the declaration of function "
 								+ "'TinySample' at line 7 (e.g., requires a parameter that is not listed, needs "
 								+ "different parameters to produce the correct result, specifies the wrong or no return type, "
-								+ "etc .)?", 7, 0, 7,27, 0);
+								+ "etc .)?", 7, 0, 7,27, 0,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 
 		microtask = new Microtask(CodeElement.METHOD_DECLARATION, codeSnippetConstructor, null , "Is there possibly "
 						+ "something wrong with the body of function 'TinySample' between lines 7 and 9 (e.g., "
 						+ "function produces an incorrect return value, return statement is at the wrong place, does not "
-						+ "properly handle error situations, etc.)?", 7, 27, 10,1, 1);
+						+ "properly handle error situations, etc.)?", 7, 27, 10,1, 1,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 
 		microtask = new Microtask(CodeElement.IF_CONDITIONAL,  codeSnippetConstructor, 
 				null, "Is it possible that the conditional clause at line 8 has problems (e.g., wrong Boolean operator, "
-								+ "wrong comparison, misplaced parentheses, etc.)?", 8, 0, 8,11, 2);
+								+ "wrong comparison, misplaced parentheses, etc.)?", 8, 0, 8,11, 2,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 
 		microtask = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippetConstructor, 
 				null, "Is there maybe something wrong with the body of the conditional clause at line 8 (e.g., enters the "
-								+ "wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?", 9, 0, 9,15, 3);
+								+ "wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?", 9, 0, 9,15, 3,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 
 		microtask = new Microtask(CodeElement.METHOD_INVOCATION, 
 				codeSnippeSeedCounter, null, "Is there maybe something wrong in the declaration of function 'seedCounter' "
 								+ "at line 20 (e.g., requires a parameter that is not listed, needs different parameters to "
-								+ "produce the correct result, specifies the wrong or no return type, etc .)?", 20, 0, 20,58, 4);
+								+ "produce the correct result, specifies the wrong or no return type, etc .)?", 20, 0, 20,58, 4,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 
 		microtask = new Microtask(CodeElement.METHOD_DECLARATION, codeSnippeSeedCounter, null, "Is there possibly "
 						+ "something wrong with the body of function 'seedCounter' between lines 20 and 30 (e.g., function "
 						+ "produces an incorrect return value, return statement is at the wrong place, does not properly "
-						+ "handle error situations, etc.)?", 20, 58, 30,1, 5);
+						+ "handle error situations, etc.)?", 20, 58, 30,1, 5,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 
 		microtask = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippeSeedCounter, 
 				null, "Is it possible that the conditional clause at line 21 has problems (e.g., wrong Boolean operator, "
-								+ "wrong comparison, misplaced parentheses, etc.)?", 21, 0, 21,15, 6);
+								+ "wrong comparison, misplaced parentheses, etc.)?", 21, 0, 21,15, 6,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 
 		microtask = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippeSeedCounter, 
 				null, "Is there maybe something wrong with the body of the conditional clause between lines 22 and 29 "
 				+ "(e.g., enters the wrong branch, makes a call to a null pointer, "
-				+ "calls a wrong type, etc.)?", 22, 3, 22,17, 7);
+				+ "calls a wrong type, etc.)?", 22, 3, 22,17, 7,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 
 		microtask = new Microtask(CodeElement.FOR_LOOP, codeSnippeSeedCounter, 
 				null, "Is there maybe something wrong with the 'For-loop' construct at line 23 (e.g., incorrect "
-								+ "initialization, wrong counter increment, wrong exit condition, etc.)?", 23, 0, 23,42, 8);
+								+ "initialization, wrong counter increment, wrong exit condition, etc.)?", 23, 0, 23,42, 8,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 
 		microtask = new Microtask(CodeElement.FOR_LOOP, codeSnippeSeedCounter, 
 				null, "Is the body of the 'For-loop' between lines 23 and 25 possibly not producing what it is supposed to "
 								+ "(e.g., does not compute the expected result, does not exit at the expected iteration, etc.)"
-								+ "?", 23, 42, 25,1, 9);
+								+ "?", 23, 42, 25,1, 9,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 
 	microtask = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetConstructor, null, "Is there perhaps something wrong with the "
 							+ "values of the parameters received by function 'intValue' when called by function 'seedCounter' at "
 							+ "line 23 (e.g., wrong variables used as parameters, wrong order, missing or wrong type of parameter, "
-							+ "values of the parameters are not checked, etc .)?", 23, 26, 23,36, 10);
+							+ "values of the parameters are not checked, etc .)?", 23, 26, 23,36, 10,"failure description");
 		microtaskMap.put(microtask.getID(), microtask);
 	
 		return microtaskMap;

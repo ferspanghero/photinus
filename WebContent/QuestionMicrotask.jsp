@@ -155,9 +155,8 @@
 
 	<div id="failurePrompt">
 		 	<div id="internalText">
-		 	<br>
-			Thanks for using <b>FireFly!</b> By answering the question below, you will help us debug software from all over the world. 
-   			The bug we specifically could use your help with today is the following: 
+			Thanks for using <b>FireFly!</b> and for helping us debug software from all over the world. 
+   			The bug we specifically could use your help with today is the following: <br><br>
       	<b>${requestScope["bugReport"]}</b><br>
       	<br>
    		</div>
@@ -235,13 +234,16 @@
 		<script>
 
 			function computeHeight(linespan){
-				if(linespan<=10)
-					return '150px';
+				
+				if(linespan<=10){
+					var pixels = linespan*20;
+					return pixels+'px';
+				}
 				else
 					if(linespan>35)
-						return '500px';
+						return '450px';
 					else{
-						var pixels = 150+(linespan-10)*100/5
+						var pixels = 115+(linespan-10)*90/5
 						return pixels+'px';
 					}
 			}

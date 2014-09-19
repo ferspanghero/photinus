@@ -199,7 +199,7 @@ public class WorkerSessionSelector {
 
 			//clean up newFileContent
 			newFileContent.replace(0, "public class CalleesMethods {".length(),"");
-			newFileContent.replace(newFileContent.lastIndexOf("}"), newFileContent.lastIndexOf("}"), "");
+			newFileContent.replace(newFileContent.lastIndexOf("}"), newFileContent.lastIndexOf("}"),"");
 
 			request.setAttribute("callee", newFileContent.toString());
 		}

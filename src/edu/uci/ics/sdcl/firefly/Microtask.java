@@ -40,9 +40,8 @@ public class Microtask implements Serializable
 	 * @param endingColumnNumber
 	 * @param ID
 	 */
-	public Microtask(String codeElementTypeArg, CodeSnippet methodArg, CodeElement codeElement, 
-			String questionArg, Integer startingLineNumber, 
-			Integer startingColumnNumber, Integer endingLineNumber, Integer endingColumnNumber, Integer ID)
+	public Microtask(String codeElementTypeArg, CodeSnippet methodArg, CodeElement codeElement, String questionArg, Integer startingLineNumber, 
+			Integer startingColumnNumber, Integer endingLineNumber, Integer endingColumnNumber, Integer ID, String failureDescription)
 	{
 		this.setCodeSnippet(methodArg);
 		this.setQuestion(questionArg);
@@ -56,6 +55,7 @@ public class Microtask implements Serializable
 		this.elapsedTimeList = new ArrayList<String>();
 		this.timeStampList = new ArrayList<String>();
 		this.ID = ID;
+		this.failureDescription = failureDescription;
 	}
 
 
@@ -134,10 +134,6 @@ public class Microtask implements Serializable
 
 	public String getFailureDescription() {
 		return failureDescription;
-	}
-
-	public void setFailureDescription(String bugReport) {
-		this.failureDescription = bugReport;
 	}
 
 	public void addTimeStamp(String timeStamp) {

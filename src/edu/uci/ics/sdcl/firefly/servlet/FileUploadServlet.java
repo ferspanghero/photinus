@@ -182,7 +182,7 @@ public class FileUploadServlet extends HttpServlet {
 			String path = getServletContext().getRealPath("/");
 			MicrotaskStorage storage = new MicrotaskStorage();
 			
-			HashMap<Integer, Microtask> microtaskMap = questionFactory.generateQuestions(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
+			HashMap<Integer, Microtask> microtaskMap = questionFactory.generateMicrotasks(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
 
 			if (microtaskMap!= null && microtaskMap.size() > 0){
 				FileDebugSession fileDebuggingSession = new FileDebugSession(fileName, fileContent, microtaskMap);
