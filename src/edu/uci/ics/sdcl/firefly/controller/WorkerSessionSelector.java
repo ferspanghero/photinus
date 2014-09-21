@@ -163,7 +163,7 @@ public class WorkerSessionSelector {
 				}
 				System.out.println("callee: "+ callee.getMethodSignature().toString()+ " @"+callee.getElementStartingLine());
 			}	
-			newFileContent.append("}");
+			newFileContent.append("} ");
 
 			//System.out.println("Callees methods: "+ newFileContent.toString());
 
@@ -198,8 +198,8 @@ public class WorkerSessionSelector {
 			request.setAttribute("calleeLOCS", new Integer(calleeLines.length));
 
 			//clean up newFileContent
-			newFileContent.replace(0, "public class CalleesMethods {".length(),"");
-			newFileContent.replace(newFileContent.lastIndexOf("}"), newFileContent.lastIndexOf("}"),"");
+			newFileContent = newFileContent.replace(0, newFileContent.indexOf("public class CalleesMethods {")+ "public class CalleesMethods {".length(),"");
+			newFileContent = newFileContent.replace(newFileContent.length()-2, newFileContent.length()-1,"");//Remove last closing curly brackets.
 
 			request.setAttribute("callee", newFileContent.toString());
 		}
