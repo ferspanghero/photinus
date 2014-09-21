@@ -102,7 +102,8 @@
 				alert("Please select an answer.");
 				return -1;
 			} else {
-				if ((radios[0].checked) || (radios[1].checked)) {//yes and probably yes must provide an explanation
+				//yes, probably yes, I can't tell must provide an explanation
+				if ((radios[0].checked) || (radios[1].checked) || (radios[2].checked)) {
 					if (document.getElementById("explanation").value == '') {
 						alert("Please provide an explanation for your answer.");
 						return -1;
@@ -121,14 +122,6 @@
 				document.forms["answerForm"].submit();
 			} else {
 				//nothing to do.
-			}
-		}
-
-		function skipAnswer() {
-			if(confirm('Confirm skipping this question ?')){
-				var subAction = document.getElementById("subAction");
-				subAction.value = "skip";
-				document.forms["answerForm"].submit();				
 			}
 		}
 		
@@ -176,7 +169,7 @@
 		<form name="answerForm" action="microtask" method="get">
 
 			<center>
-			 <br>
+			<br>
 			<a><input type="radio" name="answer" value="1" />Yes </a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
 			<a><input type="radio" name="answer" value="2" />Probably yes </a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
 			<a><input type="radio" name="answer" value="3" />I can't tell </a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
@@ -206,7 +199,6 @@
 	 
 	 <div id="buttons">
 	 	<center>
-			<INPUT TYPE="button" VALUE="Skip this"	onclick="skipAnswer()"> 
 			<INPUT TYPE="button" VALUE="Submit answer" onclick="submitAnswer(event)">
 		</center>
 		<br>

@@ -71,11 +71,8 @@ public class MicrotaskServlet extends HttpServlet {
 		else
 			if(subAction.compareTo("loadNext")==0)
 				loadNextMicrotask(request, response);
-			else				
-				if(subAction.compareTo("skip")==0)
-					skipMicrotask(request, response);
-				else
-					showErrorPage(request, response,"@ MicrotaskServlet - subAction not recognized");
+			else
+				showErrorPage(request, response,"@ MicrotaskServlet - subAction not recognized");
 
 	}
 	
@@ -134,37 +131,6 @@ public class MicrotaskServlet extends HttpServlet {
 		}
 	}
 	
-	
-	private void skipMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		String microtaskId = request.getParameter("microtaskId");
-		String sessionId = request.getParameter("sessionId");
-		String fileName = request.getParameter("fileName");
-		String path = getServletContext().getRealPath("/");
-		String timeStamp = request.getParameter("timeStamp");
-	 	String elapsedTime = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
-			
-		//Save answers from the previous microtask
-		StorageManager manager = new StorageManager(path);
-		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.SKIPPED,null),elapsedTime, timeStamp);
-
-		//Restore data for next Request
-		request.setAttribute("sessionId",sessionId);
-		request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-		
-		//Continue working on the existing session
-		WorkerSession session = manager.readActiveSession(sessionId);	
-		
-		//Decide where to send to send the user
-		if(session==null || !session.hasCurrent())
-			//No more microtasks, move to the Survey page
-			request.getRequestDispatcher(SurveyPage).include(request, response);
-		else{
-			//Displays a new microtask
-			request = this.workerSessionSelector.generateRequest(request, session.getCurrentMicrotask());
-			request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
-		}
-	}
 	
 	
 	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
