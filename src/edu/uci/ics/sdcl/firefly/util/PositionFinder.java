@@ -99,7 +99,7 @@ public class PositionFinder {
 		for (String word : words) {
 			if ( (null != word) && (word.length() > 0) ){
 				this.startingColumnNumber = this.fileInLines[this.startingLineNumber-1].indexOf(word);
-				System.out.println("[PS] New column start: " + this.startingColumnNumber);
+				//System.out.println("[PS] New column start: " + this.startingColumnNumber);
 				break;
 			}
 		}

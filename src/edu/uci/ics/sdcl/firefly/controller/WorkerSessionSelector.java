@@ -51,10 +51,10 @@ public class WorkerSessionSelector {
 		// chasing method positions for highlighting callees on Main Ace Editor
 		if (!task.getCodeSnippet().getCallees().isEmpty()){
 			StringBuilder commandStorage = new StringBuilder();
-			String calleesOnMainCommand = null;
+			String calleesInMainCommand = null;
 			String methodNameInQuestion = "";
 
-			//If the task is about a method invocation, then we should not highlight the callee is it is already highlighted.
+			//If the task is about a method invocation, then we should not highlight the callee because it is already highlighted.
 			boolean isMethodInvocationTask = task.getCodeElementType().matches(CodeElement.METHOD_INVOCATION);
 			if(isMethodInvocationTask){
 				methodNameInQuestion = ((MyMethodCall) task.getCodeElement()).getName();
@@ -66,14 +66,14 @@ public class WorkerSessionSelector {
 			//prepare callees list 
 			ArrayList<CodeSnippet> calleeList = task.getCodeSnippet().getCallees();
 
-			//System.out.println("# Callees in task:"+  task.getCodeSnippet().getCallees().size());
+			System.out.println("methodNameInQuestion: "+  methodNameInQuestion);
 			//System.out.println("# Callees in newFileContent :"+  calleeMap.size());
 			
 			for (CodeElement methodCallElement : task.getCodeSnippet().getElementsOfType(CodeElement.METHOD_INVOCATION)) {
-
+				//System.out.println(" methodCallElement: "+((MyMethodCall)methodCallElement).getName());
 				//Ignore method calls to the method that is being questioned, So we avoid highlighting it twice.
 				if((methodNameInQuestion==null) || (!methodNameInQuestion.matches(((MyMethodCall)methodCallElement).getName()))) {
-					System.out.println("calleeElement.getName(): "+((MyMethodCall)methodCallElement).getName());
+					//System.out.println("highlighting methodCall: "+((MyMethodCall)methodCallElement).getName());
 
 					//only add positions for methods for which we have the codeSnippets (i.e., they are listed as callees in task CodeSnippet
 					if(CodeSnippet.matchMethods(calleeList,(MyMethodCall)methodCallElement)){
@@ -90,10 +90,10 @@ public class WorkerSessionSelector {
 			}
 
 			if(commandStorage.length()>0)
-				calleesOnMainCommand = commandStorage.toString().substring(0, commandStorage.length()-1).trim();	// -1 to remove last '#'
-			System.out.println("calleesOnMain to be executed: " + calleesOnMainCommand);
+				calleesInMainCommand = commandStorage.toString().substring(0, commandStorage.length()-1).trim();	// -1 to remove last '#'
+			System.out.println("callees positions in main be highlighted: " + calleesInMainCommand);
 
-			request.setAttribute("calleesOnMain", calleesOnMainCommand);
+			request.setAttribute("calleesOnMain", calleesInMainCommand);
 		} else
 			request.setAttribute("calleesOnMain", null);
 
@@ -129,7 +129,7 @@ public class WorkerSessionSelector {
 			highlight.append( methodChaser(task.getCodeSnippet().getMethodSignature().getName(), newFileContent.toString(), false) );
 			if(highlight.length()>0)
 				highlightCallerCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
-			System.out.println("Command to be executed: " + highlightCallerCommand);
+			//System.out.println("Command to be executed: " + highlightCallerCommand);
 
 			String callerLines[] = newFileContent.toString().split("\r\n|\r|\n");
 
@@ -164,7 +164,6 @@ public class WorkerSessionSelector {
 					newFileContent.append(newline);	// appending two new lines in case it is NOT the last callee 
 					newFileContent.append(newline);
 				}
-				System.out.println("callee: "+ callee.getMethodSignature().toString()+ " @"+callee.getElementStartingLine());
 			}	
 			newFileContent.append("} ");
 
@@ -202,7 +201,7 @@ public class WorkerSessionSelector {
 			}
 			if(highlight.length()>0)
 				highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
-			//System.out.println("Callees to be highlighted: " + highlightCalleeCommand);
+			System.out.println("Callees to be highlighted: " + highlightCalleeCommand);
 
 			String calleeLines[] = newFileContent.toString().split("\r\n|\r|\n");
 			request.setAttribute("calleeLOCS", new Integer(calleeLines.length));

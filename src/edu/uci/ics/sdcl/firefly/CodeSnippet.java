@@ -134,6 +134,9 @@ public class CodeSnippet implements Serializable
 			this.callees.add(calleeSnippet);
 			this.calleesMap.put(calleeSnippet.getMethodSignature().getName(), calleeSnippet);
 		}
+		else{
+			System.out.println("CodeSnippet.addCallee - Callee already in the list: "+calleeSnippet.getMethodSignature().getName());
+		}
 	}
 	
 	public ArrayList<CodeSnippet> getCallers()
@@ -253,10 +256,6 @@ public class CodeSnippet implements Serializable
 		return list;
 	}
 
-	public HashMap<String, CodeSnippet> getCalleesMap() {
-		return this.calleesMap;
-	}
-
 	public static boolean matchMethods(ArrayList<CodeSnippet> calleeList,
 			MyMethodCall methodCallElement) {
 		
@@ -264,7 +263,10 @@ public class CodeSnippet implements Serializable
 		int i=0;
 		while((!found) && i<calleeList.size()){
 			CodeSnippet snippet = calleeList.get(i);
-			if(snippet.getMethodSignature().getName()==methodCallElement.getName()  &&
+			System.out.println("callee: "+ snippet.getMethodSignature().getName()+" params: "+snippet.getMethodSignature().getParameterList().size() );
+			System.out.println("method : " + methodCallElement.getName()+" params: "+ methodCallElement.getNumberOfParameters());
+			
+			if(snippet.getMethodSignature().getName().matches(methodCallElement.getName())  &&
 			(snippet.getMethodSignature().getParameterList().size()==methodCallElement.getNumberOfParameters()))
 				found=true;
 			i++;
