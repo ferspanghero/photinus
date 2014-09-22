@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 public class CodeSnippet implements Serializable
 {
+	
+	private static final long serialVersionUID = 1L;
 	protected String packageName;					// package name
 	protected String className; 					// class name
 	protected String fileName;						// file name
@@ -60,7 +62,6 @@ public class CodeSnippet implements Serializable
 		this.elements = new ArrayList<CodeElement>();
 		this.callers = new ArrayList<CodeSnippet>();
 		this.callees = new ArrayList<CodeSnippet>();
-		this.calleesMap = new HashMap<String, CodeSnippet>();
 	}
 	
 	/* constructor for methods with body */
@@ -90,7 +91,6 @@ public class CodeSnippet implements Serializable
 		this.elements = new ArrayList<CodeElement>();
 		this.callers = new ArrayList<CodeSnippet>();
 		this.callees = new ArrayList<CodeSnippet>();
-		this.calleesMap = new HashMap<String, CodeSnippet>();
 	}
 
 	@Override
@@ -132,10 +132,6 @@ public class CodeSnippet implements Serializable
 	{
 		if(!this.callees.contains(calleeSnippet)){
 			this.callees.add(calleeSnippet);
-			this.calleesMap.put(calleeSnippet.getMethodSignature().getName(), calleeSnippet);
-		}
-		else{
-			System.out.println("CodeSnippet.addCallee - Callee already in the list: "+calleeSnippet.getMethodSignature().getName());
 		}
 	}
 	
@@ -256,21 +252,30 @@ public class CodeSnippet implements Serializable
 		return list;
 	}
 
-	public static boolean matchMethods(ArrayList<CodeSnippet> calleeList,
-			MyMethodCall methodCallElement) {
-		
+	private static boolean isMethodCallee(ArrayList<CodeSnippet> calleeList, String methodName, int numberOfParameters){
 		boolean found=false;
 		int i=0;
 		while((!found) && i<calleeList.size()){
 			CodeSnippet snippet = calleeList.get(i);
-			System.out.println("callee: "+ snippet.getMethodSignature().getName()+" params: "+snippet.getMethodSignature().getParameterList().size() );
-			System.out.println("method : " + methodCallElement.getName()+" params: "+ methodCallElement.getNumberOfParameters());
+			///System.out.println("callee: "+ snippet.getMethodSignature().getName()+" params: "+snippet.getMethodSignature().getParameterList().size() );
+			//System.out.println("method : " + methodName+" params: "+ numberOfParameters);
 			
-			if(snippet.getMethodSignature().getName().matches(methodCallElement.getName())  &&
-			(snippet.getMethodSignature().getParameterList().size()==methodCallElement.getNumberOfParameters()))
+			if(snippet.getMethodSignature().getName().matches(methodName)  &&
+			(snippet.getMethodSignature().getParameterList().size()==numberOfParameters))
 				found=true;
 			i++;
 		}
 		return found;
 	}
+	
+	public static boolean listContainsMethod(ArrayList<CodeSnippet> calleeList,
+			MyMethodCall methodCallElement) {
+		return CodeSnippet.isMethodCallee(calleeList, methodCallElement.getName(), methodCallElement.getNumberOfParameters());
+	}
+	
+	public static boolean listContainsMethod(ArrayList<CodeSnippet> calleeList,
+			CodeSnippet snippet) {
+		return CodeSnippet.isMethodCallee(calleeList, snippet.getMethodSignature().getName(), snippet.getMethodSignature().getParameterList().size());
+	}
+		
 }

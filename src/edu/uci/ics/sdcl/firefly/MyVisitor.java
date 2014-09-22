@@ -206,7 +206,7 @@ public class MyVisitor extends ASTVisitor {
 				return true;
 			else{
 				Integer numberOfArguments = node.arguments().size();
-				System.out.println("Class instantiation..."+node.getExpression()+" type:"+node.getType());
+				//System.out.println("Class instantiation..."+node.getExpression()+" type:"+node.getType());
 				String name = node.getType().toString();
 				String expression =""; //There is no expression value in ConstructionInvocation node
 				String arguments = node.arguments().toString();
@@ -218,11 +218,6 @@ public class MyVisitor extends ASTVisitor {
 				MyMethodCall methodCall = new MyMethodCall(name, expression, arguments,numberOfArguments, 
 						this.elementStartingLine, this.elementStartingColumn,
 						this.elementEndingLine, this.elementEndingColumn);
-
-				if(methodCall.getName().matches("ClockEntry"))
-					System.out.println("visitor ClassIntantiation: "+ methodCall.toString());
-					//System.out.println(methodCall.toString());
-	//			System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
 
 				this.newMethod.addElement(methodCall);
 			}
@@ -241,7 +236,7 @@ public class MyVisitor extends ASTVisitor {
 			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
 
 			String name = node.getName().toString();
-		    System.out.println("node.getName: " +name+ " expression= "+node.getExpression());
+		   // System.out.println("node.getName: " +name+ " expression= "+node.getExpression());
 			String expression = node.getExpression()==null ? "" : node.getExpression().toString(); 
 			String arguments = node.arguments()==null ? "" : node.arguments().toString();
 			Integer numberOfArguments = node.arguments()==null ? 0 : node.arguments().size();
@@ -258,14 +253,13 @@ public class MyVisitor extends ASTVisitor {
 			//System.out.println(methodCall.toString());
 			//System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
 
-			//if(methodCall.getName().matches(newMethod.getMethodSignature().getName())){
-				System.out.println("Adding methodCall "+methodCall.getName()+"(" +
+			/*	System.out.println("Adding methodCall "+methodCall.getName()+"(" +
 							methodCall.getParameters() +")"+ 
 								" under method "+
 									newMethod.getMethodSignature().getName()+"(" +
-									newMethod.getMethodSignature().getParameterList().size() +" parameters )");	
-			//}
-			
+									newMethod.getMethodSignature().getParameterList().size() +" parameters )");
+									*/	
+
 			this.newMethod.addElement(methodCall);
 
 		}

@@ -66,7 +66,7 @@ public class WorkerSessionSelector {
 			//prepare callees list 
 			ArrayList<CodeSnippet> calleeList = task.getCodeSnippet().getCallees();
 
-			System.out.println("methodNameInQuestion: "+  methodNameInQuestion);
+			//System.out.println("methodNameInQuestion: "+  methodNameInQuestion);
 			//System.out.println("# Callees in newFileContent :"+  calleeMap.size());
 			
 			for (CodeElement methodCallElement : task.getCodeSnippet().getElementsOfType(CodeElement.METHOD_INVOCATION)) {
@@ -76,7 +76,7 @@ public class WorkerSessionSelector {
 					//System.out.println("highlighting methodCall: "+((MyMethodCall)methodCallElement).getName());
 
 					//only add positions for methods for which we have the codeSnippets (i.e., they are listed as callees in task CodeSnippet
-					if(CodeSnippet.matchMethods(calleeList,(MyMethodCall)methodCallElement)){
+					if(CodeSnippet.listContainsMethod(calleeList,(MyMethodCall)methodCallElement)){
 
 						StringBuilder command = new StringBuilder();
 						command.append(methodCallElement.getElementStartingLine()+"#");
@@ -91,7 +91,7 @@ public class WorkerSessionSelector {
 
 			if(commandStorage.length()>0)
 				calleesInMainCommand = commandStorage.toString().substring(0, commandStorage.length()-1).trim();	// -1 to remove last '#'
-			System.out.println("callees positions in main be highlighted: " + calleesInMainCommand);
+			//System.out.println("callees positions in main be highlighted: " + calleesInMainCommand);
 
 			request.setAttribute("calleesOnMain", calleesInMainCommand);
 		} else
@@ -166,42 +166,35 @@ public class WorkerSessionSelector {
 				}
 			}	
 			newFileContent.append("} ");
-
-			//System.out.println("Callees methods: "+ newFileContent.toString());
-
+			
 			CodeSnippetFactory factory = new CodeSnippetFactory("_callees",newFileContent.toString());
 			ArrayList<CodeSnippet> calleesList = factory.generateSnippetsForFile();
-			HashMap<String,CodeSnippet> calleeMap = new HashMap<String,CodeSnippet>();
-			for(CodeSnippet snippet: calleesList){
-				calleeMap.put(snippet.getMethodSignature().getName(), snippet);
-				//System.out.println("Callee Map from newFileContent: " + snippet.getMethodSignature().toString());
-			}
-
-			//System.out.println("# Callees in task:"+  task.getCodeSnippet().getCallees().size());
-			//System.out.println("# Callees in newFileContent :"+  calleeMap.size());
 			
-			// chasing method positions for highlighting purposes
+			// obtaining callee method positions to highlight 
 			for (CodeSnippet callee : task.getCodeSnippet().getCallees()) {
 
-				CodeSnippet snippet = calleeMap.get(callee.getMethodSignature().getName());
-				
-				//avoid methods with same name
-				//if(snippet.getMethodSignature().isEqualTo(callee.getMethodSignature())){
+				for(CodeSnippet snippet: calleesList){
 
-				StringBuilder highlightCommand = new StringBuilder();
-				highlightCommand.append(snippet.getElementStartingLine()+"#");
-				highlightCommand.append(snippet.getElementStartingColumn()+"#");
-				highlightCommand.append(snippet.getElementEndingLine()+"#");
-				highlightCommand.append(snippet.getElementEndingColumn()+"#");
+					//only add positions for methods for which we have the codeSnippets (i.e., they are listed as callees in task CodeSnippet
+					if( (callee.getMethodSignature().isEqualTo(snippet.getMethodSignature())) && (
+							CodeSnippet.listContainsMethod(calleesList,callee))){
 
-				highlight.append(highlightCommand);
-				
+						StringBuilder highlightCommand = new StringBuilder();
+						highlightCommand.append(snippet.getElementStartingLine()+"#");
+						highlightCommand.append(snippet.getElementStartingColumn()+"#");
+						highlightCommand.append(snippet.getElementEndingLine()+"#");
+						highlightCommand.append(snippet.getElementEndingColumn()+"#");
+
+						highlight.append(highlightCommand);
+					}
+
 					//System.out.println("snippet: "+snippet.getMethodSignature().getName()+" # of parameters: "+ snippet.getMethodSignature().getParameterList().size());
-				//	highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString(), true) );
+					//	highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString(), true) );
+				}
 			}
 			if(highlight.length()>0)
 				highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
-			System.out.println("Callees to be highlighted: " + highlightCalleeCommand);
+			//System.out.println("Callees to be highlighted: " + highlightCalleeCommand);
 
 			String calleeLines[] = newFileContent.toString().split("\r\n|\r|\n");
 			request.setAttribute("calleeLOCS", new Integer(calleeLines.length));
