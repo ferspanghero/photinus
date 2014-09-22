@@ -130,7 +130,7 @@ public class QuestionFactory {
 					
 						if ( -1 != questionPrompt.indexOf("parameters"))	// question about parameters
 						{	// are there parameters? ('2' for the brackets) 
-							if (2 < elementCall.getParameterList().length())	
+							if (1 < elementCall.getNumberOfParameters())	
 								addQuestion = true;	// question is all set
 						}
 						else

@@ -101,15 +101,16 @@ public class CodeSnippetFactory {
 	{
 //		System.out.println(" <> ");
 		/* building and populating callers-callees structure */
-		HashMap<CodeSnippet, ArrayList<String>> callersCalles = new HashMap<CodeSnippet, ArrayList<String>>();
+		HashMap<CodeSnippet, ArrayList<MyMethodCall>> callersCalles = new HashMap<CodeSnippet, ArrayList<MyMethodCall>>();
 		for (CodeSnippet codeSnippet : codeSnippets) {	// for each method (caller)
-			ArrayList<String> callees = new ArrayList<String>();
+			ArrayList<MyMethodCall> callees = new ArrayList<MyMethodCall>();
 //			System.out.println("Caller: " + codeSnippet.getMethodSignature().getName());
 			for (CodeElement codeElement : codeSnippet.getStatements()) {	// find the callees (within the method)
 				if (CodeElement.METHOD_INVOCATION == codeElement.getType())
 				{
 					MyMethodCall methodInvocation = (MyMethodCall)codeElement;
-					callees.add(methodInvocation.getName());
+					
+					callees.add(methodInvocation);
 //					System.out.println("--callee: " + methodInvocation.getName()); 
 				}
 			}
@@ -120,14 +121,19 @@ public class CodeSnippetFactory {
 		/* Updating the methods callers */
 		for (CodeSnippet codeSnippet : codeSnippets) {
 			String methodName = codeSnippet.getMethodSignature().getName();	// callee name
-			Set<Map.Entry<CodeSnippet, ArrayList<String>>> set = callersCalles.entrySet();
-			Iterator<Entry<CodeSnippet, ArrayList<String>>> i = set.iterator();
+			Iterator<Entry<CodeSnippet, ArrayList<MyMethodCall>>> i = callersCalles.entrySet().iterator();
 			while(i.hasNext()) 	// searching for caller (from other methods within this codeSnippet list)
 			{
-				Map.Entry<CodeSnippet, ArrayList<String>> me = (Map.Entry<CodeSnippet, ArrayList<String>>)i.next();
-				if (-1 != me.getValue().indexOf(methodName)){	// this methodName is called so...
+				Map.Entry<CodeSnippet, ArrayList<MyMethodCall>> me = (Map.Entry<CodeSnippet, ArrayList<MyMethodCall>>)i.next();
+				//Check if the MethodCall matches the Snippet (check name and number of parameters)
+				ArrayList<MyMethodCall> list = me.getValue();
+				for(MyMethodCall invocation: list){
+					if(invocation.getName().matches(methodName)&& 
+							invocation.getNumberOfParameters()==codeSnippet.getMethodSignature().getParameterList().size())
+					{															// this methodName is called so...
 					codeSnippet.addCaller(me.getKey());		// ...update its caller list field
 					me.getKey().addCallee(codeSnippet); 	// ...update its caller adding it as a callee
+				}
 				}
 			}
 		}

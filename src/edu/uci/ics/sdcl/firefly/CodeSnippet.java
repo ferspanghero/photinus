@@ -124,13 +124,16 @@ public class CodeSnippet implements Serializable
 	
 	public void addCaller(CodeSnippet callerSnippet)
 	{
-		this.callers.add(callerSnippet);
+		if(!this.callers.contains(callerSnippet))
+			this.callers.add(callerSnippet);
 	}
 	
 	public void addCallee(CodeSnippet calleeSnippet)
 	{
-		this.callees.add(calleeSnippet);
-		this.calleesMap.put(calleeSnippet.getMethodSignature().getName(), calleeSnippet);
+		if(!this.callees.contains(calleeSnippet)){
+			this.callees.add(calleeSnippet);
+			this.calleesMap.put(calleeSnippet.getMethodSignature().getName(), calleeSnippet);
+		}
 	}
 	
 	public ArrayList<CodeSnippet> getCallers()
@@ -252,5 +255,20 @@ public class CodeSnippet implements Serializable
 
 	public HashMap<String, CodeSnippet> getCalleesMap() {
 		return this.calleesMap;
+	}
+
+	public static boolean matchMethods(ArrayList<CodeSnippet> calleeList,
+			MyMethodCall methodCallElement) {
+		
+		boolean found=false;
+		int i=0;
+		while((!found) && i<calleeList.size()){
+			CodeSnippet snippet = calleeList.get(i);
+			if(snippet.getMethodSignature().getName()==methodCallElement.getName()  &&
+			(snippet.getMethodSignature().getParameterList().size()==methodCallElement.getNumberOfParameters()))
+				found=true;
+			i++;
+		}
+		return found;
 	}
 }

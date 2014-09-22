@@ -12,9 +12,10 @@ public class SimpleSampleCode {
 	
 	public SimpleSampleCode(int i){
 		this.SeedLimit = new Integer(i);
+		this.coder(10);
 	}
 	
-	public void SampleCode(int i){
+	public Integer coder(int i){
         Integer SeedLimit= new Integer(i);
         SimpleSampleCode sample= new SimpleSampleCode(10);
 		if(this.equals(SeedLimit)){
@@ -22,6 +23,11 @@ public class SimpleSampleCode {
 			SimpleSampleCode.factorial(SeedLimit, SeedLimit);
 		Code code = new Code("new");
 		}
+		return i;
+	}
+	
+	public String coder(){
+		return "";
 	}
 	
 	

@@ -11,17 +11,19 @@ public class MyMethodCall extends CodeElement implements Serializable
 	
 	private String name;
 	private String expression;
-	private String parameterList;
+	private String parameters;
+	private Integer numberOfParameters;
 	
-	public MyMethodCall(String nameArg, String expressionArg, String parametersArg, 
+	public MyMethodCall(String nameArg, String expressionArg, String parametersArg, Integer numberOfParameters, 
 			Integer elementStartingLineArg, Integer elementStartingColumnArg,
 			Integer elementEndingLineArg, Integer elementEndingColumnArg)
 	{
 		super(CodeElement.METHOD_INVOCATION, elementStartingLineArg, elementStartingColumnArg,
 				elementEndingLineArg, elementEndingColumnArg);
-		this.setName(nameArg);
-		this.setExpression(expressionArg);
-		this.parameterList = parametersArg;
+		name = nameArg;
+		expression = expressionArg;
+		parameters = parametersArg;
+		this.numberOfParameters = numberOfParameters;
 	}
 	
 	public String getName()
@@ -29,35 +31,25 @@ public class MyMethodCall extends CodeElement implements Serializable
 		return name;
 	}
 
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
 	public String getExpression()
 	{
 		return expression;
 	}
 
-	public void setExpression(String expression)
+	public String getParameters()
 	{
-		this.expression = expression;
+		return parameters;
 	}
 
-	public String getParameterList()
-	{
-		return parameterList;
+	public Integer getNumberOfParameters(){
+		return this.numberOfParameters;
 	}
-
-	public void setParameterList(String parametersArg)
-	{
-		this.parameterList = parametersArg;
-	}
+	
 	
 	public String toString(){
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Method name: " + name+" at line "+elementStartingLine + " expression: " + expression + "." + name + 
-				this.parameterList.replace('[', '(').replace(']', ')'));
+				this.parameters.replace('[', '(').replace(']', ')'));
 		buffer.append("\n");
 		buffer.append("Method invocation at starting line: " + elementStartingLine + ", starting column: "+ elementStartingColumn);
 		buffer.append("\n");

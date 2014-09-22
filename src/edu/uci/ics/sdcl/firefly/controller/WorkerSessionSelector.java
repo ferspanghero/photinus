@@ -33,8 +33,8 @@ public class WorkerSessionSelector {
 	 */
 	public HttpServletRequest generateRequest(HttpServletRequest request, Microtask task){
 
-		System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
-		System.out.println("Retrieved microtask bug report:" + task.getFailureDescription() +  " from fileName: "+task.getCodeSnippet().getFileName());
+		//System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
+	//	System.out.println("Retrieved microtask bug report:" + task.getFailureDescription() +  " from fileName: "+task.getCodeSnippet().getFileName());
 
 		request.setAttribute("microtaskId", task.getID());  
 		request.setAttribute("fileName", task.getCodeSnippet().getFileName());
@@ -64,8 +64,11 @@ public class WorkerSessionSelector {
 
 
 			//prepare callees list 
-			HashMap<String,CodeSnippet> calleeMap = task.getCodeSnippet().getCalleesMap();
+			ArrayList<CodeSnippet> calleeList = task.getCodeSnippet().getCallees();
 
+			//System.out.println("# Callees in task:"+  task.getCodeSnippet().getCallees().size());
+			//System.out.println("# Callees in newFileContent :"+  calleeMap.size());
+			
 			for (CodeElement methodCallElement : task.getCodeSnippet().getElementsOfType(CodeElement.METHOD_INVOCATION)) {
 
 				//Ignore method calls to the method that is being questioned, So we avoid highlighting it twice.
@@ -73,7 +76,7 @@ public class WorkerSessionSelector {
 					System.out.println("calleeElement.getName(): "+((MyMethodCall)methodCallElement).getName());
 
 					//only add positions for methods for which we have the codeSnippets (i.e., they are listed as callees in task CodeSnippet
-					if(calleeMap.containsKey(((MyMethodCall)methodCallElement).getName())){
+					if(CodeSnippet.matchMethods(calleeList,(MyMethodCall)methodCallElement)){
 
 						StringBuilder command = new StringBuilder();
 						command.append(methodCallElement.getElementStartingLine()+"#");
@@ -172,13 +175,19 @@ public class WorkerSessionSelector {
 			HashMap<String,CodeSnippet> calleeMap = new HashMap<String,CodeSnippet>();
 			for(CodeSnippet snippet: calleesList){
 				calleeMap.put(snippet.getMethodSignature().getName(), snippet);
-				System.out.println("Callee Map from newFileContent: " + snippet.getMethodSignature().toString());
+				//System.out.println("Callee Map from newFileContent: " + snippet.getMethodSignature().toString());
 			}
 
+			//System.out.println("# Callees in task:"+  task.getCodeSnippet().getCallees().size());
+			//System.out.println("# Callees in newFileContent :"+  calleeMap.size());
+			
 			// chasing method positions for highlighting purposes
 			for (CodeSnippet callee : task.getCodeSnippet().getCallees()) {
 
 				CodeSnippet snippet = calleeMap.get(callee.getMethodSignature().getName());
+				
+				//avoid methods with same name
+				//if(snippet.getMethodSignature().isEqualTo(callee.getMethodSignature())){
 
 				StringBuilder highlightCommand = new StringBuilder();
 				highlightCommand.append(snippet.getElementStartingLine()+"#");
@@ -187,12 +196,13 @@ public class WorkerSessionSelector {
 				highlightCommand.append(snippet.getElementEndingColumn()+"#");
 
 				highlight.append(highlightCommand);
-
+				
+					//System.out.println("snippet: "+snippet.getMethodSignature().getName()+" # of parameters: "+ snippet.getMethodSignature().getParameterList().size());
 				//	highlight.append( methodChaser(callee.getMethodSignature().getName(), newFileContent.toString(), true) );
 			}
 			if(highlight.length()>0)
 				highlightCalleeCommand = highlight.toString().substring(0, highlight.length()-1);	// -1 to remove last '#'
-			System.out.println("Callees to be highlighted: " + highlightCalleeCommand);
+			//System.out.println("Callees to be highlighted: " + highlightCalleeCommand);
 
 			String calleeLines[] = newFileContent.toString().split("\r\n|\r|\n");
 			request.setAttribute("calleeLOCS", new Integer(calleeLines.length));
