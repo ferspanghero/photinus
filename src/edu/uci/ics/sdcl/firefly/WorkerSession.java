@@ -3,6 +3,12 @@ package edu.uci.ics.sdcl.firefly;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Represents a working session, which is a set of microtasks performed by a single worker
+ * 
+ * @author Christian Medeiros Adriano
+ *
+ */
 public class WorkerSession implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -22,8 +28,6 @@ public class WorkerSession implements Serializable{
 	/** Associates a session with an anonymous user */
 	private String userId;
 
-	/** Associates a session with a Mechanical Turk Hit */
-	private String hitId;
 
 	/** 
 	 * Initializes the array and the counter to the first position in the array 
@@ -120,16 +124,8 @@ public class WorkerSession implements Serializable{
 		this.userId = id;		
 	}
 
-	public void setHitId(String id) {
-		this.hitId = id;		
-	}
-	
 	public String getUserId() {
 		return this.userId;		
-	}
-
-	public String getHitId() {
-		return this.hitId;		
 	}
 
 	public String getOriginalId() {

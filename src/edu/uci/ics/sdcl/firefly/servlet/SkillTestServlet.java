@@ -18,9 +18,10 @@ import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
  * Servlet implementation class SkillTestServlet
+ * 
+ * @author Christian Medeiros Adriano
  */
 public class SkillTestServlet extends HttpServlet {
-	
 		
 	private static final long serialVersionUID = 1L;
     
@@ -36,7 +37,6 @@ public class SkillTestServlet extends HttpServlet {
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
  
 	private String userId;
-	private String hitId;
 	
 	
     /**
@@ -52,11 +52,9 @@ public class SkillTestServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		this.userId = request.getParameter("userId");
-		this.hitId = request.getParameter("hitId");
 		String subAction = request.getParameter("subAction");
 		
 		request.setAttribute("userId", this.userId);
-		request.setAttribute("hitId", this.hitId);
 		request.setAttribute("subAction", "submitAnswers");
  
 		if(subAction.compareTo("gradeAnswers")==0){
@@ -149,7 +147,7 @@ public class SkillTestServlet extends HttpServlet {
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String path = getServletContext().getRealPath("/");
 		StorageManager manager = new StorageManager(path);
-		WorkerSession  session = manager.readNewSession(this.userId, this.hitId);
+		WorkerSession  session = manager.readNewSession(this.userId);
 		
 		if(session==null || !session.hasCurrent())
 		 	//Means that it is the first user session. There should be at least one microtask. If not it is an Error.

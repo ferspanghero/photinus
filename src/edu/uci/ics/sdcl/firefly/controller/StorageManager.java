@@ -14,7 +14,7 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
  * Manages all the write and read operations to the persistent objects.
  * Keeps the consistency and generates a txt log of all operations.
  * 
- * @author Christian Adriano
+ * @author Christian Medeiros Adriano
  *
  */
 public class StorageManager {
@@ -59,11 +59,10 @@ public class StorageManager {
 	 * @param hitIT is used to associate the WorkerSession with the Mechanical Turk HIT
 	 * @return a new session, if there aren't new sessions available return null
 	 */
-	public WorkerSession readNewSession(String userId, String hitId){
+	public WorkerSession readNewSession(String userId){
 		WorkerSession session = this.sessionStorage.readNewWorkerSession();
 		if(session!=null){
 			session.setUserId(userId);
-			session.setHitId(hitId);
 			this.sessionStorage.updateActiveWorkerSession(session);
 			return session;
 		}

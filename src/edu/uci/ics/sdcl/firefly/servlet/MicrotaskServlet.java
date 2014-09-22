@@ -23,6 +23,8 @@ import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
  * Servlet implementation class MicrotaskController
+ * 
+ *  * @author Christian Medeiros Adriano
  */
 public class MicrotaskServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -32,8 +34,6 @@ public class MicrotaskServlet extends HttpServlet {
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
  
 	private String userId;
-	private String hitId;
-	private String timeStamp;
 	
 	private WorkerSessionSelector workerSessionSelector;
 	
@@ -57,12 +57,9 @@ public class MicrotaskServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		this.userId = request.getParameter("userId");
-		this.hitId = request.getParameter("hitId");
 		
 		//Restore data for next Request
 		request.setAttribute("userId",this.userId);
-		request.setAttribute("hitId",this.hitId);
-		
 		
 		String subAction = request.getParameter("subAction");
 				
@@ -80,7 +77,7 @@ public class MicrotaskServlet extends HttpServlet {
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String path = getServletContext().getRealPath("/");
 		StorageManager manager = new StorageManager(path);
-		WorkerSession  session = manager.readNewSession(this.userId, this.hitId);
+		WorkerSession  session = manager.readNewSession(this.userId);
 		
 		if(session==null || !session.hasCurrent())
 		 	//Means that it is the first user session. There should be at least one microtask. If not it is an Error.
@@ -114,7 +111,6 @@ public class MicrotaskServlet extends HttpServlet {
 		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation), elapsedTime, timeStamp);
 
 		//Restore data for next Request
-		request.setAttribute("sessionId",sessionId);
 		request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 		
 		//Continue working on existing session
