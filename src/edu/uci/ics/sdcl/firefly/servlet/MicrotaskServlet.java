@@ -75,8 +75,8 @@ public class MicrotaskServlet extends HttpServlet {
 	
 	
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = getServletContext().getRealPath("/");
-		StorageManager manager = new StorageManager(path);
+		
+		StorageManager manager = new StorageManager();
 		WorkerSession  session = manager.readNewSession(this.userId);
 		
 		if(session==null || !session.hasCurrent())
@@ -84,9 +84,9 @@ public class MicrotaskServlet extends HttpServlet {
 			showErrorPage(request, response,"@ MicrotaskServlet - no microtask available");
 		else{
 			//Restore data for next Request
-			request.setAttribute("sessionId",session.getId());
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-			
+			request.setAttribute("sessionId",session.getId());
+				
 			//load the new Microtask data into the Request
 			request = this.workerSessionSelector.generateRequest(request, session.getCurrentMicrotask());
 			request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
@@ -98,20 +98,20 @@ public class MicrotaskServlet extends HttpServlet {
 		 
 		int answer = new Integer(request.getParameter("answer")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
+		String sessionId = request.getParameter("sessionId");
 		String explanation = request.getParameter("explanation");
-	 	String sessionId = request.getParameter("sessionId");
 	 	String fileName = request.getParameter("fileName");
-	 	String path = getServletContext().getRealPath("/");
 	 	String timeStamp = request.getParameter("timeStamp");
 	 	String elapsedTime = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
 	 	
 	 			
 		//Save answers from the previous microtask
-		StorageManager manager = new StorageManager(path);
+		StorageManager manager = new StorageManager();
 		manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation), elapsedTime, timeStamp);
 
 		//Restore data for next Request
 		request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
+		request.setAttribute("sessionId", sessionId);
 		
 		//Continue working on existing session
 		WorkerSession session = manager.readActiveSession(sessionId);	

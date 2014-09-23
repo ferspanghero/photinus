@@ -330,15 +330,15 @@ public class WorkerSessionStorage {
 	
 	/** Retrieves a WorkerSession
 	 * 
-	 * @param id the unique identifier for a WorkerSession
+	 * @param userId the unique identifier for a WorkerSession
 	 * @return a WorkerSession, in case any was found, return null.
 	 */
-	public WorkerSession readActiveWorkerSessionByID(String id){
+	public WorkerSession readActiveWorkerSessionByID(String sessionId){
 
 		HashMap<String,WorkerSession> workerSessionMap =this.retrieveActiveWorkerSessionMap();
 
-		if(workerSessionMap!=null && workerSessionMap.containsKey(id))
-			return workerSessionMap.get(id);
+		if(workerSessionMap!=null && workerSessionMap.containsKey(sessionId))
+			return workerSessionMap.get(sessionId);
 		else
 			return null;
 	}
@@ -369,14 +369,6 @@ public class WorkerSessionStorage {
 			return null;
 		}
 	}
-
-
-
-	/**
-	 * Adds a MTurk HIT ID for each WorkerSession
-	 * 
-	 */
-	public void updateWorkerSessionsWithHitId(ArrayList<String> hitIDList){}
 
 
 

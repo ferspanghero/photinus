@@ -7,20 +7,19 @@ import java.util.HashMap;
 public class Worker implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String userId;
-	private String hitId;
 	private Date consentDate;
 	private HashMap<String,String> surveyAnswers;
 	private HashMap<String, String> rubricMap;
 	private HashMap<String, Boolean> gradeMap;
-	private int grade;
+	private Integer grade;
 	private String skillTestDuration;
 	
 	
-	public Worker(String userId, String hitId, Date consentDate) {
+	public Worker(String userId, Date consentDate) {
 		this.userId = userId;
-		this.hitId = hitId;
 		this.consentDate = consentDate;
 		this.surveyAnswers =  new HashMap<String,String>();
+		this.grade = null;
 	}
 	
 	public String getUserId() {
@@ -29,14 +28,6 @@ public class Worker implements Serializable{
 
 	public void setUserId(String userId) {
 		this.userId = userId;
-	}
-
-	public String getHitId() {
-		return hitId;
-	}
-
-	public void setHitId(String hit) {
-		this.hitId = hit;
 	}
 
 	public Date getConsentDate() {
@@ -90,7 +81,7 @@ public class Worker implements Serializable{
 		this.gradeMap = gradeMap;
 	}
 
-	public int getGrade() {
+	public Integer getGrade() {
 		return grade;
 	}
 

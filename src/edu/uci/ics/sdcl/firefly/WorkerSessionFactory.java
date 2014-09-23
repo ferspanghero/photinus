@@ -24,8 +24,8 @@ import edu.uci.ics.sdcl.firefly.util.RandomKeyGenerator;
  */
 public class WorkerSessionFactory {
 
-	/** Starts with 0. It is used to uniquely identify each new WorkerSession */
-	private String sessionID;
+	/** It is used to uniquely identify each new WorkerSession. It is randomly generated.*/
+	private String sessionId;
 
 	/** Just counts the number of sessions. It is use as part of the sessionID generation */
 	private RandomKeyGenerator keyGenerator;
@@ -70,8 +70,8 @@ public class WorkerSessionFactory {
 		ArrayList<Microtask> mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		//Generate the original WorkerSessions
 		while(mtaskList.size()>0){
-			this.sessionID = this.keyGenerator.generate();
-			WorkerSession session = new WorkerSession(sessionID, sessionID, mtaskList);
+			this.sessionId = this.keyGenerator.generate();
+			WorkerSession session = new WorkerSession(this.sessionId, mtaskList);
 			originalList.add(session);
 			mtaskList = this.nextMicrotaskList(microtaskPerSession);
 		}
@@ -93,12 +93,12 @@ public class WorkerSessionFactory {
 
 		//Stack for the single Session
 		Stack<WorkerSession> workerSessionStack = new Stack<WorkerSession>();
-		this.sessionID = this.keyGenerator.generate();
+		this.sessionId = this.keyGenerator.generate();
 
 		MicrotaskSelector selector = new MicrotaskSelector();
 		ArrayList<Microtask> mtaskList =selector.selectAllMicrotasks();
 
-		WorkerSession session = new WorkerSession(sessionID, sessionID, mtaskList);
+		WorkerSession session = new WorkerSession(this.sessionId, mtaskList);
 		workerSessionStack.push(session);
 
 		return workerSessionStack;
@@ -121,9 +121,9 @@ public class WorkerSessionFactory {
 			for(int i=0;i<originalStack.size();i++){
 				WorkerSession originalSession = originalStack.elementAt(i);
 				if(originalSession.getId() == null)
-					System.out.println("ERROR originalSession is NULL for i="+i+ " sessionID= "+sessionID);
-				this.sessionID = this.keyGenerator.generate();
-				WorkerSession duplicateSession =  new WorkerSession(this.sessionID, originalSession.getId(), originalSession.getMicrotaskList());
+					System.out.println("ERROR originalSession is NULL for i="+i+ " sessionID= "+this.sessionId);
+				this.sessionId = this.keyGenerator.generate();
+				WorkerSession duplicateSession =  new WorkerSession(this.sessionId, originalSession.getMicrotaskList());
 				//				System.out.println("WSF @99: " + originalSession.getId());
 
 				duplicateStack.push(duplicateSession);

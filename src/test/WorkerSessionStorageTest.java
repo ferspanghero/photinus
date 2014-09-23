@@ -56,29 +56,29 @@ public class WorkerSessionStorageTest {
 		ArrayList<Microtask> mtaskList6= new ArrayList<Microtask>();	
 		mtaskList6.add(mtaskMap.get(10));
 
-		WorkerSession original0 = new WorkerSession("0","0",mtaskList0);
-		WorkerSession original1 = new WorkerSession("1","1",mtaskList1);
-		WorkerSession original2 = new WorkerSession("2","2",mtaskList2);
-		WorkerSession original3 = new WorkerSession("3","3",mtaskList3);
-		WorkerSession original4 = new WorkerSession("4","4",mtaskList4);
-		WorkerSession original5 = new WorkerSession("5","5",mtaskList5);
-		WorkerSession original6 = new WorkerSession("6","6",mtaskList6);
+		WorkerSession original0 = new WorkerSession("0",mtaskList0);
+		WorkerSession original1 = new WorkerSession("1",mtaskList1);
+		WorkerSession original2 = new WorkerSession("2",mtaskList2);
+		WorkerSession original3 = new WorkerSession("3",mtaskList3);
+		WorkerSession original4 = new WorkerSession("4",mtaskList4);
+		WorkerSession original5 = new WorkerSession("5",mtaskList5);
+		WorkerSession original6 = new WorkerSession("6",mtaskList6);
 
-		WorkerSession copy0 = new WorkerSession("7","0",mtaskList0);
-		WorkerSession copy1 = new WorkerSession("8","1",mtaskList1);
-		WorkerSession copy2 = new WorkerSession("9","2",mtaskList2);
-		WorkerSession copy3 = new WorkerSession("10","3",mtaskList3);
-		WorkerSession copy4 = new WorkerSession("11","4",mtaskList4);
-		WorkerSession copy5 = new WorkerSession("12","5",mtaskList5);
-		WorkerSession copy6 = new WorkerSession("13","6",mtaskList6);
+		WorkerSession copy0 = new WorkerSession("7",mtaskList0);
+		WorkerSession copy1 = new WorkerSession("8",mtaskList1);
+		WorkerSession copy2 = new WorkerSession("9",mtaskList2);
+		WorkerSession copy3 = new WorkerSession("10",mtaskList3);
+		WorkerSession copy4 = new WorkerSession("11",mtaskList4);
+		WorkerSession copy5 = new WorkerSession("12",mtaskList5);
+		WorkerSession copy6 = new WorkerSession("13",mtaskList6);
 
-		WorkerSession copy00 = new WorkerSession("14","0",mtaskList0);
-		WorkerSession copy11 = new WorkerSession("15","1",mtaskList1);
-		WorkerSession copy22 = new WorkerSession("16","2",mtaskList2);
-		WorkerSession copy33 = new WorkerSession("17","3",mtaskList3);
-		WorkerSession copy44 = new WorkerSession("18","4",mtaskList4);
-		WorkerSession copy55 = new WorkerSession("19","5",mtaskList5);
-		WorkerSession copy66 = new WorkerSession("20","6",mtaskList6);
+		WorkerSession copy00 = new WorkerSession("14",mtaskList0);
+		WorkerSession copy11 = new WorkerSession("15",mtaskList1);
+		WorkerSession copy22 = new WorkerSession("16",mtaskList2);
+		WorkerSession copy33 = new WorkerSession("17",mtaskList3);
+		WorkerSession copy44 = new WorkerSession("18",mtaskList4);
+		WorkerSession copy55 = new WorkerSession("19",mtaskList5);
+		WorkerSession copy66 = new WorkerSession("20",mtaskList6);
 
 
 		this.expectedActiveMap.put(copy66.getId(),copy66);
@@ -211,29 +211,29 @@ public class WorkerSessionStorageTest {
 		ArrayList<Microtask> mtaskList6= new ArrayList<Microtask>();	
 		mtaskList6.add(mtaskMap.get(10));
 
-		WorkerSession original0 = new WorkerSession("0","0",mtaskList0);
-		WorkerSession original1 = new WorkerSession("1","1",mtaskList1);
-		WorkerSession original2 = new WorkerSession("2","2",mtaskList2);
-		WorkerSession original3 = new WorkerSession("3","3",mtaskList3);
-		WorkerSession original4 = new WorkerSession("4","4",mtaskList4);
-		WorkerSession original5 = new WorkerSession("5","5",mtaskList5);
-		WorkerSession original6 = new WorkerSession("6","6",mtaskList6);
+		WorkerSession original0 = new WorkerSession("0",mtaskList0);
+		WorkerSession original1 = new WorkerSession("1",mtaskList1);
+		WorkerSession original2 = new WorkerSession("2",mtaskList2);
+		WorkerSession original3 = new WorkerSession("3",mtaskList3);
+		WorkerSession original4 = new WorkerSession("4",mtaskList4);
+		WorkerSession original5 = new WorkerSession("5",mtaskList5);
+		WorkerSession original6 = new WorkerSession("6",mtaskList6);
 
-		WorkerSession copy0 = new WorkerSession("7","0",mtaskList0);
-		WorkerSession copy1 = new WorkerSession("8","1",mtaskList1);
-		WorkerSession copy2 = new WorkerSession("9","2",mtaskList2);
-		WorkerSession copy3 = new WorkerSession("10","3",mtaskList3);
-		WorkerSession copy4 = new WorkerSession("11","4",mtaskList4);
-		WorkerSession copy5 = new WorkerSession("12","5",mtaskList5);
-		WorkerSession copy6 = new WorkerSession("13","6",mtaskList6);
+		WorkerSession copy0 = new WorkerSession("7",mtaskList0);
+		WorkerSession copy1 = new WorkerSession("8",mtaskList1);
+		WorkerSession copy2 = new WorkerSession("9",mtaskList2);
+		WorkerSession copy3 = new WorkerSession("10",mtaskList3);
+		WorkerSession copy4 = new WorkerSession("11",mtaskList4);
+		WorkerSession copy5 = new WorkerSession("12",mtaskList5);
+		WorkerSession copy6 = new WorkerSession("13",mtaskList6);
 
-		WorkerSession copy00 = new WorkerSession("14","0",mtaskList0);
-		WorkerSession copy11 = new WorkerSession("15","1",mtaskList1);
-		WorkerSession copy22 = new WorkerSession("16","2",mtaskList2);
-		WorkerSession copy33 = new WorkerSession("17","3",mtaskList3);
-		WorkerSession copy44 = new WorkerSession("18","4",mtaskList4);
-		WorkerSession copy55 = new WorkerSession("19","5",mtaskList5);
-		WorkerSession copy66 = new WorkerSession("20","6",mtaskList6);
+		WorkerSession copy00 = new WorkerSession("14",mtaskList0);
+		WorkerSession copy11 = new WorkerSession("15",mtaskList1);
+		WorkerSession copy22 = new WorkerSession("16",mtaskList2);
+		WorkerSession copy33 = new WorkerSession("17",mtaskList3);
+		WorkerSession copy44 = new WorkerSession("18",mtaskList4);
+		WorkerSession copy55 = new WorkerSession("19",mtaskList5);
+		WorkerSession copy66 = new WorkerSession("20",mtaskList6);
 
 
 		this.expectedClosedList.add(original0);  

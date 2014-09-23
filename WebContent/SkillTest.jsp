@@ -111,8 +111,7 @@
 	
 		<form name="testForm" method="get" action="skillTest">
 			<input type="hidden" name="userId" value=${requestScope["userId"]}> 
-			<input type="hidden" name="hitId" value=${requestScope["hitId"]}> 
-			
+			<input type="hidden" name="timeStamp" value=${requestScope["timeStamp"]}> 
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
 			
 			<br> The source code below is used for all the questions.<br>
@@ -128,7 +127,7 @@
 					editor1.setOption("highlightActiveLine", false); // disable highligthing on the active line
 					editor1.setShowPrintMargin(false); // disable printing margin
 				</script>
-			<input type="hidden" name="timeStamp" value=${requestScope["timeStamp"]}> 
+			
 			<br>
 			1- What is the output of the code?
 			<br>
@@ -177,14 +176,7 @@
 			<input type="radio" name="question4" value="c">0<br>
 			<input type="radio" name="question4" value="d">1<br>
 			<br>
-		<!--	
-			5- If we remove the "else" clause at line 28, what would be the new output of the code?
-			<br>
-			<input type="radio" name="question5" value="a">Exception<br>
-			<input type="radio" name="question5" value="b">;<br>
-			<input type="radio" name="question5" value="c">2!1Exception<br>
-			<input type="radio" name="question5" value="d">OAB1!2Exception<br><br>
-		-->
+	
 			<INPUT TYPE="button" VALUE="Quit"	onclick="quit()"> 
 			<INPUT TYPE="button" VALUE="Submit answers" onclick="submitAnswers(event)">
 

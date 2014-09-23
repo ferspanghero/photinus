@@ -180,9 +180,8 @@
 			
 			<!-- Hidden fields -->
 			<input type="hidden" name="fileName" value=${requestScope["fileName"]}> 
+			<input type="hidden" name="userId" value=${requestScope["userId"]}> 			
 			<input type="hidden" name="sessionId" value=${requestScope["sessionId"]}> 
-			<input type="hidden" name="userId" value=${requestScope["userId"]}> 
-			<input type="hidden" name="hitId" value=${requestScope["hitId"]}> 
 			<input type="hidden" name="microtaskId" value=${requestScope["microtaskId"]}> 
 			<input type="hidden" name="timeStamp" value=${requestScope["timeStamp"]}> 
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 

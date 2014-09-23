@@ -178,9 +178,9 @@ public class SessionsReportGenerator {
 	private boolean populateDataLines(ArrayList<WorkerSession> workerSessions){
 		for (WorkerSession workerSession : workerSessions) {
 			this.lineContent = new Object[this.questionsInSheet.size()+3]; 
-			this.lineContent[0] = workerSession.getUserId();			// first column
-			this.lineContent[1] = workerSession.getId();				// worker ID
-			this.lineContent[2] = workerSession.getOriginalId();		// third column
+			this.lineContent[0] = workerSession.getUserId();			// worker ID
+			this.lineContent[1] = workerSession.getId();				// session ID
+			this.lineContent[2] = "-";		// third column
 			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
 			for (Microtask microtask : microtasks) {
 				Integer currentColumn = this.questionsInSheet.get(microtask.getID());

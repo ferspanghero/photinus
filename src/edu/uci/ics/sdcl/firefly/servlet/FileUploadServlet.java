@@ -132,9 +132,8 @@ public class FileUploadServlet extends HttpServlet {
 					String results = generateMicrotasks(fileName, fileContent, targetName, bugReport);
 
 					//Store the UserId and HitId of the Researcher
-					String path = getServletContext().getRealPath("/");
 					WorkerStorage workerStorage = new WorkerStorage();
-					Worker worker = new Worker(userId,hitId,new Date());
+					Worker worker = new Worker(userId,new Date());
 					workerStorage.insert(userId, worker);
 
 					return_message = return_message + results;
@@ -262,8 +261,7 @@ public class FileUploadServlet extends HttpServlet {
 	}
 	
 	private void delete(){
-		String path = getServletContext().getRealPath("/");
-		StorageManager manager = new StorageManager(path);
+		StorageManager manager = new StorageManager();
 		manager.cleanUpRepositories();
 	}
 }

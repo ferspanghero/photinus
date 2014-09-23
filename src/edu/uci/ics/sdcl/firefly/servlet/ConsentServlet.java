@@ -37,13 +37,10 @@ public class ConsentServlet extends HttpServlet {
 		
 		if(subAction.compareTo("loadQuestions")==0){
 				Date currentDate = new Date();
-				String path = getServletContext().getRealPath("/");
-				StorageManager manager = new StorageManager(path);
+				StorageManager manager = new StorageManager();
 				String userId = manager.generateWorkerID(currentDate);
-				String hitId = "hitID";
 				// now passing parameters to the next page
 				request.setAttribute("userId", userId);
-				request.setAttribute("hitId", hitId);
 				request.setAttribute("subAction", "gradeAnswers");
 				request = this.loadQuestions(request, response);
 				request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());

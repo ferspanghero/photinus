@@ -22,9 +22,9 @@ import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
  * @author Christian Medeiros Adriano
  */
 public class SkillTestServlet extends HttpServlet {
-		
+
 	private static final long serialVersionUID = 1L;
-    
+
 	private String QUESTION1="QUESTION1";
 	private String QUESTION2="QUESTION2";
 	private String QUESTION3="QUESTION3";
@@ -35,38 +35,47 @@ public class SkillTestServlet extends HttpServlet {
 	private String SorryPage = "/Sorry.html";
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
- 
+
 	private String userId;
-	
-	
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public SkillTestServlet() {
-        super();
-    }
+
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public SkillTestServlet() {
+		super();
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		this.userId = request.getParameter("userId");
 		String subAction = request.getParameter("subAction");
-		
+
 		request.setAttribute("userId", this.userId);
 		request.setAttribute("subAction", "submitAnswers");
- 
-		if(subAction.compareTo("gradeAnswers")==0){
-			int grade = this.retrieveAnswers(request);
-			if (grade>=2){
-				request.setAttribute("subAction", "loadFirst");
-				loadFirstMicrotask(request,response);
-			}
-			else{ 
-				request.getRequestDispatcher(SorryPage).include(request, response);
-			}
+
+		//First check if the user hasn't already taken the test
+		WorkerStorage workerStorage =  new WorkerStorage();
+		Worker worker = workerStorage.readSingleWorker(this.userId);
+		if(worker.getGrade()!=null){
+			request.getRequestDispatcher(SorryPage).include(request, response);
 		}
+		else{
+
+			if(subAction.compareTo("gradeAnswers")==0){
+				int grade = this.retrieveAnswers(request);
+				if (grade>=2){
+					request.setAttribute("subAction", "loadFirst");
+					loadFirstMicrotask(request,response);
+				}
+				else{ 
+					request.getRequestDispatcher(SorryPage).include(request, response);
+				}
+			}
+		} 
 	}
 
 	/**
@@ -75,19 +84,18 @@ public class SkillTestServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
 
-		
+
 	private int retrieveAnswers(HttpServletRequest request){
 		//Initialize rubric map
 		rubricMap.put(QUESTION1,"c");
 		rubricMap.put(QUESTION2,"a");
 		rubricMap.put(QUESTION3,"d");
 		rubricMap.put(QUESTION4,"b");
-		//rubricMap.put(QUESTION5,"c");
-		
+
 		//Retrieve time taken to answer
 		String timeStamp = request.getParameter("timeStamp");
-	 	String duration = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
-		
+		String duration = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
+
 		//Retrieve answers
 		HashMap<String, String> answerMap = new HashMap<String, String>();
 		String answer1 = request.getParameter("question1");
@@ -98,8 +106,7 @@ public class SkillTestServlet extends HttpServlet {
 		answerMap.put(QUESTION3, answer3);
 		String answer4 = request.getParameter("question4");
 		answerMap.put(QUESTION4, answer4);
-		//String answer5 = request.getParameter("question5");
-		//answerMap.put(QUESTION5, answer5);
+		
 		HashMap<String, Boolean> gradeMap = this.gradeAnswers(answerMap);
 		int grade = this.countCorrectAnswers(gradeMap);
 		WorkerStorage workerStorage =  new WorkerStorage();
@@ -111,11 +118,11 @@ public class SkillTestServlet extends HttpServlet {
 
 		return grade;
 	}
-	
+
 	private HashMap<String,Boolean> gradeAnswers(HashMap<String, String> answerMap){
-		
+
 		HashMap<String, Boolean> gradeMap= new HashMap<String, Boolean>();
-		
+
 		Boolean result=false;
 		Iterator<String> keyIterator = answerMap.keySet().iterator();
 		while( keyIterator.hasNext()){
@@ -130,8 +137,8 @@ public class SkillTestServlet extends HttpServlet {
 		}
 		return gradeMap;
 	}
-	
-	
+
+
 	private int countCorrectAnswers(HashMap<String, Boolean> gradeMap){
 		int grade = 0;
 		Iterator<String> keyIterator = gradeMap.keySet().iterator();
@@ -142,15 +149,15 @@ public class SkillTestServlet extends HttpServlet {
 		}
 		return grade;
 	}
-	
-	
+
+
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = getServletContext().getRealPath("/");
-		StorageManager manager = new StorageManager(path);
+
+		StorageManager manager = new StorageManager();
 		WorkerSession  session = manager.readNewSession(this.userId);
-		
+
 		if(session==null || !session.hasCurrent())
-		 	//Means that it is the first user session. There should be at least one microtask. If not it is an Error.
+			//Means that it is the first user session. There should be at least one microtask. If not it is an Error.
 			showErrorPage(request, response,"@ SkillTestServlet - no microtask available");
 		else{
 			//Restore data for next Request
@@ -159,15 +166,13 @@ public class SkillTestServlet extends HttpServlet {
 			WorkerSessionSelector selector = new WorkerSessionSelector();
 			//load the new Microtask data into the Request
 			request = selector.generateRequest(request, session.getCurrentMicrotask());
-			request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
+			request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
 		}
 	}
-	
+
 	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("error", message);
 		request.getRequestDispatcher(ErrorPage).include(request, response);
 	}
-	
-	
-	
+
 }

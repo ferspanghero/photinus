@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 
 /**
@@ -41,12 +42,12 @@ public class SurveyServlet extends HttpServlet {
 			subjectStore.insert(request.getParameter("userId"), subject);
 			System.out.println("UserId: " + subject.getUserId());
 			//Displays the Thanks message
+			
 			request.setAttribute("key", request.getParameter("sessionId"));
 			System.out.println("key: " + request.getParameter("sessionId"));
 			request.getRequestDispatcher("/Thanks.jsp").forward(request, response);
 		} else{
 			request.setAttribute("userId", request.getParameter("userId"));
-			request.setAttribute("hitId", request.getParameter("hitId"));
 			request.setAttribute("error", "@SurveyServlet - object 'subject' is null");
 			//Displays the error page
 			request.getRequestDispatcher("/ErrorPage.jsp").forward(request, response);

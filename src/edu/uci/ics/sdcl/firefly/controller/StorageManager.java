@@ -23,7 +23,7 @@ public class StorageManager {
 	private MicrotaskStorage microtaskStorage;
 	private WorkerStorage workerStorage;
 	
-	public StorageManager(String path){
+	public StorageManager(){
 		this.sessionStorage = new WorkerSessionStorage();
 		this.microtaskStorage = new MicrotaskStorage();
 		this.workerStorage = new WorkerStorage();
@@ -69,6 +69,7 @@ public class StorageManager {
 		else
 			return null;	
 	}
+
 	
 	/**
 	 * 
@@ -84,8 +85,7 @@ public class StorageManager {
 	
 	public String generateWorkerID(Date currentDate){
 		String workerId = this.workerStorage.getNewWorkerKey();
-		String hitId = "hitId";
-		Worker worker = new Worker(workerId, hitId, currentDate);
+		Worker worker = new Worker(workerId, currentDate);
 		this.workerStorage.insert(workerId, worker);
 		return workerId;
 	}
