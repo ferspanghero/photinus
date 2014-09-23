@@ -69,7 +69,7 @@ public class MicrotaskStorage {
 	public FileDebugSession read(String fileName){
 
 		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
-		
+
 		if(debugSessionMap!=null && debugSessionMap.containsKey(fileName))
 			return debugSessionMap.get(fileName);
 		else
@@ -110,16 +110,21 @@ public class MicrotaskStorage {
 	 */
 	public boolean insertAnswer(String fileName, Integer microtaskId, Answer answer, String elapsedTime, String timeStamp){ 
 
-		FileDebugSession newfileDebugSession = this.read(fileName);
-		Microtask mtask = newfileDebugSession.getMicrotask(microtaskId);
-		mtask.addAnswer(answer);
-		mtask.addTimeStamp(timeStamp);
-		mtask.addElapsedTime(elapsedTime);
-		newfileDebugSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
-		newfileDebugSession.insertMicrotask(microtaskId, mtask);
-		//TODO change this system.out to be a log
-		System.out.println("Inserting microtask id:"+mtask.getID()+" answers: "+mtask.getNumberOfAnswers()+" : "+mtask.getAnswerList().toString());
-		return this.insert(fileName, newfileDebugSession);
+		try{
+			FileDebugSession newfileDebugSession = this.read(fileName);
+			Microtask mtask = newfileDebugSession.getMicrotask(microtaskId);
+			mtask.addAnswer(answer);
+			mtask.addTimeStamp(timeStamp);
+			mtask.addElapsedTime(elapsedTime);
+			newfileDebugSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
+			newfileDebugSession.insertMicrotask(microtaskId, mtask);
+
+			System.out.println("Inserting microtask id:"+mtask.getID()+" answers: "+mtask.getNumberOfAnswers()+" : "+mtask.getAnswerList().toString());
+			return this.insert(fileName, newfileDebugSession);
+		}
+		catch(Exception e){
+			return false;
+		}
 	}
 
 	/** Insert a new List of Microtasks. It overwrites any existing one for the same file.

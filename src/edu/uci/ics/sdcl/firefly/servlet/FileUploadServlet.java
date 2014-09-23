@@ -63,6 +63,7 @@ public class FileUploadServlet extends HttpServlet {
 				}
 				else{
 					request.setAttribute("error", "SubAction unknown");
+					request.setAttribute("executionId", "before consent");
 					request.getRequestDispatcher("/ErrorPage.jsp").include(request, response);
 				}
 		}
@@ -78,7 +79,6 @@ public class FileUploadServlet extends HttpServlet {
 		String fileName = new String();
 		String fileContent = new String();
 		String userId= new String();
-		String hitId = new String();
 		boolean gotBugReport = false;		// assuming that not all parameters that are necessary are known
 		boolean gotSpecificMethod = false;
 
@@ -117,9 +117,6 @@ public class FileUploadServlet extends HttpServlet {
 						}
 						if (item.getFieldName().equalsIgnoreCase("userId"))
 							userId = item.getString();
-
-						if (item.getFieldName().equalsIgnoreCase("hitId"))
-							hitId = item.getString();	
 					}
 				}
 

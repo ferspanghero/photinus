@@ -17,7 +17,7 @@ import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
  */
 public class ConsentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	private String SkillTestPage = "/SkillTest.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
 
@@ -34,22 +34,23 @@ public class ConsentServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String subAction = request.getParameter("subAction");
-		
+
 		if(subAction.compareTo("loadQuestions")==0){
-				Date currentDate = new Date();
-				StorageManager manager = new StorageManager();
-				String userId = manager.generateWorkerID(currentDate);
-				// now passing parameters to the next page
-				request.setAttribute("userId", userId);
-				request.setAttribute("subAction", "gradeAnswers");
-				request = this.loadQuestions(request, response);
-				request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-				request.getRequestDispatcher(SkillTestPage).include(request, response);
-			}
-			else{
-				request.setAttribute("error", "action not recognized: "+ subAction);
-				request.getRequestDispatcher(ErrorPage).include(request, response);
-			}	
+			Date currentDate = new Date();
+			StorageManager manager = new StorageManager();
+			String userId = manager.generateWorkerID(currentDate);
+			// now passing parameters to the next page
+			request.setAttribute("userId", userId);
+			request.setAttribute("subAction", "gradeAnswers");
+			request = this.loadQuestions(request, response);
+			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
+			request.getRequestDispatcher(SkillTestPage).include(request, response);
+		}
+		else{
+			request.setAttribute("error", "action not recognized: "+ subAction);
+			request.setAttribute("executionId", "before consent");
+			request.getRequestDispatcher(ErrorPage).include(request, response);
+		}	
 	}
 
 	/**
@@ -64,5 +65,5 @@ public class ConsentServlet extends HttpServlet {
 		request.setAttribute("subAction", "gradeAnswers");
 		return request;
 	}
-	
+
 }

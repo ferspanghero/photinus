@@ -172,6 +172,7 @@ public class SkillTestServlet extends HttpServlet {
 
 	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("error", message);
+		request.setAttribute("executionId", this.userId);
 		request.getRequestDispatcher(ErrorPage).include(request, response);
 	}
 

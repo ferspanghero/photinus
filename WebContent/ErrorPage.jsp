@@ -28,13 +28,12 @@
 <div id='container'>
 	<br>
 	<div id = 'content'>
-		<p style="font-size:30px"><b>Oh no! It seems we have a bug of our own!</b></p><br>
+		<p style="font-size:30px"><b>Oh no! Something unexpected happened!</b></p><br>
 		<p style="font-size:20px">Please send the following report to: adrianoc@uci.edu</p><br><br>
 		
 		<p style="font-size:20px"><b>Bug report</b></p>
 		<table>
-			<tr><td><b>User ID:</b></td>			<td><p id="userIdField">${requestScope["userId"]}</p></td></tr>
-			<tr><td><b>HIT ID:</b></td>				<td><p id="hitIdField">${requestScope["hitId"]}</p></td></tr>
+			<tr><td><b>Execution ID:</b></td>			<td><p id="executionId">${requestScope["executionId"]}</p></td></tr>
 			<tr><td><b>Date:</b></td>				<td><p id="dateField"/></td></tr>
 			<tr><td><b>Error description: </b></td> <td><p id="errorField">${requestScope["error"]}</p></td></tr>
 		</table>
@@ -44,10 +43,8 @@
 </div>
 
 <script>
-	if (!document.getElementById("userIdField").innerHTML)
-		document.getElementById("userIdField").innerHTML = 'none specified';
-	if (!document.getElementById("hitIdField").innerHTML)
-		document.getElementById("hitIdField").innerHTML = 'none specified';	
+	if (!document.getElementById("executionId").innerHTML)
+		document.getElementById("executionId").innerHTML = 'none specified';
 	document.getElementById("dateField").innerHTML = Date();
 	if (!document.getElementById("errorField").innerHTML)
 		document.getElementById("errorField").innerHTML = 'none specified';

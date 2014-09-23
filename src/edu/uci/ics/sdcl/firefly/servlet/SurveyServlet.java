@@ -38,15 +38,17 @@ public class SurveyServlet extends HttpServlet {
 			subject.addAnswer(question[3], request.getParameter("experience"));
 			subject.addAnswer(question[4], request.getParameter("difficulty"));
 			subject.addAnswer(question[5], request.getParameter("feedback"));
+			String sessionId =  request.getParameter("sessionId");
+			subject.setSessionId(sessionId);
 			System.out.println("Survey: " + subject.getSurveyAnswers());
 			subjectStore.insert(request.getParameter("userId"), subject);
 			System.out.println("UserId: " + subject.getUserId());
 			//Displays the Thanks message		
-			request.setAttribute("key", request.getParameter("sessionId"));
-			System.out.println("key: " + request.getParameter("sessionId"));
+			request.setAttribute("key", sessionId);
+			System.out.println("key: " + sessionId);
 			request.getRequestDispatcher("/Thanks.jsp").forward(request, response);
 		} else{
-			request.setAttribute("userId", request.getParameter("userId"));
+			request.setAttribute("executionId", request.getParameter("userId"));
 			request.setAttribute("error", "@SurveyServlet - object 'subject' is null");
 			//Displays the error page
 			request.getRequestDispatcher("/ErrorPage.jsp").forward(request, response);

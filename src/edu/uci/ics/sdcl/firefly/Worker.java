@@ -13,6 +13,7 @@ public class Worker implements Serializable{
 	private HashMap<String, Boolean> gradeMap;
 	private Integer grade;
 	private String skillTestDuration;
+	private String sessionId; //Stores the single working session session allowed per worker
 	
 	
 	public Worker(String userId, Date consentDate) {
@@ -93,4 +94,13 @@ public class Worker implements Serializable{
 		return surveyAnswers;
 	}
 
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;		
+	}
+
+	public String getSessionId() {
+		return this.sessionId;
+	}
+
+	
 }
