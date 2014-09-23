@@ -38,6 +38,7 @@
 			var genderOption = -1;
 			var i = 0;
 
+
 			for (i = 0; i < gender.length; i++) {
 				if (gender[i].checked) {
 					genderOption = i;
@@ -54,7 +55,11 @@
 			if(!ageField.value){
 				alert("Please enter your age.");
 				return -1;
-			}
+			}else
+				if (isNaN(ageField.value)){
+					alert("Age must be number.");
+					return -1;
+				}
 			
 			var countryField = document.getElementById("country");
 			countryField.value = countryField.value.trim();
@@ -67,6 +72,10 @@
 			experienceField.value = experienceField.value.trim();
 			if(!experienceField.value){
 				alert("Please enter your years of programming experience.");
+				return -1;
+			}else
+			if (isNaN(experienceField.value)){
+				alert("Years of experience must be a number.");
 				return -1;
 			}
 		 

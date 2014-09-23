@@ -9,11 +9,13 @@ public class SimpleSampleCode {
 
 	Integer SeedLimit= new Integer(10);
 	Code code=null;
-	
+
 	public SimpleSampleCode(int i){
 		this.SeedLimit = new Integer(i);
-		this.coder(10);
+		//this.coder(10);
 	}
+	
+	
 	
 	public Integer coder(int i){
         Integer SeedLimit= new Integer(i);
