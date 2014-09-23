@@ -41,8 +41,7 @@ public class SurveyServlet extends HttpServlet {
 			System.out.println("Survey: " + subject.getSurveyAnswers());
 			subjectStore.insert(request.getParameter("userId"), subject);
 			System.out.println("UserId: " + subject.getUserId());
-			//Displays the Thanks message
-			
+			//Displays the Thanks message		
 			request.setAttribute("key", request.getParameter("sessionId"));
 			System.out.println("key: " + request.getParameter("sessionId"));
 			request.getRequestDispatcher("/Thanks.jsp").forward(request, response);

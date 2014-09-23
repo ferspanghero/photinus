@@ -36,7 +36,7 @@ public class SessionsReportGenerator {
 		String path = manager.reportPath;
 		this.fileName = path + this.fileName;
 		this.questionsInSheet = new HashMap<Integer, Integer>();
-		this.columnNumber = 3;
+		this.columnNumber = 2;
 		this.key = 0;	// for the 'data' map
 		data = new TreeMap<Integer, Object[]>();
 	}
@@ -79,7 +79,6 @@ public class SessionsReportGenerator {
 		/* creating first header line */								// +2 for the 2 IDs before questions
 		this.lineContent[0] = "User ID";
 		this.lineContent[1] = "Session ID";
-		this.lineContent[2] = "Orig. ID";
 		
 		Set<Map.Entry<Integer, Integer>> setQIS = this.questionsInSheet.entrySet();	// QIS same as question in sheet
 		Iterator<Entry<Integer, Integer>> iterateQIS = setQIS.iterator();
@@ -103,7 +102,6 @@ public class SessionsReportGenerator {
 		Arrays.fill(this.lineContent, (Integer)0);	// populating the array with 0's
 		this.lineContent[0] = "Unanswered";
 		this.lineContent[1] = "-";
-		this.lineContent[2] = "-";
 		for (WorkerSession workerSession : newSessionsAL) {
 			// counting unanswered questions 
 			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
@@ -142,10 +140,10 @@ public class SessionsReportGenerator {
 				if(obj instanceof String)
 				{
 					String text = (String)obj;
-					if (text.length() > 30)	// wraping text
+					if (text.length() > 30)	// wrapping text
 					{
 						CellStyle style = workbook.createCellStyle(); //Create new style
-						style.setWrapText(true); 	//Set wordwrap
+						style.setWrapText(true); 	//Set word wrap
 						cell.setCellStyle(style); 	//Apply style to cell
 					}
 					cell.setCellValue(text);
@@ -177,10 +175,9 @@ public class SessionsReportGenerator {
 	
 	private boolean populateDataLines(ArrayList<WorkerSession> workerSessions){
 		for (WorkerSession workerSession : workerSessions) {
-			this.lineContent = new Object[this.questionsInSheet.size()+3]; 
+			this.lineContent = new Object[this.questionsInSheet.size()+2]; 
 			this.lineContent[0] = workerSession.getUserId();			// worker ID
 			this.lineContent[1] = workerSession.getId();				// session ID
-			this.lineContent[2] = "-";		// third column
 			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
 			for (Microtask microtask : microtasks) {
 				Integer currentColumn = this.questionsInSheet.get(microtask.getID());
