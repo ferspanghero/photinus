@@ -135,7 +135,7 @@
 		<input type="hidden" id="methodStartingLine" value=${requestScope["methodStartingLine"]}>
 		<input type="hidden" id="positionsCaller" value=${requestScope["positionsCaller"]}>
 		<input type="hidden" id="positionsCallee" value=${requestScope["positionsCallee"]}>
-		<input type="hidden" id="calleesOnMain" value=${requestScope["calleesOnMain"]}>
+		<input type="hidden" id="calleesInMain" value=${requestScope["calleesInMain"]}>
 		<input type="hidden" id="sourceLOCS" value=${requestScope["sourceLOCS"]}>
 		<input type="hidden" id="callerLOCS" value=${requestScope["callerLOCS"]}>
 		<input type="hidden" id="calleeLOCS" value=${requestScope["calleeLOCS"]}>
@@ -268,7 +268,7 @@
 			// parameters for the others AceEditor
 	        var highlightCaller = document.getElementById("positionsCaller").value;
 	        var highlightCallee = document.getElementById("positionsCallee").value;
-	        var calleesOnMain = document.getElementById("calleesOnMain").value;
+	        var calleesInMain = document.getElementById("calleesInMain").value;
 	        
 			setTimeout(function() {
 				// highlight regarding main method
@@ -276,18 +276,18 @@
 						endLine	- codeSnippetStartingLine, endColumn), "ace_active-line", "line");
 				
 				mainEditor.gotoLine(startLine - codeSnippetStartingLine + 1);
-				if (calleesOnMain){		// highlighting callees
-					var numbersCalleesOnMain = calleesOnMain.split("#");
+				if (calleesInMain){		// highlighting callees
+					var numbersCalleesInMain = calleesInMain.split("#");
 					var lnStart = 0.0;
 					var clStart = 0.0;
 					var lnEnd = 0.0;
 					var clEnd = 0.0;
 					//document.write("Callee length: " + numbersCallee.length + "<br>");
-					for (i=0; i < numbersCalleesOnMain.length; i+=4){
-						lnStart = numbersCalleesOnMain[i]-1;
-						clStart = numbersCalleesOnMain[i+1];
-						lnEnd = numbersCalleesOnMain[i+2]-1;
-						clEnd = numbersCalleesOnMain[i+3];
+					for (i=0; i < numbersCalleesInMain.length; i+=4){
+						lnStart = numbersCalleesInMain[i]-1;
+						clStart = numbersCalleesInMain[i+1];
+						lnEnd = numbersCalleesInMain[i+2]-1;
+						clEnd = numbersCalleesInMain[i+3];
 						mainEditor.session.addMarker(new Range(lnStart-codeSnippetStartingLine+1, 
 								clStart, lnEnd - codeSnippetStartingLine+1, clEnd), "callees", "line");
 						//alert("main: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");

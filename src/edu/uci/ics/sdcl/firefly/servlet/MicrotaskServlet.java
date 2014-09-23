@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.MicrotaskContextFactory;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
-import edu.uci.ics.sdcl.firefly.controller.WorkerSessionSelector;
 import edu.uci.ics.sdcl.firefly.util.PositionFinder;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
@@ -35,14 +35,14 @@ public class MicrotaskServlet extends HttpServlet {
 
 	private String userId;
 
-	private WorkerSessionSelector workerSessionSelector;
+	private MicrotaskContextFactory workerSessionSelector;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public MicrotaskServlet() {
 		super();
-		this.workerSessionSelector = new WorkerSessionSelector();
+		this.workerSessionSelector = new MicrotaskContextFactory();
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("sessionId",session.getId());
 
 			//load the new Microtask data into the Request
-			request = this.workerSessionSelector.generateRequest(request, session.getCurrentMicrotask());
+			request = MicrotaskServlet.generateRequest(request, session.getCurrentMicrotask());
 			request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
 		}
 	}
@@ -126,7 +126,7 @@ public class MicrotaskServlet extends HttpServlet {
 				request.getRequestDispatcher(SurveyPage).include(request, response);
 			else{
 				//Displays a new microtask
-				request = this.workerSessionSelector.generateRequest(request, session.getCurrentMicrotask());
+				request = MicrotaskServlet.generateRequest(request, session.getCurrentMicrotask());
 				request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
 			}
 		}
@@ -140,6 +140,50 @@ public class MicrotaskServlet extends HttpServlet {
 		request.getRequestDispatcher(ErrorPage).include(request, response);
 	}
 
+	
+	
+	/** Populate needed attributes from the microtask in the HTTP request 
+	 * 
+	 * @param request
+	 * @param task
+	 * @return the new request with data to be displayed on the web page
+	 */
+	public static HttpServletRequest generateRequest(HttpServletRequest request, Microtask task){
+
+		//System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
+		//	System.out.println("Retrieved microtask bug report:" + task.getFailureDescription() +  " from fileName: "+task.getCodeSnippet().getFileName());
+
+		request.setAttribute("microtaskId", task.getID());  
+		request.setAttribute("fileName", task.getCodeSnippet().getFileName());
+
+		request.setAttribute("bugReport", task.getFailureDescription());
+		request.setAttribute("question", task.getQuestion());
+		
+		//set source code of codeSnippet - First ACE Editor
+		request.setAttribute("source", task.getCodeSnippet().getCodeSnippetFromFileContent()); 	
+		request.setAttribute("sourceLOCS", task.getCodeSnippet().getLOCS());
+		request.setAttribute("calleesInMain", task.getSnippetHightlights());
+
+		//sets caller codeSnippets - Second ACE Editor
+		request.setAttribute("callerLOCS", task.getCallerLOCS());
+		request.setAttribute("caller", task.getCallerFileContent());
+		request.setAttribute("positionsCaller", task.getCallerHightlights());
+
+		//sets callee codeSnippets - Third ACE Editor
+		request.setAttribute("callee", task.getCalleeFileContent());
+		request.setAttribute("calleeLOCS", task.getCalleeLOCS());
+		request.setAttribute("positionsCallee", task.getCalleeHightlights());
+		
+		request.setAttribute("explanation",""); //clean up the explanation field.
+		request.setAttribute("startLine", task.getStartingLine());
+		request.setAttribute("startColumn", task.getStartingColumn());
+		request.setAttribute("endLine", task.getEndingLine());
+		request.setAttribute("endColumn", task.getEndingColumn());
+
+		request.setAttribute("methodStartingLine", task.getCodeSnippet().getElementStartingLine());
+
+		return request;
+	}
 
 
 }

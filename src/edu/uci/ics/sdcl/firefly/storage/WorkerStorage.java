@@ -50,6 +50,7 @@ public class WorkerStorage {
 		HashMap<String, Worker> workerMap = this.retrieveIndex();
 
 		if(workerMap!=null){
+			//writeLog (worker.toString());
 			workerMap.put(userId, worker);
 			return this.updateIndex(workerMap);	
 		}		

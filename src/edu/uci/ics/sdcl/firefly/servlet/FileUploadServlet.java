@@ -15,6 +15,7 @@ import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.MicrotaskContextFactory;
 import edu.uci.ics.sdcl.firefly.QuestionFactory;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
@@ -175,11 +176,12 @@ public class FileUploadServlet extends HttpServlet {
 			//calls QuestionFactory
 			
 			QuestionFactory questionFactory = new QuestionFactory ();
-			String path = getServletContext().getRealPath("/");
+			MicrotaskContextFactory contextFactory = new MicrotaskContextFactory();
 			MicrotaskStorage storage = new MicrotaskStorage();
 			
 			HashMap<Integer, Microtask> microtaskMap = questionFactory.generateMicrotasks(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
-
+			microtaskMap = contextFactory.generateMicrotaskContext(microtaskMap);
+			
 			if (microtaskMap!= null && microtaskMap.size() > 0){
 				FileDebugSession fileDebuggingSession = new FileDebugSession(fileName, fileContent, microtaskMap);
 				int generatedMicrotasks = microtaskMap.size();
@@ -234,10 +236,12 @@ public class FileUploadServlet extends HttpServlet {
 		return results;
 	}
 	
+	/* 
+	 * Used for testing purposes
+	 */
 	private String generateSingleWorkerSession(){
 
 		String results = new String();
-		PropertyManager manager = new PropertyManager();
 		
 		//Generate the stack of New and Duplicated WorkerSession
 		WorkerSessionFactory sessionFactory = new WorkerSessionFactory();

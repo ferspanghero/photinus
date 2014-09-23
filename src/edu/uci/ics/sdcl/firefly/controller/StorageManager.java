@@ -18,17 +18,17 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
  *
  */
 public class StorageManager {
-	
+
 	private WorkerSessionStorage sessionStorage;
 	private MicrotaskStorage microtaskStorage;
 	private WorkerStorage workerStorage;
-	
+
 	public StorageManager(){
 		this.sessionStorage = new WorkerSessionStorage();
 		this.microtaskStorage = new MicrotaskStorage();
 		this.workerStorage = new WorkerStorage();
 	}
-	
+
 	/**
 	 * Keeps two storages consistent - microtask storage and worker session storage.
 	 * 
@@ -43,17 +43,14 @@ public class StorageManager {
 	public boolean updateMicrotaskAnswer(String fileName, String sessionId, Integer microtaskId, Answer answer, String elapsedTime, String timeStamp){
 		//set answer to the microtask in the WorkerSession
 		boolean success1 = this.sessionStorage.setSessionMicrotaskAnswer(sessionId,microtaskId,answer,elapsedTime, timeStamp);
-		
+
 		//add another answer to the microtask 
 		boolean success2 = this.microtaskStorage.insertAnswer(fileName, microtaskId, answer, elapsedTime, timeStamp);
-		 
-		//log the operations in a text file
-		//writeLog (Session, Method Name, Question, Answer, Time Duration);
-		
-		 return success1 && success2;
+
+		return success1 && success2;
 	}
-	
-	
+
+
 	/** 
 	 * @param userId is used to associate the WorkerSession with a unique anonymous worker
 	 * @param hitIT is used to associate the WorkerSession with the Mechanical Turk HIT
@@ -70,7 +67,7 @@ public class StorageManager {
 			return null;	
 	}
 
-	
+
 	/**
 	 * 
 	 * @param sessionId 
@@ -82,25 +79,25 @@ public class StorageManager {
 		return session;
 	}
 
-	
+
 	public String generateWorkerID(Date currentDate){
 		String workerId = this.workerStorage.getNewWorkerKey();
 		Worker worker = new Worker(workerId, currentDate);
 		this.workerStorage.insert(workerId, worker);
 		return workerId;
 	}
-	
+
 	/** Clean repositories by substituting current data structures
 	 * with empty ones.
 	 */
 	public void cleanUpRepositories(){
 		this.workerStorage.cleanUp();
-		
+
 		this.sessionStorage.cleanUp();
-		
+
 		this.microtaskStorage.cleanUp();
 	}
-	
+
 	private void writeLog(String operation, String data){
 		//TODO
 	}

@@ -63,7 +63,6 @@ public class QuestionFactory {
 	 * @param bugReport 
 	 * @return the map of microtasks
 	 */
-	
 	public HashMap<Integer, Microtask> generateMicrotasks(ArrayList<CodeSnippet> methodsArg, String bugReport, int numberOfExistingMicrotasks)
 	{
 		Integer microtaskId = numberOfExistingMicrotasks;

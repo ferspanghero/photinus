@@ -11,7 +11,11 @@ public class Microtask implements Serializable
 	private CodeSnippet method;
 	private CodeElement codeElement;
 	private String codeElementType;
+	private String snippetHightlights;
+	private String callerHightlights;
+	private String calleeHightlights;
 	
+
 
 
 	private ArrayList<Answer> answerList;
@@ -23,6 +27,10 @@ public class Microtask implements Serializable
 	private Integer ID;
 	private ArrayList<String> elapsedTimeList;
 	private ArrayList<String> timeStampList;
+	private String calleeFileContent;
+	private Integer calleeLOCS;
+	private String callerFileContent;
+	private Integer callerLOCS;
 
 
 	/**
@@ -154,6 +162,64 @@ public class Microtask implements Serializable
 	public ArrayList<String> getTimeStampList() {
 		return timeStampList;
 	}
+	
 
+	public String getSnippetHightlights() {
+		return snippetHightlights;
+	}
+
+
+	public void setSnippetHightlights(String snippetHightlights) {
+		this.snippetHightlights = snippetHightlights;
+	}
+
+
+	public String getCallerHightlights() {
+		return callerHightlights;
+	}
+
+
+	public void setCallerHightlights(String callerHightlights) {
+		this.callerHightlights = callerHightlights;
+	}
+
+
+	public String getCalleeHightlights() {
+		return calleeHightlights;
+	}
+
+
+	public void setCalleeHightlights(String calleeHightlights) {
+		this.calleeHightlights = calleeHightlights;
+	}
+
+
+	public void setCallerFileContent(String fileContent){
+		this.callerFileContent = fileContent;
+		String contentLines[] = callerFileContent.toString().split("\r\n|\r|\n");
+		this.callerLOCS = new Integer(contentLines.length);		 
+	}
+
+	public String getCallerFileContent(){
+		return this.callerFileContent;
+	}
+	
+	public Integer getCallerLOCS(){
+		return this.callerLOCS;
+	}
+	
+	public void setCalleeFileContent(String fileContent){
+		this.calleeFileContent = fileContent;
+		String contentLines[] = calleeFileContent.toString().split("\r\n|\r|\n");
+		this.calleeLOCS = new Integer(contentLines.length);		 
+	}
+
+	public String getCalleeFileContent(){
+		return this.calleeFileContent;
+	}
+	
+	public Integer getCalleeLOCS(){
+		return this.calleeLOCS;
+	}
 	
 }

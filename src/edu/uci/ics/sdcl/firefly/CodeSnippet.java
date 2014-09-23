@@ -34,6 +34,7 @@ public class CodeSnippet implements Serializable
 	
 	protected String codeSnippetFromFileContent;	// the string that has the whole body of the method
 	private HashMap<String, CodeSnippet> calleesMap;
+	private Integer LOCS;
 
 	private final static String newline = System.getProperty("line.separator");	// Just to jump line @toString
 	
@@ -231,6 +232,8 @@ public class CodeSnippet implements Serializable
 
 	public void setCodeSnippetFromFileContent(String codeSnippetFromFileContent) {
 		this.codeSnippetFromFileContent = codeSnippetFromFileContent;
+		String sourceLines[] = codeSnippetFromFileContent.split("\r\n|\r|\n");
+		this.LOCS = sourceLines.length;
 	}
 	
 	public String getFileName() {
@@ -276,6 +279,10 @@ public class CodeSnippet implements Serializable
 	public static boolean listContainsMethod(ArrayList<CodeSnippet> calleeList,
 			CodeSnippet snippet) {
 		return CodeSnippet.isMethodCallee(calleeList, snippet.getMethodSignature().getName(), snippet.getMethodSignature().getParameterList().size());
+	}
+
+	public Integer getLOCS() {
+		return this.LOCS;
 	}
 		
 }

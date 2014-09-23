@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.uci.ics.sdcl.firefly.MicrotaskContextFactory;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
-import edu.uci.ics.sdcl.firefly.controller.WorkerSessionSelector;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
@@ -163,9 +163,9 @@ public class SkillTestServlet extends HttpServlet {
 			//Restore data for next Request
 			request.setAttribute("sessionId",session.getId());
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-			WorkerSessionSelector selector = new WorkerSessionSelector();
+			
 			//load the new Microtask data into the Request
-			request = selector.generateRequest(request, session.getCurrentMicrotask());
+			request = MicrotaskServlet.generateRequest(request, session.getCurrentMicrotask());
 			request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
 		}
 	}

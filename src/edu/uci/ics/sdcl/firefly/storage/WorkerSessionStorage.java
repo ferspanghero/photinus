@@ -321,8 +321,11 @@ public class WorkerSessionStorage {
 		if(session==null)
 			return false;
 		else{
-			if(session.insertMicrotaskAnswer(microtaskId,answer,elapsedTime,timeStamp))
+			if(session.insertMicrotaskAnswer(microtaskId,answer,elapsedTime,timeStamp)){
+				//log the operations in a text file
+				//writeLog (SessionId, File Name, Method Name, Question, Answer, Time Duration);
 				return(this.updateActiveWorkerSession(session));
+			}
 			else
 				return false;
 		}
