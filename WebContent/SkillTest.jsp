@@ -105,7 +105,7 @@
 		
 <div id="container"><br>
 	<div id="content">
-		<b>Thank you for interest to participate the study. We need to evaluate your 
+		<b>Thank you for interest in participating in the study. We need to evaluate your 
 		programming skills before we allow you to continue. Please answer the following questions. </b>
 	
 	
@@ -114,7 +114,7 @@
 			<input type="hidden" name="timeStamp" value=${requestScope["timeStamp"]}> 
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
 			
-			<br> The source code below is used for all the questions.<br>
+			<br> The source code below is used for all the questions below.<br>
 			<div id="editor1"><xmp>${requestScope["editor1"]}</xmp></div>
 
 				<script>
