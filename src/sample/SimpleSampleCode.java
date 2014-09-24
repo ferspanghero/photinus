@@ -15,11 +15,17 @@ public class SimpleSampleCode {
 		//this.coder(10);
 	}
 	
+	public Integer updateSeed(Integer seedValue) {
+		if (this.SeedLimit == null) this.SeedLimit = new Integer(seedValue); 
+		else this.SeedLimit = this.SeedLimit + seedValue;
+		return SeedLimit;
+	}
 	
 	
 	public Integer coder(int i){
         Integer SeedLimit= new Integer(i);
         SimpleSampleCode sample= new SimpleSampleCode(10);
+        updateSeed(SeedLimit);
 		if(this.equals(SeedLimit)){
 			SeedLimit.doubleValue();
 			SimpleSampleCode.factorial(SeedLimit, SeedLimit);

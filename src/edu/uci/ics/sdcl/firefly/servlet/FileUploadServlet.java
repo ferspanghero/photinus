@@ -49,8 +49,7 @@ public class FileUploadServlet extends HttpServlet {
 
 			if(subAction.compareTo("generateWorkerSessions")==0){
 
-//				String return_message = this.generateWorkerSessions();
-				String return_message = this.generateSingleWorkerSession(); //For experiment setting.
+				String return_message = this.generateWorkerSessions();
 				String microtasks_message = request.getParameter("microtasks_message");
 				request.setAttribute("microtasks_message", microtasks_message);
 				request.setAttribute("workerSessions_message", return_message);
