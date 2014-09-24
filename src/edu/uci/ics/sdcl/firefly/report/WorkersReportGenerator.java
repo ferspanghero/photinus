@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,8 +16,12 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import edu.uci.ics.sdcl.firefly.Answer;
+import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.servlet.SurveyServlet;
+import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class WorkersReportGenerator {
@@ -104,7 +109,7 @@ private String fileName = "WorkersReport.xlsx";
 				} else
 					lineContent[j++] = "-";
 			}
-
+			
 			// putting customized line
 			data.put(new Integer(key++), lineContent); 
 		}
@@ -156,4 +161,28 @@ private String fileName = "WorkersReport.xlsx";
 			e.printStackTrace();
 		}
 	}
+	
+	/*
+	 * private class WorkerTimeData{
+		String elapsedTime;
+		String timeStamp;
+	}
+	
+	private TimeData obtainTimeData(Worker worker){
+		String sessionId= worker.getSessionId();
+		WorkerSessionStorage workerSessionStorage = new WorkerSessionStorage();
+		WorkerSession session = workerSessionStorage.readActiveWorkerSessionByID(sessionId);
+		ArrayList<Microtask> microtaskList = session.getMicrotaskList();
+		Strin
+		for(Microtask mtask: microtaskList){
+			mtask.
+			ArrayList<Answer> answerList = mtask.getAnswerList();
+			for(Answer answer: answerList){
+				answer.g
+			}
+
+		}
+	}
+	*/
+	
 }

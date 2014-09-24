@@ -92,26 +92,26 @@ public class MicrotasksReportGenerator
 			cell.setCellValue("ID");
 			cell = row.createCell(cellnum2++);
 			cell.setCellValue("Questions");
-			//Create 10 cells for answers
-			for(int j=1;j<11;j++){
+			//Create N cells for answers
+			for(int j=1;j<=answersPerMicrotask;j++){
 				cell = row.createCell(cellnum2++);
 				cell.setCellValue("Answer-"+j);
 			}
 			
-			//Create 10 cells for explanations
-			for(int j=1;j<11;j++){
+			//Create N cells for explanations
+			for(int j=1;j<=answersPerMicrotask;j++){
 				cell = row.createCell(cellnum2++);
 				cell.setCellValue("Explanation-"+j);
 			}
 			
-			//Create 10 cells for elapsed time
-			for(int j=1;j<11;j++){
+			//Create N cells for elapsed time
+			for(int j=1;j<=answersPerMicrotask;j++){
 				cell = row.createCell(cellnum2++);
 				cell.setCellValue("Duration-"+j);
 			}
 			
-			//Create 10 cells for time stamp
-			for(int j=1;j<11;j++){
+			//Create N cells for time stamp
+			for(int j=1;j<=answersPerMicrotask;j++){
 				cell = row.createCell(cellnum2++);
 				cell.setCellValue("Time-"+j);
 			}

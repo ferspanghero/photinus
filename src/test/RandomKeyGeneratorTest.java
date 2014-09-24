@@ -6,8 +6,6 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import com.sun.javafx.collections.MappingChange.Map;
-
 import edu.uci.ics.sdcl.firefly.util.RandomKeyGenerator;
 
 public class RandomKeyGeneratorTest {

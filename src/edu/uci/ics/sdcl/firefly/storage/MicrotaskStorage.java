@@ -140,9 +140,9 @@ public class MicrotaskStorage {
 
 		if(debugSessionMap!=null){
 
-			if(debugSessionMap.containsKey(fileName))
+			//if(debugSessionMap.containsKey(fileName))
 				//Has to merge the new one with the existing
-				newfileDebugSession.append(debugSessionMap.get(fileName));	
+			//	newfileDebugSession.append(debugSessionMap.get(fileName));	
 
 			debugSessionMap.put(fileName, newfileDebugSession);
 			return this.updateIndex(debugSessionMap);	
