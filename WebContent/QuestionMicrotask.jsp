@@ -27,7 +27,7 @@
 
 
 #failurePrompt {
-	max-width: 700px;
+	max-width: 800px;
 	background-color: #D1EEEE;
 	text-align: justify;
 	margin: 0 auto;
@@ -41,7 +41,7 @@
 }
 
 #questionPrompt {
-	max-width: 700px;
+	max-width: 800px;
 	background-color: #B4CDCD;
 	margin: 0 auto;
 	text-align: justify;
@@ -49,7 +49,7 @@
 }
 
 #questionCode {
-	max-width: 700px;
+	max-width: 800px;
 	background-color: #D1EEEE;
 	margin: 0 auto;
 	text-align: justify;
@@ -58,11 +58,11 @@
 #buttons { 
     background-color: #B4CDCD;
     margin: 0 auto;
-    max-width: 700px;
+    max-width: 800px;
 }
  
 #thumbs {
-	width: 700px;
+	width: 800px;
 	background-color: #B4CDCD;
 	text-align: justify;
 	text-justify: distribute-all-lines;
@@ -148,9 +148,7 @@
 
 	<div id="failurePrompt">
 		 	<div id="internalText">
-			Thanks for using <b>FireFly!</b> and for helping us debug software from all over the world. 
-   			The bug we specifically could use your help with today is the following: <br><br>
-      	<b>${requestScope["bugReport"]}</b><br>
+			Thanks for using <b>FireFly!</b> and help to debug software from all over the world. 
       	<br>
    		</div>
 	</div>
@@ -159,6 +157,9 @@
 	<div id="questionPrompt">
 		<div id="internalText">
 		<br>
+		The bug we specifically could use your help with today is the following: <br>
+      	<b>${requestScope["bugReport"]}</b><br>
+      	<br>
 		${requestScope["question"]}<br>
 		</div>
 	</div>
@@ -208,7 +209,7 @@
 	
 	<div id="questionCode">
 		<div id="internalText">
-		<br> 
+ 
 		<b>The source code:</b> 
 		<div id="mainEditor"><xmp>${requestScope["source"]}</xmp></div>
 		
@@ -234,7 +235,7 @@
 					if(linespan>35)
 						return '450px';
 					else{
-						var pixels = 115+(linespan-10)*90/5
+						var pixels = 150+(linespan-10)*90/5
 						return pixels+'px';
 					}
 			}
@@ -246,7 +247,7 @@
 			divMainEditor.style.position='relative';
 			var sourceLinespan = document.getElementById("sourceLOCS").value; 
 			divMainEditor.style.height= computeHeight(sourceLinespan);
-			divMainEditor.style.width='680px';
+			divMainEditor.style.width='760px';
 			
 			var mainEditor = ace.edit('mainEditor');
 			mainEditor.setReadOnly(true);
@@ -304,7 +305,7 @@
 					divCaller.style.position='relative';
 					var sourceLinespan = document.getElementById("callerLOCS").value; 
 					divCaller.style.height= computeHeight(sourceLinespan);
-					divCaller.style.width='680px';
+					divCaller.style.width='760px';
 					 
 					/* Second and caller ACE Editor */
 					var editorCaller = ace.edit('editorCaller');
@@ -338,7 +339,7 @@
 					divCallee.style.position='relative';
 					var sourceLinespan = document.getElementById("calleeLOCS").value; 
 					divCallee.style.height= computeHeight(sourceLinespan);
-					divCallee.style.width='680px';
+					divCallee.style.width='760px';
 					
 					/* Third and callee ACE Editor */
 					var editorCallee = ace.edit('editorCallee');
