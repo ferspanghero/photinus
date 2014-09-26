@@ -79,7 +79,7 @@ public class WorkerSessionStorage {
 	public void cleanUp(){
 
 		try{
-			File file = new File(this.persistentFileName);
+			File file = new File(persistentFileName);
 			// No files has been created yet. 
 			HashMap<String,Object> storage= initializeEmptyStorage();
 

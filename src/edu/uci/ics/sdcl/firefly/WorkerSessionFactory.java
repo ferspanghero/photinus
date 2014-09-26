@@ -47,9 +47,7 @@ public class WorkerSessionFactory {
 		this.sessionStorage = new WorkerSessionStorage();
 		this.workerSessionMap = new HashMap<Integer, WorkerSession>();
 		this.fileMethodMap = this.buildMethodMap();
-		int currentNumber = this.sessionStorage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW) + 
-				this.sessionStorage.getNumberOfNewWorkerSessions(WorkerSessionStorage.NEW_COPIES);
-		this.keyGenerator = new RandomKeyGenerator(currentNumber);
+		this.keyGenerator = new RandomKeyGenerator();
 	}
 
 	/** 

@@ -4,16 +4,10 @@ import java.util.Random;
 
 public class RandomKeyGenerator {
 
-	private Integer init;
+	private Integer init=0;
 
-
-	public RandomKeyGenerator(Integer init){
-		this.init = init;
-	}
-	
-	
 	public static void main(String [] args){
-		RandomKeyGenerator gen =  new RandomKeyGenerator(0);
+		RandomKeyGenerator gen =  new RandomKeyGenerator();
 		System.out.println("randomSequence = "+ gen.generate());
 	}
 	
