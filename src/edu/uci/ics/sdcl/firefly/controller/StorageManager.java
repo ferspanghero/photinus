@@ -40,12 +40,13 @@ public class StorageManager {
 	 * 
 	 * @return true if all three operations succeeded, false if any of them failed.
 	 */
-	public boolean updateMicrotaskAnswer(String fileName, String sessionId, Integer microtaskId, Answer answer, String elapsedTime, String timeStamp){
+	public boolean updateMicrotaskAnswer(String fileName, String sessionId, Integer microtaskId, Answer answer){
+
 		//set answer to the microtask in the WorkerSession
-		boolean success1 = this.sessionStorage.setSessionMicrotaskAnswer(sessionId,microtaskId,answer,elapsedTime, timeStamp);
+		boolean success1 = this.sessionStorage.setSessionMicrotaskAnswer(sessionId,microtaskId,answer);
 
 		//add another answer to the microtask 
-		boolean success2 = this.microtaskStorage.insertAnswer(fileName, microtaskId, answer, elapsedTime, timeStamp);
+		boolean success2 = this.microtaskStorage.insertAnswer(fileName, microtaskId, answer);
 
 		return success1 && success2;
 	}

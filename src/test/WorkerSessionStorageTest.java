@@ -330,7 +330,7 @@ public class WorkerSessionStorageTest {
 
 		Microtask microtask = session.getCurrentMicrotask();
 		while(microtask!=null){
-			session.insertMicrotaskAnswer(microtask.getID(), new Answer(null, null),"",""); //For the test it does not matter that the answer has null content.
+			session.insertMicrotaskAnswer(microtask.getID(), new Answer(null, null,"workerID", "elapsedTime", "timeStamp")); //For the test it does not matter that the answer has null content.
 			microtask = session.getCurrentMicrotask();
 		}
 		return session;

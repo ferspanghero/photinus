@@ -14,9 +14,6 @@ public class Microtask implements Serializable
 	private String snippetHightlights;
 	private String callerHightlights;
 	private String calleeHightlights;
-	
-
-
 
 	private ArrayList<Answer> answerList;
 
@@ -25,8 +22,6 @@ public class Microtask implements Serializable
 	private Integer endingLine;
 	private Integer endingColumn;
 	private Integer ID;
-	private ArrayList<String> elapsedTimeList;
-	private ArrayList<String> timeStampList;
 	private String calleeFileContent;
 	private Integer calleeLOCS;
 	private String callerFileContent;
@@ -60,8 +55,6 @@ public class Microtask implements Serializable
 		this.endingLine = endingLineNumber;
 		this.endingColumn = endingColumnNumber;
 		this.answerList = new ArrayList<Answer>();
-		this.elapsedTimeList = new ArrayList<String>();
-		this.timeStampList = new ArrayList<String>();
 		this.ID = ID;
 		this.failureDescription = failureDescription;
 	}
@@ -143,26 +136,6 @@ public class Microtask implements Serializable
 	public String getFailureDescription() {
 		return failureDescription;
 	}
-
-	public void addTimeStamp(String timeStamp) {
-		this.timeStampList.add(timeStamp);
-		
-	}
-
-	public void addElapsedTime(String elapsedTime) {
-		this.elapsedTimeList.add(elapsedTime);
-		
-	}
-
-	public ArrayList<String> getElapsedTimeList() { 
-		return elapsedTimeList;
-	}
-
-	
-	public ArrayList<String> getTimeStampList() {
-		return timeStampList;
-	}
-	
 
 	public String getSnippetHightlights() {
 		return snippetHightlights;

@@ -28,7 +28,7 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 public class MicrotaskStorage {
 
 	private String persistentFileName = "microtasks.ser";
-
+	private static boolean semaphore=false; //avoid trying to open a file while other is still reading.
 
 	public MicrotaskStorage(){
 
@@ -108,18 +108,15 @@ public class MicrotaskStorage {
 	 * @param timeStamp 
 	 * @return true if operation was successful, false otherwise
 	 */
-	public boolean insertAnswer(String fileName, Integer microtaskId, Answer answer, String elapsedTime, String timeStamp){ 
+	public boolean insertAnswer(String fileName, Integer microtaskId, Answer answer){ 
 
 		try{
 			FileDebugSession newfileDebugSession = this.read(fileName);
 			Microtask mtask = newfileDebugSession.getMicrotask(microtaskId);
 			mtask.addAnswer(answer);
-			mtask.addTimeStamp(timeStamp);
-			mtask.addElapsedTime(elapsedTime);
 			newfileDebugSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
 			newfileDebugSession.insertMicrotask(microtaskId, mtask);
-
-			System.out.println("Inserting microtask id:"+mtask.getID()+" answers: "+mtask.getNumberOfAnswers()+" : "+mtask.getAnswerList().toString());
+			System.out.println("insertAnswer for user"+answer.getWorkerId()+" Question: "+ mtask.getQuestion()+" Answer: "+answer.getOption());
 			return this.insert(fileName, newfileDebugSession);
 		}
 		catch(Exception e){

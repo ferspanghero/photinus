@@ -55,7 +55,7 @@
 		<ul>
 			<li>You are being asked to participate in a research study to perform some programming tasks related to software design, coding, debugging, and testing.</li>
 			<br>
-			<li>Programming tasks will be performed in an online tool that consists of an external website accessible via a link in a Mechanical Turk task (HIT - Human Intelligent Task)</li>
+			<li>Programming tasks will be performed in an online tool that consists of an external website accessible via a link in a Mechanical Turk task (HIT - Human Intelligent Task).</li>
 			<br>
 			<li>The purpose of the study is to identify the challenges developers face using tools while trying to answer their questions about the code. That knowledge can inform the design of new tools to help developers to work more effectively.</li>
 			<br>

@@ -107,7 +107,8 @@ public class MicrotaskServlet extends HttpServlet {
 
 		//Save answers from the previous microtask
 		StorageManager manager = new StorageManager();
-		boolean success = manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId), new Answer(Answer.mapToString(answer),explanation), elapsedTime, timeStamp);
+		boolean success = manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId),
+				new Answer(Answer.mapToString(answer),explanation, this.userId, elapsedTime, timeStamp));
 
 		if(!success){
 			this.showErrorPage(request, response, "Answer could not be stored");

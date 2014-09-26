@@ -16,20 +16,40 @@ public class Answer implements Serializable{
 	
 	private String option;
 	private String explanation;
+	private String workerId;
+	private String elapsedTime;
+	private String timeStamp;
 	
-	public Answer(String option, String explanation){
+	
+	public Answer(String option, String explanation, String workerId, 
+			String elapsedTime, String timeStamp){
 		this.option = option;
 		this.explanation = explanation;
+		this.workerId = workerId;
+		this.elapsedTime = elapsedTime;
+		this.timeStamp = timeStamp;
 	}
 
 	public String getOption() {
 		return option;
 	}
-
+	
 	public String getExplanation() {
 		return explanation;
 	}
 	
+	public String getWorkerId() {
+		return workerId;
+	}
+	
+	public String getElapsedTime() {
+		return elapsedTime;
+	}
+
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
 	public static String mapToString(int number){
 		switch(number){
 		case 1: return Answer.YES; 

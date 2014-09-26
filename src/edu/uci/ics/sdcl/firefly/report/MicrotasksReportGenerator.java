@@ -151,8 +151,8 @@ public class MicrotasksReportGenerator
 				//Elapsed Time
 				k= 2*answersPerMicrotask+3;//Position for the Elapsed time data.
 				if (microtask.getNumberOfAnswers()>0){	
-					for (String elapsedTime : microtask.getElapsedTimeList()) {
-						lineContent[k++] = elapsedTime;	// adding the elapsed time
+					for (Answer answer : microtask.getAnswerList()) {
+						lineContent[k++] = answer.getElapsedTime();	// adding the elapsed time
 					}	
 				}
 				lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
@@ -160,8 +160,8 @@ public class MicrotasksReportGenerator
 				//Time Stamp
 				k= 3*answersPerMicrotask+3;//Position for the Time stamp data.
 				if (microtask.getNumberOfAnswers()>0){	
-					for (String timeStamp : microtask.getTimeStampList()) {
-						lineContent[k++] = timeStamp;	// adding the elapsed time
+					for (Answer answer : microtask.getAnswerList()) {
+						lineContent[k++] = answer.getTimeStamp();	// adding the elapsed time
 					}	
 				}
 				lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());

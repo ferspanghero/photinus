@@ -102,15 +102,13 @@ public class WorkerSession implements Serializable{
 	 * @param timeStamp 
 	 * @return true if successful, otherwise false. In case of success, the microtask counter is incremented.
 	 */
-	public boolean insertMicrotaskAnswer(Integer microtaskId, Answer answer, String elapsedTime, String timeStamp) {
+	public boolean insertMicrotaskAnswer(Integer microtaskId, Answer answer) {
 		
 		Microtask microtask = this.getCurrentMicrotask();
 		if((microtask == null) || (microtask.getID().intValue() != microtaskId.intValue()))
 			return false;
 		else{
 			microtask.addAnswer(answer);
-			microtask.addElapsedTime(elapsedTime);
-			microtask.addTimeStamp(timeStamp);
 			this.storeCurrentMicrotask(microtask);
 			return true;
 		}
