@@ -153,7 +153,8 @@ public class WorkerSessionFactory {
 					String methodKey = (String) methodKeyIter.next();
 					ArrayList<Microtask> microtaskList = methodMap.get(methodKey);
 					if(microtaskList!=null && !microtaskList.isEmpty()){
-						Microtask microtask = microtaskList.get(0);
+						int randomPosition = microtaskList.size()/2;
+						Microtask microtask = microtaskList.get(randomPosition);
 
 						//Avoids methods with the same name in the same session.
 						//That avoids the risk of having buggy and fixed versions of the same method in the same session.
