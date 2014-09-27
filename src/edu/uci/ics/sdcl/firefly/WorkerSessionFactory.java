@@ -82,27 +82,6 @@ public class WorkerSessionFactory {
 		return workerSessionStack;
 	}
 
-	/** Method used to generate all microtask in one single session
-	 * This method is used only for testing and experiment setup
-	 * 
-	 * @return a list with a single worker session
-	 */
-	public Stack<WorkerSession> generateSingleSession(){
-
-		//Stack for the single Session
-		Stack<WorkerSession> workerSessionStack = new Stack<WorkerSession>();
-		this.sessionId = this.keyGenerator.generate();
-
-		MicrotaskSelector selector = new MicrotaskSelector();
-		ArrayList<Microtask> mtaskList =selector.selectAllMicrotasks();
-
-		WorkerSession session = new WorkerSession(this.sessionId, mtaskList);
-		workerSessionStack.push(session);
-
-		return workerSessionStack;
-	}
-
-
 	/** 
 	 * @param stack the original WorkerSession 
 	 * @param copies the number of times the same session should be created
@@ -133,48 +112,58 @@ public class WorkerSessionFactory {
 	/**
 	 * Produces the next list of microtasks. The list produced is removed from the original set.
 	 * 
-	 * @param number of microtasks in the list
+	 * @param numberOfTasks of microtasks in the list
 	 * @return sample N microtasks from different methods from the the fileMethoMap.
 	 */
-	public ArrayList<Microtask> nextMicrotaskList(int number){
+	public ArrayList<Microtask> nextMicrotaskList(int numberOfTasks){
 
 		ArrayList<Microtask> resultList = new ArrayList<Microtask>();
-		HashMap<String,Microtask> methodTracker = new HashMap<String,Microtask>();// Tracks whether a method with the same signature was not already added.
-
+		HashMap<String,Microtask> methodTracker = new HashMap<String,Microtask>();// Tracks whether a method with the same signature was not already added
+		
 		Iterator<String> fileKeyIter = this.fileMethodMap.keySet().iterator();
-		int found=0;
-		while(found<number && fileKeyIter.hasNext()){
+		boolean traversedTwice = false; //Controls that the fileKeyIter be traversed only twice	
+		
+		while(methodTracker.size()<numberOfTasks && fileKeyIter.hasNext()){
 			String fileKey = (String) fileKeyIter.next();
 			HashMap<String, ArrayList<Microtask>> methodMap = fileMethodMap.get(fileKey);
 
 			if(methodMap!=null && !methodMap.isEmpty()){
 				Iterator<String> methodKeyIter = methodMap.keySet().iterator();
-				while(found<number && methodKeyIter.hasNext()){
+				while(methodTracker.size()<numberOfTasks && methodKeyIter.hasNext()){
 					String methodKey = (String) methodKeyIter.next();
 					ArrayList<Microtask> microtaskList = methodMap.get(methodKey);
 					if(microtaskList!=null && !microtaskList.isEmpty()){
 						int randomPosition = microtaskList.size()/2;
 						Microtask microtask = microtaskList.get(randomPosition);
-
+						String methodName = microtask.getCodeSnippet().getMethodSignature().getName();
+						
 						//Avoids methods with the same name in the same session.
 						//That avoids the risk of having buggy and fixed versions of the same method in the same session.
-						if (!methodTracker.containsKey(microtask.getCodeSnippet().getMethodSignature().getName())){ 
-							methodTracker.put(microtask.getCodeSnippet().getMethodSignature().getName(), microtask);
+						if (!methodTracker.containsKey(methodName)){ 
+							methodTracker.put(methodName, microtask);
 							resultList.add(microtask);
-							microtaskList.remove(0);
+							microtaskList.remove(randomPosition);
 							//Put the map back with the element removed
 							methodMap.put(methodKey, microtaskList);
 							fileMethodMap.put(fileKey, methodMap);
-							found++;
 						}
 						else{
-							System.out.println("Successfully dealt with method name collision, method:  "+
-									microtask.getCodeSnippet().getMethodSignature().getName());
+							System.out.println("Successfully dealt with method name collision, method:  "+ methodName);
 						}
 					}
 				}
 			}
+			
+			if(methodTracker.size()<numberOfTasks && !fileKeyIter.hasNext() && !traversedTwice){
+				//Means that traversing once we could not fill-up the session with enought microtasks. 
+				//Therefore, traverse the list of files>methods>microtasks>methods once more
+				traversedTwice=true;
+				
+				fileKeyIter = this.fileMethodMap.keySet().iterator();
+			}
 		}
+		
+		System.out.println("number of microtasks in session: "+ methodTracker.size());
 
 		return resultList;
 	}
@@ -224,5 +213,37 @@ public class WorkerSessionFactory {
 			}
 		}
 		return fileMethodMap;
-	}	
+	}
+	
+	
+	/** Fill up the list of microtasks so all codesnippets have the same number of microtasks.
+	 * That is necessary to guarantee that all Sessions have the same number of microtasks.
+	 * 
+	 * @return
+	 */
+	private HashMap<Integer, Microtask> fillUpMicrotaskLists(HashMap<Integer, Microtask> methodMap){
+		
+		return null;
+	}
+	
+
+	/** Method used to generate all microtask in one single session
+	 * This method is used only for testing and experiment setup
+	 * 
+	 * @return a list with a single worker session
+	 */
+	public Stack<WorkerSession> generateSingleSession(){
+
+		//Stack for the single Session
+		Stack<WorkerSession> workerSessionStack = new Stack<WorkerSession>();
+		this.sessionId = this.keyGenerator.generate();
+
+		MicrotaskSelector selector = new MicrotaskSelector();
+		ArrayList<Microtask> mtaskList =selector.selectAllMicrotasks();
+
+		WorkerSession session = new WorkerSession(this.sessionId, mtaskList);
+		workerSessionStack.push(session);
+
+		return workerSessionStack;
+	}
 }
