@@ -216,8 +216,8 @@ public class FileUploadServlet extends HttpServlet {
 		PropertyManager manager = new PropertyManager();
 		
 		//Generate the stack of New and Duplicated WorkerSession		
-		WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
-		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(manager.microtasksPerSession);
+		WorkerSessionFactory sessionFactory = new WorkerSessionFactory(manager.microtasksPerSession);
+		Stack<WorkerSession> originalStack = sessionFactory.generateSessions();
 		Stack<WorkerSession> duplicatedStack = sessionFactory.duplicateSessions(originalStack,manager.answersPerMicrotask-1); //Because we already have the original stack.
 		
 		WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
@@ -243,7 +243,7 @@ public class FileUploadServlet extends HttpServlet {
 		String results = new String();
 		
 		//Generate the stack of New and Duplicated WorkerSession
-		WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
+		WorkerSessionFactory sessionFactory = new WorkerSessionFactory(20);
 		Stack<WorkerSession> originalStack = sessionFactory.generateSingleSession();
 				
 		WorkerSessionStorage sessionStorage = new WorkerSessionStorage();

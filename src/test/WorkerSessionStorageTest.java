@@ -138,8 +138,8 @@ public class WorkerSessionStorageTest {
 			microtaskStorage.insert(fileName, fileDebuggingSession);
 
 			//Generate the stack of WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
-			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(10);
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(10);
+			Stack<WorkerSession> actualStack = sessionFactory.generateSessions();
 			Stack<WorkerSession> actualDuplicateStack = sessionFactory.duplicateSessions(actualStack,2);
 
 
@@ -289,8 +289,8 @@ public class WorkerSessionStorageTest {
 			microtaskStorage.insert(fileName, fileDebuggingSession);
 
 			//Generate the stack of New and Duplicated WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
-			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(10);
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(10);
+			Stack<WorkerSession> actualStack = sessionFactory.generateSessions();
 			Stack<WorkerSession> actualDuplicateStack = sessionFactory.duplicateSessions(actualStack,2);
 			WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
 			sessionStorage.appendNewWorkerSessionStack(actualStack,sessionStorage.NEW);

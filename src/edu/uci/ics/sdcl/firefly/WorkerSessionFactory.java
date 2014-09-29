@@ -12,6 +12,7 @@ import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector.SelectorReturn;
 import edu.uci.ics.sdcl.firefly.servlet.MethodData;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
+import edu.uci.ics.sdcl.firefly.util.LeastCommonDenominator;
 import edu.uci.ics.sdcl.firefly.util.RandomKeyGenerator;
 
 
@@ -42,21 +43,25 @@ public class WorkerSessionFactory {
 	/** The worker session datastructure that will be generated */
 	HashMap<Integer, WorkerSession> workerSessionMap;
 
-	public WorkerSessionFactory(){
+	/** 
+	 * @param microtaskPerSession the number of microtasks that will be included in each session
+	 */	
+	private Integer microtaskPerSession;
+
+	public WorkerSessionFactory(int microtaskPerSession){
 		this.microtaskStorage = new MicrotaskStorage();
 		this.sessionStorage = new WorkerSessionStorage();
 		this.workerSessionMap = new HashMap<Integer, WorkerSession>();
-		this.fileMethodMap = this.buildMethodMap();
+		this.microtaskPerSession = microtaskPerSession;
+		this.buildMethodMap();
+		this.fillUpFileMethodMap();
 		this.keyGenerator = new RandomKeyGenerator();
 	}
 
 	/** 
-	 * @param microtaskPerSession the number of microtasks that will be included in each session
-	 * @param copies the number of times the same session should be created
 	 * @return the list of worker sessions
-	 * 
 	 */
-	public Stack<WorkerSession> generateSessions(int microtaskPerSession){
+	public Stack<WorkerSession> generateSessions(){
 
 		//Final stack that will be persisted
 		Stack<WorkerSession> workerSessionStack = new Stack<WorkerSession>();
@@ -65,13 +70,13 @@ public class WorkerSessionFactory {
 		ArrayList<WorkerSession> originalList = new ArrayList<WorkerSession>(); 
 
 		//Obtain a list of N microtasks from N different codesnippets (i.e., methods)
-		ArrayList<Microtask> mtaskList = this.nextMicrotaskList(microtaskPerSession);
+		ArrayList<Microtask> mtaskList = this.nextMicrotaskList(this.microtaskPerSession);
 		//Generate the original WorkerSessions
 		while(mtaskList.size()>0){
 			this.sessionId = this.keyGenerator.generate();
 			WorkerSession session = new WorkerSession(this.sessionId, mtaskList);
 			originalList.add(session);
-			mtaskList = this.nextMicrotaskList(microtaskPerSession);
+			mtaskList = this.nextMicrotaskList(this.microtaskPerSession);
 		}
 
 		//Store sessions in the final Stack
@@ -107,6 +112,11 @@ public class WorkerSessionFactory {
 			}
 		}
 		return duplicateStack;	
+	}
+	
+	/** for testing purposes */
+	public HashMap<String, HashMap<String, ArrayList<Microtask>>> getFileMethodMap() {
+		return this.fileMethodMap;
 	}
 
 	/**
@@ -173,10 +183,10 @@ public class WorkerSessionFactory {
 	 * 
 	 * @return A map indexed by filename and method name
 	 */
-	public HashMap<String,HashMap<String,ArrayList<Microtask>>> buildMethodMap(){
+	private void buildMethodMap(){
 
 		//indexed by fileName and method name and List of microtasks
-		HashMap<String,HashMap<String,ArrayList<Microtask>>> fileMethodMap = new HashMap<String,HashMap<String,ArrayList<Microtask>>> ();
+		this.fileMethodMap = new HashMap<String,HashMap<String,ArrayList<Microtask>>> ();
 
 
 		Set<String> sessionSet= microtaskStorage.retrieveDebuggingSessionNames();
@@ -203,27 +213,91 @@ public class WorkerSessionFactory {
 
 					HashMap<String,ArrayList<Microtask>> methodMap = fileMethodMap.get(fileName);
 					ArrayList<Microtask> methodMicrotaskList = methodMap.get(methodName);
+		
 					if(methodMicrotaskList==null){
 						methodMicrotaskList = new ArrayList<Microtask>();
-					}
+					}								
 					methodMicrotaskList.add(mtask);
 					methodMap.put(methodName, methodMicrotaskList);
 					fileMethodMap.put(fileName, methodMap);
 				}				
 			}
 		}
-		return fileMethodMap;
 	}
 	
+	/**
+	 * Obtains the sizes of all microtask lists for each method
+	 * @return the size of the largest microtask list
+	 */
+	private long obtainLargestSize (){
+		long largest = 0;
+		Iterator <String> fileNameIterator = this.fileMethodMap.keySet().iterator();
+		//Discover the largest microtask list
+		while(fileNameIterator.hasNext()){
+			String fileName = fileNameIterator.next();
+			HashMap<String,ArrayList<Microtask>> methodMap = this.fileMethodMap.get(fileName);
+			Iterator <String> methodIterator = methodMap.keySet().iterator();
+			while(methodIterator.hasNext()){
+				String methodName = methodIterator.next();
+				ArrayList<Microtask> microtaskList = methodMap.get(methodName);
+				if(microtaskList.size()>largest)
+					largest=microtaskList.size();
+			}
+		}
+		return largest;
+	}
+	
+	/**
+	 * 
+	 * The size is least common denominator (LCD) among list sizes and the number of microtasks per session 
+	 * @param methodMap
+	 * @return the required minimum size for all microtaks lists. 
+	 */
+
+	private long computeLowestCommonDenominator(ArrayList<Integer> numberList){
+		return LeastCommonDenominator.lcm(numberList.toArray());
+	}
+	
+	private ArrayList<Microtask> fillUpList(long numberOfElements, ArrayList<Microtask> list){
+		
+		ArrayList<Microtask> composedList = new ArrayList<Microtask>();
+		composedList.addAll(list);
+		int i=0;
+		while(composedList.size()<numberOfElements){
+			composedList.add(list.get(i));
+			i++;
+			if(i>=list.size())
+				i=0;	
+		}
+		return composedList;
+	}
 	
 	/** Fill up the list of microtasks so all codesnippets have the same number of microtasks.
 	 * That is necessary to guarantee that all Sessions have the same number of microtasks.
 	 * 
 	 * @return
 	 */
-	private HashMap<Integer, Microtask> fillUpMicrotaskLists(HashMap<Integer, Microtask> methodMap){
+	private void fillUpFileMethodMap (){
+		long largestSize = this.obtainLargestSize();
+		long targetSize = LeastCommonDenominator.lcm(this.microtaskPerSession.longValue(), largestSize);
 		
-		return null;
+		Iterator <String> fileNameIterator = this.fileMethodMap.keySet().iterator();
+		//Discover the largest microtask list
+		while(fileNameIterator.hasNext()){
+			String fileName = fileNameIterator.next();
+			HashMap<String,ArrayList<Microtask>> methodMap = this.fileMethodMap.get(fileName);
+			Iterator <String> methodIterator = methodMap.keySet().iterator();
+			while(methodIterator.hasNext()){
+				String methodName = methodIterator.next();
+				ArrayList<Microtask> microtaskList = methodMap.get(methodName);
+				System.out.println("original microtaskList.size = "+ microtaskList.size());
+				if(microtaskList.size()>0){
+					methodMap.put(methodName, this.fillUpList(targetSize, microtaskList));
+					this.fileMethodMap.put(fileName, methodMap);
+				}
+				System.out.println("NEW microtaskList.size = "+ methodMap.get(methodName).size());
+			}
+		}
 	}
 	
 
@@ -246,4 +320,6 @@ public class WorkerSessionFactory {
 
 		return workerSessionStack;
 	}
+
+	
 }

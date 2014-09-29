@@ -88,8 +88,9 @@ public class WorkerSessionFactoryTest {
 			memento.insert(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
-			HashMap<String,HashMap<String,ArrayList<Microtask>>> actualFileMethodMap = sessionFactory.buildMethodMap();
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(10);
+			HashMap<String,HashMap<String,ArrayList<Microtask>>> actualFileMethodMap = sessionFactory.getFileMethodMap();
+			
 
 			HashMap<String,ArrayList<Microtask>> methodMap = actualFileMethodMap.get("TinySample.java");
 			Assert.assertNotNull(methodMap);
@@ -172,8 +173,8 @@ public class WorkerSessionFactoryTest {
 			memento.insert(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
-			HashMap<String,HashMap<String,ArrayList<Microtask>>> actualFileMethodMap = sessionFactory.buildMethodMap();
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(10);
+			HashMap<String,HashMap<String,ArrayList<Microtask>>> actualFileMethodMap = sessionFactory.getFileMethodMap();
 
 			HashMap<String,ArrayList<Microtask>> methodMap = actualFileMethodMap.get("TinySample.java");
 			Assert.assertNotNull(methodMap);
@@ -329,11 +330,10 @@ public class WorkerSessionFactoryTest {
 			memento.insert(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
-			WorkerSessionFactory sessionFactory = new WorkerSessionFactory();
-			HashMap<String,HashMap<String,ArrayList<Microtask>>> actualFileMethodMap = sessionFactory.buildMethodMap();
+			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(2);
 
 			//Test the original Stack
-			Stack<WorkerSession> actualStackOriginal = sessionFactory.generateSessions(2);
+			Stack<WorkerSession> actualStackOriginal = sessionFactory.generateSessions();
 			while(!actualStackOriginal.isEmpty() && !expectedStackOriginal.isEmpty()){
 				WorkerSession actual = actualStackOriginal.pop();
 				WorkerSession expected = expectedStackOriginal.pop();
