@@ -221,7 +221,7 @@ public class FileUploadServlet extends HttpServlet {
 		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(manager.answersPerMicrotask-1); //Because we already have the original stack.
 				
 		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
-		storage.appendNewWorkerSessionStack(originalStack);
+		storage.writeNewWorkerSessionStack(originalStack);
 
 		int totalSessions = originalStack.size();
 		int existingSessions = storage.getNumberOfNewWorkerSessions(); 
@@ -246,10 +246,10 @@ public class FileUploadServlet extends HttpServlet {
 		Stack<WorkerSession> originalStack = sessionFactory.generateSingleSession();
 				
 		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
-		storage.appendNewWorkerSessionStack(originalStack);
+		storage.writeNewWorkerSessionStack(originalStack);
 		
 		int totalSessions = originalStack.size(); 
-		int existingSessions = sessionStorage.getNumberOfNewWorkerSessions(); 
+		int existingSessions = storage.getNumberOfNewWorkerSessions(); 
 	
 		results = results + "Sessions generated: " +totalSessions+"<br>"+ 
 					"Total Sessions available now: "+existingSessions;

@@ -5,12 +5,14 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -20,7 +22,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
-import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class SessionsReportGenerator {
@@ -42,33 +43,24 @@ public class SessionsReportGenerator {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public boolean writeToXlsx(HashMap<String, Object> allWorkerSessions)
+	public boolean writeToXlsx(Vector<WorkerSession> closedSessions, Hashtable<String,WorkerSession> activeSessions, Stack<WorkerSession> newSessions)
 	{
 		/* setting a HashMap with the microtask's ID and the respective column number  */
 		// reading closed session's questions
-		ArrayList<WorkerSession> closedSessions = (ArrayList<WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.CLOSED);
 		for (WorkerSession workerSession : closedSessions) {
 			this.populateQuestionMap(workerSession.getMicrotaskList());
 		}
 		// reading active sessions questions
-		HashMap<Integer, WorkerSession> activeSessions = (HashMap<Integer, WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.ACTIVE);
-		ArrayList<WorkerSession> activeSessionsAL = new ArrayList<WorkerSession>();	// to cache all the workerSessions
-		Set<Map.Entry<Integer, WorkerSession>> setActiveSessions = activeSessions.entrySet();
-		Iterator<Entry<Integer, WorkerSession>> iterateActiveSessions = setActiveSessions.iterator();
-		while(iterateActiveSessions.hasNext())
+		Vector<WorkerSession> activeSessionsAL = new Vector<WorkerSession>();	// to cache all the workerSessions
+		Iterator<String> activeIterator = activeSessions.keySet().iterator();
+		while(activeIterator.hasNext())
 		{
-			Map.Entry<Integer, WorkerSession> mapEntryActiveSessions = (Map.Entry<Integer, WorkerSession>)iterateActiveSessions.next();
-			this.populateQuestionMap(mapEntryActiveSessions.getValue().getMicrotaskList());
-			activeSessionsAL.add(mapEntryActiveSessions.getValue());	// storing worker sessions to not loop again
+			WorkerSession session = activeSessions.get(activeIterator.next());
+			this.populateQuestionMap(session.getMicrotaskList());
+			activeSessionsAL.add(session);	// storing worker sessions to not loop again
 		}
 		// reading new session's questions
-		Stack<WorkerSession> newCopiesSessions = (Stack<WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.NEW_COPIES);
-		ArrayList<WorkerSession> newSessionsAL = new ArrayList<WorkerSession>();
-		for (WorkerSession workerSession : newCopiesSessions) {
-			this.populateQuestionMap(workerSession.getMicrotaskList());
-			newSessionsAL.add(workerSession);		// converting to array list (AL)
-		}
-		Stack<WorkerSession> newSessions = (Stack<WorkerSession>)allWorkerSessions.get(WorkerSessionStorage.NEW);
+		Vector<WorkerSession> newSessionsAL = new Vector<WorkerSession>();
 		for (WorkerSession workerSession : newSessions) {
 			this.populateQuestionMap(workerSession.getMicrotaskList());
 			newSessionsAL.add(workerSession);		// converting to array list (AL)
@@ -173,7 +165,7 @@ public class SessionsReportGenerator {
 		}
 	}
 	
-	private boolean populateDataLines(ArrayList<WorkerSession> workerSessions){
+	private boolean populateDataLines(Vector<WorkerSession> workerSessions){
 		for (WorkerSession workerSession : workerSessions) {
 			this.lineContent = new Object[this.questionsInSheet.size()+2]; 
 			this.lineContent[0] = workerSession.getUserId();			// worker ID

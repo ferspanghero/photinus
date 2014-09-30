@@ -24,7 +24,7 @@ public class StorageManager {
 	private WorkerStorage workerStorage;
 
 	public StorageManager(){
-		this.sessionStorage = new WorkerSessionStorage();
+		this.sessionStorage = WorkerSessionStorage.initializeSingleton();
 		this.microtaskStorage = new MicrotaskStorage();
 		this.workerStorage = new WorkerStorage();
 	}

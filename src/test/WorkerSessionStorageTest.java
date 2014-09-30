@@ -3,6 +3,7 @@ package test;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.Vector;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -142,9 +143,9 @@ public class WorkerSessionStorageTest {
 			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(2);
 
 
-			WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
+			WorkerSessionStorage sessionStorage = WorkerSessionStorage.initializeSingleton();
 
-			boolean successNew = sessionStorage.appendNewWorkerSessionStack(actualStack,sessionStorage.NEW);
+			boolean successNew = sessionStorage.writeNewWorkerSessionStack(actualStack);
 
 			if(!successNew)
 				Assert.fail("WorkerSessionStorage failed to update NEW WorkerSessions");
@@ -286,8 +287,8 @@ public class WorkerSessionStorageTest {
 			//Generate the stack of New and Duplicated WorkerSession
 			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(10);
 			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(2);
-			WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
-			sessionStorage.appendNewWorkerSessionStack(actualStack,sessionStorage.NEW);
+			WorkerSessionStorage sessionStorage =  WorkerSessionStorage.initializeSingleton();
+			sessionStorage.writeNewWorkerSessionStack(actualStack);
 
 			//Transition all New and COPIES to ACTIVE
 			WorkerSession session = sessionStorage.readNewWorkerSession();
@@ -304,7 +305,7 @@ public class WorkerSessionStorageTest {
 				sessionStorage.updateActiveWorkerSession(actualActiveSession);//already moves the WorkerSession
 			}
 
-			ArrayList<WorkerSession> actualClosedList = sessionStorage.readClosedWorkerSessionList();	
+			Vector<WorkerSession> actualClosedList = sessionStorage.readClosedSessionStorage();	
 			int id=0;
 			//Test whether all WorkerSessions are now CLOSED
 			while(id<21 && id<actualClosedList.size()){

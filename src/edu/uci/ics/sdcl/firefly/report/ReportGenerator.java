@@ -1,9 +1,13 @@
 package edu.uci.ics.sdcl.firefly.report;
 
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Stack;
+import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
@@ -12,9 +16,6 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 public class ReportGenerator {
 	
 	public static void main(String[] args) {
-		
-		PropertyManager manager = new PropertyManager();
-		
 		ReportGenerator reports = new ReportGenerator();
 		System.out.println(reports.createMicrotasksReport());
 		System.out.println(reports.createWorkersReport());
@@ -49,11 +50,14 @@ public class ReportGenerator {
 	}
 	
 	public boolean createAnswersReport(){
-		WorkerSessionStorage workerSessionStorage = new WorkerSessionStorage();
-		HashMap<String, Object> storage = workerSessionStorage.readStorage();
-		if (null != storage){
+		WorkerSessionStorage workerSessionStorage = WorkerSessionStorage.initializeSingleton();
+		Vector<WorkerSession> closedSessions = workerSessionStorage.readClosedSessionStorage();
+		Hashtable<String, WorkerSession> activeSessions = workerSessionStorage.readActiveSessionStorage();
+		Stack<WorkerSession> newSessions = workerSessionStorage.readNewSessionStorage();
+		
+		if (closedSessions!= null && activeSessions!=null && newSessions!=null){
 			SessionsReportGenerator excelAnswersReport = new SessionsReportGenerator();
-			return excelAnswersReport.writeToXlsx(storage);
+			return excelAnswersReport.writeToXlsx(closedSessions,activeSessions, newSessions);
 		} else
 			return false;
 	}
