@@ -139,21 +139,16 @@ public class WorkerSessionStorageTest {
 
 			//Generate the stack of WorkerSession
 			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(10);
-			Stack<WorkerSession> actualStack = sessionFactory.generateSessions();
-			Stack<WorkerSession> actualDuplicateStack = sessionFactory.duplicateSessions(actualStack,2);
+			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(2);
 
 
 			WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
 
 			boolean successNew = sessionStorage.appendNewWorkerSessionStack(actualStack,sessionStorage.NEW);
-			boolean successNewCopies = sessionStorage.appendNewWorkerSessionStack(actualDuplicateStack,sessionStorage.NEW_COPIES);
 
 			if(!successNew)
 				Assert.fail("WorkerSessionStorage failed to update NEW WorkerSessions");
-			else
-				if(!successNewCopies)
-					Assert.fail("WorkerSessionStorage failed to update NEW_COPIES WorkerSessions");
-				else{
+			else{				
 					//Retrieve all new WorkerSessions
 					WorkerSession session = sessionStorage.readNewWorkerSession();
 					while(session!=null){
@@ -290,11 +285,9 @@ public class WorkerSessionStorageTest {
 
 			//Generate the stack of New and Duplicated WorkerSession
 			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(10);
-			Stack<WorkerSession> actualStack = sessionFactory.generateSessions();
-			Stack<WorkerSession> actualDuplicateStack = sessionFactory.duplicateSessions(actualStack,2);
+			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(2);
 			WorkerSessionStorage sessionStorage = new WorkerSessionStorage();
 			sessionStorage.appendNewWorkerSessionStack(actualStack,sessionStorage.NEW);
-			sessionStorage.appendNewWorkerSessionStack(actualDuplicateStack,sessionStorage.NEW_COPIES);
 
 			//Transition all New and COPIES to ACTIVE
 			WorkerSession session = sessionStorage.readNewWorkerSession();

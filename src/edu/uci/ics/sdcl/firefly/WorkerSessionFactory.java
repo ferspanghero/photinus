@@ -34,9 +34,6 @@ public class WorkerSessionFactory {
 	/** The map of all microtasks that will be used to generate WorkerSession objects */
 	private HashMap<String,HashMap<String,ArrayList<Microtask>>> fileMethodMap;
 
-	/** Storage of WorkerSessions */
-	private WorkerSessionStorage sessionStorage;
-
 	/** Storage for Microtasks */
 	private MicrotaskStorage microtaskStorage;
 
@@ -50,7 +47,7 @@ public class WorkerSessionFactory {
 
 	public WorkerSessionFactory(int microtaskPerSession){
 		this.microtaskStorage = new MicrotaskStorage();
-		this.sessionStorage = new WorkerSessionStorage();
+		WorkerSessionStorage.initializeSingleton();
 		this.workerSessionMap = new HashMap<Integer, WorkerSession>();
 		this.microtaskPerSession = microtaskPerSession;
 		this.buildMethodMap();
@@ -59,9 +56,10 @@ public class WorkerSessionFactory {
 	}
 
 	/** 
+	 * @param copies the number of desired copies
 	 * @return the list of worker sessions
 	 */
-	public Stack<WorkerSession> generateSessions(){
+	public Stack<WorkerSession> generateSessions(int copies){
 
 		//Final stack that will be persisted
 		Stack<WorkerSession> workerSessionStack = new Stack<WorkerSession>();
@@ -79,21 +77,23 @@ public class WorkerSessionFactory {
 			mtaskList = this.nextMicrotaskList(this.microtaskPerSession);
 		}
 
-		//Store sessions in the final Stack
-		for(int i=originalList.size()-1;i>=0;i--){
-			//Traverses the lists from last to first to preserve an ascending order in the stack
-			workerSessionStack.push(originalList.get(i));
+		workerSessionStack.addAll(originalList);
+		
+		if(copies > 0){
+			workerSessionStack.addAll(this.duplicateSessions(workerSessionStack, copies));
 		}
+		
 		return workerSessionStack;
 	}
-
+	
+	
 	/** 
 	 * @param stack the original WorkerSession 
 	 * @param copies the number of times the same session should be created
 	 * @return the stack with duplicated sessions
 	 * 
 	 */
-	public Stack<WorkerSession> duplicateSessions(Stack<WorkerSession> originalStack, int copies){
+	private Stack<WorkerSession> duplicateSessions(Stack<WorkerSession> originalStack, int copies){
 
 		Stack<WorkerSession> duplicateStack = new Stack<WorkerSession>();
 
@@ -106,8 +106,6 @@ public class WorkerSessionFactory {
 					System.out.println("ERROR originalSession is NULL for i="+i+ " sessionID= "+this.sessionId);
 				this.sessionId = this.keyGenerator.generate();
 				WorkerSession duplicateSession =  new WorkerSession(this.sessionId, originalSession.getMicrotaskList());
-				//				System.out.println("WSF @99: " + originalSession.getId());
-
 				duplicateStack.push(duplicateSession);
 			}
 		}

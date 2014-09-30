@@ -224,13 +224,12 @@ public class WorkerSessionFactoryTest {
 	//------------------------------------------------------------------------------------------------------------------
 
 	private HashMap<Integer, Microtask> mtaskMap = new HashMap<Integer, Microtask>();
-	private Stack<WorkerSession> expectedStackOriginal = new Stack<WorkerSession>();
-	private Stack<WorkerSession> expectedStackCopy = new Stack<WorkerSession>();
+	private Stack<WorkerSession> expectedStack = new Stack<WorkerSession>();
+	
 
 	@Before
 	public void setUpGenerateSessions() throws Exception {
-		this.expectedStackOriginal = new Stack<WorkerSession>();
-		this.expectedStackCopy = new Stack<WorkerSession>();
+		this.expectedStack = new Stack<WorkerSession>();
 		this.mtaskMap = QuestionFactoryMock.generateQuestions();
 
 		ArrayList<Microtask> mtaskList0= new ArrayList<Microtask>();
@@ -282,27 +281,27 @@ public class WorkerSessionFactoryTest {
 		WorkerSession copy55 = new WorkerSession("19",mtaskList5);
 		WorkerSession copy66 = new WorkerSession("20",mtaskList6);
 
-		this.expectedStackCopy.push(copy66);
-		this.expectedStackCopy.push(copy55);
-		this.expectedStackCopy.push(copy44);
-		this.expectedStackCopy.push(copy33);
-		this.expectedStackCopy.push(copy22);
-		this.expectedStackCopy.push(copy11);
-		this.expectedStackCopy.push(copy00);
-		this.expectedStackCopy.push(copy6);
-		this.expectedStackCopy.push(copy5);
-		this.expectedStackCopy.push(copy4);
-		this.expectedStackCopy.push(copy3);
-		this.expectedStackCopy.push(copy2);
-		this.expectedStackCopy.push(copy1);
-		this.expectedStackCopy.push(copy0);
-		this.expectedStackOriginal.push(original6);
-		this.expectedStackOriginal.push(original5);
-		this.expectedStackOriginal.push(original4);
-		this.expectedStackOriginal.push(original3);
-		this.expectedStackOriginal.push(original2);
-		this.expectedStackOriginal.push(original1);
-		this.expectedStackOriginal.push(original0); //so the first original is at the top of the stack.
+		this.expectedStack.push(copy66);
+		this.expectedStack.push(copy55);
+		this.expectedStack.push(copy44);
+		this.expectedStack.push(copy33);
+		this.expectedStack.push(copy22);
+		this.expectedStack.push(copy11);
+		this.expectedStack.push(copy00);
+		this.expectedStack.push(copy6);
+		this.expectedStack.push(copy5);
+		this.expectedStack.push(copy4);
+		this.expectedStack.push(copy3);
+		this.expectedStack.push(copy2);
+		this.expectedStack.push(copy1);
+		this.expectedStack.push(copy0);
+		this.expectedStack.push(original6);
+		this.expectedStack.push(original5);
+		this.expectedStack.push(original4);
+		this.expectedStack.push(original3);
+		this.expectedStack.push(original2);
+		this.expectedStack.push(original1);
+		this.expectedStack.push(original0); //so the first original is at the top of the stack.
 	}
 
 
@@ -333,22 +332,13 @@ public class WorkerSessionFactoryTest {
 			WorkerSessionFactory sessionFactory = new WorkerSessionFactory(2);
 
 			//Test the original Stack
-			Stack<WorkerSession> actualStackOriginal = sessionFactory.generateSessions();
-			while(!actualStackOriginal.isEmpty() && !expectedStackOriginal.isEmpty()){
-				WorkerSession actual = actualStackOriginal.pop();
-				WorkerSession expected = expectedStackOriginal.pop();
+			Stack<WorkerSession> actualStack = sessionFactory.generateSessions(3-1);
+			while(!actualStack.isEmpty() && !expectedStack.isEmpty()){
+				WorkerSession actual = actualStack.pop();
+				WorkerSession expected = expectedStack.pop();
 				Assert.assertEquals("WorkerSession ID: "+ expected.getId()+" does not match", actual.getId(),expected.getId());
 
-			}
-			
-			//Test the duplicate Stack
-			Stack<WorkerSession> actualStackCopy = sessionFactory.duplicateSessions(actualStackOriginal, 10);
-			while(!actualStackCopy.isEmpty() && !expectedStackCopy.isEmpty()){
-				WorkerSession actual = actualStackCopy.pop();
-				WorkerSession expected = expectedStackCopy.pop();
-				Assert.assertEquals("WorkerSession ID: "+ expected.getId()+" does not match", actual.getId(),expected.getId());
-
-			}
+			}			
 		}
 	}
 

@@ -38,29 +38,114 @@ public class WorkerSessionStorage {
 	private static ObjectInputStream objInputStream;
 
 	public static final String NEW = "NEW"; //Key for the original Stack<WorkerSession>
-	public static final String NEW_COPIES = "NEW_COPIES"; //Key for the Stack of copies
 	public static final String ACTIVE = "ACTIVE"; //Key for a Map<Integer, WorkerSession> 
 	public static final String CLOSED = "CLOSED"; //Key for an ArrayList<WorkerSession>
 
 	private static boolean semaphore=false; //avoid trying to open a file while other is still reading.
 
 	private static String persistentFileName; 
-	private static String fileName = "workersession.ser";
 
-	public WorkerSessionStorage(){
+	private static String fileNameNew = "workersession_new.ser";
+	private static String fileNameClosed = "workersession_closed.ser";
+
+
+	private static HashMap<String, WorkerSession> activeMap;
+
+	private static String path;
+
+	private static WorkerSessionStorage storage=null;
+
+	private WorkerSessionStorage(){
 		PropertyManager manager = new PropertyManager();
-		String path = manager.serializationPath;
-		try{
-			persistentFileName = path + fileName;
+		this.path = manager.serializationPath;
 
-			File file = new File(persistentFileName);
+		try{
+
+			File file; 
+			ObjectOutputStream objOutputStream; 
+			HashMap<String,Object> storage;
+
+			//Initialize the NEW sessions FILE
+			persistentFileName = path + fileNameNew;
+			file = new File(persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 
 
-				HashMap<String,Object> storage= initializeEmptyStorage();
+				storage= initializeEmptyStorage();
 
-				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
+				objOutputStream = new ObjectOutputStream( 
 						new FileOutputStream(new File(persistentFileName)));
+
+				objOutputStream.writeObject( storage );
+				objOutputStream.close();
+			}
+			//Initialize the CLOSED sessions FILE
+			persistentFileName = path + fileNameClosed;
+
+			file = new File(persistentFileName);
+			if(!file.exists() ||  file.isDirectory()){
+				// No files has been created yet. 
+
+				storage= initializeEmptyStorage();
+
+				objOutputStream = new ObjectOutputStream( 
+						new FileOutputStream(new File(persistentFileName)));
+
+				objOutputStream.writeObject( storage );
+				objOutputStream.close();
+
+			}
+			//Initialize the ACTIVE sessions MAP
+			activeMap = new   HashMap<String, WorkerSession>();
+
+		}
+		catch(IOException exception){
+			exception.printStackTrace();
+		}
+		catch(Exception exception){
+			exception.printStackTrace();
+		}
+	}
+
+	public static WorkerSessionStorage initializeSingleton(){
+		if(storage==null)
+			storage = new WorkerSessionStorage();
+		return storage;
+	}
+
+	/** Delete all data from the Storage */
+	public static void cleanUp(){
+
+
+		File file; 
+		ObjectOutputStream objOutputStream; 
+		HashMap<String,Object> storage;
+
+		try{
+			//Initialize the NEW sessions FILE
+			file = new File(path + fileNameNew);
+			if(!file.exists() ||  file.isDirectory()){
+				
+				// No files has been created yet. 
+				storage= initializeEmptyStorage();
+
+				objOutputStream = new ObjectOutputStream( 
+						new FileOutputStream(file));
+
+				objOutputStream.writeObject( storage );
+				objOutputStream.close();
+			}
+
+			//Initialize the CLOSED sessions FILE
+
+			file = new File(path + fileNameClosed);
+			if(!file.exists() ||  file.isDirectory()){
+
+				// No files has been created yet. 
+				storage= initializeEmptyStorage();
+
+				objOutputStream = new ObjectOutputStream( 
+						new FileOutputStream(file));
 
 				objOutputStream.writeObject( storage );
 				objOutputStream.close();
@@ -74,40 +159,16 @@ public class WorkerSessionStorage {
 		}
 	}
 
-
-	/** Delete all data from the Storage */
-	public void cleanUp(){
-
-		try{
-			File file = new File(persistentFileName);
-			// No files has been created yet. 
-			HashMap<String,Object> storage= initializeEmptyStorage();
-
-			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
-					new FileOutputStream(new File(persistentFileName)));
-
-			objOutputStream.writeObject( storage );
-			objOutputStream.close();
-		}
-		catch(IOException exception){
-			exception.printStackTrace();
-		}
-		catch(Exception exception){
-			exception.printStackTrace();
-		}
-	}
-
-	private HashMap<String,Object> initializeEmptyStorage(){
+	private static HashMap<String,Object> initializeEmptyStorage(){
 		// Create a empty storage for ALL three datastructures (NEW, NEW_COPIES, ACTIVE, CLOSED)
 		HashMap<String,Object> storage = new HashMap<String,Object>();
 		Stack<WorkerSession> stack = new Stack<WorkerSession>();
-		Stack<WorkerSession> copiesStack = new Stack<WorkerSession>();
 		HashMap<Integer, WorkerSession> map = new HashMap<Integer,WorkerSession>();
 		ArrayList<WorkerSession> list = new ArrayList<WorkerSession>();
 		storage.put(NEW,stack);
-		storage.put(NEW_COPIES,copiesStack);
-		storage.put(ACTIVE, map);
 		storage.put(CLOSED, list);
+
+		activeMap = new  HashMap<String, WorkerSession>();
 
 		return storage;
 	}
@@ -123,28 +184,24 @@ public class WorkerSessionStorage {
 	 * @param type specify if this is a stack of copies or a stack of original, because they are stored separately
 	 * @return true is operation was successful, otherwise, false.
 	 */
-	public boolean appendNewWorkerSessionStack(Stack<WorkerSession> newStack, String type){
+	public boolean appendNewWorkerSessionStack(Stack<WorkerSession> newStack){
 
 		try{
-			if(!type.equals(NEW) && !type.equals(NEW_COPIES))
-				return false; //Wrong type was provided
-			else{	
-				File file = new File(persistentFileName); 
-				objInputStream = new ObjectInputStream( 
-						new FileInputStream(file));
-				HashMap<String,Object> storage = (HashMap<String, Object>) objInputStream.readObject();
-				objInputStream.close();
+			File file = new File(persistentFileName); 
+			objInputStream = new ObjectInputStream( 
+					new FileInputStream(file));
+			HashMap<String,Object> storage = (HashMap<String, Object>) objInputStream.readObject();
+			objInputStream.close();
 
-				Stack<WorkerSession>  stack = (Stack<WorkerSession>)storage.get(type);
-				stack.addAll(newStack);
-				storage.put(type, stack);	
+			Stack<WorkerSession>  stack = (Stack<WorkerSession>)storage.get(type);
+			stack.addAll(newStack);
+			//storage.put(stack);	
 
-				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
-						new FileOutputStream(new File(persistentFileName)));
-				objOutputStream.writeObject( storage );
-				objOutputStream.close();
-				return true;
-			}
+			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
+					new FileOutputStream(new File(persistentFileName)));
+			objOutputStream.writeObject( storage );
+			objOutputStream.close();
+			return true;
 		}
 		catch(IOException exception){
 			exception.printStackTrace();
@@ -164,7 +221,7 @@ public class WorkerSessionStorage {
 	 */
 	private boolean overwriteNewWorkerSessionStack(Stack<WorkerSession> newStack, String type){
 		try{
-			if(!type.equals(NEW) && !type.equals(NEW_COPIES))
+			if(!type.equals(NEW))
 				return false; //Wrong type was provided
 			else{	
 				HashMap<String,Object> storage = readStorage();
@@ -200,10 +257,7 @@ public class WorkerSessionStorage {
 		if(this.getNumberOfNewWorkerSessions(NEW)>0)
 			type = NEW;
 		else
-			if(this.getNumberOfNewWorkerSessions(NEW_COPIES)>0)
-				type = NEW_COPIES;
-			else
-				return null; //There aren't any NEW WorkerSessions Available
+			return null; //There aren't any NEW WorkerSessions Available
 
 		Stack<WorkerSession> stack = this.retrieveWorkerSessionStack(NEW);
 		if(stack.isEmpty())
@@ -238,12 +292,9 @@ public class WorkerSessionStorage {
 	 */
 	public int getNumberOfNewWorkerSessions(){
 		Stack<WorkerSession> stackNew = this.retrieveWorkerSessionStack(this.NEW);
-		Stack<WorkerSession> stackNewCopies = this.retrieveWorkerSessionStack(this.NEW_COPIES);
 		int total = 0;
 		if(stackNew!=null && !stackNew.isEmpty())
 			total = stackNew.size();
-		if(stackNewCopies!=null && !stackNewCopies.isEmpty())
-			total = total + stackNewCopies.size();
 		return total;
 	}
 
@@ -256,7 +307,7 @@ public class WorkerSessionStorage {
 
 		HashMap<String,Object> storage = readStorage();
 
-		if(!type.equals(NEW) && !type.equals(NEW_COPIES))
+		if(!type.equals(NEW))
 			return null; //Error, the stack should always be there, even when the stack is empty.
 		else
 			return (Stack<WorkerSession>)storage.get(type);
@@ -458,7 +509,7 @@ public class WorkerSessionStorage {
 			HashMap<String, Object> storage  = (HashMap<String, Object>) objInputStream.readObject();
 			objInputStream.close();
 			semaphore=false;
-			
+
 			System.out.println("Done! semaphore released: "+ semaphore);
 			return storage;
 		}
