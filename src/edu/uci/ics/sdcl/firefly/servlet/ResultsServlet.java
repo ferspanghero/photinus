@@ -122,7 +122,8 @@ public class ResultsServlet extends HttpServlet {
 				questionName+ "<b> Answers: </b>");
 		// Concatenating all answers (with explanation) regarding the question in focus
 		for (Answer answer : answers) {
-			toBePrinted += answer.getOption() + " - " + answer.getExplanation() +  " | ";
+			toBePrinted += answer.getOption() + " - " + answer.getExplanation() + "("+answer.getElapsedTime()+ "ms) | ";
+			System.out.println("to Be Printed: "+toBePrinted);
 		}
 		toBePrinted +=	"<br><br>";
 				

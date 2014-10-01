@@ -55,6 +55,13 @@
 				document.forms["deleteForm"].submit();
 			}
 		}
+		
+		function runReports(){
+			var subAction = document.getElementById("subAction");
+			subAction.value = "generateReports";
+			document.forms["reportsForm"].submit();
+		}
+		
 	</script>
 	
 	
@@ -76,6 +83,11 @@
 							<input type="hidden" id="userId" name="userId" value="researcher"> 	
 							<input type="hidden" id="hitId" name="hitId" value="researchSession"> 	
 						</form>
+					</td>
+					
+					<td>	
+							<input type="image" src="./images/ReportsButton.jpg"
+								value="Generate Report" name="generateReports" align="bottom" onclick="runReports()">
 					</td>
 					
 					<td><form method="POST" action="results" name="results">
@@ -160,11 +172,17 @@
 			 		<input type="hidden" id="subAction" name="subAction" value="delete" /> 	
 				 </form>
 				 </td>
-	      <td>&nbsp;&nbsp;&nbsp; </td>		
+	      <td>&nbsp;&nbsp;&nbsp; ${requestScope["reports_message"]}</td>		
 		  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </td>
+		  
 		 </tr>
 	</table>
 
+	<form action ="upload" method="get" name="reportsForm">
+		<input type="hidden" id="subAction" name="subAction" value="generateReports" /> 
+	</form>
+
+	
 </div>
 <br>
 
