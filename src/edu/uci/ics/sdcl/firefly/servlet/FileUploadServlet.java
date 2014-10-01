@@ -21,6 +21,7 @@ import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.WorkerSessionFactory;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
+import edu.uci.ics.sdcl.firefly.report.ReportGenerator;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
@@ -48,7 +49,6 @@ public class FileUploadServlet extends HttpServlet {
 		if(subAction!=null){
 
 			if(subAction.compareTo("generateWorkerSessions")==0){
-
 				String return_message = this.generateWorkerSessions();
 				String microtasks_message = request.getParameter("microtasks_message");
 				request.setAttribute("microtasks_message", microtasks_message);
@@ -59,6 +59,13 @@ public class FileUploadServlet extends HttpServlet {
 				if(subAction.compareTo("delete")==0){
 					this.delete();
 					request.setAttribute("workerSessions_message", "");
+					request.setAttribute("reports_message", "Repositories Deleted!");
+					request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
+				}
+				if(subAction.compareTo("generateReports")==0){
+					ReportGenerator generator = new ReportGenerator();
+					generator.runReports();
+					request.setAttribute("reports_message", "Reports Generated!");
 					request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 				}
 				else{

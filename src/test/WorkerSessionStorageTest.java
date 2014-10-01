@@ -305,7 +305,7 @@ public class WorkerSessionStorageTest {
 				sessionStorage.updateActiveWorkerSession(actualActiveSession);//already moves the WorkerSession
 			}
 
-			Vector<WorkerSession> actualClosedList = sessionStorage.readClosedSessionStorage();	
+			Vector<WorkerSession> actualClosedList = sessionStorage.retrieveClosedSessionStorage();	
 			int id=0;
 			//Test whether all WorkerSessions are now CLOSED
 			while(id<21 && id<actualClosedList.size()){

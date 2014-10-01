@@ -16,18 +16,8 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 /** 
  *  Writes, updates, and reads WorkerSession objects
- *  
- *  WorkerSessions are held in the following datastructure
- *  HashTable<Integer, WorkerSession> workerSessionMap;
- *  
- *  Where: 
- *  Integer = session id; 
- *  Vector is the list of microtasks
  * 
  * WorkerSessions are organized in three groups: "New", "Active", "Closed"
- * Each group has a workerSesionMap.
- * 
- * New WorkerSessions are stored  
  * 
  * @author Christian Adriano
  *
@@ -43,7 +33,7 @@ public class WorkerSessionStorage {
 	private Hashtable<String, WorkerSession> activeSessionTable;
 
 	private String path;
-	
+
 	private static WorkerSessionStorage storage=null;
 
 	private WorkerSessionStorage(){
@@ -53,10 +43,11 @@ public class WorkerSessionStorage {
 		try{		
 			persistentFileNameNew = path + fileNameNew;
 			File fileNewSession = new File(persistentFileNameNew);
-		
+
 			persistentFileNameClosed = path + fileNameClosed;
 			File fileClosedSession = new File(persistentFileNameClosed);
-				
+
+			//If any of the files does not exist, them create them from scratch
 			if(!fileNewSession.exists() ||  fileNewSession.isDirectory() || 
 					!fileClosedSession.exists() ||  fileClosedSession.isDirectory() ){
 				// No files has been created yet. 
@@ -83,35 +74,29 @@ public class WorkerSessionStorage {
 		try{
 			//Initialize the NEW sessions FILE
 			file = new File(persistentFileNameNew);
-			if(!file.exists() ||  file.isDirectory()){
-				
-				// No files has been created yet. 
-				Stack<WorkerSession> stack = new Stack<WorkerSession>();
 
-				objOutputStream = new ObjectOutputStream( 
-						new FileOutputStream(file));
+			Stack<WorkerSession> stack = new Stack<WorkerSession>();
 
-				objOutputStream.writeObject( stack );
-				objOutputStream.close();
-			}
+			objOutputStream = new ObjectOutputStream( 
+					new FileOutputStream(file));
+
+			objOutputStream.writeObject( stack );
+			objOutputStream.close();
 
 			//Initialize the CLOSED sessions FILE
 			file = new File(persistentFileNameClosed);
-			if(!file.exists() ||  file.isDirectory()){
 
-				// No files has been created yet. 
-				Vector<WorkerSession> list = new Vector<WorkerSession>();
+			Vector<WorkerSession> list = new Vector<WorkerSession>();
 
-				objOutputStream = new ObjectOutputStream( 
-						new FileOutputStream(file));
+			objOutputStream = new ObjectOutputStream( 
+					new FileOutputStream(file));
 
-				objOutputStream.writeObject( list );
-				objOutputStream.close();
-			}
-			
-			//Initialize the ACTIVE sessions MAP
+			objOutputStream.writeObject( list );
+			objOutputStream.close();
+
+			//Initialize the ACTIVE sessions TABLE
 			activeSessionTable = new   Hashtable<String, WorkerSession>();
-			
+
 		}
 		catch(IOException exception){
 			exception.printStackTrace();
@@ -134,11 +119,11 @@ public class WorkerSessionStorage {
 	 */
 	public boolean writeNewWorkerSessionStack(Stack<WorkerSession> newStack){
 		try{
-				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
-						new FileOutputStream(new File(persistentFileNameNew)));
-				objOutputStream.writeObject( newStack );
-				objOutputStream.close();
-				return true;
+			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
+					new FileOutputStream(new File(persistentFileNameNew)));
+			objOutputStream.writeObject( newStack );
+			objOutputStream.close();
+			return true;
 		}
 		catch(IOException exception){
 			exception.printStackTrace();
@@ -159,7 +144,7 @@ public class WorkerSessionStorage {
 	 */
 	public WorkerSession readNewWorkerSession(){
 
-		Stack<WorkerSession> stack = readNewSessionStorage();
+		Stack<WorkerSession> stack = retrieveNewSessionStorage();
 		if(stack.isEmpty())
 			return null;
 		else{
@@ -178,7 +163,7 @@ public class WorkerSessionStorage {
 	 * @return the size of the stack of new WorkerSessions
 	 */
 	public int getNumberOfNewWorkerSessions(){
-		Stack<WorkerSession> stack = readNewSessionStorage();
+		Stack<WorkerSession> stack = retrieveNewSessionStorage();
 		if(stack!=null && !stack.isEmpty())
 			return stack.size();
 		else
@@ -189,12 +174,11 @@ public class WorkerSessionStorage {
 	//-----------------------------------------------------------------------------------------------------------
 	// Manage the Storage of Active WorkerSessions
 
-	/** Stores a map of WorkerSession. 
-	 * @param map is in indexed by WorkerSession ID
+	/** 
 	 * @return true if operation succeeded, otherwise false.
 	 */
 	public boolean updateActiveWorkerSession(WorkerSession session){
-		
+
 		if(activeSessionTable !=null){
 			if(!session.hasCurrent()){ //it means that the Session was completed
 				activeSessionTable.remove(session.getId()); //removes from active map
@@ -256,7 +240,7 @@ public class WorkerSessionStorage {
 
 
 	public boolean addClosedWorkerSession(WorkerSession session){
-		Vector<WorkerSession> closedSessionList = readClosedSessionStorage();
+		Vector<WorkerSession> closedSessionList = retrieveClosedSessionStorage();
 		if(closedSessionList!=null){
 			closedSessionList.add(session);
 			if(this.overwriteClosedWorkerSessionList(closedSessionList))
@@ -276,8 +260,8 @@ public class WorkerSessionStorage {
 	 */
 	private boolean overwriteClosedWorkerSessionList(Vector<WorkerSession> closedSessionList){
 		try{
-			
-			Vector <WorkerSession> list = readClosedSessionStorage();
+
+			Vector <WorkerSession> list = retrieveClosedSessionStorage();
 
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(new File(persistentFileNameClosed)));
@@ -296,9 +280,10 @@ public class WorkerSessionStorage {
 		}
 	}
 
-
-
-	public Stack<WorkerSession> readNewSessionStorage(){
+	//------------------------------------------------------------------------------------------------------------------------
+	// Retrieve the storages
+	
+	public Stack<WorkerSession> retrieveNewSessionStorage(){
 		try{
 
 			File file = new File(persistentFileNameNew); 
@@ -322,7 +307,7 @@ public class WorkerSessionStorage {
 	}
 
 
-	public  Vector<WorkerSession> readClosedSessionStorage(){
+	public  Vector<WorkerSession> retrieveClosedSessionStorage(){
 		try{
 
 			File file = new File(persistentFileNameClosed); 
@@ -345,7 +330,7 @@ public class WorkerSessionStorage {
 		}
 	}
 
-	public Hashtable<String, WorkerSession> readActiveSessionStorage() {
+	public Hashtable<String, WorkerSession> retrieveActiveSessionStorage() {
 		return this.activeSessionTable;
 	}
 

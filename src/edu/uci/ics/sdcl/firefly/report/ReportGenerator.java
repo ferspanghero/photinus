@@ -22,6 +22,12 @@ public class ReportGenerator {
 		System.out.println(reports.createAnswersReport());
 	}
 	
+	public void runReports(){
+		System.out.println(createMicrotasksReport());
+		System.out.println(createWorkersReport());
+		System.out.println(createAnswersReport());
+	}
+	
 	public boolean createMicrotasksReport(){
 		MicrotaskStorage microtaskStore = new MicrotaskStorage();
 		HashMap<String, FileDebugSession> microtasks = microtaskStore.readAllDebugSessions();
@@ -51,9 +57,9 @@ public class ReportGenerator {
 	
 	public boolean createAnswersReport(){
 		WorkerSessionStorage workerSessionStorage = WorkerSessionStorage.initializeSingleton();
-		Vector<WorkerSession> closedSessions = workerSessionStorage.readClosedSessionStorage();
-		Hashtable<String, WorkerSession> activeSessions = workerSessionStorage.readActiveSessionStorage();
-		Stack<WorkerSession> newSessions = workerSessionStorage.readNewSessionStorage();
+		Vector<WorkerSession> closedSessions = workerSessionStorage.retrieveClosedSessionStorage();
+		Hashtable<String, WorkerSession> activeSessions = workerSessionStorage.retrieveActiveSessionStorage();
+		Stack<WorkerSession> newSessions = workerSessionStorage.retrieveNewSessionStorage();
 		
 		if (closedSessions!= null && activeSessions!=null && newSessions!=null){
 			SessionsReportGenerator excelAnswersReport = new SessionsReportGenerator();
