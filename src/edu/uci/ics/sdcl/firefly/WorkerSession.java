@@ -23,7 +23,7 @@ public class WorkerSession implements Serializable{
 	private Integer currentIndex;
 
 	/** Associates a session with an anonymous user */
-	private String userId;
+	private String workerId;
 
 
 	/** 
@@ -114,12 +114,21 @@ public class WorkerSession implements Serializable{
 		}
 	}
 
-	public void setUserId(String id) {
-		this.userId = id;		
+	public void setWorkerId(String id) {
+		this.workerId = id;		
 	}
 
-	public String getUserId() {
-		return this.userId;		
+	public String getWorkerId() {
+		return this.workerId;		
+	}
+
+	public String getTotalElapsedTime() {
+		double totalTime = 0;
+		for(Microtask microtask: microtaskList){
+			Answer answer = microtask.getAnswerByUsedId(this.workerId);
+			totalTime = totalTime + new Double(answer.getElapsedTime());
+		}
+		return Double.toString(totalTime);
 	}
 	
 }

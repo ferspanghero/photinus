@@ -61,10 +61,18 @@ public class ReportGenerator {
 		Hashtable<String, WorkerSession> activeSessions = workerSessionStorage.retrieveActiveSessionStorage();
 		Stack<WorkerSession> newSessions = workerSessionStorage.retrieveNewSessionStorage();
 		
-		if (closedSessions!= null && activeSessions!=null && newSessions!=null){
+		if(closedSessions==null)
+			closedSessions= new Vector<WorkerSession>();
+		if(activeSessions==null)
+			activeSessions= new Hashtable<String, WorkerSession>();
+		if(newSessions==null)
+			newSessions= new Stack<WorkerSession>();
+		
+		if (closedSessions.size()==0 && activeSessions.size()==0 && newSessions.size()==0){ //Don't even generate the report, because it is empty
+			return false;
+		}else{
 			SessionsReportGenerator excelAnswersReport = new SessionsReportGenerator();
 			return excelAnswersReport.writeToXlsx(closedSessions,activeSessions, newSessions);
-		} else
-			return false;
+		}
 	}
 }

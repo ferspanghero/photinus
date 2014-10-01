@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,6 +54,11 @@ private String fileName = "WorkersReport.xlsx";
 		Cell cell = row.createCell(cellNum++);
 		cell.setCellValue("User ID");
 		cell = row.createCell(cellNum++);
+		
+		// the time the worker provided the consent
+		cell.setCellValue("Date");
+		cell = row.createCell(cellNum++);
+		
 		cell.setCellValue("Skill Score");
 		cell = row.createCell(cellNum++);
 				
@@ -61,7 +67,7 @@ private String fileName = "WorkersReport.xlsx";
 			cell.setCellValue("Q" + k.toString());
 			cell = row.createCell(cellNum++);
 		}	
-		// the time the worker took to answer
+		// the time the worker took in the skill test
 		cell.setCellValue("Test Duration");
 		cell = row.createCell(cellNum++);
 		
@@ -83,11 +89,16 @@ private String fileName = "WorkersReport.xlsx";
 			Worker worker = mapEntryWorker.getValue();
 			
 			// preparing line (object), which index is a cell
-			Object[] lineContent = new Object[13]; 		// 13 columns
+			Object[] lineContent = new Object[14]; 		// 14 columns
 			lineContent[0] = worker.getUserId();	// user ID (cell 0)
-			lineContent[1] = worker.getGrade();	// Skill score (cell 1)
+			
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy:HH:mm:SS");
+			lineContent[1] = formatter.format(worker.getConsentDate());	// date of consent (cell 1)
+			
+			lineContent[2] = worker.getGrade();	// Skill score (cell 2)
+			
 			// iterating over the skill questions
-			int j = 2;
+			int j = 3;
 			if (null != worker.getGradeMap()){
 				Set<Map.Entry<String, Boolean>> setSkillTest = worker.getGradeMap().entrySet();
 				Iterator<Entry<String, Boolean>> iterateSkillTest = setSkillTest.iterator();
@@ -98,9 +109,10 @@ private String fileName = "WorkersReport.xlsx";
 				// add the duration of the test
 				lineContent[j++] = worker.getSkillTestDuration();
 			} 
-			else{ //Not answes, so jump to the 7th cell keeping the previous ones empty.
-				j = 7;
+			else{ //No answers, so jump to the 8th cell keeping the previous ones empty.
+				j = 8;
 			}
+			
 			// iterating over the Survey questions
 			HashMap<String, String> survey = mapEntryWorker.getValue().getSurveyAnswers();
 			for (int i=0; i<SurveyServlet.question.length; i++){
@@ -141,10 +153,10 @@ private String fileName = "WorkersReport.xlsx";
 			}
 		}
 		// sizing columns for method sheet
-		for (short c=0; c<12; c++){
+		for (short c=0; c<14; c++){
 			scoreSheet.autoSizeColumn(c);
 		}
-		scoreSheet.setColumnWidth(12, 20000);	// the one that can have a long text (wrapped)
+		scoreSheet.setColumnWidth(13, 20000);	// the one that can have a long text (wrapped)
 
 		try
 		{

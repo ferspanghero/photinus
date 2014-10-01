@@ -182,10 +182,7 @@ public class WorkerSessionStorage {
 		if(activeSessionTable !=null){
 			if(!session.hasCurrent()){ //it means that the Session was completed
 				activeSessionTable.remove(session.getId()); //removes from active map
-				if(addClosedWorkerSession(session)) //moves to closed list
-					return true;
-				else
-					return false;
+				return (addClosedWorkerSession(session)); //moves to closed list
 			}
 			else{//Session still have uncompleted microtasks
 				activeSessionTable.put(session.getId(),session);
@@ -260,13 +257,10 @@ public class WorkerSessionStorage {
 	 */
 	private boolean overwriteClosedWorkerSessionList(Vector<WorkerSession> closedSessionList){
 		try{
-
-			Vector <WorkerSession> list = retrieveClosedSessionStorage();
-
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(new File(persistentFileNameClosed)));
 
-			objOutputStream.writeObject( list );
+			objOutputStream.writeObject( closedSessionList );
 			objOutputStream.close();
 			return true;
 		}

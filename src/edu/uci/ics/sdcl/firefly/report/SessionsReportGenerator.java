@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
@@ -28,8 +30,9 @@ public class SessionsReportGenerator {
 	private HashMap<Integer, Integer> questionsInSheet;	// HashMap with the microtask's ID and respective column number
 	private Integer columnNumber, key;
 	private Map<Integer, Object[]> data;
+	private Map<Integer, Object[]> dataTimeSheet;
 	private Object[] lineContent;
-		
+	private XSSFWorkbook workbook;
 	private String fileName = "SessionsReport.xlsx";
 	
 	public SessionsReportGenerator() {
@@ -37,9 +40,11 @@ public class SessionsReportGenerator {
 		String path = manager.reportPath;
 		this.fileName = path + this.fileName;
 		this.questionsInSheet = new HashMap<Integer, Integer>();
-		this.columnNumber = 2;
+		this.columnNumber = 3;
 		this.key = 0;	// for the 'data' map
 		data = new TreeMap<Integer, Object[]>();
+		dataTimeSheet = new TreeMap<Integer, Object[]>();
+		this.workbook = new XSSFWorkbook();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -67,33 +72,42 @@ public class SessionsReportGenerator {
 		}
 		
 		/* preparing the data structure */
-		this.lineContent = new Object[this.questionsInSheet.size()+3];	// represents the lines on the sheet
-		/* creating first header line */								// +2 for the 2 IDs before questions
-		this.lineContent[0] = "User ID";
+		this.lineContent = new Object[this.questionsInSheet.size()+4];	// represents the lines on the sheet
+		/* creating first header line */								// +3 for the User Id, Session Id, and Duration
+		this.lineContent[0] = "Worker ID";
 		this.lineContent[1] = "Session ID";
+		this.lineContent[2] = "Duration"; 		// the time the worker took in the all microtasks	
 		
-		Set<Map.Entry<Integer, Integer>> setQIS = this.questionsInSheet.entrySet();	// QIS same as question in sheet
-		Iterator<Entry<Integer, Integer>> iterateQIS = setQIS.iterator();
-		while(iterateQIS.hasNext())
-		{
-			Map.Entry<Integer, Integer> mapEntryQIS = (Map.Entry<Integer, Integer>)iterateQIS.next();
-			Integer currentColumn = mapEntryQIS.getValue();
+		Iterator<Integer> iteratorQIS = this.questionsInSheet.keySet().iterator();	// QIS same as question in sheet
+		while(iteratorQIS.hasNext()){
+			Integer microtaskId = iteratorQIS.next();
+			Integer currentColumn = questionsInSheet.get(microtaskId);
+			
 			if (null == currentColumn)	// critical error
 				return false;
-			this.lineContent[currentColumn] = mapEntryQIS.getKey();	
+			else
+				this.lineContent[currentColumn] = microtaskId;	
 		}
+		
+		//Header ready, now fill up with data from sessions
+		
 		this.data.put(new Integer(this.key++), lineContent);
+		this.dataTimeSheet.put(new Integer(this.key++), lineContent);
+		
 		/* getting data from the closed sessions */								
 		if (!this.populateDataLines(closedSessions))
 			return false;
 		/* now from the active sessions */								
 		if (!this.populateDataLines(activeSessionsAL))
 			return false;
+		
 		/* now for the new sessions implement the not answered counter */
-		this.lineContent = new Object[questionsInSheet.size()+3];
+		this.lineContent = new Object[questionsInSheet.size()+4];
 		Arrays.fill(this.lineContent, (Integer)0);	// populating the array with 0's
 		this.lineContent[0] = "Unanswered";
 		this.lineContent[1] = "-";
+		this.lineContent[2] = "-";
+		
 		for (WorkerSession workerSession : newSessionsAL) {
 			// counting unanswered questions 
 			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
@@ -106,25 +120,31 @@ public class SessionsReportGenerator {
 			}
 		}
 		this.data.put(new Integer(this.key++), this.lineContent);
+		this.dataTimeSheet.put(new Integer(this.key++), this.lineContent);
 		
+		
+		
+		return (createWorkbook("Answers", this.data) && createWorkbook("Durations", this.dataTimeSheet) && writeWorkbookToFile());
+	}
+	
+	private boolean createWorkbook(String name, Map<Integer, Object[]> content){
 		/* creating excel workbook */
-		//Blank workbook
-		XSSFWorkbook workbook = new XSSFWorkbook();
+		
 
 		//Create a blank sheet (for the scores)
-		XSSFSheet answerSheet = workbook.createSheet("Answers");
+		XSSFSheet answerSheet = this.workbook.createSheet(name);
 
-		int rownum = 0;	
+		int rownum = 0;
 		Row row;
 		Cell cell;
 
 		/* filling the Answer sheet */
 		// Iterate over data and write to score sheet
-		Set<Integer> keyset = data.keySet();
+		Set<Integer> keyset = content.keySet();
 		for (Integer singleKey : keyset)
 		{	// new row for each entry
 			row = answerSheet.createRow(rownum++);
-			Object [] objArr = data.get(singleKey);
+			Object [] objArr = content.get(singleKey);
 			int cellnum = 0;
 			for (Object obj : objArr)
 			{	// new cell for each object on the object Array
@@ -148,11 +168,15 @@ public class SessionsReportGenerator {
 		for (short c=0; c<questionsInSheet.size(); c++){
 			answerSheet.autoSizeColumn(c);
 		}
-
+		return true;
+	}
+	
+	private boolean writeWorkbookToFile(){
+	
 		try
 		{	//Write the workbook in file system
 			FileOutputStream out = new FileOutputStream(new File(this.fileName));
-			workbook.write(out);
+			this.workbook.write(out);
 			out.flush();
 			out.close();
 			System.out.println("SessionReport.xlsx written successfully on disk.");
@@ -167,21 +191,36 @@ public class SessionsReportGenerator {
 	
 	private boolean populateDataLines(Vector<WorkerSession> workerSessions){
 		for (WorkerSession workerSession : workerSessions) {
-			this.lineContent = new Object[this.questionsInSheet.size()+2]; 
-			this.lineContent[0] = workerSession.getUserId();			// worker ID
+			this.lineContent = new Object[this.questionsInSheet.size()+4]; 
+			this.lineContent[0] = workerSession.getWorkerId();			// worker ID
 			this.lineContent[1] = workerSession.getId();				// session ID
+			this.lineContent[2] = workerSession.getTotalElapsedTime(); 		// the time the worker took to perform all microtasks	
+			
+			Object[] lineTimeContent = new Object[this.questionsInSheet.size()+4]; 
+			lineTimeContent[0] = workerSession.getWorkerId();			// worker ID
+			lineTimeContent[1] = workerSession.getId();				// session ID
+			lineTimeContent[2] = workerSession.getTotalElapsedTime(); 		// the time the worker took to perform all microtasks	
+			
 			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
 			for (Microtask microtask : microtasks) {
 				Integer currentColumn = this.questionsInSheet.get(microtask.getID());
 				
 				if (null == currentColumn)
 					return false;
-				if (microtask.getAnswerList().isEmpty())
-					this.lineContent[currentColumn] = "?";	
-				else
-					this.lineContent[currentColumn] = microtask.getAnswerList().get(0).getOption();	// the one single answer
+				
+				Answer answer = microtask.getAnswerByUsedId(workerSession.getWorkerId());
+				
+				if (answer==null){
+					this.lineContent[currentColumn] = "?";
+					lineTimeContent[currentColumn] = "?";
+				}
+				else{
+					this.lineContent[currentColumn] = answer.getOption();	// the answer for that workerId
+					lineTimeContent[currentColumn] = answer.getElapsedTime().toString();
+				}
 			}
 			this.data.put(new Integer(this.key++), this.lineContent);
+			this.dataTimeSheet.put(new Integer(this.key++), lineTimeContent);
 			/* for debug purposes 
 			Set<Map.Entry<Integer, Object[]>> setActiveSessions = data.entrySet();
 			Iterator<Entry<Integer, Object[]>> iterateActiveSessions = setActiveSessions.iterator();

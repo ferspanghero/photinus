@@ -60,7 +60,7 @@ public class StorageManager {
 	public WorkerSession readNewSession(String userId){
 		WorkerSession session = this.sessionStorage.readNewWorkerSession();
 		if(session!=null){
-			session.setUserId(userId);
+			session.setWorkerId(userId);
 			this.sessionStorage.updateActiveWorkerSession(session);
 			return session;
 		}
@@ -70,7 +70,6 @@ public class StorageManager {
 
 
 	/**
-	 * 
 	 * @param sessionId 
 	 * @return a session that is already active (received at least one answer), otherwise null 
 	 * if the session is not active anymore or if the session ID is invalid
@@ -79,8 +78,8 @@ public class StorageManager {
 		WorkerSession session = sessionStorage.readActiveWorkerSessionByID(sessionId);
 		return session;
 	}
-
-
+	
+	
 	public String generateWorkerID(Date currentDate){
 		String workerId = this.workerStorage.getNewWorkerKey();
 		Worker worker = new Worker(workerId, currentDate);

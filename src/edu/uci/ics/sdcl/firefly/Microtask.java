@@ -141,16 +141,13 @@ public class Microtask implements Serializable
 		return snippetHightlights;
 	}
 
-
 	public void setSnippetHightlights(String snippetHightlights) {
 		this.snippetHightlights = snippetHightlights;
 	}
 
-
 	public String getCallerHightlights() {
 		return callerHightlights;
 	}
-
 
 	public void setCallerHightlights(String callerHightlights) {
 		this.callerHightlights = callerHightlights;
@@ -161,11 +158,9 @@ public class Microtask implements Serializable
 		return calleeHightlights;
 	}
 
-
 	public void setCalleeHightlights(String calleeHightlights) {
 		this.calleeHightlights = calleeHightlights;
 	}
-
 
 	public void setCallerFileContent(String fileContent){
 		this.callerFileContent = fileContent;
@@ -193,6 +188,17 @@ public class Microtask implements Serializable
 	
 	public Integer getCalleeLOCS(){
 		return this.calleeLOCS;
+	}
+
+	public Answer getAnswerByUsedId(String userId) {
+		Answer foundAnswer=null;
+		for(Answer answer: answerList){
+			if(answer.getWorkerId().matches(userId)){
+				foundAnswer = answer;
+				break;
+			}
+		}
+		return foundAnswer;
 	}
 	
 }
