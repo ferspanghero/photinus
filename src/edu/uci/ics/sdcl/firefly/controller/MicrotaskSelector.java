@@ -26,7 +26,7 @@ public class MicrotaskSelector {
 	public ArrayList<Microtask> selectAllMicrotasks(){
 		
 		ArrayList<Microtask> mtaskList = new ArrayList<Microtask>();
-		MicrotaskStorage memento = new MicrotaskStorage();
+		MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();
 		HashMap<String, FileDebugSession> map = memento.readAllDebugSessions();
 		if((map!=null) && (map.keySet()!=null)){
 			Set<String>keySet = map.keySet();
@@ -51,7 +51,7 @@ public class MicrotaskSelector {
 	 * @see selectMicrotask(String fileName)
 	 */
 	public SelectorReturn selectAnyMicrotask(){
-		MicrotaskStorage memento = new MicrotaskStorage();
+		MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();;
 		Set<String> debuggingSessionNameSet = memento.retrieveDebuggingSessionNames();
 		if((debuggingSessionNameSet==null) || (!debuggingSessionNameSet.iterator().hasNext())){
 			return null;
@@ -85,7 +85,7 @@ public class MicrotaskSelector {
 	 */
 	public Microtask selectMicrotask(String fileName){
 
-		MicrotaskStorage memento = new MicrotaskStorage();
+		MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();
 		FileDebugSession debugSession = memento.read(fileName);
 		if( (debugSession==null) || (debugSession.isEmpty()) ){
 			return null;

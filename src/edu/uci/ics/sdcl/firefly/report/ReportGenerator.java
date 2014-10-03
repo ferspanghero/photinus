@@ -29,14 +29,14 @@ public class ReportGenerator {
 	}
 	
 	public boolean createMicrotasksReport(){
-		MicrotaskStorage microtaskStore = new MicrotaskStorage();
+		MicrotaskStorage microtaskStore = MicrotaskStorage.initializeSingleton();
 		HashMap<String, FileDebugSession> microtasks = microtaskStore.readAllDebugSessions();
 		MicrotasksReportGenerator microtaskReport = new MicrotasksReportGenerator();
 		return microtaskReport.writeToXlsx(microtasks);
 	}
 
 	public boolean createWorkersReport(){
-		WorkerStorage workersStore = new WorkerStorage();
+		WorkerStorage workersStore =  WorkerStorage.initializeSingleton();
 		HashMap<String, Worker> workers= workersStore.readAllWorkers();
 		// for debug purposes:
 		/* Set<Map.Entry<String, Worker>> setWorkers = workers.entrySet();

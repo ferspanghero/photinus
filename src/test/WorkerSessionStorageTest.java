@@ -135,7 +135,7 @@ public class WorkerSessionStorageTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage microtaskStorage = new MicrotaskStorage();
+			MicrotaskStorage microtaskStorage = MicrotaskStorage.initializeSingleton();;
 			microtaskStorage.insert(fileName, fileDebuggingSession);
 
 			//Generate the stack of WorkerSession
@@ -281,7 +281,7 @@ public class WorkerSessionStorageTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage microtaskStorage = new MicrotaskStorage();
+			MicrotaskStorage microtaskStorage = MicrotaskStorage.initializeSingleton();;
 			microtaskStorage.insert(fileName, fileDebuggingSession);
 
 			//Generate the stack of New and Duplicated WorkerSession

@@ -14,7 +14,15 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 public class WorkerStorage {
 	private String persistentFileName = "consent.ser";
 
-	public WorkerStorage() {
+	private static WorkerStorage storage;
+	
+	public static WorkerStorage initializeSingleton(){
+		if(storage == null)
+			storage = new WorkerStorage();
+		return storage;
+	}
+	
+	private WorkerStorage() {
 		PropertyManager manager = new PropertyManager();
 		String path = manager.serializationPath;
 		try{

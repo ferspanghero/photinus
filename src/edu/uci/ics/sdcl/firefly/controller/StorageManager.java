@@ -3,7 +3,6 @@ package edu.uci.ics.sdcl.firefly.controller;
 import java.util.Date;
 
 import edu.uci.ics.sdcl.firefly.Answer;
-import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
@@ -12,7 +11,6 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 
 /**
  * Manages all the write and read operations to the persistent objects.
- * Keeps the consistency and generates a txt log of all operations.
  * 
  * @author Christian Medeiros Adriano
  *
@@ -22,11 +20,11 @@ public class StorageManager {
 	private WorkerSessionStorage sessionStorage;
 	private MicrotaskStorage microtaskStorage;
 	private WorkerStorage workerStorage;
-
+	
 	public StorageManager(){
 		this.sessionStorage = WorkerSessionStorage.initializeSingleton();
-		this.microtaskStorage = new MicrotaskStorage();
-		this.workerStorage = new WorkerStorage();
+		this.microtaskStorage = MicrotaskStorage.initializeSingleton();
+		this.workerStorage = WorkerStorage.initializeSingleton();
 	}
 
 	/**
@@ -44,7 +42,7 @@ public class StorageManager {
 
 		//set answer to the microtask in the WorkerSession
 		boolean success1 = this.sessionStorage.setSessionMicrotaskAnswer(sessionId,microtaskId,answer);
-
+		
 		//add another answer to the microtask 
 		boolean success2 = this.microtaskStorage.insertAnswer(fileName, microtaskId, answer);
 

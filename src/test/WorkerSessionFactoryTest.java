@@ -84,7 +84,7 @@ public class WorkerSessionFactoryTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage memento = new MicrotaskStorage();
+			MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();;
 			memento.insert(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
@@ -169,7 +169,7 @@ public class WorkerSessionFactoryTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage memento = new MicrotaskStorage();
+			MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();;
 			memento.insert(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession
@@ -325,7 +325,7 @@ public class WorkerSessionFactoryTest {
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
-			MicrotaskStorage memento = new MicrotaskStorage();
+			MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();;
 			memento.insert(fileName, fileDebuggingSession);
 
 			//Generate the WorkerSession

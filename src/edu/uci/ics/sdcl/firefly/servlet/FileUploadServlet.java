@@ -81,11 +81,12 @@ public class FileUploadServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//process only if its multipart content
-		String targetName = new String();
+		String targetMethodName = new String();
+		String numberOfParameters = null;
 		String bugReport = new String();
 		String fileName = new String();
 		String fileContent = new String();
-		String userId= new String();
+		String workerId= new String();
 		boolean gotBugReport = false;		// assuming that not all parameters that are necessary are known
 		boolean gotSpecificMethod = false;
 
@@ -97,7 +98,7 @@ public class FileUploadServlet extends HttpServlet {
 				List<FileItem>  items = upload.parseRequest(request);
 				for(FileItem item: items){	//Already enables more than one file upload.
 					if (!item.isFormField()) { 
-						fileName = item.getName(); 
+						fileName = item.getName();				
 						long sizeInBytes = item.getSize();
 						if(sizeInBytes>0){
 							// reading fileContent
@@ -119,11 +120,18 @@ public class FileUploadServlet extends HttpServlet {
 						}
 						// getting specific method name
 						if (item.getFieldName().equalsIgnoreCase("targetMethod")){
-							targetName = item.getString();
+							StringTokenizer tokenizer = new StringTokenizer(item.getString());						
+							if(tokenizer.countTokens()==2){
+								targetMethodName = tokenizer.nextToken();
+								numberOfParameters = tokenizer.nextToken();
+							}
+							else{
+								targetMethodName = item.getString();
+							}							
 							gotSpecificMethod = true;
 						}
-						if (item.getFieldName().equalsIgnoreCase("userId"))
-							userId = item.getString();
+						if (item.getFieldName().equalsIgnoreCase("workerId"))
+							workerId = item.getString();
 					}
 				}
 
@@ -133,12 +141,12 @@ public class FileUploadServlet extends HttpServlet {
 				
 				// generating microtasks if...
 				if (gotBugReport && gotSpecificMethod){
-					String results = generateMicrotasks(fileName, fileContent, targetName, bugReport);
+					String results = generateMicrotasks(fileName, fileContent, targetMethodName,numberOfParameters, bugReport);
 
-					//Store the UserId and HitId of the Researcher
-					WorkerStorage workerStorage = new WorkerStorage();
-					Worker worker = new Worker(userId,new Date());
-					workerStorage.insert(userId, worker);
+					//Store the workerId Researcher
+					WorkerStorage workerStorage =  WorkerStorage.initializeSingleton();;
+					Worker worker = new Worker(workerId,new Date());
+					workerStorage.insert(workerId, worker);
 
 					return_message = return_message + results;
 				}
@@ -158,21 +166,44 @@ public class FileUploadServlet extends HttpServlet {
 	}
 
 
-	private String generateMicrotasks(String fileName, String fileContent, String methodName, String bugReport){
+	private String generateMicrotasks(String fileName, String fileContent, String methodName, String numberOfParameters, String bugReport){
 		//calls CodeSnippetFactory
 		CodeSnippetFactory codeSnippetFactory = new CodeSnippetFactory(fileName,fileContent);
 		ArrayList<CodeSnippet> snippetList = codeSnippetFactory.generateSnippetsForFile();
-
+		int parameterSize;
+		if(numberOfParameters==null)
+			parameterSize=-1;
+		else
+			parameterSize = new Integer(numberOfParameters).intValue();
+		
 		//filtering by methodName
 		boolean foundMatch = false;		// assuming it found the method specified
 		System.out.print("candidates: ");
 		ArrayList<CodeSnippet> filteredCodeSnippets = new ArrayList<CodeSnippet>();
 		for (CodeSnippet codeSnippet : snippetList) {
 			System.out.print(codeSnippet.getMethodSignature().getName() + ", ");
-			if (codeSnippet.getMethodSignature().getName().equals(methodName))
-			{
-				filteredCodeSnippets.add(codeSnippet);
-				foundMatch = true;
+			if (codeSnippet.getMethodSignature().getName().matches(methodName)){
+				if((parameterSize!=-1) && (codeSnippet.getMethodSignature().getParameterList() !=null)){
+					if(codeSnippet.getMethodSignature().getParameterList().size()== parameterSize){
+					//Means that a parameter count was provided, so have to match that as well.
+					//not only the method name
+						filteredCodeSnippets.add(codeSnippet);
+						foundMatch = true;
+						break;
+					}
+					else{
+						//do nothing, ignore method, because they have same name, but different parameters.
+						System.out.println("ignoring method for different parameter size: "+codeSnippet.getMethodSignature().toString());
+					}
+				}
+				else{//no parameter list was provided, so just add the first occurrence of the method
+					filteredCodeSnippets.add(codeSnippet);
+					foundMatch = true;
+					break;
+				}
+			}
+			else{
+			//ignore method, because has a different method name
 			}
 		}
 		System.out.println();
@@ -183,7 +214,7 @@ public class FileUploadServlet extends HttpServlet {
 			
 			QuestionFactory questionFactory = new QuestionFactory ();
 			MicrotaskContextFactory contextFactory = new MicrotaskContextFactory();
-			MicrotaskStorage storage = new MicrotaskStorage();
+			MicrotaskStorage storage = MicrotaskStorage.initializeSingleton();;
 			
 			HashMap<Integer, Microtask> microtaskMap = questionFactory.generateMicrotasks(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
 			microtaskMap = contextFactory.generateMicrotaskContext(microtaskMap);
@@ -225,7 +256,7 @@ public class FileUploadServlet extends HttpServlet {
 		//Generate the stack of New and Duplicated WorkerSession		
 		WorkerSessionFactory sessionFactory = new WorkerSessionFactory(manager.microtasksPerSession);
 
-		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(manager.answersPerMicrotask-1); //Because we already have the original stack.
+		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(manager.answersPerMicrotask); 
 				
 		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
 		storage.writeNewWorkerSessionStack(originalStack);

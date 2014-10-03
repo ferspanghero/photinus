@@ -70,7 +70,7 @@ public class MicrotaskMementoTest {
 	@Test
 	public void testCreateNewPersistentFile() {
 
-		MicrotaskStorage memento = new MicrotaskStorage();
+		MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();;
 		memento.insert(fileName, this.debugSessionMap.get(fileName));
 
 		 FileDebugSession debugMap = memento.read(fileName);
@@ -88,7 +88,7 @@ public class MicrotaskMementoTest {
 
 	@Test
 	public void testRemoveDebugSession() {
-		MicrotaskStorage memento = new MicrotaskStorage();
+		MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();;
 		memento.insert(fileName, this.debugSessionMap.get(fileName));
 		
 		 memento.remove(fileName);

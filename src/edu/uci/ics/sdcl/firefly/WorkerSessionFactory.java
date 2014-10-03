@@ -46,7 +46,7 @@ public class WorkerSessionFactory {
 	private Integer microtaskPerSession;
 
 	public WorkerSessionFactory(int microtaskPerSession){
-		this.microtaskStorage = new MicrotaskStorage();
+		this.microtaskStorage =  MicrotaskStorage.initializeSingleton();
 		WorkerSessionStorage.initializeSingleton();
 		this.workerSessionMap = new HashMap<Integer, WorkerSession>();
 		this.microtaskPerSession = microtaskPerSession;
@@ -59,7 +59,7 @@ public class WorkerSessionFactory {
 	 * @param copies the number of desired copies
 	 * @return the list of worker sessions
 	 */
-	public Stack<WorkerSession> generateSessions(int copies){
+	public Stack<WorkerSession> generateSessions(int answersPerMicrotask){
 
 		//Final stack that will be persisted
 		Stack<WorkerSession> workerSessionStack = new Stack<WorkerSession>();
@@ -79,8 +79,8 @@ public class WorkerSessionFactory {
 
 		workerSessionStack.addAll(originalList);
 		
-		if(copies > 0){
-			workerSessionStack.addAll(this.duplicateSessions(workerSessionStack, copies));
+		if(answersPerMicrotask > 0){
+			workerSessionStack.addAll(this.duplicateSessions(workerSessionStack, answersPerMicrotask-1));//Because we already have the original list.
 		}
 		
 		return workerSessionStack;

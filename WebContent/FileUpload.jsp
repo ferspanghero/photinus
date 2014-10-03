@@ -80,8 +80,7 @@
 							<input type="image" src="./images/MicrotasksButton.jpg"
 								value="Open Microtask" name="openMicrotask" align="bottom" onclick="openMicrotask()">
 							<input type="hidden" id="subAction" name="subAction" value="loadFirst"> 	
-							<input type="hidden" id="userId" name="userId" value="researcher"> 	
-							<input type="hidden" id="hitId" name="hitId" value="researchSession"> 	
+							<input type="hidden" id="workerId" name="workerId" value="researcher"> 	
 						</form>
 					</td>
 					

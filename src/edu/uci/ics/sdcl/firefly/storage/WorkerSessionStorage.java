@@ -53,6 +53,8 @@ public class WorkerSessionStorage {
 				// No files has been created yet. 
 				this.cleanUp();
 			}
+			else//No clean-up needed, just initialize the temporary datastructure.
+				this.activeSessionTable=new Hashtable<String,WorkerSession>();
 		}
 		catch(Exception exception){
 			exception.printStackTrace();
@@ -149,13 +151,10 @@ public class WorkerSessionStorage {
 			return null;
 		else{
 			WorkerSession session = stack.pop(); 
-			if(writeNewWorkerSessionStack(stack)){ //Save the updated stack
-				if(this.updateActiveWorkerSession(session))
-					return session;
-				else
-					return null;
-			}
-			else return null;
+			if(writeNewWorkerSessionStack(stack)) //Save the updated stack
+				return session;
+			else
+				return null;
 		}
 	}
 

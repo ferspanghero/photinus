@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
@@ -28,13 +31,23 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 public class MicrotaskStorage {
 
 	private String persistentFileName = "microtasks.ser";
-	private static boolean semaphore=false; //avoid trying to open a file while other is still reading.
-
-	public MicrotaskStorage(){
+	private static MicrotaskStorage storage;
+	private static Logger logger;
+	
+	public static MicrotaskStorage initializeSingleton(){
+		if(storage == null){
+			storage = new MicrotaskStorage();
+		}
+		return storage;
+	}
+	
+	private MicrotaskStorage(){
 
 		PropertyManager manager = new PropertyManager();
 		String path = manager.serializationPath;
 		this.persistentFileName = path + this.persistentFileName;
+		logger = LoggerFactory.getLogger(MicrotaskStorage.class);
+		logger.debug("logger initialized");
 
 		try{
 
@@ -116,7 +129,8 @@ public class MicrotaskStorage {
 			mtask.addAnswer(answer);
 			newfileDebugSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
 			newfileDebugSession.insertMicrotask(microtaskId, mtask);
-			System.out.println("insertAnswer for user"+answer.getWorkerId()+" Question: "+ mtask.getQuestion()+" Answer: "+answer.getOption());
+			logger.info("insertAnswer for user"+answer.getWorkerId()+" Question: "+ mtask.getQuestion()+" Answer: "+answer.getOption());
+			logger.debug("insertAnswer for user"+answer.getWorkerId()+" Question: "+ mtask.getQuestion()+" Answer: "+answer.getOption());
 			return this.insert(fileName, newfileDebugSession);
 		}
 		catch(Exception e){

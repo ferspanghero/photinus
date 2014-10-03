@@ -58,7 +58,7 @@ public class SkillTestServlet extends HttpServlet {
 		request.setAttribute("subAction", "submitAnswers");
 
 		//First check if the user hasn't already taken the test
-		WorkerStorage workerStorage =  new WorkerStorage();
+		WorkerStorage workerStorage =   WorkerStorage.initializeSingleton();;
 		Worker worker = workerStorage.readSingleWorker(this.userId);
 		if(worker.getGrade()!=null){
 			request.getRequestDispatcher(SorryPage).include(request, response);
@@ -109,7 +109,7 @@ public class SkillTestServlet extends HttpServlet {
 		
 		HashMap<String, Boolean> gradeMap = this.gradeAnswers(answerMap);
 		int grade = this.countCorrectAnswers(gradeMap);
-		WorkerStorage workerStorage =  new WorkerStorage();
+		WorkerStorage workerStorage =   WorkerStorage.initializeSingleton();;
 
 		Worker worker = workerStorage.readSingleWorker(this.userId);
 

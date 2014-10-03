@@ -2,6 +2,9 @@ package test;
 
 import static org.junit.Assert.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 
 import org.junit.Before;
@@ -23,7 +26,8 @@ public class LeastCommonDenominatorTest {
 	
 	@Test
 	public void testLeastCommonMultiplier() {
-		
+		Logger logger = LoggerFactory.getLogger(LeastCommonDenominatorTest.class);
+		logger.info("testing logger");
 		long common = LeastCommonDenominator.lcm(list.toArray());
 		assertEquals(48, common);
 	}

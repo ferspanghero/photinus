@@ -23,7 +23,7 @@ public class MicrotaskSelectorTest {
 	private String path = ".";
 	private  HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
 	private HashMap<Integer, Microtask> microtaskMap;
-	MicrotaskStorage memento = new MicrotaskStorage();
+	MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();
 	MicrotaskSelector selector = new MicrotaskSelector();
 	String fileName = "SimpleSampleCode.java";
 
