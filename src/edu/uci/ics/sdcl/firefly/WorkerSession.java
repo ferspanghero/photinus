@@ -3,6 +3,8 @@ package edu.uci.ics.sdcl.firefly;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+
 /**
  * Represents a working session, which is a set of microtasks performed by a single worker
  * 
@@ -25,7 +27,8 @@ public class WorkerSession implements Serializable{
 	/** Associates a session with an anonymous user */
 	private String workerId;
 
-
+	private static Logger logger;
+	
 	/** 
 	 * Initializes the array and the counter to the first position in the array 
 	 * @param id
@@ -125,8 +128,9 @@ public class WorkerSession implements Serializable{
 	public String getTotalElapsedTime() {
 		double totalTime = 0;
 		for(Microtask microtask: microtaskList){
-			Answer answer = microtask.getAnswerByUsedId(this.workerId);
-			totalTime = totalTime + new Double(answer.getElapsedTime());
+			Answer answer = microtask.getAnswerByUserId(this.workerId);
+			if(answer!=null)
+				totalTime = totalTime + new Double(answer.getElapsedTime());
 		}
 		return Double.toString(totalTime);
 	}

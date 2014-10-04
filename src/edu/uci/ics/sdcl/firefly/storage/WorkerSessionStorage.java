@@ -10,6 +10,9 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Stack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
@@ -35,11 +38,13 @@ public class WorkerSessionStorage {
 	private String path;
 
 	private static WorkerSessionStorage storage=null;
+	private static Logger logger;
 
 	private WorkerSessionStorage(){
 		PropertyManager manager = new PropertyManager();
 		this.path = manager.serializationPath;
-
+		logger = LoggerFactory.getLogger(WorkerSessionStorage.class);
+		
 		try{		
 			persistentFileNameNew = path + fileNameNew;
 			File fileNewSession = new File(persistentFileNameNew);
@@ -202,7 +207,7 @@ public class WorkerSessionStorage {
 
 		WorkerSession session = this.readActiveWorkerSessionByID(sessionId);
 		if(session==null){
-			System.out.println("Session is null, id= "+sessionId);
+			logger.error("Session is null, id= "+sessionId);
 			return false;
 		}
 		else{
@@ -239,6 +244,7 @@ public class WorkerSessionStorage {
 		Vector<WorkerSession> closedSessionList = retrieveClosedSessionStorage();
 		if(closedSessionList!=null){
 			closedSessionList.add(session);
+			logger.info("Closing session workerId"+session.getWorkerId()+", sessionId:"+ session.getId());
 			if(this.overwriteClosedWorkerSessionList(closedSessionList))
 				return true;
 			else

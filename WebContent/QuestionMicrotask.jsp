@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Firefly - Question-based Crowd Debugging</title>
+<title>Crowd Debug - Question-Based Software Debugging and Fault Localization </title>
 <style type="text/css" media="screen">
 #mainEditor {
 	position: relative;
@@ -148,7 +148,7 @@
 
 	<div id="failurePrompt">
 		 	<div id="internalText">
-			Thanks for using <b>FireFly!</b> and help to debug software from all over the world. 
+			Thanks for using <b>Crowdebug!</b> and for helping us debug software from all over the world. 
       	<br>
    		</div>
 	</div>
@@ -181,7 +181,7 @@
 			
 			<!-- Hidden fields -->
 			<input type="hidden" name="fileName" value=${requestScope["fileName"]}> 
-			<input type="hidden" name="userId" value=${requestScope["userId"]}> 			
+			<input type="hidden" name="workerId" value=${requestScope["workerId"]}> 			
 			<input type="hidden" name="sessionId" value=${requestScope["sessionId"]}> 
 			<input type="hidden" name="microtaskId" value=${requestScope["microtaskId"]}> 
 			<input type="hidden" name="timeStamp" value=${requestScope["timeStamp"]}> 

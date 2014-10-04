@@ -8,13 +8,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.servlet.SkillTestServlet;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class WorkerStorage {
 	private String persistentFileName = "consent.ser";
 
 	private static WorkerStorage storage;
+	private static Logger logger;
 	
 	public static WorkerStorage initializeSingleton(){
 		if(storage == null)
@@ -25,6 +30,8 @@ public class WorkerStorage {
 	private WorkerStorage() {
 		PropertyManager manager = new PropertyManager();
 		String path = manager.serializationPath;
+		logger = LoggerFactory.getLogger(WorkerStorage.class);
+		
 		try{
 			this.persistentFileName = path + this.persistentFileName;
 			File file = new File(this.persistentFileName);
@@ -53,25 +60,40 @@ public class WorkerStorage {
 		this.updateIndex(new HashMap<String,Worker>());
 	}
 	
-	public boolean insert(String userId, Worker worker){
+	public boolean insert(String workerId, Worker worker){
 
 		HashMap<String, Worker> workerMap = this.retrieveIndex();
 
-		if(workerMap!=null){
-			//writeLog (worker.toString());
-			workerMap.put(userId, worker);
+		if((workerMap!=null)&&(worker!=null)){
+			//Logging
+			if(worker.getGrade()!=null && worker.getGrade()>0)
+				
+				logger.info("workerId: "+worker.getWorkerId()+ ", sessionId:"+worker.getSessionId()
+					+", test1:"+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
+					+", test2:"+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
+					+", test3:"+worker.getGradeMap().get(SkillTestServlet.QUESTION3)
+					+", test4:"+worker.getGradeMap().get(SkillTestServlet.QUESTION4)
+					+", grade:"+worker.getGrade()
+					+", testDuration:"+worker.getSkillTestDuration()
+					+", survey:{"+worker.getSurveyAnswersToString()+"}");
+			else
+				logger.info("workerId:"+worker.getWorkerId()+ ", sessionId:"+worker.getSessionId()
+						+", consentDate:" + worker.getConsentDate().toString());
+			
+			//Object persistence
+			workerMap.put(workerId, worker);
 			return this.updateIndex(workerMap);	
 		}		
 		else
 			return false;
 	}
 	
-	public Worker readSingleWorker(String userId){
+	public Worker readSingleWorker(String workerId){
 
 		HashMap<String, Worker> workerMap = this.retrieveIndex();
 
-		if(workerMap!=null && workerMap.containsKey(userId))
-			return workerMap.get(userId);
+		if(workerMap!=null && workerMap.containsKey(workerId))
+			return workerMap.get(workerId);
 		else
 			return null;
 	}
@@ -80,12 +102,12 @@ public class WorkerStorage {
 		return this.retrieveIndex();
 	}
 	
-	public boolean remove(String userId) {
+	public boolean remove(String workerId) {
 
 		HashMap<String, Worker> workerMap = this.retrieveIndex();
 
 		if(workerMap!=null && !workerMap.isEmpty()){
-			workerMap.remove(userId);
+			workerMap.remove(workerId);
 			return this.updateIndex(workerMap);				
 		}		
 		else
@@ -93,7 +115,7 @@ public class WorkerStorage {
 	}
 	
 	/**
-	 * @return a user identifier that does not exist in the storage yet.
+	 * @return a worker identifier that does not exist in the storage yet.
 	 */
 	public String getNewWorkerKey() {
 		HashMap<String, Worker> indexMap = this.retrieveIndex();

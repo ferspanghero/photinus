@@ -33,7 +33,7 @@ public class MicrotaskServlet extends HttpServlet {
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
 
-	private String userId;
+	private String workerId;
 
 	private MicrotaskContextFactory workerSessionSelector;
 
@@ -56,10 +56,10 @@ public class MicrotaskServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		this.userId = request.getParameter("userId");
+		this.workerId = request.getParameter("workerId");
 
 		//Restore data for next Request
-		request.setAttribute("userId",this.userId);
+		request.setAttribute("workerId",this.workerId);
 
 		String subAction = request.getParameter("subAction");
 
@@ -77,10 +77,10 @@ public class MicrotaskServlet extends HttpServlet {
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		StorageManager manager = new StorageManager();
-		WorkerSession  session = manager.readNewSession(this.userId);
+		WorkerSession  session = manager.readNewSession(this.workerId);
 
 		if(session==null || !session.hasCurrent())
-			//Means that it is the first user session. There should be at least one microtask. If not it is an Error.
+			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
 			showErrorPage(request, response,"@ MicrotaskServlet - no microtask available");
 		else{
 			//Restore data for next Request
@@ -108,7 +108,7 @@ public class MicrotaskServlet extends HttpServlet {
 		//Save answers from the previous microtask
 		StorageManager manager = new StorageManager();
 		boolean success = manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId),
-				new Answer(Answer.mapToString(answer),explanation, this.userId, elapsedTime, timeStamp));
+				new Answer(Answer.mapToString(answer),explanation, this.workerId, elapsedTime, timeStamp));
 
 		if(!success){
 			this.showErrorPage(request, response, "Answer could not be stored");
@@ -121,7 +121,7 @@ public class MicrotaskServlet extends HttpServlet {
 			//Continue working on existing session
 			WorkerSession session = manager.readActiveSession(sessionId);	
 
-			//Decide where to send to send the user
+			//Decide where to send to send the worker
 			if(session==null || !session.hasCurrent())
 				//No more microtasks, move to the Survey page
 				request.getRequestDispatcher(SurveyPage).include(request, response);
@@ -137,7 +137,7 @@ public class MicrotaskServlet extends HttpServlet {
 
 	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("error", message);
-		request.setAttribute("executionId", this.userId);
+		request.setAttribute("executionId", this.workerId);
 		request.getRequestDispatcher(ErrorPage).include(request, response);
 	}
 

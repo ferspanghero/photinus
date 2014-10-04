@@ -47,7 +47,6 @@ public class MicrotaskStorage {
 		String path = manager.serializationPath;
 		this.persistentFileName = path + this.persistentFileName;
 		logger = LoggerFactory.getLogger(MicrotaskStorage.class);
-		logger.debug("logger initialized");
 
 		try{
 
@@ -129,8 +128,7 @@ public class MicrotaskStorage {
 			mtask.addAnswer(answer);
 			newfileDebugSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
 			newfileDebugSession.insertMicrotask(microtaskId, mtask);
-			logger.info("insertAnswer for user"+answer.getWorkerId()+" Question: "+ mtask.getQuestion()+" Answer: "+answer.getOption());
-			logger.debug("insertAnswer for user"+answer.getWorkerId()+" Question: "+ mtask.getQuestion()+" Answer: "+answer.getOption());
+			logger.info("WorkerId:"+answer.getWorkerId()+", Question:"+ mtask.getQuestion()+", Answer:"+answer.getOption()+ ", Duration:"+answer.getElapsedTime());
 			return this.insert(fileName, newfileDebugSession);
 		}
 		catch(Exception e){

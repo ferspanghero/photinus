@@ -178,10 +178,9 @@ public class FileUploadServlet extends HttpServlet {
 		
 		//filtering by methodName
 		boolean foundMatch = false;		// assuming it found the method specified
-		System.out.print("candidates: ");
+		//System.out.print("candidates: ");
 		ArrayList<CodeSnippet> filteredCodeSnippets = new ArrayList<CodeSnippet>();
 		for (CodeSnippet codeSnippet : snippetList) {
-			System.out.print(codeSnippet.getMethodSignature().getName() + ", ");
 			if (codeSnippet.getMethodSignature().getName().matches(methodName)){
 				if((parameterSize!=-1) && (codeSnippet.getMethodSignature().getParameterList() !=null)){
 					if(codeSnippet.getMethodSignature().getParameterList().size()== parameterSize){
@@ -193,7 +192,7 @@ public class FileUploadServlet extends HttpServlet {
 					}
 					else{
 						//do nothing, ignore method, because they have same name, but different parameters.
-						System.out.println("ignoring method for different parameter size: "+codeSnippet.getMethodSignature().toString());
+						//System.out.println("ignoring method for different parameter size: "+codeSnippet.getMethodSignature().toString());
 					}
 				}
 				else{//no parameter list was provided, so just add the first occurrence of the method
@@ -206,7 +205,7 @@ public class FileUploadServlet extends HttpServlet {
 			//ignore method, because has a different method name
 			}
 		}
-		System.out.println();
+		
 
 		String results = "";
 		if (foundMatch){
@@ -267,7 +266,7 @@ public class FileUploadServlet extends HttpServlet {
 		results = results + "Sessions generated: " +totalSessions+"<br>"+ 
 					"Total Sessions available now: "+existingSessions;
 
-		System.out.println("Results: "+results);
+		//System.out.println("Results: "+results);
 
 		return results;
 	}

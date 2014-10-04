@@ -142,7 +142,7 @@
 	 		<!-- Hidden fields -->
 	 		<input type="hidden" name="sessionId" value=${requestScope["sessionId"]}> 
 	 		
-			<input type="hidden" name="userId" value=${requestScope["userId"]}> 
+			<input type="hidden" name="workerId" value=${requestScope["workerId"]}> 
 			<input type="hidden" name="hitId" value=${requestScope["hitId"]}> 
 	 
 	 		<br> 

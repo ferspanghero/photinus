@@ -190,10 +190,10 @@ public class Microtask implements Serializable
 		return this.calleeLOCS;
 	}
 
-	public Answer getAnswerByUsedId(String userId) {
+	public Answer getAnswerByUserId(String workerId) {
 		Answer foundAnswer=null;
 		for(Answer answer: answerList){
-			if(answer.getWorkerId().matches(userId)){
+			if(answer!=null && answer.getWorkerId().matches(workerId)){
 				foundAnswer = answer;
 				break;
 			}

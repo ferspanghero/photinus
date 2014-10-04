@@ -90,7 +90,7 @@ private String fileName = "WorkersReport.xlsx";
 			
 			// preparing line (object), which index is a cell
 			Object[] lineContent = new Object[14]; 		// 14 columns
-			lineContent[0] = worker.getUserId();	// user ID (cell 0)
+			lineContent[0] = worker.getWorkerId();	// user ID (cell 0)
 			
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy:HH:mm:SS");
 			lineContent[1] = formatter.format(worker.getConsentDate());	// date of consent (cell 1)

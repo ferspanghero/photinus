@@ -208,7 +208,7 @@ public class SessionsReportGenerator {
 				if (null == currentColumn)
 					return false;
 				
-				Answer answer = microtask.getAnswerByUsedId(workerSession.getWorkerId());
+				Answer answer = microtask.getAnswerByUserId(workerSession.getWorkerId());
 				
 				if (answer==null){
 					this.lineContent[currentColumn] = "?";

@@ -29,26 +29,26 @@ public class SurveyServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		WorkerStorage subjectStore =  WorkerStorage.initializeSingleton();;	// to retrieve date from database
-		Worker subject = subjectStore.readSingleWorker(request.getParameter("userId"));
+		WorkerStorage subjectStore =  WorkerStorage.initializeSingleton();	// to retrieve date from database
+		Worker subject = subjectStore.readSingleWorker(request.getParameter("workerId"));
 		if (null != subject){
-			subject.addAnswer(question[0], request.getParameter("gender"));
-			subject.addAnswer(question[1], request.getParameter("age"));
-			subject.addAnswer(question[2], request.getParameter("country"));
-			subject.addAnswer(question[3], request.getParameter("experience"));
-			subject.addAnswer(question[4], request.getParameter("difficulty"));
-			subject.addAnswer(question[5], request.getParameter("feedback"));
+			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
+			subject.addSurveyAnswer(question[1], request.getParameter("age"));
+			subject.addSurveyAnswer(question[2], request.getParameter("country"));
+			subject.addSurveyAnswer(question[3], request.getParameter("experience"));
+			subject.addSurveyAnswer(question[4], request.getParameter("difficulty"));
+			subject.addSurveyAnswer(question[5], request.getParameter("feedback"));
 			String sessionId =  request.getParameter("sessionId");
 			subject.setSessionId(sessionId);
-			System.out.println("Survey: " + subject.getSurveyAnswers());
-			subjectStore.insert(request.getParameter("userId"), subject);
-			System.out.println("UserId: " + subject.getUserId());
+			
+			//Store result
+			subjectStore.insert(request.getParameter("workerId"), subject);
+			
 			//Displays the Thanks message		
 			request.setAttribute("key", sessionId);
-			System.out.println("key: " + sessionId);
 			request.getRequestDispatcher("/Thanks.jsp").forward(request, response);
 		} else{
-			request.setAttribute("executionId", request.getParameter("userId"));
+			request.setAttribute("executionId", request.getParameter("workerId"));
 			request.setAttribute("error", "@SurveyServlet - object 'subject' is null");
 			//Displays the error page
 			request.getRequestDispatcher("/ErrorPage.jsp").forward(request, response);

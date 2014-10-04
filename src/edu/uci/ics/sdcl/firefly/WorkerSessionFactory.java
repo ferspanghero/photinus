@@ -156,7 +156,7 @@ public class WorkerSessionFactory {
 							fileMethodMap.put(fileKey, methodMap);
 						}
 						else{
-							System.out.println("Successfully dealt with method name collision, method:  "+ methodName);
+							//System.out.println("Successfully dealt with method name collision, method:  "+ methodName);
 						}
 					}
 				}

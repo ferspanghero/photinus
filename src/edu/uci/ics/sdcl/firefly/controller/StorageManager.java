@@ -51,14 +51,14 @@ public class StorageManager {
 
 
 	/** 
-	 * @param userId is used to associate the WorkerSession with a unique anonymous worker
+	 * @param workerId is used to associate the WorkerSession with a unique anonymous worker
 	 * @param hitIT is used to associate the WorkerSession with the Mechanical Turk HIT
 	 * @return a new session, if there aren't new sessions available return null
 	 */
-	public WorkerSession readNewSession(String userId){
+	public WorkerSession readNewSession(String workerId){
 		WorkerSession session = this.sessionStorage.readNewWorkerSession();
 		if(session!=null){
-			session.setWorkerId(userId);
+			session.setWorkerId(workerId);
 			this.sessionStorage.updateActiveWorkerSession(session);
 			return session;
 		}

@@ -61,16 +61,16 @@
 
 		function checkAnswers() {
 
-			if (!isSelected(document.getElementsByName("question1"), 1))
+			if (!isSelected(document.getElementsByName("QUESTION1"), 1))
 				return false;
 
-			if (!isSelected(document.getElementsByName("question2"), 2))
+			if (!isSelected(document.getElementsByName("QUESTION2"), 2))
 				return false;
 
-			if (!isSelected(document.getElementsByName("question3"), 3))
+			if (!isSelected(document.getElementsByName("QUESTION3"), 3))
 				return false;
 
-			if (!isSelected(document.getElementsByName("question4"), 4))
+			if (!isSelected(document.getElementsByName("QUESTION4"), 4))
 				return false;
 
 			//if (!isSelected(document.getElementsByName("question5"), 5))
@@ -110,7 +110,7 @@
 	
 	
 		<form name="testForm" method="get" action="skillTest">
-			<input type="hidden" name="userId" value=${requestScope["userId"]}> 
+			<input type="hidden" name="workerId" value=${requestScope["workerId"]}> 
 			<input type="hidden" name="timeStamp" value=${requestScope["timeStamp"]}> 
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
 			
@@ -131,26 +131,26 @@
 			<br>
 			1- What is the output of the code?
 			<br>
-			<input type="radio" name="question1" value="a">0<br>
-			<input type="radio" name="question1" value="b">1<br>
-			<input type="radio" name="question1" value="c">2<br>
-			<input type="radio" name="question1" value="d">3<br>
+			<input type="radio" name="QUESTION1" value="a">0<br>
+			<input type="radio" name="QUESTION1" value="b">1<br>
+			<input type="radio" name="QUESTION1" value="c">2<br>
+			<input type="radio" name="QUESTION1" value="d">3<br>
 			
 			<br>
 			2- At line 18, what would be the output if instead of "Ciao" we have "Hola"? 
 			<br>
-			<input type="radio" name="question2" value="a">0<br>
-			<input type="radio" name="question2" value="b">1<br>
-			<input type="radio" name="question2" value="c">2<br>
-			<input type="radio" name="question2" value="d">3<br>
+			<input type="radio" name="QUESTION2" value="a">0<br>
+			<input type="radio" name="QUESTION2" value="b">1<br>
+			<input type="radio" name="QUESTION2" value="c">2<br>
+			<input type="radio" name="QUESTION2" value="d">3<br>
 
 			<br>
 			3- At line 18, what would be the output if instead of "Ciao" we have an empty String (e.g., " ")? 
 			<br>
-			<input type="radio" name="question3" value="a">0<br>
-			<input type="radio" name="question3" value="b">1<br>
-			<input type="radio" name="question3" value="c">2<br>
-			<input type="radio" name="question3" value="d">3<br>
+			<input type="radio" name="QUESTION3" value="a">0<br>
+			<input type="radio" name="QUESTION3" value="b">1<br>
+			<input type="radio" name="QUESTION3" value="c">2<br>
+			<input type="radio" name="QUESTION3" value="d">3<br>
 			
 			<!--  <br> The source code below is used in the questions 4 and 5<br>
 			<div id="editor2"><xmp>${requestScope["editor2"]}</xmp></div>
@@ -171,10 +171,10 @@
 			<br>
 			4-At line 18, what would be the output if instead of "NameArray" we have null? 
 			<br>
-			<input type="radio" name="question4" value="a">Empty array<br>
-			<input type="radio" name="question4" value="b">NullPointer Exception<br>
-			<input type="radio" name="question4" value="c">0<br>
-			<input type="radio" name="question4" value="d">1<br>
+			<input type="radio" name="QUESTION4" value="a">Empty array<br>
+			<input type="radio" name="QUESTION4" value="b">NullPointer Exception<br>
+			<input type="radio" name="QUESTION4" value="c">0<br>
+			<input type="radio" name="QUESTION4" value="d">1<br>
 			<br>
 	
 			<INPUT TYPE="button" VALUE="Quit"	onclick="quit()"> 
