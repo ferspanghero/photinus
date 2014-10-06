@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Set;
 import java.util.Iterator;
 
@@ -27,7 +28,7 @@ public class MicrotaskSelector {
 		
 		ArrayList<Microtask> mtaskList = new ArrayList<Microtask>();
 		MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();
-		HashMap<String, FileDebugSession> map = memento.readAllDebugSessions();
+		Hashtable<String, FileDebugSession> map = memento.readAllDebugSessions();
 		if((map!=null) && (map.keySet()!=null)){
 			Set<String>keySet = map.keySet();
 			for(String key: keySet){

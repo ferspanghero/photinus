@@ -40,6 +40,12 @@ public class WorkerSessionStorage {
 	private static WorkerSessionStorage storage=null;
 	private static Logger logger;
 
+	public static synchronized WorkerSessionStorage initializeSingleton(){
+		if(storage==null)
+			storage = new WorkerSessionStorage();
+		return storage;
+	}
+	
 	private WorkerSessionStorage(){
 		try{	
 			PropertyManager manager = PropertyManager.initializeSingleton();
@@ -66,14 +72,10 @@ public class WorkerSessionStorage {
 		}
 	}
 
-	public static WorkerSessionStorage initializeSingleton(){
-		if(storage==null)
-			storage = new WorkerSessionStorage();
-		return storage;
-	}
+	
 
 	/** Create new storages */
-	public  void cleanUp(){
+	public synchronized void cleanUp(){
 
 		File file; 
 		ObjectOutputStream objOutputStream; 
@@ -124,7 +126,7 @@ public class WorkerSessionStorage {
 	 * @param type specify if this is a stack of copies or a stack of original, because they are stored separately
 	 * @return true is operation was successful, otherwise, false.
 	 */
-	public boolean writeNewWorkerSessionStack(Stack<WorkerSession> newStack){
+	public synchronized boolean writeNewWorkerSessionStack(Stack<WorkerSession> newStack){
 		try{
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(new File(persistentFileNameNew)));
@@ -260,7 +262,7 @@ public class WorkerSessionStorage {
 	 * @param closedSessionList the list of closed WorkerSession (it will overwrite the existing one)
 	 * @return true if operation succeeded, otherwise false.
 	 */
-	private boolean overwriteClosedWorkerSessionList(Vector<WorkerSession> closedSessionList){
+	private synchronized boolean overwriteClosedWorkerSessionList(Vector<WorkerSession> closedSessionList){
 		try{
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(new File(persistentFileNameClosed)));
@@ -282,7 +284,7 @@ public class WorkerSessionStorage {
 	//------------------------------------------------------------------------------------------------------------------------
 	// Retrieve the storages
 	
-	public Stack<WorkerSession> retrieveNewSessionStorage(){
+	public synchronized Stack<WorkerSession> retrieveNewSessionStorage(){
 		try{
 
 			File file = new File(persistentFileNameNew); 
@@ -306,7 +308,7 @@ public class WorkerSessionStorage {
 	}
 
 
-	public  Vector<WorkerSession> retrieveClosedSessionStorage(){
+	public synchronized Vector<WorkerSession> retrieveClosedSessionStorage(){
 		try{
 
 			File file = new File(persistentFileNameClosed); 

@@ -21,7 +21,7 @@ public class WorkerStorage {
 	private static WorkerStorage storage;
 	private static Logger logger;
 	
-	public static WorkerStorage initializeSingleton(){
+	public synchronized static WorkerStorage initializeSingleton(){
 		if(storage == null)
 			storage = new WorkerStorage();
 		return storage;
@@ -129,7 +129,7 @@ public class WorkerStorage {
 		return key;
 	}
 	
-	private boolean updateIndex(HashMap<String, Worker> workerMap){
+	private synchronized boolean updateIndex(HashMap<String, Worker> workerMap){
 		try{
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(new File(this.persistentFileName)));
@@ -149,7 +149,7 @@ public class WorkerStorage {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private HashMap<String, Worker> retrieveIndex(){
+	private synchronized HashMap<String, Worker> retrieveIndex(){
 		try{
 			HashMap<String,Worker> workerMap;
 			ObjectInputStream objInputStream = new ObjectInputStream( 

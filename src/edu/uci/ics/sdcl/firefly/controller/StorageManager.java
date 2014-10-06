@@ -38,7 +38,7 @@ public class StorageManager {
 	 * 
 	 * @return true if all three operations succeeded, false if any of them failed.
 	 */
-	public boolean updateMicrotaskAnswer(String fileName, String sessionId, Integer microtaskId, Answer answer){
+	public synchronized boolean updateMicrotaskAnswer(String fileName, String sessionId, Integer microtaskId, Answer answer){
 
 		//set answer to the microtask in the WorkerSession
 		boolean success1 = this.sessionStorage.setSessionMicrotaskAnswer(sessionId,microtaskId,answer);
@@ -55,7 +55,7 @@ public class StorageManager {
 	 * @param hitIT is used to associate the WorkerSession with the Mechanical Turk HIT
 	 * @return a new session, if there aren't new sessions available return null
 	 */
-	public WorkerSession readNewSession(String workerId){
+	public synchronized WorkerSession readNewSession(String workerId){
 		WorkerSession session = this.sessionStorage.readNewWorkerSession();
 		if(session!=null){
 			session.setWorkerId(workerId);
@@ -96,8 +96,5 @@ public class StorageManager {
 		this.microtaskStorage.cleanUp();
 	}
 
-	private void writeLog(String operation, String data){
-		//TODO
-	}
 
 }

@@ -30,7 +30,7 @@ public class ReportGenerator {
 	
 	public boolean createMicrotasksReport(){
 		MicrotaskStorage microtaskStore = MicrotaskStorage.initializeSingleton();
-		HashMap<String, FileDebugSession> microtasks = microtaskStore.readAllDebugSessions();
+		Hashtable<String, FileDebugSession> microtasks = microtaskStore.readAllDebugSessions();
 		MicrotasksReportGenerator microtaskReport = new MicrotasksReportGenerator();
 		return microtaskReport.writeToXlsx(microtasks);
 	}

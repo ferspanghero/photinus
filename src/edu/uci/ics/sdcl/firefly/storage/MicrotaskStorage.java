@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -23,7 +23,7 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
  * Holds the index for all microtasks for all files. 
  * String key = file name, ArrayList is the list of microtasks
  * 
- * HashMap<String,FileDebugSession> debugSessionMap;
+ * Hashtable<String,FileDebugSession> debugSessionMap;
  * 
  * @author Christian Adriano
  *
@@ -33,8 +33,9 @@ public class MicrotaskStorage {
 	private String persistentFileName = "microtasks.ser";
 	private static MicrotaskStorage storage;
 	private static Logger logger;
+	private static Hashtable<String,FileDebugSession> debugSessionMap;
 
-	public static MicrotaskStorage initializeSingleton(){
+	public static synchronized MicrotaskStorage initializeSingleton(){
 		if(storage == null){
 			storage = new MicrotaskStorage();
 		}
@@ -53,9 +54,9 @@ public class MicrotaskStorage {
 			File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 
-
+				
 				// Create a sample object, that contains the default values.
-				HashMap<String,FileDebugSession> debugSessionMap = new HashMap<String,FileDebugSession>();
+				debugSessionMap = new Hashtable<String,FileDebugSession>();
 
 				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 						new FileOutputStream(new File(this.persistentFileName)));
@@ -63,6 +64,8 @@ public class MicrotaskStorage {
 				objOutputStream.writeObject( debugSessionMap );
 				objOutputStream.close();
 			}
+			else
+				debugSessionMap = this.retrieveIndex();
 		}
 		catch(IOException exception){
 			exception.printStackTrace();
@@ -80,8 +83,6 @@ public class MicrotaskStorage {
 	 */
 	public FileDebugSession read(String fileName){
 
-		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
-
 		if(debugSessionMap!=null && debugSessionMap.containsKey(fileName))
 			return debugSessionMap.get(fileName);
 		else
@@ -93,8 +94,8 @@ public class MicrotaskStorage {
 	 * @param 
 	 * @return  HashMap<String,FileDebugSession>
 	 */
-	public HashMap<String,FileDebugSession> readAllDebugSessions(){
-		return this.retrieveIndex();
+	public Hashtable<String,FileDebugSession> readAllDebugSessions(){
+		return debugSessionMap;
 	}
 
 	/** Retrieves all file debugging sessions .
@@ -103,7 +104,6 @@ public class MicrotaskStorage {
 	 * @return a set of debugging sessions
 	 */
 	public Set<String> retrieveDebuggingSessionNames(){	
-		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
 
 		if(debugSessionMap!=null && !debugSessionMap.isEmpty())
 			return debugSessionMap.keySet();
@@ -144,9 +144,6 @@ public class MicrotaskStorage {
 	 */
 	public boolean insert(String fileName, FileDebugSession newfileDebugSession){
 
-
-		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
-
 		if(debugSessionMap!=null){
 
 			//if(debugSessionMap.containsKey(fileName))
@@ -168,7 +165,6 @@ public class MicrotaskStorage {
 	public int getNumberOfMicrotask() {
 
 		int total=0;
-		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
 		Iterator<String> iter = debugSessionMap.keySet().iterator();
 
 		while(iter.hasNext()){
@@ -187,8 +183,6 @@ public class MicrotaskStorage {
 	 */
 	public boolean remove(String fileName) {
 
-		HashMap<String,FileDebugSession> debugSessionMap = this.retrieveIndex();
-
 		if(debugSessionMap!=null && !debugSessionMap.isEmpty()){
 			debugSessionMap.remove(fileName);
 			return this.updateIndex(debugSessionMap);				
@@ -199,22 +193,22 @@ public class MicrotaskStorage {
 
 	/** Delete all data from the Storage */
 	public void cleanUp(){
-		HashMap<String,FileDebugSession> debugSessionMap= new HashMap<String,FileDebugSession>();
+		debugSessionMap= new Hashtable<String,FileDebugSession>();
 		this.updateIndex(debugSessionMap);
 	}
-
+	
 	/**
 	 * 
 	 * @return the index of microtasks stored in the file
 	 */
 	@SuppressWarnings("unchecked")
-	private HashMap<String,FileDebugSession> retrieveIndex(){
+	private synchronized Hashtable<String,FileDebugSession> retrieveIndex(){
 		try{
-			HashMap<String,FileDebugSession> debugSessionMap;
+			Hashtable<String,FileDebugSession> debugSessionMap;
 			ObjectInputStream objInputStream = new ObjectInputStream( 
 					new FileInputStream(new File(this.persistentFileName)));
 
-			debugSessionMap = (HashMap<String, FileDebugSession>) objInputStream.readObject();
+			debugSessionMap = (Hashtable<String, FileDebugSession>) objInputStream.readObject();
 
 			objInputStream.close();
 			return debugSessionMap;
@@ -234,8 +228,9 @@ public class MicrotaskStorage {
 	 * @param the index of microtasks stored in the file
 	 * @return true if operation succeeded, otherwise false.
 	 */
-	private boolean updateIndex(HashMap<String,FileDebugSession> debugSessionMap){
+	private synchronized boolean updateIndex(Hashtable<String,FileDebugSession> debugSessionMap){
 		try{
+			
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(new File(this.persistentFileName)));
 

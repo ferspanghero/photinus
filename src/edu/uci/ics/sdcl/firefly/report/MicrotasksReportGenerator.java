@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +37,7 @@ public class MicrotasksReportGenerator
 		this.answersPerMicrotask = manager.answersPerMicrotask;
 	}
 	
-	public boolean writeToXlsx(HashMap<String, FileDebugSession> microtasksMappedPerFile){
+	public boolean writeToXlsx(Hashtable<String, FileDebugSession> microtasksMappedPerFile){
 		int numberOfQuestions = 0;
 		int numberOfAnswers = 0;
 		int numberOfFiles = microtasksMappedPerFile.size();
