@@ -39,5 +39,34 @@ public class LeastCommonDenominatorTest {
 		assertEquals(6, common);
 	}
 	
+	
+	@Test
+	public void testComputeMultiple(){
+		
+		int size = 10;
+		int numberOfTasks = 57;
+		
+		int remainder = numberOfTasks%size;
+		int fillup = size-remainder;
+		int target = numberOfTasks+fillup;
+
+		assertEquals(target,60);
+
+		size = 10;
+		numberOfTasks = 50;
+		
+		remainder = numberOfTasks%size;
+		System.out.println("remainder:"+remainder);
+		if(remainder>0)
+			fillup = size-remainder;
+		else
+			fillup=0;
+		target = numberOfTasks+fillup;
+
+		assertEquals(target,50);
+		
+		
+		
+	}
 
 }

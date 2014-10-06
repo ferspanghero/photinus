@@ -70,7 +70,7 @@ public class WorkerSessionFactory {
 		//Obtain a list of N microtasks from N different codesnippets (i.e., methods)
 		ArrayList<Microtask> mtaskList = this.nextMicrotaskList(this.microtaskPerSession);
 		//Generate the original WorkerSessions
-		while(mtaskList.size()>0){
+		while(mtaskList.size()==this.microtaskPerSession){
 			this.sessionId = this.keyGenerator.generate();
 			WorkerSession session = new WorkerSession(this.sessionId, mtaskList);
 			originalList.add(session);
@@ -129,7 +129,7 @@ public class WorkerSessionFactory {
 		HashMap<String,Microtask> methodTracker = new HashMap<String,Microtask>();// Tracks whether a method with the same signature was not already added
 		
 		Iterator<String> fileKeyIter = this.fileMethodMap.keySet().iterator();
-		boolean traversedTwice = false; //Controls that the fileKeyIter be traversed only twice	
+	//	boolean traversedTwice = false; //Controls that the fileKeyIter be traversed only twice	
 		
 		while(methodTracker.size()<numberOfTasks && fileKeyIter.hasNext()){
 			String fileKey = (String) fileKeyIter.next();
@@ -162,13 +162,14 @@ public class WorkerSessionFactory {
 				}
 			}
 			
-			if(methodTracker.size()<numberOfTasks && !fileKeyIter.hasNext() && !traversedTwice){
-				//Means that traversing once we could not fill-up the session with enought microtasks. 
+		/**	if(methodTracker.size()<numberOfTasks && !fileKeyIter.hasNext() && !traversedTwice){
+				//Means that traversing once we could not fill-up the session with enough microtasks. 
 				//Therefore, traverse the list of files>methods>microtasks>methods once more
 				traversedTwice=true;
 				
 				fileKeyIter = this.fileMethodMap.keySet().iterator();
-			}
+			}*/
+			
 		}
 		
 		System.out.println("number of microtasks in session: "+ methodTracker.size());
@@ -227,8 +228,8 @@ public class WorkerSessionFactory {
 	 * Obtains the sizes of all microtask lists for each method
 	 * @return the size of the largest microtask list
 	 */
-	private long obtainLargestSize (){
-		long largest = 0;
+	private int obtainLargestSize (){
+		int largest = 0;
 		Iterator <String> fileNameIterator = this.fileMethodMap.keySet().iterator();
 		//Discover the largest microtask list
 		while(fileNameIterator.hasNext()){
@@ -276,8 +277,17 @@ public class WorkerSessionFactory {
 	 * @return
 	 */
 	private void fillUpFileMethodMap (){
-		long largestSize = this.obtainLargestSize();
-		long targetSize = LeastCommonDenominator.lcm(this.microtaskPerSession.longValue(), largestSize);
+		int largestSize = this.obtainLargestSize();
+		
+		int remainder = largestSize % this.microtaskPerSession;
+		int fillup;
+		if(remainder>0)
+			fillup = this.microtaskPerSession - remainder;
+		else
+			fillup=0;
+		int targetSize = largestSize+fillup;
+		
+		//long targetSize = largestSize; //LeastCommonDenominator.lcm(this.microtaskPerSession.longValue(), largestSize);
 		
 		Iterator <String> fileNameIterator = this.fileMethodMap.keySet().iterator();
 		//Discover the largest microtask list
