@@ -32,7 +32,6 @@ public class WorkerStorage {
 		try{
 			PropertyManager manager = PropertyManager.initializeSingleton();
 			String path = manager.serializationPath;
-			System.out.println("loggerPath = "+manager.loggerPath);
 			logger = LoggerFactory.getLogger(WorkerStorage.class);
 			
 			this.persistentFileName = path + this.persistentFileName;

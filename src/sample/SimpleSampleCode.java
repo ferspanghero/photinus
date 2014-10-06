@@ -12,7 +12,7 @@ public class SimpleSampleCode {
 
 	public SimpleSampleCode(int i){
 		this.SeedLimit = new Integer(i);
-		//this.coder(10);
+		this.coder(i);
 	}
 	
 	public Integer updateSeed(Integer seedValue) {
@@ -24,12 +24,10 @@ public class SimpleSampleCode {
 	
 	public Integer coder(int i){
         Integer SeedLimit= new Integer(i);
-        SimpleSampleCode sample= new SimpleSampleCode(10);
         updateSeed(SeedLimit);
 		if(this.equals(SeedLimit)){
 			SeedLimit.doubleValue();
 			SimpleSampleCode.factorial(SeedLimit, SeedLimit);
-		Code code = new Code("new");
 		}
 		return i;
 	}
