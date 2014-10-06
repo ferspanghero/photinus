@@ -41,11 +41,11 @@ public class WorkerSessionStorage {
 	private static Logger logger;
 
 	private WorkerSessionStorage(){
-		PropertyManager manager = new PropertyManager();
-		this.path = manager.serializationPath;
-		logger = LoggerFactory.getLogger(WorkerSessionStorage.class);
-		
-		try{		
+		try{	
+			PropertyManager manager = PropertyManager.initializeSingleton();
+			this.path = manager.serializationPath;
+			logger = LoggerFactory.getLogger(WorkerSessionStorage.class);
+			
 			persistentFileNameNew = path + fileNameNew;
 			File fileNewSession = new File(persistentFileNameNew);
 

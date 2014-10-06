@@ -33,22 +33,22 @@ public class MicrotaskStorage {
 	private String persistentFileName = "microtasks.ser";
 	private static MicrotaskStorage storage;
 	private static Logger logger;
-	
+
 	public static MicrotaskStorage initializeSingleton(){
 		if(storage == null){
 			storage = new MicrotaskStorage();
 		}
 		return storage;
 	}
-	
+
 	private MicrotaskStorage(){
-
-		PropertyManager manager = new PropertyManager();
-		String path = manager.serializationPath;
-		this.persistentFileName = path + this.persistentFileName;
-		logger = LoggerFactory.getLogger(MicrotaskStorage.class);
-
 		try{
+
+			PropertyManager manager = PropertyManager.initializeSingleton();
+			String path = manager.serializationPath;
+			this.persistentFileName = path + this.persistentFileName;
+			logger = LoggerFactory.getLogger(MicrotaskStorage.class);
+
 
 			File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
@@ -150,7 +150,7 @@ public class MicrotaskStorage {
 		if(debugSessionMap!=null){
 
 			//if(debugSessionMap.containsKey(fileName))
-				//Has to merge the new one with the existing
+			//Has to merge the new one with the existing
 			//	newfileDebugSession.append(debugSessionMap.get(fileName));	
 
 			debugSessionMap.put(fileName, newfileDebugSession);

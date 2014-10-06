@@ -250,7 +250,7 @@ public class FileUploadServlet extends HttpServlet {
 
 		String results = new String();
 		
-		PropertyManager manager = new PropertyManager();
+		PropertyManager manager = PropertyManager.initializeSingleton();
 		
 		//Generate the stack of New and Duplicated WorkerSession		
 		WorkerSessionFactory sessionFactory = new WorkerSessionFactory(manager.microtasksPerSession);

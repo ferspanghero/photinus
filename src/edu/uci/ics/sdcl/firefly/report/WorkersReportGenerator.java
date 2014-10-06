@@ -30,7 +30,7 @@ public class WorkersReportGenerator {
 private String fileName = "WorkersReport.xlsx";
 	
 	public WorkersReportGenerator() {
-		PropertyManager manager = new PropertyManager();
+		PropertyManager manager = PropertyManager.initializeSingleton();
 		String path = manager.reportPath;
 		this.fileName = path + this.fileName;
 	}

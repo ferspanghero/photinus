@@ -4,9 +4,9 @@
 <appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
 <!-- "application-name" is a variable --> 
 
- <file>C:/Users/adrianoc/Documents/GitHub/firefly-microtasks.log</file>
+ <file>C:/Users/Christian Adriano/Documents/GitHub/firefly-log.log</file>
 <layout class="ch.qos.logback.classic.PatternLayout"> 
- <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+ <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
  
 </layout> 
 </appender> 

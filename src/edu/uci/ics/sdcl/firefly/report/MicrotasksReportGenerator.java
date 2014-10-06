@@ -30,7 +30,7 @@ public class MicrotasksReportGenerator
 	private String fileName = "MicrotasksReport.xlsx";
 	
 	public MicrotasksReportGenerator(){
-		PropertyManager manager = new PropertyManager();
+		PropertyManager manager = PropertyManager.initializeSingleton();
 		String path = manager.reportPath;
 		this.fileName = path+ this.fileName;
 		this.answersPerMicrotask = manager.answersPerMicrotask;

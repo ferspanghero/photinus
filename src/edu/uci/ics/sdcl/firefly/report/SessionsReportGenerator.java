@@ -36,7 +36,7 @@ public class SessionsReportGenerator {
 	private String fileName = "SessionsReport.xlsx";
 	
 	public SessionsReportGenerator() {
-		PropertyManager manager = new PropertyManager();
+		PropertyManager manager = PropertyManager.initializeSingleton();
 		String path = manager.reportPath;
 		this.fileName = path + this.fileName;
 		this.questionsInSheet = new HashMap<Integer, Integer>();

@@ -28,11 +28,13 @@ public class WorkerStorage {
 	}
 	
 	private WorkerStorage() {
-		PropertyManager manager = new PropertyManager();
-		String path = manager.serializationPath;
-		logger = LoggerFactory.getLogger(WorkerStorage.class);
 		
 		try{
+			PropertyManager manager = PropertyManager.initializeSingleton();
+			String path = manager.serializationPath;
+			System.out.println("loggerPath = "+manager.loggerPath);
+			logger = LoggerFactory.getLogger(WorkerStorage.class);
+			
 			this.persistentFileName = path + this.persistentFileName;
 			File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
@@ -68,7 +70,7 @@ public class WorkerStorage {
 			//Logging
 			if(worker.getGrade()!=null && worker.getGrade()>0)
 				
-				logger.info("workerId: "+worker.getWorkerId()+ ", sessionId:"+worker.getSessionId()
+				logger.info("workerId:"+worker.getWorkerId()+ ", sessionId:"+worker.getSessionId()
 					+", test1:"+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
 					+", test2:"+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
 					+", test3:"+worker.getGradeMap().get(SkillTestServlet.QUESTION3)

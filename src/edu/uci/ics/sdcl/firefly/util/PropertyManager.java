@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
+
 public class PropertyManager {
 
 	private String fileName="firefly.properties";
@@ -15,12 +17,23 @@ public class PropertyManager {
 	public String serializationPath;
 
 	public String reportPath;
+	
+	public String loggerPath;
 
 	public int answersPerMicrotask;
 
 	public int microtasksPerSession;
 
-	public PropertyManager(){
+	private static PropertyManager manager;
+	
+	public static PropertyManager initializeSingleton(){
+		if(manager == null){
+			manager = new PropertyManager();
+		}
+		return manager;
+	}
+	
+	private PropertyManager(){
 
 		String OS = System.getProperty("os.name").toLowerCase();
 
@@ -42,6 +55,7 @@ public class PropertyManager {
 			properties.load(new FileInputStream(this.devPropertyPath+this.fileName));
 			this.reportPath = properties.getProperty("development-ReportPath");
 			this.serializationPath = properties.getProperty("development-SerializationPath");
+			this.loggerPath = properties.getProperty("development-LoggerPath");
 			this.answersPerMicrotask = new Integer(properties.getProperty("answersPerMicrotask")).intValue();
 			this.microtasksPerSession = new Integer(properties.getProperty("microtasksPerSession")).intValue();
 		} 
@@ -56,6 +70,7 @@ public class PropertyManager {
 			properties.load(new FileInputStream(this.serverPropertyPath+this.fileName));
 			this.reportPath = properties.getProperty("server-SerializationPath");
 			this.serializationPath = properties.getProperty("server-SerializationPath");
+			this.loggerPath = properties.getProperty("server-LoggerPath");
 			this.answersPerMicrotask = new Integer(properties.getProperty("answersPerMicrotask")).intValue();
 			this.microtasksPerSession = new Integer(properties.getProperty("microtasksPerSession")).intValue();
 		} 
