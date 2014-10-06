@@ -148,7 +148,7 @@
 
 	<div id="failurePrompt">
 		 	<div id="internalText">
-			Thanks for using <b>Crowdebug!</b> and for helping us debug software from all over the world. 
+			Thanks for using <b>Crowd Debug!</b> and for helping us debug software from all over the world. 
       	<br>
    		</div>
 	</div>

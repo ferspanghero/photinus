@@ -1,18 +1,14 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 
 import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
-import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector.SelectorReturn;
-import edu.uci.ics.sdcl.firefly.servlet.MethodData;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
-import edu.uci.ics.sdcl.firefly.util.LeastCommonDenominator;
 import edu.uci.ics.sdcl.firefly.util.RandomKeyGenerator;
 
 
@@ -246,17 +242,6 @@ public class WorkerSessionFactory {
 		return largest;
 	}
 	
-	/**
-	 * 
-	 * The size is least common denominator (LCD) among list sizes and the number of microtasks per session 
-	 * @param methodMap
-	 * @return the required minimum size for all microtaks lists. 
-	 */
-
-	private long computeLowestCommonDenominator(ArrayList<Integer> numberList){
-		return LeastCommonDenominator.lcm(numberList.toArray());
-	}
-	
 	private ArrayList<Microtask> fillUpList(long numberOfElements, ArrayList<Microtask> list){
 		
 		ArrayList<Microtask> composedList = new ArrayList<Microtask>();
@@ -286,9 +271,7 @@ public class WorkerSessionFactory {
 		else
 			fillup=0;
 		int targetSize = largestSize+fillup;
-		
-		//long targetSize = largestSize; //LeastCommonDenominator.lcm(this.microtaskPerSession.longValue(), largestSize);
-		
+			
 		Iterator <String> fileNameIterator = this.fileMethodMap.keySet().iterator();
 		//Discover the largest microtask list
 		while(fileNameIterator.hasNext()){
