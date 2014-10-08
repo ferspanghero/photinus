@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 
 /**
  * Represents a working session, which is a set of microtasks performed by a single worker
@@ -36,6 +39,7 @@ public class WorkerSession implements Serializable{
 	 * @param microtaskList
 	 */
 	public WorkerSession(String id, ArrayList<Microtask> microtaskList){
+		logger = LoggerFactory.getLogger(WorkerSession.class);
 		this.id = id;
 		this.microtaskList = microtaskList;
 		if(this.microtaskList!=null && this.microtaskList.size()>0)
@@ -108,8 +112,10 @@ public class WorkerSession implements Serializable{
 	public boolean insertMicrotaskAnswer(Integer microtaskId, Answer answer) {
 		
 		Microtask microtask = this.getCurrentMicrotask();
-		if((microtask == null) || (microtask.getID().intValue() != microtaskId.intValue()))
+		if((microtask == null) || (microtask.getID().intValue() != microtaskId.intValue())){
+			logger.error("Answer was already stored, microtaskId:"+ microtaskId+ ", answer:"+ answer.getOption()+ ", workerId:"+answer.getWorkerId());
 			return false;
+		}
 		else{
 			microtask.addAnswer(answer);
 			this.storeCurrentMicrotask(microtask);

@@ -220,8 +220,8 @@ public class WorkerSessionStorage {
 		}
 		else{
 			if(session.insertMicrotaskAnswer(microtaskId,answer)){
-				//log the operations in a text file
-				//writeLog (SessionId, File Name, Method Name, Question, Answer, Time Duration);
+				logger.info("updating WorkerSession, sessionId:"+ sessionId+", microtaskId:"+microtaskId+
+						", answer:"+answer.getOption()+", workerId: ", answer.getWorkerId());
 				return(this.updateActiveWorkerSession(session));
 			}
 			else
@@ -258,8 +258,10 @@ public class WorkerSessionStorage {
 			else
 				return false;
 		}
-		else
+		else{
+			logger.error("Closed Session List is null");
 			return false;
+		}
 	}
 
 
@@ -284,11 +286,11 @@ public class WorkerSessionStorage {
 			}
 		}
 		catch(IOException exception){
-			exception.printStackTrace();
+			logger.error(exception.toString());
 			return false;
 		}
 		catch(Exception exception){
-			exception.printStackTrace();
+			logger.error(exception.toString());
 			return false;
 		}
 	}
@@ -310,11 +312,11 @@ public class WorkerSessionStorage {
 			return stack;
 		}
 		catch(IOException exception){
-			exception.printStackTrace();
+			logger.error(exception.toString());
 			return null;
 		}
 		catch(Exception exception){
-			exception.printStackTrace();
+			logger.error(exception.toString());
 			return null;
 		}
 	}

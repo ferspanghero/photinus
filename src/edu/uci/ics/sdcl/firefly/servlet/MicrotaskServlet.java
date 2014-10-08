@@ -111,7 +111,8 @@ public class MicrotaskServlet extends HttpServlet {
 				new Answer(Answer.mapToString(answer),explanation, this.workerId, elapsedTime, timeStamp));
 
 		if(!success){
-			this.showErrorPage(request, response, "Answer could not be stored");
+			this.showErrorPage(request, response, "Your answer could not be stored. In case you have used the back button, "
+					+ "please restart the HIT by going to the following link: http://dellserver.ics.uci.edu:8080/firefly/ConsentForm.jsp");
 		}
 		else{
 			//Restore data for next Request
