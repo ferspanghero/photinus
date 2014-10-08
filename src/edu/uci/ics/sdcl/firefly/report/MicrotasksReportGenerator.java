@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -27,16 +28,16 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 public class MicrotasksReportGenerator
 {
 	private int answersPerMicrotask;
-	
+
 	private String fileName = "MicrotasksReport.xlsx";
-	
+
 	public MicrotasksReportGenerator(){
 		PropertyManager manager = PropertyManager.initializeSingleton();
 		String path = manager.reportPath;
 		this.fileName = path+ this.fileName;
 		this.answersPerMicrotask = manager.answersPerMicrotask;
 	}
-	
+
 	public boolean writeToXlsx(Hashtable<String, FileDebugSession> microtasksMappedPerFile){
 		int numberOfQuestions = 0;
 		int numberOfAnswers = 0;
@@ -73,10 +74,10 @@ public class MicrotasksReportGenerator
 		HashMap<String, ArrayList<Microtask>> microtasksPerMethod = PathUtil.convertToMicrotasksPerMethod(allMicrotasksMap);
 		// iterating methods
 		Set<Map.Entry<String, ArrayList<Microtask>>> set = microtasksPerMethod.entrySet();
-		Iterator<Entry<String, ArrayList<Microtask>>> i = set.iterator();
-		while(i.hasNext())
+		Iterator<Entry<String, ArrayList<Microtask>>> iterator = set.iterator();
+		while(iterator.hasNext())
 		{
-			Map.Entry<String, ArrayList<Microtask>> me = (Map.Entry<String, ArrayList<Microtask>>)i.next();
+			Map.Entry<String, ArrayList<Microtask>> me = (Map.Entry<String, ArrayList<Microtask>>)iterator.next();
 
 			//Create a blank sheet for the method
 			XSSFSheet methodSheet = workbook.createSheet(me.getKey());
@@ -98,29 +99,29 @@ public class MicrotasksReportGenerator
 				cell = row.createCell(cellnum2++);
 				cell.setCellValue("Answer-"+j);
 			}
-			
+
 			//Create N cells for explanations
 			for(int j=1;j<=answersPerMicrotask;j++){
 				cell = row.createCell(cellnum2++);
 				cell.setCellValue("Explanation-"+j);
 			}
-			
+
 			//Create N cells for elapsed time
 			for(int j=1;j<=answersPerMicrotask;j++){
 				cell = row.createCell(cellnum2++);
 				cell.setCellValue("Duration-"+j);
 			}
-			
+
 			//Create N cells for time stamp
 			for(int j=1;j<=answersPerMicrotask;j++){
 				cell = row.createCell(cellnum2++);
 				cell.setCellValue("Time-"+j);
 			}
-			
-			
+
+
 			// preparing the TreeMap for later fill the method sheet
 			Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
-			
+
 			int lastColumn = 0;		// for auto sizing later
 			// iterating questions (per method)
 			for (Microtask microtask : me.getValue())
@@ -133,43 +134,57 @@ public class MicrotasksReportGenerator
 				lineContent[1] = microtask.getID();						// ID (cell 1)
 				lineContent[2] = microtask.getQuestion();				// Question (cell 2)
 
-				//Answers
-				int k = 3;
-				for (Answer singleAnswer : microtask.getAnswerList()) {
-					lineContent[k++] = singleAnswer.getOption();		// adding answers perquestion
+				Vector<Answer> answerList = microtask.getAnswerList();
+
+				if(answerList!=null && answerList.size()>0){
+
+					//Answers
+					int k = 3;
+					Answer singleAnswer;
+					int index=0;
+					while(index<answerList.size() && index< answersPerMicrotask) {
+						singleAnswer = answerList.get(index);
+						lineContent[k++] = singleAnswer.getOption();		// adding answers per question
+						index++;
+					}
+					lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
+
+					//Explanations
+					k= answersPerMicrotask+3;//Position for the Explanation data.
+					index=0;
+					while(index<answerList.size() && index< answersPerMicrotask) {// got some answers, now the explanation:
+						singleAnswer = answerList.get(index);
+						lineContent[k++] = singleAnswer.getExplanation();	// adding explanation per question	
+						index++;
+					}
+					lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
+
+					//Elapsed Time
+					k= 2*answersPerMicrotask+3;//Position for the Elapsed time data.
+					index=0;
+					while(index<answerList.size() && index< answersPerMicrotask) {// got some answers, now the explanation:
+						singleAnswer = answerList.get(index);
+						lineContent[k++] = singleAnswer.getElapsedTime();	// adding the elapsed time
+						index++;
+					}
+					lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
+
+					//Time Stamp
+					k= 3*answersPerMicrotask+3;//Position for the Time stamp data.
+					index=0;
+					while(index<answerList.size() && index< answersPerMicrotask) {// got some answers, now the explanation:
+						singleAnswer = answerList.get(index);
+						lineContent[k++] = singleAnswer.getTimeStamp();	// adding the elapsed time
+						index++;
+					}
+
+					lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
+
+					data.put(new Integer(dataKey++), lineContent);	// putting customized line 
+					lastColumn = lastColumn < k ? k : lastColumn;	
 				}
-				lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
-				
-				//Explanations
-				k= answersPerMicrotask+3;//Position for the Explanation data.
-				if (microtask.getNumberOfAnswers()>0){	// got some answers, now the explanation:
-					for (Answer singleAnswer : microtask.getAnswerList()) {
-						lineContent[k++] = singleAnswer.getExplanation();	// adding explanation per question
-					}	
-				}
-				lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
-				
-				//Elapsed Time
-				k= 2*answersPerMicrotask+3;//Position for the Elapsed time data.
-				if (microtask.getNumberOfAnswers()>0){	
-					for (Answer answer : microtask.getAnswerList()) {
-						lineContent[k++] = answer.getElapsedTime();	// adding the elapsed time
-					}	
-				}
-				lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
-				
-				//Time Stamp
-				k= 3*answersPerMicrotask+3;//Position for the Time stamp data.
-				if (microtask.getNumberOfAnswers()>0){	
-					for (Answer answer : microtask.getAnswerList()) {
-						lineContent[k++] = answer.getTimeStamp();	// adding the elapsed time
-					}	
-				}
-				lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
-				
-				data.put(new Integer(dataKey++), lineContent);	// putting customized line 
-				lastColumn = lastColumn < k ? k : lastColumn;	
 			}
+			
 			/* filling the method sheet */
 			//Iterate over data and write to method sheet
 			Set<Integer> keyset = data.keySet();

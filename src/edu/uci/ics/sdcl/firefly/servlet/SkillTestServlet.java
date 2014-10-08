@@ -59,7 +59,7 @@ public class SkillTestServlet extends HttpServlet {
 
 		//First check if the worker hasn't already taken the test
 		this.workerStorage =   WorkerStorage.initializeSingleton();;
-		Worker worker = workerStorage.readSingleWorker(this.workerId);
+		Worker worker = workerStorage.readExistingWorker(this.workerId);
 		if(worker.hasTakenTest()){
 			request.setAttribute("message", "Dear worker, you don't qualify to perform the task, because our system indicates that you have already taken this test. Please wait for the next round of experiments.");
 			request.getRequestDispatcher(SorryPage).include(request, response);

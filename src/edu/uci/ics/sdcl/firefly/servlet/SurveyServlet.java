@@ -30,7 +30,7 @@ public class SurveyServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		WorkerStorage subjectStore =  WorkerStorage.initializeSingleton();	// to retrieve date from database
-		Worker subject = subjectStore.readSingleWorker(request.getParameter("workerId"));
+		Worker subject = subjectStore.readExistingWorker(request.getParameter("workerId"));
 		if (null != subject){
 			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
 			subject.addSurveyAnswer(question[1], request.getParameter("age"));

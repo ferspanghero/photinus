@@ -54,7 +54,7 @@ public class MicrotaskStorage {
 			File file = new File(this.persistentFileName);
 			if(!file.exists() ||  file.isDirectory()){
 				// No files has been created yet. 
-				
+
 				// Create a sample object, that contains the default values.
 				debugSessionMap = new Hashtable<String,FileDebugSession>();
 
@@ -196,7 +196,7 @@ public class MicrotaskStorage {
 		debugSessionMap= new Hashtable<String,FileDebugSession>();
 		this.updateIndex(debugSessionMap);
 	}
-	
+
 	/**
 	 * 
 	 * @return the index of microtasks stored in the file
@@ -204,7 +204,7 @@ public class MicrotaskStorage {
 	@SuppressWarnings("unchecked")
 	private synchronized Hashtable<String,FileDebugSession> retrieveIndex(){
 		try{
-			Hashtable<String,FileDebugSession> debugSessionMap;
+
 			ObjectInputStream objInputStream = new ObjectInputStream( 
 					new FileInputStream(new File(this.persistentFileName)));
 
@@ -214,11 +214,11 @@ public class MicrotaskStorage {
 			return debugSessionMap;
 		}
 		catch(IOException exception){
-			exception.printStackTrace();
+			logger.error(exception.toString());
 			return null;
 		}
 		catch(Exception exception){
-			exception.printStackTrace();
+			logger.error(exception.toString());
 			return null;
 		}
 	}
@@ -230,20 +230,25 @@ public class MicrotaskStorage {
 	 */
 	private synchronized boolean updateIndex(Hashtable<String,FileDebugSession> debugSessionMap){
 		try{
-			
-			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
-					new FileOutputStream(new File(this.persistentFileName)));
+			if(debugSessionMap==null){
+				logger.error("Trying to write a nullpointer to the microtask repository");
+				return false;
+			}else{
 
-			objOutputStream.writeObject( debugSessionMap );
-			objOutputStream.close();
-			return true;
+				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
+						new FileOutputStream(new File(this.persistentFileName)));
+
+				objOutputStream.writeObject( debugSessionMap );
+				objOutputStream.close();
+				return true;
+			}
 		}
 		catch(IOException exception){
-			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
+			logger.error(exception.toString());
 			return false;
 		}
 		catch(Exception exception){
-			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
+			logger.error(exception.toString());
 			return false;
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -103,11 +104,11 @@ public class ResultsServlet extends HttpServlet {
 			while(methodIter.hasNext()){
 				String methodName = methodIter.next();
 				MethodData methodData = methodMap.get(methodName);
-				HashMap<String, ArrayList<Answer>> answerPerQuestionMap = methodData.getQuestionAnswerMap();
+				HashMap<String, Vector<Answer>> answerPerQuestionMap = methodData.getQuestionAnswerMap();
 				Iterator<String> questionIter = answerPerQuestionMap.keySet().iterator();
 				while(questionIter.hasNext()){
 					String questionName = questionIter.next();
-					ArrayList<Answer> answers = answerPerQuestionMap.get(questionName);
+					Vector<Answer> answers = answerPerQuestionMap.get(questionName);
 					result = result + formatString(fileName, methodName, questionName, answers);
 				}
 			}
@@ -116,7 +117,7 @@ public class ResultsServlet extends HttpServlet {
 	}
 
 	private String formatString(String fileName, String methodName,
-			String questionName, ArrayList<Answer> answers) {
+			String questionName, Vector<Answer> answers) {
 
 		String toBePrinted = new String("<b>File: </b>"+ fileName+ "<b> Method: </b>"+methodName+"<b> Question: </b>"+ 
 				questionName+ "<b> Answers: </b>");

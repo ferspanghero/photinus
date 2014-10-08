@@ -2,7 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.HashMap;
 
 import org.junit.Before;
@@ -100,8 +100,8 @@ public class MicrotaskSelectorTest {
 			//Associate an answer
 			Integer key = new Integer (1);
 			Microtask mtask1 = mMap.get(key);
-			ArrayList<Answer> answerList = mtask1.getAnswerList();
-			if(answerList==null) answerList= new ArrayList<Answer>();
+			Vector<Answer> answerList = mtask1.getAnswerList();
+			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.YES,"statement should be executed ealier","workerID", "elapsedTime", "timeStamp"));
 			mtask1.setAnswer(answerList);
 
@@ -125,8 +125,8 @@ public class MicrotaskSelectorTest {
 			HashMap<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
 			Integer key = new Integer (1);
 			Microtask mtask1 = mMap.get(key);
-			ArrayList<Answer> answerList = mtask1.getAnswerList();
-			if(answerList==null) answerList= new ArrayList<Answer>();
+			Vector<Answer> answerList = mtask1.getAnswerList();
+			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.YES,"statement should be executed ealier","workerID", "elapsedTime", "timeStamp"));
 			mtask1.setAnswer(answerList);
 			mMap.put(key, mtask1);
@@ -135,7 +135,7 @@ public class MicrotaskSelectorTest {
 			key = new Integer (2);
 			Microtask mtask2 = mMap.get(key);
 			answerList = mtask2.getAnswerList();
-			if(answerList==null) answerList= new ArrayList<Answer>();
+			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.NO,"","workerID", "elapsedTime", "timeStamp"));
 			mtask2.setAnswer(answerList);
 			debugSession.incrementAnswersReceived(answerList.size());
@@ -167,8 +167,8 @@ public class MicrotaskSelectorTest {
 			HashMap<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
 			Integer key = new Integer (1);
 			Microtask mtask1 = mMap.get(key);
-			ArrayList<Answer> answerList = mtask1.getAnswerList();
-			if(answerList==null) answerList= new ArrayList<Answer>();
+			Vector<Answer> answerList = mtask1.getAnswerList();
+			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.YES,"statement should be executed ealier","workerID", "elapsedTime", "timeStamp"));
 			mtask1.setAnswer(answerList);
 			mMap.put(key, mtask1);
@@ -177,7 +177,7 @@ public class MicrotaskSelectorTest {
 			key = new Integer (2);
 			Microtask mtask2 = mMap.get(key);
 			answerList = mtask2.getAnswerList();
-			if(answerList==null) answerList= new ArrayList<Answer>();
+			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.NO,"","workerID", "elapsedTime", "timeStamp"));
 			mtask2.setAnswer(answerList);
 			debugSession.incrementAnswersReceived(answerList.size());
@@ -185,7 +185,7 @@ public class MicrotaskSelectorTest {
 			key = new Integer (3);
 			Microtask mtask3 = mMap.get(key);
 			answerList = mtask3.getAnswerList();
-			if(answerList==null) answerList= new ArrayList<Answer>();
+			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.NO,"","workerID", "elapsedTime", "timeStamp"));
 			answerList.add(new Answer(Answer.NO,"","workerID", "elapsedTime", "timeStamp"));
 			mtask3.setAnswer(answerList);

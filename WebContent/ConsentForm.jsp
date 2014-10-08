@@ -96,23 +96,40 @@
 </div>
 
 <script>
-	function proceed(){
+
+
+	var bAlreadyPosted = false;
+	
+	function lockForm(frm) {
+		if (frm.Submit.value == 'Submit') {
+			if (!bAlreadyPosted) {
+				bAlreadyPosted = true;
+				frm.submit();
+				frm.Submit.value = 'Please Wait';
+				frm.Submit.disabled = true;
+			} else {
+				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
+			}
+		}
+	}
+
+	function proceed() {
 		var consented = document.getElementById('consentBox').checked;
-		if (consented){
+		if (consented) {
 			var subAction = document.getElementById("subAction");
-			subAction.value = "loadQuestions"; 
+			subAction.value = "loadQuestions";
 			document.forms["consentForm"].submit();
-		} else{
+		} else {
 			alert("You have to agree with the terms before proceeding");
 		}
 	}
-	
-	function quit(){
-		if(confirm('Confirm quitting the study ?')){
-			window.open('', '_self', ''); window.close();
+
+	function quit() {
+		if (confirm('Confirm quitting the study ?')) {
+			window.open('', '_self', '');
+			window.close();
 		}
 	}
-	
 </script>
 
 </body>

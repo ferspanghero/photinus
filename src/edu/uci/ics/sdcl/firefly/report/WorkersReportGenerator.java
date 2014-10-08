@@ -3,8 +3,8 @@ package edu.uci.ics.sdcl.firefly.report;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -17,12 +17,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import edu.uci.ics.sdcl.firefly.Answer;
-import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
-import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.servlet.SurveyServlet;
-import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class WorkersReportGenerator {
@@ -35,7 +31,7 @@ private String fileName = "WorkersReport.xlsx";
 		this.fileName = path + this.fileName;
 	}
 	
-	public void writeToXlsx(HashMap<String, Worker> workers)
+	public void writeToXlsx(Hashtable<String, Worker> workers)
 	{
 		/* creating excel workbook */
 		//Blank workbook

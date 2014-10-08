@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class Microtask implements Serializable
 {	
@@ -15,7 +16,7 @@ public class Microtask implements Serializable
 	private String callerHightlights;
 	private String calleeHightlights;
 
-	private ArrayList<Answer> answerList;
+	private Vector<Answer> answerList;
 
 	private Integer startingLine;
 	private Integer startingColumn;
@@ -54,7 +55,7 @@ public class Microtask implements Serializable
 		this.startingColumn = startingColumnNumber;
 		this.endingLine = endingLineNumber;
 		this.endingColumn = endingColumnNumber;
-		this.answerList = new ArrayList<Answer>();
+		this.answerList = new Vector<Answer>();
 		this.ID = ID;
 		this.failureDescription = failureDescription;
 	}
@@ -98,12 +99,12 @@ public class Microtask implements Serializable
 		this.method = method;
 	}
 
-	public ArrayList<Answer> getAnswerList()
+	public Vector<Answer> getAnswerList()
 	{
 		return answerList;
 	}
 
-	public void setAnswer(ArrayList<Answer> answerList)
+	public void setAnswer(Vector<Answer> answerList)
 	{
 		this.answerList = answerList;
 	}

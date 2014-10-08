@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +20,7 @@ public class WorkerStorage {
 
 	private static WorkerStorage storage;
 	private static Logger logger;
+	private static Hashtable<String, Worker> workerTable;
 	
 	public synchronized static WorkerStorage initializeSingleton(){
 		if(storage == null)
@@ -40,34 +41,33 @@ public class WorkerStorage {
 				// No files has been created yet. 
 
 				// Create a sample object, that contains the default values.
-				HashMap<String, Worker> workerMap = new HashMap<String, Worker>();
+				workerTable = new Hashtable<String, Worker>();
 
 				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 						new FileOutputStream(new File(this.persistentFileName)));
 
-				objOutputStream.writeObject( workerMap );
+				objOutputStream.writeObject( workerTable );
 				objOutputStream.close();
 			}
+			else
+				workerTable=this.retrieveIndex();
 		}
 		catch(IOException exception){
-			exception.printStackTrace();
+			logger.error(exception.toString());
 		}
 		catch(Exception exception){
-			exception.printStackTrace();
+			logger.error(exception.toString());
 		}
 	}
 	
 	public void cleanUp(){
-		this.updateIndex(new HashMap<String,Worker>());
+		this.updateIndex(new Hashtable<String,Worker>());
 	}
 	
-	public boolean insert(String workerId, Worker worker){
+	public synchronized boolean insert(String workerId, Worker worker){
 
-		HashMap<String, Worker> workerMap = this.retrieveIndex();
-
-		if((workerMap!=null)&&(worker!=null)){
-			//Logging
-			if(worker.getGrade()!=null && worker.getGrade()>0)
+		//Logging
+		if(worker!=null && worker.getGrade()!=null && worker.getGrade()>0)
 				
 				logger.info("workerId:"+worker.getWorkerId()+ ", sessionId:"+worker.getSessionId()
 					+", test1:"+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
@@ -79,37 +79,39 @@ public class WorkerStorage {
 					+", survey:{"+worker.getSurveyAnswersToString()+"}");
 			else
 				logger.info("workerId:"+worker.getWorkerId()+ ", sessionId:"+worker.getSessionId()
-						+", consentDate:" + worker.getConsentDate().toString());
-			
-			//Object persistence
-			workerMap.put(workerId, worker);
-			return this.updateIndex(workerMap);	
+						+", consentDate:" + worker.getConsentDate().toString());	
+		
+		
+		//Object persistence
+		if((workerTable!=null)&&(worker!=null)){
+			workerTable.put(workerId, worker);
+			return this.updateIndex(workerTable);	
 		}		
-		else
+		else{
+			logger.error("Could not store worker");
 			return false;
+		}
 	}
 	
-	public Worker readSingleWorker(String workerId){
+	public synchronized Worker readExistingWorker(String workerId){
 
-		HashMap<String, Worker> workerMap = this.retrieveIndex();
-
-		if(workerMap!=null && workerMap.containsKey(workerId))
-			return workerMap.get(workerId);
+		if(workerTable!=null && workerTable.containsKey(workerId))
+			return workerTable.get(workerId);
 		else
 			return null;
 	}
 	
-	public HashMap<String, Worker> readAllWorkers(){
+	public synchronized Hashtable<String, Worker> readAllWorkers(){
 		return this.retrieveIndex();
 	}
 	
-	public boolean remove(String workerId) {
+	public synchronized boolean remove(String workerId) {
 
-		HashMap<String, Worker> workerMap = this.retrieveIndex();
+		workerTable = this.retrieveIndex();
 
-		if(workerMap!=null && !workerMap.isEmpty()){
-			workerMap.remove(workerId);
-			return this.updateIndex(workerMap);				
+		if(workerTable!=null && !workerTable.isEmpty()){
+			workerTable.remove(workerId);
+			return this.updateIndex(workerTable);				
 		}		
 		else
 			return false;
@@ -118,47 +120,53 @@ public class WorkerStorage {
 	/**
 	 * @return a worker identifier that does not exist in the storage yet.
 	 */
-	public String getNewWorkerKey() {
-		HashMap<String, Worker> indexMap = this.retrieveIndex();
-		Integer keyInt = new Integer(indexMap.size()); 
+	public synchronized String getNewWorkerKey() {
+		Integer keyInt = new Integer(workerTable.size()); 
 		String key = keyInt.toString();
-		while(indexMap.containsKey(key)){
+		while(workerTable.containsKey(key)){//Avoid to use an already existing Worker ID
 			keyInt++;
 			key = keyInt.toString();
 		}
 		return key;
 	}
 	
-	private synchronized boolean updateIndex(HashMap<String, Worker> workerMap){
+	//------------------------------------------------------------------------------------------------
+	
+	private synchronized boolean updateIndex(Hashtable<String, Worker> workerTable){
 		try{
+			if(workerTable==null){
+				logger.error("Avoided trying to write nullpointer in Worker repository.");
+				return false;
+			}
+			else{
 			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(new File(this.persistentFileName)));
 
-			objOutputStream.writeObject( workerMap );
+			objOutputStream.writeObject( workerTable );
 			objOutputStream.close();
 			return true;
+			}
 		}
 		catch(IOException exception){
-			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
+			logger.error(exception.toString());
 			return false;
 		}
 		catch(Exception exception){
-			System.err.print("Error while opening microtasks serialized file:" + exception.toString());
+			logger.error(exception.toString());
 			return false;
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private synchronized HashMap<String, Worker> retrieveIndex(){
+	private synchronized Hashtable<String, Worker> retrieveIndex(){
 		try{
-			HashMap<String,Worker> workerMap;
 			ObjectInputStream objInputStream = new ObjectInputStream( 
 					new FileInputStream(new File(this.persistentFileName)));
 
-			workerMap = (HashMap<String, Worker>) objInputStream.readObject();
+			workerTable = (Hashtable<String, Worker>) objInputStream.readObject();
 
 			objInputStream.close();
-			return workerMap;
+			return workerTable;
 		}
 		catch(IOException exception){
 			exception.printStackTrace();
@@ -169,8 +177,5 @@ public class WorkerStorage {
 			return null;
 		}
 	}
-
-	
-	
 
 }

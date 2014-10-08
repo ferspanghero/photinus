@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.Iterator;
+import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
@@ -109,7 +110,7 @@ public class MicrotaskSelector {
 				while(!found && iter.hasNext()){
 					key = iter.next();
 					task = map.get(key);
-					ArrayList<Answer> answers = task.getAnswerList();
+					Vector<Answer> answers = task.getAnswerList();
 					if(answers!=null && answers.size()<maxAnswers)
 						found=true;
 				}

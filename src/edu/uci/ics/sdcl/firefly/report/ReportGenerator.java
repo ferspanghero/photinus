@@ -37,7 +37,7 @@ public class ReportGenerator {
 
 	public boolean createWorkersReport(){
 		WorkerStorage workersStore =  WorkerStorage.initializeSingleton();
-		HashMap<String, Worker> workers= workersStore.readAllWorkers();
+		Hashtable<String, Worker> workers= workersStore.readAllWorkers();
 		// for debug purposes:
 		/* Set<Map.Entry<String, Worker>> setWorkers = workers.entrySet();
 		Iterator<Entry<String, Worker>> iterateWorkers = setWorkers.iterator();

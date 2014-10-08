@@ -45,13 +45,13 @@ public class WorkerSessionStorage {
 			storage = new WorkerSessionStorage();
 		return storage;
 	}
-	
+
 	private WorkerSessionStorage(){
 		try{	
 			PropertyManager manager = PropertyManager.initializeSingleton();
 			this.path = manager.serializationPath;
 			logger = LoggerFactory.getLogger(WorkerSessionStorage.class);
-			
+
 			persistentFileNameNew = path + fileNameNew;
 			File fileNewSession = new File(persistentFileNameNew);
 
@@ -72,7 +72,7 @@ public class WorkerSessionStorage {
 		}
 	}
 
-	
+
 
 	/** Create new storages */
 	public synchronized void cleanUp(){
@@ -128,11 +128,17 @@ public class WorkerSessionStorage {
 	 */
 	public synchronized boolean writeNewWorkerSessionStack(Stack<WorkerSession> newStack){
 		try{
-			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
-					new FileOutputStream(new File(persistentFileNameNew)));
-			objOutputStream.writeObject( newStack );
-			objOutputStream.close();
-			return true;
+			if(newStack==null){
+				logger.error("Avoided trying to write nullpointer in Worker repository.");
+				return false;
+			}
+			else{
+				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
+						new FileOutputStream(new File(persistentFileNameNew)));
+				objOutputStream.writeObject( newStack );
+				objOutputStream.close();
+				return true;
+			}
 		}
 		catch(IOException exception){
 			exception.printStackTrace();
@@ -264,12 +270,18 @@ public class WorkerSessionStorage {
 	 */
 	private synchronized boolean overwriteClosedWorkerSessionList(Vector<WorkerSession> closedSessionList){
 		try{
-			ObjectOutputStream objOutputStream = new ObjectOutputStream( 
-					new FileOutputStream(new File(persistentFileNameClosed)));
+			if(closedSessionList==null){
+				logger.error("Avoided trying to write nullpointer in Worker repository.");
+				return false;
+			}
+			else{
+				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
+						new FileOutputStream(new File(persistentFileNameClosed)));
 
-			objOutputStream.writeObject( closedSessionList );
-			objOutputStream.close();
-			return true;
+				objOutputStream.writeObject( closedSessionList );
+				objOutputStream.close();
+				return true;
+			}
 		}
 		catch(IOException exception){
 			exception.printStackTrace();
@@ -283,7 +295,7 @@ public class WorkerSessionStorage {
 
 	//------------------------------------------------------------------------------------------------------------------------
 	// Retrieve the storages
-	
+
 	public synchronized Stack<WorkerSession> retrieveNewSessionStorage(){
 		try{
 

@@ -2,12 +2,13 @@ package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 
 public class MethodData {
 
-	private HashMap<String, ArrayList<Answer>> questionAnswerMap = new HashMap<String, ArrayList<Answer>>(); 
+	private HashMap<String, Vector<Answer>> questionAnswerMap = new HashMap<String, Vector<Answer>>(); 
 
 //	private HashMap<String, Integer> answerPerQuestionMap = new HashMap<String,Integer>();
 
@@ -16,7 +17,7 @@ public class MethodData {
 //		this.answerPerQuestionMap.put(question, new Integer(0));
 	}
 
-	public void addAnswerList(String question, ArrayList<Answer> answerList){
+	public void addAnswerList(String question, Vector<Answer> answerList){
 		if(answerList!=null){
 			this.questionAnswerMap.put(question, answerList);
 		}
@@ -49,7 +50,7 @@ public class MethodData {
 //		this.answerPerQuestionMap.put(question, count);
 //	}
 
-	public HashMap<String, ArrayList<Answer>> getQuestionAnswerMap(){
+	public HashMap<String, Vector<Answer>> getQuestionAnswerMap(){
 		return this.questionAnswerMap;
 	}
 
