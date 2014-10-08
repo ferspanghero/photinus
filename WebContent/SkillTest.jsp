@@ -79,20 +79,30 @@
 			return true;
 		}
 
+		var formAlreadyPosted = false;
+	
 		function submitAnswers() {
-			var checked = checkAnswers(); 
-			if (checked) {
-				var subAction = document.getElementById("subAction");
-				subAction.value = "gradeAnswers";
-				document.forms["testForm"].submit();
+			//first thing is to check whether the form was already submitted
+			if (formAlreadyPosted) {
+				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
 			} else {
-				//nothing to do.
+				//ok, form was not submitted yet
+				var checked = checkAnswers();
+				if (checked) {
+					var subAction = document.getElementById("subAction");
+					subAction.value = "gradeAnswers";
+					formAlreadyPosted = true;
+					document.forms["testForm"].submit();
+				} else {
+					//nothing to do.
+				}
 			}
 		}
 
 		function quit() {
 			if (confirm('Confirm quitting the study ?')) {
 				window.open('', '_self', '');
+				formAlreadyPosted=true;
 				window.close();
 			}
 		}
