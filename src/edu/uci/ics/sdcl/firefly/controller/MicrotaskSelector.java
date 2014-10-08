@@ -25,16 +25,16 @@ import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 public class MicrotaskSelector {
 
 	
-	public ArrayList<Microtask> selectAllMicrotasks(){
+	public Vector<Microtask> selectAllMicrotasks(){
 		
-		ArrayList<Microtask> mtaskList = new ArrayList<Microtask>();
+		Vector<Microtask> mtaskList = new Vector<Microtask>();
 		MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();
 		Hashtable<String, FileDebugSession> map = memento.readAllDebugSessions();
 		if((map!=null) && (map.keySet()!=null)){
 			Set<String>keySet = map.keySet();
 			for(String key: keySet){
 				FileDebugSession session = map.get(key);
-				HashMap<Integer, Microtask> mtaskMap = session.getMicrotaskMap();
+				Hashtable<Integer, Microtask> mtaskMap = session.getMicrotaskMap();
 				if((mtaskMap!=null) && (mtaskMap.keySet()!=null)){
 					Set<Integer>mtaskKeySet = mtaskMap.keySet();
 					for(Integer mtaskKey: mtaskKeySet){
@@ -93,7 +93,7 @@ public class MicrotaskSelector {
 			return null;
 		}
 		else{
-			HashMap<Integer, Microtask> map = debugSession.getMicrotaskMap();
+			Hashtable<Integer, Microtask> map = debugSession.getMicrotaskMap();
 			Set<Integer> keySet = map.keySet();	
 			Integer maxAnswers= debugSession.getMaximumAnswerCount();
 			Iterator<Integer> iter = keySet.iterator();

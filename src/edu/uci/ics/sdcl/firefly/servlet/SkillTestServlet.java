@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import javax.servlet.ServletException; 
@@ -30,7 +31,7 @@ public class SkillTestServlet extends HttpServlet {
 	public static final String QUESTION3="QUESTION3";
 	public static final String QUESTION4="QUESTION4";
 	//private String QUESTION5="QUESTION5";
-	private HashMap<String, String> rubricMap = new HashMap<String,String>();
+	private Hashtable<String, String> rubricMap = new Hashtable<String,String>();
 
 	private String SorryPage = "/SorryPage.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
@@ -98,7 +99,7 @@ public class SkillTestServlet extends HttpServlet {
 		String duration = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
 
 		//Retrieve answers
-		HashMap<String, String> answerMap = new HashMap<String, String>();
+		Hashtable<String, String> answerMap = new Hashtable<String, String>();
 		String answer1 = request.getParameter("QUESTION1");
 		answerMap.put(QUESTION1, answer1);
 		String answer2 = request.getParameter("QUESTION2");
@@ -108,7 +109,7 @@ public class SkillTestServlet extends HttpServlet {
 		String answer4 = request.getParameter("QUESTION4");
 		answerMap.put(QUESTION4, answer4);
 		
-		HashMap<String, Boolean> gradeMap = this.gradeAnswers(answerMap);
+		Hashtable<String, Boolean> gradeMap = this.gradeAnswers(answerMap);
 		int grade = this.countCorrectAnswers(gradeMap);
 
 		worker.setSkillAnswers(rubricMap,gradeMap,answerMap,grade, duration);
@@ -117,9 +118,9 @@ public class SkillTestServlet extends HttpServlet {
 		return grade;
 	}
 
-	private HashMap<String,Boolean> gradeAnswers(HashMap<String, String> answerMap){
+	private Hashtable<String,Boolean> gradeAnswers(Hashtable<String, String> answerMap){
 
-		HashMap<String, Boolean> gradeMap= new HashMap<String, Boolean>();
+		Hashtable<String, Boolean> gradeMap= new Hashtable<String, Boolean>();
 
 		Boolean result=false;
 		Iterator<String> keyIterator = answerMap.keySet().iterator();
@@ -137,7 +138,7 @@ public class SkillTestServlet extends HttpServlet {
 	}
 
 
-	private int countCorrectAnswers(HashMap<String, Boolean> gradeMap){
+	private int countCorrectAnswers(Hashtable<String, Boolean> gradeMap){
 		int grade = 0;
 		Iterator<String> keyIterator = gradeMap.keySet().iterator();
 		while( keyIterator.hasNext()){

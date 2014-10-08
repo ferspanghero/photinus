@@ -2,17 +2,17 @@ package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 public class Worker implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String workerId;
 	private Date consentDate;
-	private HashMap<String,String> surveyAnswersMap;
-	private HashMap<String,String> skillTestAnswerMap;
-	private HashMap<String, String> rubricMap;
-	private HashMap<String, Boolean> gradeMap;
+	private Hashtable<String,String> surveyAnswersMap;
+	private Hashtable<String,String> skillTestAnswerMap;
+	private Hashtable<String, String> rubricMap;
+	private Hashtable<String, Boolean> gradeMap;
 	private Integer grade;
 	private String skillTestDuration;
 	private String sessionId; //Stores the single working session session allowed per worker
@@ -20,13 +20,13 @@ public class Worker implements Serializable{
 	public Worker(String workerId, Date consentDate) {
 		this.workerId = workerId;
 		this.consentDate = consentDate;
-		this.surveyAnswersMap =  new HashMap<String,String>();
+		this.surveyAnswersMap =  new Hashtable<String,String>();
 		this.grade = -1;
 		this.skillTestDuration = "";
 		this.sessionId = "";		
-		this.rubricMap = new HashMap<String,String>();
-		this.skillTestAnswerMap = new HashMap<String,String>();
-		this.gradeMap = new HashMap<String, Boolean>();
+		this.rubricMap = new Hashtable<String,String>();
+		this.skillTestAnswerMap = new Hashtable<String,String>();
+		this.gradeMap = new Hashtable<String, Boolean>();
 		
 	}
 
@@ -50,8 +50,8 @@ public class Worker implements Serializable{
 		return this.surveyAnswersMap.get(question);
 	}
 
-	public void setSkillAnswers(HashMap<String, String> rubricMap,
-			HashMap<String, Boolean> gradeMap, HashMap<String, String> answerMap, int grade, String duration) {
+	public void setSkillAnswers(Hashtable<String, String> rubricMap,
+			Hashtable<String, Boolean> gradeMap, Hashtable<String, String> answerMap, int grade, String duration) {
 		this.setRubricMap(rubricMap);
 		this.setGradeMap(gradeMap);
 		this.setSkillTestAnswersMap(answerMap);
@@ -59,7 +59,7 @@ public class Worker implements Serializable{
 		this.setSkillTestDuration(duration);
 	}
 
-	private void setSkillTestAnswersMap(HashMap<String, String> answerMap) {
+	private void setSkillTestAnswersMap(Hashtable<String, String> answerMap) {
 		this.skillTestAnswerMap = answerMap;
 		
 	}
@@ -72,19 +72,19 @@ public class Worker implements Serializable{
 		return this.skillTestDuration;
 	}
 
-	public HashMap<String, String> getRubricMap() {
+	public Hashtable<String, String> getRubricMap() {
 		return rubricMap;
 	}
 
-	public void setRubricMap(HashMap<String, String> rubricMap) {
+	public void setRubricMap(Hashtable<String, String> rubricMap) {
 		this.rubricMap = rubricMap;
 	}
 
-	public HashMap<String, Boolean> getGradeMap() {
+	public Hashtable<String, Boolean> getGradeMap() {
 		return gradeMap;
 	}
 
-	public void setGradeMap(HashMap<String, Boolean> gradeMap) {
+	public void setGradeMap(Hashtable<String, Boolean> gradeMap) {
 		this.gradeMap = gradeMap;
 	}
 
@@ -96,7 +96,7 @@ public class Worker implements Serializable{
 		this.grade = grade;
 	}
 
-	public HashMap<String, String> getSurveyAnswers() {
+	public Hashtable<String, String> getSurveyAnswers() {
 		return surveyAnswersMap;
 	}
 

@@ -2,9 +2,11 @@ package edu.uci.ics.sdcl.firefly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
@@ -64,7 +66,7 @@ public class WorkerSessionFactory {
 		ArrayList<WorkerSession> originalList = new ArrayList<WorkerSession>(); 
 
 		//Obtain a list of N microtasks from N different codesnippets (i.e., methods)
-		ArrayList<Microtask> mtaskList = this.nextMicrotaskList(this.microtaskPerSession);
+		Vector<Microtask> mtaskList = this.nextMicrotaskList(this.microtaskPerSession);
 		//Generate the original WorkerSessions
 		while(mtaskList.size()==this.microtaskPerSession){
 			this.sessionId = this.keyGenerator.generate();
@@ -119,9 +121,9 @@ public class WorkerSessionFactory {
 	 * @param numberOfTasks of microtasks in the list
 	 * @return sample N microtasks from different methods from the the fileMethoMap.
 	 */
-	public ArrayList<Microtask> nextMicrotaskList(int numberOfTasks){
+	public Vector<Microtask> nextMicrotaskList(int numberOfTasks){
 
-		ArrayList<Microtask> resultList = new ArrayList<Microtask>();
+		Vector<Microtask> resultList = new Vector<Microtask>();
 		HashMap<String,Microtask> methodTracker = new HashMap<String,Microtask>();// Tracks whether a method with the same signature was not already added
 		
 		Iterator<String> fileKeyIter = this.fileMethodMap.keySet().iterator();
@@ -199,7 +201,7 @@ public class WorkerSessionFactory {
 					fileMethodMap.put(fileName, new HashMap<String,ArrayList<Microtask>>());
 				}
 				//Iterate over microtasks
-				HashMap<Integer, Microtask> microtaskMap = map.getMicrotaskMap();
+				Hashtable<Integer, Microtask> microtaskMap = map.getMicrotaskMap();
 				Iterator<Integer> microtaskIter = microtaskMap.keySet().iterator();
 				while(microtaskIter.hasNext()){
 					Integer mtaskID = (Integer) microtaskIter.next();
@@ -304,7 +306,7 @@ public class WorkerSessionFactory {
 		this.sessionId = this.keyGenerator.generate();
 
 		MicrotaskSelector selector = new MicrotaskSelector();
-		ArrayList<Microtask> mtaskList =selector.selectAllMicrotasks();
+		Vector<Microtask> mtaskList =selector.selectAllMicrotasks();
 
 		WorkerSession session = new WorkerSession(this.sessionId, mtaskList);
 		workerSessionStack.push(session);

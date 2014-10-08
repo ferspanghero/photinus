@@ -110,7 +110,7 @@ public class SessionsReportGenerator {
 		
 		for (WorkerSession workerSession : newSessionsAL) {
 			// counting unanswered questions 
-			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
+			Vector<Microtask> microtasks = workerSession.getMicrotaskList();
 			for (Microtask microtask : microtasks) {
 				Integer currentColumn = this.questionsInSheet.get(microtask.getID());
 				if (null == currentColumn)
@@ -201,7 +201,7 @@ public class SessionsReportGenerator {
 			lineTimeContent[1] = workerSession.getId();				// session ID
 			lineTimeContent[2] = workerSession.getTotalElapsedTime(); 		// the time the worker took to perform all microtasks	
 			
-			ArrayList<Microtask> microtasks = workerSession.getMicrotaskList();
+			Vector<Microtask> microtasks = workerSession.getMicrotaskList();
 			for (Microtask microtask : microtasks) {
 				Integer currentColumn = this.questionsInSheet.get(microtask.getID());
 				
@@ -240,8 +240,8 @@ public class SessionsReportGenerator {
 		return true;
 	}
 	
-	private void populateQuestionMap(ArrayList<Microtask> microtasksPerWorker){
-		for (Microtask microtask : microtasksPerWorker) {
+	private void populateQuestionMap(Vector<Microtask> vector){
+		for (Microtask microtask : vector) {
 			if ( !this.questionsInSheet.containsKey(microtask.getID()) ){	
 				this.questionsInSheet.put(microtask.getID(), this.columnNumber++);
 			}	// if contains the question, do nothing

@@ -1,6 +1,6 @@
 package edu.uci.ics.sdcl.firefly;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.HashMap;
 
 public class CodeSnippet implements Serializable
@@ -12,8 +12,8 @@ public class CodeSnippet implements Serializable
 	protected String fileName;						// file name
 	protected String methodBody;					// whole content of method
 	
-	protected ArrayList<CodeSnippet> callers;		// all callers of this method within the file
-	protected ArrayList<CodeSnippet> callees;		// all callees of this method within the file
+	protected Vector<CodeSnippet> callers;		// all callers of this method within the file
+	protected Vector<CodeSnippet> callees;		// all callees of this method within the file
 	
 	/* finding starting and ending position */
 	/* Element position */
@@ -29,7 +29,7 @@ public class CodeSnippet implements Serializable
 	
 	protected Boolean returnStatement;				// true if there is a return value
 	protected MethodSignature methodSignature;		// parsed method declaration
-	protected ArrayList<CodeElement> elements;	// list of statements
+	protected Vector<CodeElement> elements;	// list of statements
 	
 	
 	protected String codeSnippetFromFileContent;	// the string that has the whole body of the method
@@ -60,9 +60,9 @@ public class CodeSnippet implements Serializable
 		this.bodyEndingLine = CodeElement.NO_NUMBER_ASSOCIATED;		
 		this.bodyEndingColumn = CodeElement.NO_NUMBER_ASSOCIATED;
 		
-		this.elements = new ArrayList<CodeElement>();
-		this.callers = new ArrayList<CodeSnippet>();
-		this.callees = new ArrayList<CodeSnippet>();
+		this.elements = new Vector<CodeElement>();
+		this.callers = new Vector<CodeSnippet>();
+		this.callees = new Vector<CodeSnippet>();
 	}
 	
 	/* constructor for methods with body */
@@ -89,9 +89,9 @@ public class CodeSnippet implements Serializable
 		this.bodyEndingLine = bodyEndingLineArg;		
 		this.bodyEndingColumn = bodyEndingColumnArg;	
 		
-		this.elements = new ArrayList<CodeElement>();
-		this.callers = new ArrayList<CodeSnippet>();
-		this.callees = new ArrayList<CodeSnippet>();
+		this.elements = new Vector<CodeElement>();
+		this.callers = new Vector<CodeSnippet>();
+		this.callees = new Vector<CodeSnippet>();
 	}
 
 	@Override
@@ -136,12 +136,12 @@ public class CodeSnippet implements Serializable
 		}
 	}
 	
-	public ArrayList<CodeSnippet> getCallers()
+	public Vector<CodeSnippet> getCallers()
 	{
 		return this.callers;
 	}
 	
-	public ArrayList<CodeSnippet> getCallees()
+	public Vector<CodeSnippet> getCallees()
 	{
 		return this.callees;
 	}
@@ -186,11 +186,11 @@ public class CodeSnippet implements Serializable
 		this.methodSignature = methodSignature;
 	}
 
-	public ArrayList<CodeElement> getStatements() {
+	public Vector<CodeElement> getStatements() {
 		return elements;
 	}
 
-	public void setStatements(ArrayList<CodeElement> statements) {
+	public void setStatements(Vector<CodeElement> statements) {
 		this.elements = statements;
 	}
 	/* Getters for the position */
@@ -244,8 +244,8 @@ public class CodeSnippet implements Serializable
 		this.fileName = fileName;
 	}
 
-	public ArrayList<CodeElement> getElementsOfType(String type) {
-		ArrayList<CodeElement> list = new ArrayList<CodeElement>();
+	public Vector<CodeElement> getElementsOfType(String type) {
+		Vector<CodeElement> list = new Vector<CodeElement>();
 		
 		for(CodeElement element : this.elements){
 			if(element.getType().matches(type))
@@ -255,7 +255,7 @@ public class CodeSnippet implements Serializable
 		return list;
 	}
 
-	private static boolean isMethodCallee(ArrayList<CodeSnippet> calleeList, String methodName, int numberOfParameters){
+	private static boolean isMethodCallee(Vector<CodeSnippet> calleeList, String methodName, int numberOfParameters){
 		boolean found=false;
 		int i=0;
 		while((!found) && i<calleeList.size()){
@@ -271,12 +271,12 @@ public class CodeSnippet implements Serializable
 		return found;
 	}
 	
-	public static boolean listContainsMethod(ArrayList<CodeSnippet> calleeList,
+	public static boolean listContainsMethod(Vector<CodeSnippet> calleeList,
 			MyMethodCall methodCallElement) {
 		return CodeSnippet.isMethodCallee(calleeList, methodCallElement.getName(), methodCallElement.getNumberOfParameters());
 	}
 	
-	public static boolean listContainsMethod(ArrayList<CodeSnippet> calleeList,
+	public static boolean listContainsMethod(Vector<CodeSnippet> calleeList,
 			CodeSnippet snippet) {
 		return CodeSnippet.isMethodCallee(calleeList, snippet.getMethodSignature().getName(), snippet.getMethodSignature().getParameterList().size());
 	}

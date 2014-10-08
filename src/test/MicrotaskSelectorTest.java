@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.Hashtable;
 import java.util.Vector;
 import java.util.HashMap;
 
@@ -22,7 +23,7 @@ public class MicrotaskSelectorTest {
 
 	private String path = ".";
 	private  HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
-	private HashMap<Integer, Microtask> microtaskMap;
+	private Hashtable<Integer, Microtask> microtaskMap;
 	MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();
 	MicrotaskSelector selector = new MicrotaskSelector();
 	String fileName = "SimpleSampleCode.java";
@@ -76,7 +77,7 @@ public class MicrotaskSelectorTest {
 		Microtask mtask3 = new Microtask(CodeElement.FOR_LOOP, codeSnippetFactorial, null, questionArg3, 4, 0, 4, 41, 3,"failure description");
 
 		//Create the data structure
-		this.microtaskMap =  new HashMap<Integer,Microtask>();
+		this.microtaskMap =  new Hashtable<Integer,Microtask>();
 		microtaskMap.put(new Integer(1),mtask1);
 		microtaskMap.put(new Integer(2),mtask2);
 		microtaskMap.put(new Integer(3),mtask3);
@@ -96,7 +97,7 @@ public class MicrotaskSelectorTest {
 
 		 FileDebugSession debugSession = memento.read(fileName);
 		 if((debugSession!=null) && (debugSession.getMicrotaskMap()!=null)){
-			HashMap<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
+			Hashtable<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
 			//Associate an answer
 			Integer key = new Integer (1);
 			Microtask mtask1 = mMap.get(key);
@@ -122,7 +123,7 @@ public class MicrotaskSelectorTest {
 		//Associate answers to two microtasks
 		 FileDebugSession debugSession = memento.read(fileName);
 		 if((debugSession!=null) && (debugSession.getMicrotaskMap()!=null)){
-			HashMap<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
+			Hashtable<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
 			Integer key = new Integer (1);
 			Microtask mtask1 = mMap.get(key);
 			Vector<Answer> answerList = mtask1.getAnswerList();
@@ -164,7 +165,7 @@ public class MicrotaskSelectorTest {
 		//Associate answers to two microtasks
 		 FileDebugSession debugSession = memento.read(fileName);
 		 if((debugSession!=null) && (debugSession.getMicrotaskMap()!=null)){
-			HashMap<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
+			Hashtable<Integer, Microtask> mMap = debugSession.getMicrotaskMap();
 			Integer key = new Integer (1);
 			Microtask mtask1 = mMap.get(key);
 			Vector<Answer> answerList = mtask1.getAnswerList();

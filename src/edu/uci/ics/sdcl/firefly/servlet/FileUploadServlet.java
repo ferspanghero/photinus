@@ -169,7 +169,7 @@ public class FileUploadServlet extends HttpServlet {
 	private String generateMicrotasks(String fileName, String fileContent, String methodName, String numberOfParameters, String bugReport){
 		//calls CodeSnippetFactory
 		CodeSnippetFactory codeSnippetFactory = new CodeSnippetFactory(fileName,fileContent);
-		ArrayList<CodeSnippet> snippetList = codeSnippetFactory.generateSnippetsForFile();
+		Vector<CodeSnippet> snippetList = codeSnippetFactory.generateSnippetsForFile();
 		int parameterSize;
 		if(numberOfParameters==null)
 			parameterSize=-1;
@@ -179,7 +179,7 @@ public class FileUploadServlet extends HttpServlet {
 		//filtering by methodName
 		boolean foundMatch = false;		// assuming it found the method specified
 		//System.out.print("candidates: ");
-		ArrayList<CodeSnippet> filteredCodeSnippets = new ArrayList<CodeSnippet>();
+		Vector<CodeSnippet> filteredCodeSnippets = new Vector<CodeSnippet>();
 		for (CodeSnippet codeSnippet : snippetList) {
 			if (codeSnippet.getMethodSignature().getName().matches(methodName)){
 				if((parameterSize!=-1) && (codeSnippet.getMethodSignature().getParameterList() !=null)){
@@ -215,7 +215,7 @@ public class FileUploadServlet extends HttpServlet {
 			MicrotaskContextFactory contextFactory = new MicrotaskContextFactory();
 			MicrotaskStorage storage = MicrotaskStorage.initializeSingleton();;
 			
-			HashMap<Integer, Microtask> microtaskMap = questionFactory.generateMicrotasks(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
+			Hashtable<Integer, Microtask> microtaskMap = questionFactory.generateMicrotasks(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
 			microtaskMap = contextFactory.generateMicrotaskContext(microtaskMap);
 			
 			if (microtaskMap!= null && microtaskMap.size() > 0){

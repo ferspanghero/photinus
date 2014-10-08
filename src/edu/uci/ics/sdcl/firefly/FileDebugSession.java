@@ -1,7 +1,7 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 /**
  * Class to persist the information of debugging one file
@@ -20,22 +20,22 @@ public class FileDebugSession implements Serializable {
 	
 	private String fileContent;
 	
-	private HashMap<Integer, Microtask> microtaskMap;
+	private Hashtable<Integer, Microtask> microtaskMap;
 	
 	private Integer maximumAnswerCount; 
 	
 	
-	public FileDebugSession(String fileName, String fileContent, HashMap<Integer,Microtask> microtaskMap){
+	public FileDebugSession(String fileName, String fileContent, Hashtable<Integer,Microtask> microtaskMap){
 		this.microtaskMap =  microtaskMap;
 		this.fileName = fileName;
 		this.fileContent = fileContent;
 	}
 
-	public HashMap<Integer, Microtask> getMicrotaskMap() {
+	public Hashtable<Integer, Microtask> getMicrotaskMap() {
 		return microtaskMap;
 	}
 
-	public void setMicrotaskMap(HashMap<Integer, Microtask> microtaskMap) {
+	public void setMicrotaskMap(Hashtable<Integer, Microtask> microtaskMap) {
 		this.microtaskMap = microtaskMap;
 	}
 
@@ -81,10 +81,6 @@ public class FileDebugSession implements Serializable {
 	
 	public boolean isEmpty(){
 		return (this.microtaskMap == null || this.microtaskMap.isEmpty());
-	}
-
-	public void append(FileDebugSession sourceFileDebugSession) {
-		this.microtaskMap.putAll(sourceFileDebugSession.getMicrotaskMap());
 	}
 	
 }

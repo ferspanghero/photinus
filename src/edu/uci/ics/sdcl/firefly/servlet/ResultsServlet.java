@@ -3,6 +3,7 @@ package edu.uci.ics.sdcl.firefly.servlet;
 import java.io.IOException; 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
@@ -73,7 +74,7 @@ public class ResultsServlet extends HttpServlet {
 					resultMap.put(fileName, new HashMap<String,MethodData>());
 
 				//Iterate over microtasks
-				HashMap<Integer, Microtask> microtaskMap = map.getMicrotaskMap();
+				Hashtable<Integer, Microtask> microtaskMap = map.getMicrotaskMap();
 				Iterator<Integer> microtaskIter = microtaskMap.keySet().iterator();
 				while(microtaskIter.hasNext()){
 					Microtask mtask = microtaskMap.get((Integer) microtaskIter.next());

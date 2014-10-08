@@ -1,6 +1,7 @@
 package test;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -91,7 +92,7 @@ public class CodeSnippetFactoryTest {
 		String fileContent = SourceFileReader.readFileToString(folderPath+fileName);
 		CodeSnippetFactory factory = new CodeSnippetFactory(fileName,fileContent);
 
-		ArrayList<CodeSnippet> list = factory.generateSnippetsForFile();
+		Vector<CodeSnippet> list = factory.generateSnippetsForFile();
 		if((list ==null ) || (list.size()!=3))
 			Assert.fail("Null list of snippets or file does not match test data");
 		else{

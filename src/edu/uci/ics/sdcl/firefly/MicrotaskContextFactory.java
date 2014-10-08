@@ -2,8 +2,10 @@ package edu.uci.ics.sdcl.firefly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,7 +22,7 @@ import edu.uci.ics.sdcl.firefly.util.PositionFinder;
 public class MicrotaskContextFactory {
 
 		
-	public HashMap<Integer, Microtask> generateMicrotaskContext(HashMap<Integer, Microtask> microtaskMap){
+	public Hashtable<Integer, Microtask> generateMicrotaskContext(Hashtable<Integer, Microtask> microtaskMap){
 		Iterator<Integer> keyIterator = microtaskMap.keySet().iterator();
 		while(keyIterator.hasNext()){
 			Integer key = keyIterator.next();
@@ -58,7 +60,7 @@ public class MicrotaskContextFactory {
 
 
 					//prepare callees list 
-					ArrayList<CodeSnippet> calleeList = task.getCodeSnippet().getCallees();
+					Vector<CodeSnippet> calleeList = task.getCodeSnippet().getCallees();
 
 					//System.out.println("methodNameInQuestion: "+  methodNameInQuestion);
 					//System.out.println("# Callees in newFileContent :"+  calleeMap.size());
@@ -178,7 +180,7 @@ public class MicrotaskContextFactory {
 			newFileContent.append("} ");
 			
 			CodeSnippetFactory factory = new CodeSnippetFactory("_callees",newFileContent.toString());
-			ArrayList<CodeSnippet> calleesList = factory.generateSnippetsForFile();
+			Vector<CodeSnippet> calleesList = factory.generateSnippetsForFile();
 			
 			// obtaining callee method positions to highlight 
 			for (CodeSnippet callee : task.getCodeSnippet().getCallees()) {
@@ -339,7 +341,7 @@ public class MicrotaskContextFactory {
 
 
 			//prepare callees list 
-			ArrayList<CodeSnippet> calleeList = task.getCodeSnippet().getCallees();
+			Vector<CodeSnippet> calleeList = task.getCodeSnippet().getCallees();
 
 			//System.out.println("methodNameInQuestion: "+  methodNameInQuestion);
 			//System.out.println("# Callees in newFileContent :"+  calleeMap.size());
@@ -443,7 +445,7 @@ public class MicrotaskContextFactory {
 			newFileContent.append("} ");
 			
 			CodeSnippetFactory factory = new CodeSnippetFactory("_callees",newFileContent.toString());
-			ArrayList<CodeSnippet> calleesList = factory.generateSnippetsForFile();
+			Vector<CodeSnippet> calleesList = factory.generateSnippetsForFile();
 			
 			// obtaining callee method positions to highlight 
 			for (CodeSnippet callee : task.getCodeSnippet().getCallees()) {

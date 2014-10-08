@@ -120,7 +120,7 @@ public class MicrotaskStorage {
 	 * @param timeStamp 
 	 * @return true if operation was successful, false otherwise
 	 */
-	public boolean insertAnswer(String fileName, Integer microtaskId, Answer answer){ 
+	public synchronized boolean insertAnswer(String fileName, Integer microtaskId, Answer answer){ 
 
 		try{
 			FileDebugSession newfileDebugSession = this.read(fileName);
@@ -142,7 +142,7 @@ public class MicrotaskStorage {
 	 * @param fileDebugSession the list of microtasks associated to the file
 	 * @return true if operation succeeded, otherwise false.
 	 */
-	public boolean insert(String fileName, FileDebugSession newfileDebugSession){
+	public synchronized boolean insert(String fileName, FileDebugSession newfileDebugSession){
 
 		if(debugSessionMap!=null){
 

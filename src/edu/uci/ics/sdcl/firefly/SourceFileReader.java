@@ -5,17 +5,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Vector;
 
 public class SourceFileReader {
 
 	public static void main(String args[]) throws IOException{
 		CodeSnippetFactory codeSnippets = new CodeSnippetFactory("OrdinalMap_buggy", 
-				readFileToString("C:\\Users\\Danilo\\Documents\\GitHub\\crowd-debug-firefly\\samples\\main\\java\\com\\netflix\\nfgraph\\util\\OrdinalMap_buggy.java")); // file name and file content
-		ArrayList<CodeSnippet> methodsParsed = codeSnippets.generateSnippetsForFile();
+				readFileToString("C://Users//adrianocDocuments//GitHub//crowd-debug-firefly//samples//9-NetflixHystrix//9buggy_Hystrix_buggy.java")); // file name and file content
+		Vector<CodeSnippet> methodsParsed = codeSnippets.generateSnippetsForFile();
 		for (CodeSnippet codeSnippet : methodsParsed) {
 			System.out.println("fileName: " + codeSnippet.getFileName());
 			System.out.println("--> " + codeSnippet.getMethodSignature().getName());
@@ -46,7 +48,7 @@ public class SourceFileReader {
 		QuestionFactory questionFactory = new QuestionFactory();
 		System.out.println("----------Printing Concrete Questions-------------");
 		questionFactory.generateMicrotasks(methodsParsed,"Debug Report Message", 0);
-		HashMap<Integer, Microtask> concreteQuestionsMade = questionFactory.getConcreteQuestions();
+		Hashtable<Integer, Microtask> concreteQuestionsMade = questionFactory.getConcreteQuestions();
 		Set<Map.Entry<Integer, Microtask>> set = concreteQuestionsMade.entrySet();
 		Iterator<Entry<Integer, Microtask>> i = set.iterator();
 		while(i.hasNext()) 
@@ -64,7 +66,7 @@ public class SourceFileReader {
 		System.out.println("****************Method callers****************");
 		for (CodeSnippet snippet : methodsParsed) {
 			System.out.print(snippet.getMethodSignature().getName() + " is called by [");
-			ArrayList<CodeSnippet> methods = snippet.getCallers();
+			Vector<CodeSnippet> methods = snippet.getCallers();
 			for (CodeSnippet codeSnippet : methods) {
 				System.out.print(codeSnippet.getMethodSignature().getName() + ", ");
 			}

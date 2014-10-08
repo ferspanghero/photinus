@@ -1,7 +1,7 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class WorkerSession implements Serializable{
 	private String id;
 	
 	/** All microtask package in the same worker session. See WorkerSessionFactory for better context. */
-	private ArrayList<Microtask> microtaskList;
+	private Vector<Microtask> microtaskList;
 	
 	/** Keeps track of the position of the current microtask */
 	private Integer currentIndex;
@@ -38,7 +38,7 @@ public class WorkerSession implements Serializable{
 	 * @param originalId 
 	 * @param microtaskList
 	 */
-	public WorkerSession(String id, ArrayList<Microtask> microtaskList){
+	public WorkerSession(String id, Vector<Microtask> microtaskList){
 		logger = LoggerFactory.getLogger(WorkerSession.class);
 		this.id = id;
 		this.microtaskList = microtaskList;
@@ -97,7 +97,7 @@ public class WorkerSession implements Serializable{
 		return this.currentIndex;
 	}
 
-	public ArrayList<Microtask> getMicrotaskList() {
+	public Vector<Microtask> getMicrotaskList() {
 		return this.microtaskList;
 	}
 	

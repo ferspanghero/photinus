@@ -2,10 +2,12 @@ package edu.uci.ics.sdcl.firefly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
@@ -26,11 +28,11 @@ public class QuestionFactory {
 	private Integer endingLine;
 	private Integer endingColumn;
 
-	private HashMap<Integer, Microtask> microtaskMap;
+	private Hashtable<Integer, Microtask> microtaskMap;
 
 	public QuestionFactory()
 	{
-		this.microtaskMap = new HashMap<Integer, Microtask>();
+		this.microtaskMap = new Hashtable<Integer, Microtask>();
 		/* Method Declaration */
 		templateMethodDeclaration.add("Is there maybe something wrong in the declaration of function '<F>' at line <#> " 
 				+ "(e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?");
@@ -58,16 +60,16 @@ public class QuestionFactory {
 	
 	/**
 	 * 
-	 * @param methodsArg only the code snippets for which microtasks will be generated
+	 * @param methodsParsed only the code snippets for which microtasks will be generated
 	 * @param i 
 	 * @param bugReport 
 	 * @return the map of microtasks
 	 */
-	public HashMap<Integer, Microtask> generateMicrotasks(ArrayList<CodeSnippet> methodsArg, String bugReport, int numberOfExistingMicrotasks)
+	public Hashtable<Integer, Microtask> generateMicrotasks(Vector<CodeSnippet> methodsParsed, String bugReport, int numberOfExistingMicrotasks)
 	{
 		Integer microtaskId = numberOfExistingMicrotasks;
-		this.microtaskMap = new  HashMap<Integer, Microtask>();
-		for (CodeSnippet codeSnippet : methodsArg)
+		this.microtaskMap = new  Hashtable<Integer, Microtask>();
+		for (CodeSnippet codeSnippet : methodsParsed)
 		{
 			for (String templateForQuestion : templateMethodDeclaration)
 			{
@@ -111,7 +113,7 @@ public class QuestionFactory {
 
 			}
 
-			ArrayList<CodeElement> statements = codeSnippet.getStatements();	// now getting the question for the statements
+			Vector<CodeElement> statements = codeSnippet.getStatements();	// now getting the question for the statements
 
 
 			for (CodeElement element : statements)
@@ -292,7 +294,7 @@ public class QuestionFactory {
 	}
 
 	
-	public HashMap<Integer, Microtask> getConcreteQuestions() {
+	public Hashtable<Integer, Microtask> getConcreteQuestions() {
 		return microtaskMap;
 	}
 }

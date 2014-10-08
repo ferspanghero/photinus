@@ -229,24 +229,18 @@
 	<div id="questionCode">
 		<div id="internalText">
 
-			<b>The source code:</b>
-			<div id="mainEditor">
-				<xmp>${requestScope["source"]}</xmp>
-			</div>
-
-			<br>
-
-			<div id="context"></div>
-
-			<div id="editorCaller">
-				<xmp>${requestScope["caller"]}</xmp>
-			</div>
-
-			<div id="space"></div>
-
-			<div id="editorCallee">
-				<xmp>${requestScope["callee"]}</xmp>
-			</div>
+		<b>The source code:</b> 
+		<div id="mainEditor"><xmp>${requestScope["source"]}</xmp></div>
+		
+		<br>
+		
+		<div id="context"></div>
+		
+		<div id="editorCaller"><xmp>${requestScope["caller"]}</xmp></div>
+		
+		<div id="space"></div>
+		
+		<div id="editorCallee"><xmp>${requestScope["callee"]}</xmp></div>
 
 			<script>
 				function computeHeight(linespan) {

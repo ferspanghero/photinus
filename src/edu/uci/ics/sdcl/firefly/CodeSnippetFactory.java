@@ -9,12 +9,13 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 public class CodeSnippetFactory { 
 	private String fileContent;
 	private String fileName;
 	private String[] fileContentPerLine;
-	private ArrayList<CodeSnippet> codeSnippetList= new ArrayList<CodeSnippet>();
+	private Vector<CodeSnippet> codeSnippetList= new Vector<CodeSnippet>();
 
 	//public CodeSnippetFactory(String folderPathArg)
 	//	{
@@ -28,9 +29,9 @@ public class CodeSnippetFactory {
 	}
 
 	/** Generates code snippets for a file content  in memory (attribute fileContent) */
-	public ArrayList<CodeSnippet> generateSnippetsForFile()
+	public Vector<CodeSnippet> generateSnippetsForFile()
 	{
-		this.codeSnippetList = new ArrayList<CodeSnippet>(); //Cleans up the snippet list
+		this.codeSnippetList = new Vector<CodeSnippet>(); //Cleans up the snippet list
 		@SuppressWarnings("unused")
 		JavaParser parser = new JavaParser(this);
 		this.setCallers(this.codeSnippetList);
@@ -46,7 +47,7 @@ public class CodeSnippetFactory {
 	 * @param folderPath the folder where all files are
 	 * 
 	 */
-	public ArrayList<CodeSnippet> generateSnippets(String folderPath)
+	public Vector<CodeSnippet> generateSnippets(String folderPath)
 	{
 		try
 		{
@@ -97,12 +98,12 @@ public class CodeSnippetFactory {
 		}
 	}
 
-	public void setCallers(ArrayList<CodeSnippet> codeSnippets)
+	public void setCallers(Vector<CodeSnippet> codeSnippetList2)
 	{
 //		System.out.println(" <> ");
 		/* building and populating callers-callees structure */
 		HashMap<CodeSnippet, ArrayList<MyMethodCall>> callersCalles = new HashMap<CodeSnippet, ArrayList<MyMethodCall>>();
-		for (CodeSnippet codeSnippet : codeSnippets) {	// for each method (caller)
+		for (CodeSnippet codeSnippet : codeSnippetList2) {	// for each method (caller)
 			ArrayList<MyMethodCall> callees = new ArrayList<MyMethodCall>();
 //			System.out.println("Caller: " + codeSnippet.getMethodSignature().getName());
 			for (CodeElement codeElement : codeSnippet.getStatements()) {	// find the callees (within the method)
@@ -119,7 +120,7 @@ public class CodeSnippetFactory {
 		}
 
 		/* Updating the methods callers */
-		for (CodeSnippet codeSnippet : codeSnippets) {
+		for (CodeSnippet codeSnippet : codeSnippetList2) {
 			String methodName = codeSnippet.getMethodSignature().getName();	// callee name
 			Iterator<Entry<CodeSnippet, ArrayList<MyMethodCall>>> i = callersCalles.entrySet().iterator();
 			while(i.hasNext()) 	// searching for caller (from other methods within this codeSnippet list)
@@ -141,9 +142,9 @@ public class CodeSnippetFactory {
 	}
 
 	// assuming that the method is NOT OVERLOADED
-	private void setMethodTexts(ArrayList<CodeSnippet> codeSnippetsArg)
+	private void setMethodTexts(Vector<CodeSnippet> codeSnippetList2)
 	{
-		for (CodeSnippet codeSnippet : codeSnippetsArg) {
+		for (CodeSnippet codeSnippet : codeSnippetList2) {
 			int startingLine = codeSnippet.getElementStartingLine() -1;	// -1 because the vector starts from 0
 			int endingLine = codeSnippet.getBodyEndingLine() -1;	// -1 because the vector starts from 0
 			/* getting method content */
@@ -181,7 +182,7 @@ public class CodeSnippetFactory {
 		return fileContentPerLine;
 	}
 
-	public ArrayList<CodeSnippet> getCodeSnippetList()
+	public Vector<CodeSnippet> getCodeSnippetList()
 	{
 		return codeSnippetList;
 	}

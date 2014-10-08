@@ -2,7 +2,9 @@ package test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Set;
+import java.util.Vector;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -168,7 +170,7 @@ public class QuestionFactoryTest
 		String fileContent = SourceFileReader.readFileToString(folderPath+fileName);
 		CodeSnippetFactory factory = new CodeSnippetFactory(fileName,fileContent);
 		
-		ArrayList<CodeSnippet> list = factory.generateSnippetsForFile();
+		Vector<CodeSnippet> list = factory.generateSnippetsForFile();
 		if((list ==null ) || (list.size()!=2))
 			Assert.fail("Null list of snippets or file does not match test data");
 		else{
@@ -179,7 +181,7 @@ public class QuestionFactoryTest
 					(snippet2.isEqualTo(codeSnippetConstructor)) || (snippet2.isEqualTo(codeSnippetFactorial))){
 				/* Methods OK, now checking questions */
 				this.questionFactory.generateMicrotasks(list,"Failure message",0);
-				HashMap<Integer, Microtask> allQuestions = this.questionFactory.getConcreteQuestions();
+				Hashtable<Integer, Microtask> allQuestions = this.questionFactory.getConcreteQuestions();
 				
 				if( (null == allQuestions) || (allQuestions.size()!= 11) )
 					Assert.fail("Null list of questions or questions do not match test data");

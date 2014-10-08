@@ -110,7 +110,7 @@ private String fileName = "WorkersReport.xlsx";
 			}
 			
 			// iterating over the Survey questions
-			HashMap<String, String> survey = mapEntryWorker.getValue().getSurveyAnswers();
+			Hashtable<String, String> survey = mapEntryWorker.getValue().getSurveyAnswers();
 			for (int i=0; i<SurveyServlet.question.length; i++){
 				if (survey.containsKey(SurveyServlet.question[i])){
 					lineContent[j++] = survey.get(SurveyServlet.question[i]);

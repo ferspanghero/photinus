@@ -3,6 +3,7 @@ package test;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 public class MicrotaskMementoTest {
 	private  HashMap<String, FileDebugSession> debugSessionMap = new HashMap<String, FileDebugSession>();
-	private HashMap<Integer, Microtask> microtaskMap;
+	private Hashtable<Integer, Microtask> microtaskMap;
 	private String fileName = "SimpleSampleCode.java";
 
 	@Before
@@ -60,7 +61,7 @@ public class MicrotaskMementoTest {
 		Microtask mtask = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippetFactorial, null, questionArg, 20, 0, 20, 58, 1,"failure description");
 
 		//Create the data structure
-		this.microtaskMap =  new HashMap<Integer,Microtask>();
+		this.microtaskMap =  new Hashtable<Integer,Microtask>();
 		microtaskMap.put(new Integer(1),mtask);
 		FileDebugSession debugMap = new FileDebugSession(fileName,body, microtaskMap);
 		
@@ -75,7 +76,7 @@ public class MicrotaskMementoTest {
 
 		 FileDebugSession debugMap = memento.read(fileName);
 		 if((debugMap!=null) && (debugMap.getMicrotaskMap()!=null)){
-			HashMap<Integer, Microtask> mMap = debugMap.getMicrotaskMap();
+			 Hashtable<Integer, Microtask> mMap = debugMap.getMicrotaskMap();
 			Integer key = new Integer (1);
 			Microtask expectedTask = this.microtaskMap.get(key);
 			Microtask actualTask = mMap.get(key);

@@ -3,9 +3,12 @@ package test;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.Vector;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,13 +34,13 @@ public class WorkerSessionFactoryTest {
 		public void setUpMethodMap() throws Exception {
 		this.microtaskMap = QuestionFactoryMock.generateQuestions();
 
-		HashMap<String,HashMap<String,ArrayList<Microtask>>> fileMethodMap = new HashMap<String,HashMap<String,ArrayList<Microtask>>>();
-		HashMap<String, ArrayList<Microtask>> methodMap = new HashMap<String, ArrayList<Microtask>>();
+		HashMap<String,HashMap<String,Vector<Microtask>>> fileMethodMap = new HashMap<String,HashMap<String,Vector<Microtask>>>();
+		HashMap<String, Vector<Microtask>> methodMap = new HashMap<String, Vector<Microtask>>();
 
 		String method1 = "TinySample";
 		String method2 = "seedCounter";
 
-		ArrayList<Microtask> mtaskList1 = new ArrayList<Microtask>();		
+		Vector<Microtask> mtaskList1 = new Vector<Microtask>();		
 		//first method
 		mtaskList1.add(microtaskMap.get(0));
 		mtaskList1.add(microtaskMap.get(1));
@@ -45,7 +48,7 @@ public class WorkerSessionFactoryTest {
 		mtaskList1.add(microtaskMap.get(3));
 		methodMap.put(method1, mtaskList1);
 
-		ArrayList<Microtask> mtaskList2 = new ArrayList<Microtask>();	
+		Vector<Microtask> mtaskList2 = new Vector<Microtask>();	
 		//second method
 		mtaskList2.add(microtaskMap.get(4));
 		mtaskList2.add(microtaskMap.get(5));
@@ -73,13 +76,13 @@ public class WorkerSessionFactoryTest {
 
 		CodeSnippetFactory snippetFactory = new CodeSnippetFactory("TinySample.java", fileContent);
 
-		ArrayList<CodeSnippet> list = snippetFactory.generateSnippetsForFile();
+		Vector<CodeSnippet> list = snippetFactory.generateSnippetsForFile();
 		if((list ==null ) || (list.size()!=2))
 			Assert.fail("Null list of snippets or file does not match test data, actual size is: "+list.size());
 		else{
 			QuestionFactory questionFactory = new QuestionFactory();
 			 questionFactory.generateMicrotasks(list, "Bug report message", 0);
-			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions();
+			 Hashtable<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions();
 
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
@@ -117,14 +120,14 @@ public class WorkerSessionFactoryTest {
 	//------------------------------------------------------------------------------------------------------------------
 
 	//Object attributes to test the nextMicrotaskList()
-	private ArrayList<Microtask> mtaskList0= new ArrayList<Microtask>();
-	private	ArrayList<Microtask> mtaskList1= new ArrayList<Microtask>();
-	private ArrayList<Microtask> mtaskList2= new ArrayList<Microtask>();
-	private ArrayList<Microtask> mtaskList3= new ArrayList<Microtask>();
-	private ArrayList<Microtask> mtaskList4= new ArrayList<Microtask>();
-	private ArrayList<Microtask> mtaskList5= new ArrayList<Microtask>();
-	private ArrayList<Microtask> mtaskList6= new ArrayList<Microtask>();
-	private ArrayList<Microtask> mtaskList7= new ArrayList<Microtask>();
+	private Vector<Microtask> mtaskList0= new Vector<Microtask>();
+	private	Vector<Microtask> mtaskList1= new Vector<Microtask>();
+	private Vector<Microtask> mtaskList2= new Vector<Microtask>();
+	private Vector<Microtask> mtaskList3= new Vector<Microtask>();
+	private Vector<Microtask> mtaskList4= new Vector<Microtask>();
+	private Vector<Microtask> mtaskList5= new Vector<Microtask>();
+	private Vector<Microtask> mtaskList6= new Vector<Microtask>();
+	private Vector<Microtask> mtaskList7= new Vector<Microtask>();
 
 
 	@Before
@@ -159,13 +162,13 @@ public class WorkerSessionFactoryTest {
 
 		CodeSnippetFactory snippetFactory = new CodeSnippetFactory("TinySample.java", fileContent);
 
-		ArrayList<CodeSnippet> list = snippetFactory.generateSnippetsForFile();
+		Vector<CodeSnippet> list = snippetFactory.generateSnippetsForFile();
 		if((list ==null ) || (list.size()!=2))
 			Assert.fail("Null list of snippets or file does not match test data, actual size is: "+list.size());
 		else{
 			QuestionFactory questionFactory = new QuestionFactory();
 			questionFactory.generateMicrotasks(list, "Bug report message", 0);
-			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions(); 
+			Hashtable<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions(); 
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 
 			//Persist data
@@ -180,32 +183,32 @@ public class WorkerSessionFactoryTest {
 			Assert.assertNotNull(methodMap);
 
 			//Obtain a list of N microtasks from N different codesnippets (i.e., methods)
-			ArrayList<Microtask> actual = sessionFactory.nextMicrotaskList(10);
-			Assert.assertEquals("MicrotasksList 0 does not match", 0, this.compareArrayLists(actual, mtaskList0));
+			Vector<Microtask> actual = sessionFactory.nextMicrotaskList(10);
+			Assert.assertEquals("MicrotasksList 0 does not match", 0, this.compareVectors(actual, mtaskList0));
 
 			actual = sessionFactory.nextMicrotaskList(10);
-			Assert.assertEquals("MicrotasksList 1 does not match", 0, this.compareArrayLists(actual, mtaskList1));
+			Assert.assertEquals("MicrotasksList 1 does not match", 0, this.compareVectors(actual, mtaskList1));
 
 			actual = sessionFactory.nextMicrotaskList(10);
-			Assert.assertEquals("MicrotasksList 2 does not match", 0, this.compareArrayLists(actual, mtaskList2));
+			Assert.assertEquals("MicrotasksList 2 does not match", 0, this.compareVectors(actual, mtaskList2));
 
 			actual = sessionFactory.nextMicrotaskList(10);
-			Assert.assertEquals("MicrotasksList 3 does not match", 0, this.compareArrayLists(actual, mtaskList3));
+			Assert.assertEquals("MicrotasksList 3 does not match", 0, this.compareVectors(actual, mtaskList3));
 
 			actual = sessionFactory.nextMicrotaskList(10);
-			Assert.assertEquals("MicrotasksList 4 does not match", 0, this.compareArrayLists(actual, mtaskList4));
+			Assert.assertEquals("MicrotasksList 4 does not match", 0, this.compareVectors(actual, mtaskList4));
 
 			actual = sessionFactory.nextMicrotaskList(10);
-			Assert.assertEquals("MicrotasksList 5 does not match", 0, this.compareArrayLists(actual, mtaskList5));
+			Assert.assertEquals("MicrotasksList 5 does not match", 0, this.compareVectors(actual, mtaskList5));
 
 			actual = sessionFactory.nextMicrotaskList(10);
-			Assert.assertEquals("MicrotasksList 6 does not match", 0, this.compareArrayLists(actual, mtaskList6));
+			Assert.assertEquals("MicrotasksList 6 does not match", 0, this.compareVectors(actual, mtaskList6));
 
 
 		}
 	}
 
-	private int compareArrayLists(ArrayList<Microtask>actual, ArrayList<Microtask>expected){
+	private int compareVectors(Vector<Microtask>actual, Vector<Microtask>expected){
 		if(actual==null || expected == null || (actual.size() != expected.size()))
 			return -1;
 		else{
@@ -232,29 +235,29 @@ public class WorkerSessionFactoryTest {
 		this.expectedStack = new Stack<WorkerSession>();
 		this.mtaskMap = QuestionFactoryMock.generateQuestions();
 
-		ArrayList<Microtask> mtaskList0= new ArrayList<Microtask>();
+		Vector<Microtask> mtaskList0= new Vector<Microtask>();
 		mtaskList0.add(mtaskMap.get(0));
 		mtaskList0.add(mtaskMap.get(4));
 
-		ArrayList<Microtask> mtaskList1= new ArrayList<Microtask>();
+		Vector<Microtask> mtaskList1= new Vector<Microtask>();
 		mtaskList1.add(mtaskMap.get(1));
 		mtaskList1.add(mtaskMap.get(5));
 
-		ArrayList<Microtask> mtaskList2= new ArrayList<Microtask>();	
+		Vector<Microtask> mtaskList2= new Vector<Microtask>();	
 		mtaskList2.add(mtaskMap.get(2));
 		mtaskList2.add(mtaskMap.get(6));
 
-		ArrayList<Microtask> mtaskList3= new ArrayList<Microtask>();	
+		Vector<Microtask> mtaskList3= new Vector<Microtask>();	
 		mtaskList3.add(mtaskMap.get(3));
 		mtaskList3.add(mtaskMap.get(7));
 
-		ArrayList<Microtask> mtaskList4= new ArrayList<Microtask>();		
+		Vector<Microtask> mtaskList4= new Vector<Microtask>();		
 		mtaskList4.add(mtaskMap.get(8));
 
-		ArrayList<Microtask> mtaskList5= new ArrayList<Microtask>();	
+		Vector<Microtask> mtaskList5= new Vector<Microtask>();	
 		mtaskList5.add(mtaskMap.get(9));
 
-		ArrayList<Microtask> mtaskList6= new ArrayList<Microtask>();	
+		Vector<Microtask> mtaskList6= new Vector<Microtask>();	
 		mtaskList6.add(mtaskMap.get(10));
 
 		WorkerSession original0 = new WorkerSession("0",mtaskList0);
@@ -314,13 +317,13 @@ public class WorkerSessionFactoryTest {
 
 		CodeSnippetFactory snippetFactory = new CodeSnippetFactory("TinySample.java", fileContent);
 
-		ArrayList<CodeSnippet> list = snippetFactory.generateSnippetsForFile();
+		Vector<CodeSnippet> list = snippetFactory.generateSnippetsForFile();
 		if((list ==null ) || (list.size()!=2))
 			Assert.fail("Null list of snippets or file does not match test data, actual size is: "+list.size());
 		else{
 			QuestionFactory questionFactory = new QuestionFactory();
 			questionFactory.generateMicrotasks(list, "Bug report message", 0);
-			HashMap<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions(); 
+			Hashtable<Integer, Microtask> microtaskMap = questionFactory.getConcreteQuestions(); 
 
 			FileDebugSession fileDebuggingSession = new FileDebugSession("TinySample.java",fileContent, microtaskMap);
 

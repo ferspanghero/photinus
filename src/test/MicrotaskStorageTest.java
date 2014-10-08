@@ -3,6 +3,7 @@ package test;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +19,6 @@ public class MicrotaskStorageTest {
 	FileDebugSession session1;
 	FileDebugSession session2;
 	String fileName = "SimpleSampleCode";
-	private String path = ".";
 	
 	@Before
 	public void setup(){
@@ -42,7 +42,7 @@ public class MicrotaskStorageTest {
 								+ "different parameters to produce the correct result, specifies the wrong or no return type, "
 								+ "etc .)?", 7, 0, 7,27, 1,"failure description");
 
-		HashMap<Integer,Microtask> microtaskMap = new HashMap<Integer,Microtask>();
+		Hashtable<Integer,Microtask> microtaskMap = new Hashtable<Integer,Microtask>();
 		microtaskMap.put(new Integer(0),  questionMethodCallConstructor);
 		session1 =  new FileDebugSession( fileName,  fileContent,microtaskMap );
 		
@@ -51,7 +51,7 @@ public class MicrotaskStorageTest {
 						+ "something wrong with the body of function 'SimpleSampleCode' between lines 7 and 9 (e.g., "
 						+ "function produces an incorrect return value, return statement is at the wrong place, does not "
 						+ "properly handle error situations, etc.)?", 7, 27, 10,1, 2,"failure description");
-		microtaskMap = new HashMap<Integer,Microtask>();
+		microtaskMap = new Hashtable<Integer,Microtask>();
 		microtaskMap.put(new Integer(1),  constructorBody);
 		session2 =  new FileDebugSession( fileName,  fileContent,microtaskMap);
 		

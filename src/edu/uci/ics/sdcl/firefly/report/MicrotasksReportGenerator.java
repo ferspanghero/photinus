@@ -25,9 +25,7 @@ import edu.uci.ics.sdcl.firefly.util.PathUtil;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 
-public class MicrotasksReportGenerator
-{
-	private int answersPerMicrotask;
+public class MicrotasksReportGenerator{
 
 	private String fileName = "MicrotasksReport.xlsx";
 
@@ -35,7 +33,6 @@ public class MicrotasksReportGenerator
 		PropertyManager manager = PropertyManager.initializeSingleton();
 		String path = manager.reportPath;
 		this.fileName = path+ this.fileName;
-		this.answersPerMicrotask = manager.answersPerMicrotask;
 	}
 
 	public boolean writeToXlsx(Hashtable<String, FileDebugSession> microtasksMappedPerFile){
@@ -73,14 +70,14 @@ public class MicrotasksReportGenerator
 		// converting microtasks per file into microtasks per method
 		HashMap<String, ArrayList<Microtask>> microtasksPerMethod = PathUtil.convertToMicrotasksPerMethod(allMicrotasksMap);
 		// iterating methods
-		Set<Map.Entry<String, ArrayList<Microtask>>> set = microtasksPerMethod.entrySet();
-		Iterator<Entry<String, ArrayList<Microtask>>> iterator = set.iterator();
-		while(iterator.hasNext())
-		{
-			Map.Entry<String, ArrayList<Microtask>> me = (Map.Entry<String, ArrayList<Microtask>>)iterator.next();
+		Iterator<String> iterator = microtasksPerMethod.keySet().iterator();
+		while(iterator.hasNext()){
+			String methodName = iterator.next();
+			ArrayList<Microtask> list = microtasksPerMethod.get(methodName);
+			int answersPerMicrotask = this.maxNumberOfAnswers(list);
 
 			//Create a blank sheet for the method
-			XSSFSheet methodSheet = workbook.createSheet(me.getKey());
+			XSSFSheet methodSheet = workbook.createSheet(methodName);
 
 			int dataKey = 0;	// for the 'data' below
 			int rownum = 0;	
@@ -124,7 +121,7 @@ public class MicrotasksReportGenerator
 
 			int lastColumn = 0;		// for auto sizing later
 			// iterating questions (per method)
-			for (Microtask microtask : me.getValue())
+			for (Microtask microtask : list)
 			{	
 				numberOfAnswers += microtask.getNumberOfAnswers();
 
@@ -136,10 +133,13 @@ public class MicrotasksReportGenerator
 
 				Vector<Answer> answerList = microtask.getAnswerList();
 
-				if(answerList!=null && answerList.size()>0){
+				int k = 3;
 
+				if(answerList==null || answerList.size()<0){ //Just add a line with no answers for the current microtask
+					lineContent = completeEmptyCells(lineContent,k,answersPerMicrotask-microtask.getNumberOfAnswers());
+				}
+				else{
 					//Answers
-					int k = 3;
 					Answer singleAnswer;
 					int index=0;
 					while(index<answerList.size() && index< answersPerMicrotask) {
@@ -184,7 +184,7 @@ public class MicrotasksReportGenerator
 					lastColumn = lastColumn < k ? k : lastColumn;	
 				}
 			}
-			
+
 			/* filling the method sheet */
 			//Iterate over data and write to method sheet
 			Set<Integer> keyset = data.keySet();
@@ -281,4 +281,14 @@ public class MicrotasksReportGenerator
 		}
 		return lineContent;
 	}
+	
+	private int maxNumberOfAnswers(ArrayList<Microtask> list){
+		int max = 0;
+		for(Microtask task: list){
+			if(task.getNumberOfAnswers()>max)
+				max = task.getNumberOfAnswers();
+		}
+		return max;
+	}
+	
 }

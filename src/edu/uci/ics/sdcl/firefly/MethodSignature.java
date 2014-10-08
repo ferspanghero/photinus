@@ -1,19 +1,19 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Vector;
 
 public class MethodSignature implements Serializable{
 
 	protected String Name;
 	protected String Modifier;							//Visibility
-	protected ArrayList<MethodParameter> ParameterList;
+	protected Vector<MethodParameter> ParameterList;
 
 
 	public MethodSignature(String name, String modifier) {
 		Name = name;
 		Modifier = modifier;
-		this.ParameterList = new ArrayList<MethodParameter>();
+		this.ParameterList = new Vector<MethodParameter>();
 	}
 
 	/**
@@ -24,7 +24,7 @@ public class MethodSignature implements Serializable{
 		boolean matched = true;
 		
 		if(target.getName().compareTo(this.Name)==0){
-			ArrayList<MethodParameter> targetList = target.getParameterList();
+			Vector<MethodParameter> targetList = target.getParameterList();
 			if(targetList.size() == this.ParameterList.size()){
 				int i = 0;
 				int j = 0;
@@ -71,11 +71,11 @@ public class MethodSignature implements Serializable{
 		Modifier = modifier;
 	}
 
-	public ArrayList<MethodParameter> getParameterList() {
+	public Vector<MethodParameter> getParameterList() {
 		return ParameterList;
 	}
 
-	public void setParameterList(ArrayList<MethodParameter> parameters) {
+	public void setParameterList(Vector<MethodParameter> parameters) {
 		ParameterList = parameters;
 	}
 
