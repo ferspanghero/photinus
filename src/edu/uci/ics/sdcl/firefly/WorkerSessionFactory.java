@@ -139,7 +139,7 @@ public class WorkerSessionFactory {
 					String methodKey = (String) methodKeyIter.next();
 					ArrayList<Microtask> microtaskList = methodMap.get(methodKey);
 					if(microtaskList!=null && !microtaskList.isEmpty()){
-						int randomPosition = microtaskList.size()/2;
+						int randomPosition = 0;//microtaskList.size()/2;
 						Microtask microtask = microtaskList.get(randomPosition);
 						String methodName = microtask.getCodeSnippet().getMethodSignature().getName();
 						
