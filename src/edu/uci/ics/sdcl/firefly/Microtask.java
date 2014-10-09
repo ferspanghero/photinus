@@ -44,12 +44,12 @@ public class Microtask implements Serializable
 	 * @param endingColumnNumber
 	 * @param ID
 	 */
-	public Microtask(String codeElementTypeArg, CodeSnippet methodArg, CodeElement codeElement, String questionArg, Integer startingLineNumber, 
+	public Microtask(String codeElementType, CodeSnippet method, CodeElement codeElement, String question, Integer startingLineNumber, 
 			Integer startingColumnNumber, Integer endingLineNumber, Integer endingColumnNumber, Integer ID, String failureDescription)
 	{
-		this.setCodeSnippet(methodArg);
-		this.setQuestion(questionArg);
-		this.setCodeElementType(codeElementTypeArg);
+		this.setCodeSnippet(method);
+		this.setQuestion(question);
+		this.setCodeElementType(codeElementType);
 		this.codeElement = codeElement;
 		this.startingLine = startingLineNumber;
 		this.startingColumn = startingColumnNumber;
@@ -60,6 +60,16 @@ public class Microtask implements Serializable
 		this.failureDescription = failureDescription;
 	}
 
+	/** Simplified version with only the data needed to write a Session Report */
+	public Microtask(String question, Integer ID, Vector<Answer> answerList)	{
+		this.answerList = answerList;
+		this.ID = ID;
+		this.question = question;
+	}
+	
+	public Microtask getLightVersion(){
+		return new Microtask(this.getQuestion(),this.getID(),this.getAnswerList());
+	}
 
 	public Integer getID(){
 		return this.ID;

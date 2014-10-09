@@ -30,7 +30,7 @@ public class WorkerSession implements Serializable{
 	/** Associates a session with an anonymous user */
 	private String workerId;
 
-	private static Logger logger;
+	//private static Logger logger;
 	
 	/** 
 	 * Initializes the array and the counter to the first position in the array 
@@ -39,7 +39,7 @@ public class WorkerSession implements Serializable{
 	 * @param microtaskList
 	 */
 	public WorkerSession(String id, Vector<Microtask> microtaskList){
-		logger = LoggerFactory.getLogger(WorkerSession.class);
+		//logger = LoggerFactory.getLogger(WorkerSession.class);
 		this.id = id;
 		this.microtaskList = microtaskList;
 		if(this.microtaskList!=null && this.microtaskList.size()>0)
@@ -48,6 +48,17 @@ public class WorkerSession implements Serializable{
 			this.currentIndex = -1;
 	}
 
+	public WorkerSession getLightVersion(){
+		Vector<Microtask> simpleList = new Vector<Microtask>();
+		for(Microtask task: this.microtaskList){
+			simpleList.add(task.getLightVersion());
+		}
+		WorkerSession lightSession = new WorkerSession(this.getId(),simpleList);
+		lightSession.setWorkerId(this.getWorkerId());
+		lightSession.currentIndex = simpleList.size();
+		return lightSession;
+	}
+	
 	/** 
 	 * Save a microtask and increments the index to point to the next in the list
 	 * @param task the microtask that was answered
@@ -113,7 +124,7 @@ public class WorkerSession implements Serializable{
 		
 		Microtask microtask = this.getCurrentMicrotask();
 		if((microtask == null) || (microtask.getID().intValue() != microtaskId.intValue())){
-			logger.error("EVENT= ERROR; workerId="+answer.getWorkerId()+ ";Answer was already stored; microtaskId="+ microtaskId+ "; answer="+ answer.getOption() );
+			//logger.error("EVENT= ERROR; workerId="+answer.getWorkerId()+ ";Answer was already stored; microtaskId="+ microtaskId+ "; answer="+ answer.getOption() );
 			return false;
 		}
 		else{

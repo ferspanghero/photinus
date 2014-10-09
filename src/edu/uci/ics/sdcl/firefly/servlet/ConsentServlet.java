@@ -38,6 +38,10 @@ public class ConsentServlet extends HttpServlet {
 		if(subAction.compareTo("loadQuestions")==0){
 			Date currentDate = new Date();
 			StorageManager manager = new StorageManager();
+			if(!manager.areThereMicrotasksAvailable()){
+				this.showErrorPage(request, response, "Dear contributor, there aren't any more tasks available. Please wait for the next batch of HITs");
+			}
+			else{
 			String workerId = manager.generateWorkerID(currentDate);
 			// now passing parameters to the next page
 			request.setAttribute("workerId", workerId);
@@ -45,11 +49,10 @@ public class ConsentServlet extends HttpServlet {
 			request = this.loadQuestions(request, response);
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 			request.getRequestDispatcher(SkillTestPage).include(request, response);
+			}
 		}
 		else{
-			request.setAttribute("error", "action not recognized: "+ subAction);
-			request.setAttribute("executionId", "before consent");
-			request.getRequestDispatcher(ErrorPage).include(request, response);
+			this.showErrorPage(request, response, "action not recognized: "+ subAction);
 		}	
 	}
 
@@ -64,6 +67,12 @@ public class ConsentServlet extends HttpServlet {
 		//request.setAttribute("editor2", source.getSourceTwo());
 		request.setAttribute("subAction", "gradeAnswers");
 		return request;
+	}
+	
+	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
+		request.setAttribute("error", message);
+		request.setAttribute("executionId", "before consent");
+		request.getRequestDispatcher(ErrorPage).include(request, response);
 	}
 
 }

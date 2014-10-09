@@ -251,7 +251,7 @@ public class WorkerSessionStorage {
 	public boolean addClosedWorkerSession(WorkerSession session){
 		Vector<WorkerSession> closedSessionList = retrieveClosedSessionStorage();
 		if(closedSessionList!=null){
-			closedSessionList.add(session);
+			closedSessionList.add(session.getLightVersion());
 			logger.info("EVENT= CLOSING SESSION; workerId="+session.getWorkerId()+"; sessionId="+ session.getId());
 			if(this.overwriteClosedWorkerSessionList(closedSessionList))
 				return true;
