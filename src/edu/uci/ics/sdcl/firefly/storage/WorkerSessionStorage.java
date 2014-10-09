@@ -157,7 +157,7 @@ public class WorkerSessionStorage {
 	 * 
 	 * @return a workerSession from the stack new WorkerSessions. If the stack is empty returns null.
 	 */
-	public WorkerSession readNewWorkerSession(){
+	public synchronized WorkerSession readNewWorkerSession(){
 
 		Stack<WorkerSession> stack = retrieveNewSessionStorage();
 		if(stack.isEmpty())
@@ -174,7 +174,7 @@ public class WorkerSessionStorage {
 	/**
 	 * @return the size of the stack of new WorkerSessions
 	 */
-	public int getNumberOfNewWorkerSessions(){
+	public synchronized int getNumberOfNewWorkerSessions(){
 		Stack<WorkerSession> stack = retrieveNewSessionStorage();
 		if(stack!=null && !stack.isEmpty())
 			return stack.size();
@@ -189,7 +189,7 @@ public class WorkerSessionStorage {
 	/** 
 	 * @return true if operation succeeded, otherwise false.
 	 */
-	public boolean updateActiveWorkerSession(WorkerSession session){
+	public synchronized boolean updateActiveWorkerSession(WorkerSession session){
 
 		if(activeSessionTable !=null){
 			if(!session.hasCurrent()){ //it means that the Session was completed
@@ -211,7 +211,7 @@ public class WorkerSessionStorage {
 	 * @param answer the answer provided by a user
 	 * @return true if operation was successful, otherwise false
 	 */
-	public boolean setSessionMicrotaskAnswer(String sessionId,Integer microtaskId, Answer answer) {
+	public synchronized boolean setSessionMicrotaskAnswer(String sessionId,Integer microtaskId, Answer answer) {
 
 		WorkerSession session = this.readActiveWorkerSessionByID(sessionId);
 		if(session==null){
@@ -234,7 +234,7 @@ public class WorkerSessionStorage {
 	 * @param userId the unique identifier for a WorkerSession
 	 * @return a WorkerSession, in case any was found, return null.
 	 */
-	public WorkerSession readActiveWorkerSessionByID(String sessionId){
+	public synchronized WorkerSession readActiveWorkerSessionByID(String sessionId){
 
 		if(activeSessionTable!=null && activeSessionTable.containsKey(sessionId))
 			return activeSessionTable.get(sessionId);
@@ -248,7 +248,7 @@ public class WorkerSessionStorage {
 	//Manage Closed Sessions
 
 
-	public boolean addClosedWorkerSession(WorkerSession session){
+	public synchronized boolean addClosedWorkerSession(WorkerSession session){
 		Vector<WorkerSession> closedSessionList = retrieveClosedSessionStorage();
 		if(closedSessionList!=null){
 			closedSessionList.add(session.getLightVersion());
@@ -345,7 +345,7 @@ public class WorkerSessionStorage {
 		}
 	}
 
-	public Hashtable<String, WorkerSession> retrieveActiveSessionStorage() {
+	public synchronized Hashtable<String, WorkerSession> retrieveActiveSessionStorage() {
 		return this.activeSessionTable;
 	}
 

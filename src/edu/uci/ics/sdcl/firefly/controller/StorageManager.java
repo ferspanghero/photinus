@@ -72,13 +72,13 @@ public class StorageManager {
 	 * @return a session that is already active (received at least one answer), otherwise null 
 	 * if the session is not active anymore or if the session ID is invalid
 	 */
-	public WorkerSession readActiveSession(String sessionId){
+	public synchronized WorkerSession readActiveSession(String sessionId){
 		WorkerSession session = sessionStorage.readActiveWorkerSessionByID(sessionId);
 		return session;
 	}
 	
 	
-	public String generateWorkerID(Date consentDate){
+	public synchronized String generateWorkerID(Date consentDate){
 		String workerId = this.workerStorage.getNewWorkerKey();
 		Worker worker = new Worker(workerId, consentDate);
 		this.workerStorage.insertConsent(worker);

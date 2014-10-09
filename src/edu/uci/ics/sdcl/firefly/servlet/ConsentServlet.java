@@ -42,13 +42,13 @@ public class ConsentServlet extends HttpServlet {
 				this.showErrorPage(request, response, "Dear contributor, there aren't any more tasks available. Please wait for the next batch of HITs");
 			}
 			else{
-			String workerId = manager.generateWorkerID(currentDate);
-			// now passing parameters to the next page
-			request.setAttribute("workerId", workerId);
-			request.setAttribute("subAction", "gradeAnswers");
-			request = this.loadQuestions(request, response);
-			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-			request.getRequestDispatcher(SkillTestPage).include(request, response);
+				String workerId = manager.generateWorkerID(currentDate);
+				// now passing parameters to the next page
+				request.setAttribute("workerId", workerId);
+				request.setAttribute("subAction", "gradeAnswers");
+				request = this.loadQuestions(request, response);
+				request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
+				request.getRequestDispatcher(SkillTestPage).include(request, response);
 			}
 		}
 		else{

@@ -109,7 +109,7 @@ public class WorkerStorage {
 		}
 	}
 	
-	private boolean updateWorker(Worker worker){
+	private synchronized boolean updateWorker(Worker worker){
 		//Object persistence
 		if((workerTable!=null)&&(worker!=null)){
 			workerTable.put(worker.getWorkerId(), worker);
@@ -133,22 +133,12 @@ public class WorkerStorage {
 		return this.retrieveIndex();
 	}
 	
-	public synchronized boolean remove(String workerId) {
-
-		workerTable = this.retrieveIndex();
-
-		if(workerTable!=null && !workerTable.isEmpty()){
-			workerTable.remove(workerId);
-			return this.updateIndex(workerTable);				
-		}		
-		else
-			return false;
-	}
-	
 	/**
 	 * @return a worker identifier that does not exist in the storage yet.
 	 */
 	public synchronized String getNewWorkerKey() {
+		if(workerTable==null)
+			workerTable = this.retrieveIndex();
 		Integer keyInt = new Integer(workerTable.size()); 
 		String key = keyInt.toString();
 		while(workerTable.containsKey(key)){//Avoid to use an already existing Worker ID

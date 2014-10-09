@@ -92,7 +92,7 @@ public class MicrotaskMementoTest {
 		MicrotaskStorage memento = MicrotaskStorage.initializeSingleton();;
 		memento.insert(fileName, this.debugSessionMap.get(fileName));
 		
-		 memento.remove(fileName);
+		// memento.remove(fileName);
 		 FileDebugSession debugMap = memento.read(fileName);
 		 assertNull(debugMap);
 	}

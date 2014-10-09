@@ -81,7 +81,7 @@ public class MicrotaskStorage {
 	 * @param fileName
 	 * @return
 	 */
-	public FileDebugSession read(String fileName){
+	public synchronized FileDebugSession read(String fileName){
 
 		if(debugSessionMap!=null && debugSessionMap.containsKey(fileName))
 			return debugSessionMap.get(fileName);
@@ -94,7 +94,7 @@ public class MicrotaskStorage {
 	 * @param 
 	 * @return  HashMap<String,FileDebugSession>
 	 */
-	public Hashtable<String,FileDebugSession> readAllDebugSessions(){
+	public synchronized Hashtable<String,FileDebugSession> readAllDebugSessions(){
 		return debugSessionMap;
 	}
 
@@ -103,7 +103,7 @@ public class MicrotaskStorage {
 	 * 
 	 * @return a set of debugging sessions
 	 */
-	public Set<String> retrieveDebuggingSessionNames(){	
+	public synchronized Set<String> retrieveDebuggingSessionNames(){	
 
 		if(debugSessionMap!=null && !debugSessionMap.isEmpty())
 			return debugSessionMap.keySet();
@@ -176,20 +176,6 @@ public class MicrotaskStorage {
 		return total;
 	}
 
-	/**
-	 * Removes the debug session data associated to the provided file name
-	 * @param fileName the name of the file containing the methods for which microtasks were generated
-	 * @return true if operation succeeded, otherwise false.
-	 */
-	public boolean remove(String fileName) {
-
-		if(debugSessionMap!=null && !debugSessionMap.isEmpty()){
-			debugSessionMap.remove(fileName);
-			return this.updateIndex(debugSessionMap);				
-		}		
-		else
-			return false;
-	}
 
 	/** Delete all data from the Storage */
 	public void cleanUp(){

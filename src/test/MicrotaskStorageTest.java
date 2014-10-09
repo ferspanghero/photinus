@@ -62,7 +62,7 @@ public class MicrotaskStorageTest {
 		
 		//Clean up the storage
 		MicrotaskStorage storage = MicrotaskStorage.initializeSingleton();;
-		storage.remove(fileName);
+		//storage.remove(fileName);
 		
 		storage.insert(fileName, session1);
 		storage.insert(fileName, session2);
