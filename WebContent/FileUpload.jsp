@@ -52,7 +52,7 @@
 			if (confirm('Confirm deleting all data?')) {
 				var subAction = document.getElementById("subAction");
 				subAction.value = "delete";
-				//document.forms["deleteForm"].submit();
+				document.forms["deleteForm"].submit();
 			}
 		}
 		

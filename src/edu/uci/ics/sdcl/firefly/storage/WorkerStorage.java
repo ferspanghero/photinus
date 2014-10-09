@@ -16,7 +16,7 @@ import edu.uci.ics.sdcl.firefly.servlet.SkillTestServlet;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class WorkerStorage {
-	private String persistentFileName = "consent.ser";
+	private String persistentFileName = "consent-storage.ser";
 
 	private static WorkerStorage storage;
 	private static Logger logger;
