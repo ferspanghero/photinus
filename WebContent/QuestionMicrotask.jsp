@@ -154,9 +154,9 @@
 
 		<script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		
-		<script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+		<script	src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
 
-<!-- src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js" -->
+<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" -->
 
 	<div id="failurePrompt">
 		<div id="internalText">
@@ -262,7 +262,7 @@
 				divMainEditor.style.height = computeHeight(sourceLinespan);
 				divMainEditor.style.width = '760px';
 
-				var mainEditor = ace.edit('mainEditor');
+				var mainEditor = ace.edit("mainEditor");
 				mainEditor.setReadOnly(true);
 				mainEditor.setTheme("ace/theme/github");
 				mainEditor.getSession().setMode("ace/mode/java");

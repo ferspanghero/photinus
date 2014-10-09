@@ -96,5 +96,10 @@ public class StorageManager {
 		this.microtaskStorage.cleanUp();
 	}
 
+	public boolean areThereMicrotasksAvailable(){
+		if(this.sessionStorage.getNumberOfNewWorkerSessions()<=0)
+			return false;
+		else return true;
+	}
 
 }
