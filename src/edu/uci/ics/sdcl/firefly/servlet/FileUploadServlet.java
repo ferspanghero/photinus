@@ -146,7 +146,7 @@ public class FileUploadServlet extends HttpServlet {
 					//Store the workerId Researcher
 					WorkerStorage workerStorage =  WorkerStorage.initializeSingleton();;
 					Worker worker = new Worker(workerId,new Date());
-					workerStorage.insert(workerId, worker);
+					workerStorage.insertConsent(worker);
 
 					return_message = return_message + results;
 				}

@@ -113,7 +113,7 @@ public class WorkerSession implements Serializable{
 		
 		Microtask microtask = this.getCurrentMicrotask();
 		if((microtask == null) || (microtask.getID().intValue() != microtaskId.intValue())){
-			logger.error("Answer was already stored, microtaskId:"+ microtaskId+ ", answer:"+ answer.getOption()+ ", workerId:"+answer.getWorkerId());
+			logger.error("EVENT= ERROR; workerId="+answer.getWorkerId()+ ";Answer was already stored; microtaskId="+ microtaskId+ "; answer="+ answer.getOption() );
 			return false;
 		}
 		else{

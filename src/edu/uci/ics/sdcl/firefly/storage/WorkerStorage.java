@@ -64,31 +64,59 @@ public class WorkerStorage {
 		this.updateIndex(new Hashtable<String,Worker>());
 	}
 	
-	public synchronized boolean insert(String workerId, Worker worker){
-
-		//Logging
-		if(worker!=null && worker.getGrade()!=null && worker.getGrade()>0)
-				
-				logger.info("workerId:"+worker.getWorkerId()+ ", sessionId:"+worker.getSessionId()
-					+", test1:"+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
-					+", test2:"+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
-					+", test3:"+worker.getGradeMap().get(SkillTestServlet.QUESTION3)
-					+", test4:"+worker.getGradeMap().get(SkillTestServlet.QUESTION4)
-					+", grade:"+worker.getGrade()
-					+", testDuration:"+worker.getSkillTestDuration()
-					+", survey:{"+worker.getSurveyAnswersToString()+"}");
-			else
-				logger.info("workerId:"+worker.getWorkerId()+ ", sessionId:"+worker.getSessionId()
-						+", consentDate:" + worker.getConsentDate().toString());	
-		
-		
+	
+	public synchronized boolean insertConsent(Worker worker) {
+		if(worker!=null){
+			logger.info("EVENT= CONSENT; workerId="+worker.getWorkerId()+ "; sessionId="+worker.getSessionId()
+					+"; consentDate=" + worker.getConsentDate().toString());	
+	
+			return this.updateWorker(worker);
+		}
+		else{
+			logger.error("EVENT= ERROR; could not store worker CONSENT.");
+			return false;
+		}
+	}
+	
+	public synchronized boolean insertSurvey(String parameter, Worker worker) {
+		if(worker!=null){
+			logger.info("EVENT= SURVEY; workerId="+worker.getWorkerId()+ "; sessionId="+worker.getSessionId()
+					+"; survey="+worker.getSurveyAnswersToString());
+			return this.updateWorker(worker);
+		}
+		else{
+			logger.error("EVENT= ERROR; could not store worker SURVEY.");
+			return false;
+		}
+	}
+	
+	
+	public synchronized boolean insertSKillTest(Worker worker){
+		if(worker!=null && worker.getGrade()!=null && worker.getGrade()>0){		
+				logger.info("EVENT= SKILLTEST; workerId="+worker.getWorkerId()+ "; sessionId="+worker.getSessionId()
+					+"; test1="+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
+					+"; test2="+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
+					+"; test3="+worker.getGradeMap().get(SkillTestServlet.QUESTION3)
+					+"; test4="+worker.getGradeMap().get(SkillTestServlet.QUESTION4)
+					+"; grade="+worker.getGrade()
+					+"; testDuration="+worker.getSkillTestDuration());
+				//persist data
+				return updateWorker(worker);
+		}
+		else{
+			logger.error("EVENT= ERROR; could not store worker SKILLTEST.");
+			return false;
+		}
+	}
+	
+	private boolean updateWorker(Worker worker){
 		//Object persistence
 		if((workerTable!=null)&&(worker!=null)){
-			workerTable.put(workerId, worker);
+			workerTable.put(worker.getWorkerId(), worker);
 			return this.updateIndex(workerTable);	
 		}		
 		else{
-			logger.error("Could not store worker");
+			logger.error("EVENT= ERROR; could not store worker.");
 			return false;
 		}
 	}
@@ -135,7 +163,7 @@ public class WorkerStorage {
 	private synchronized boolean updateIndex(Hashtable<String, Worker> workerTable){
 		try{
 			if(workerTable==null){
-				logger.error("Avoided trying to write nullpointer in Worker repository.");
+				logger.error("EVENT= ERROR; Avoided trying to write nullpointer in Worker repository.");
 				return false;
 			}
 			else{
@@ -177,5 +205,7 @@ public class WorkerStorage {
 			return null;
 		}
 	}
+
+	
 
 }

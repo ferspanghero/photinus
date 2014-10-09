@@ -128,7 +128,7 @@ public class MicrotaskStorage {
 			mtask.addAnswer(answer);
 			newfileDebugSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
 			newfileDebugSession.insertMicrotask(microtaskId, mtask);
-			logger.info("WorkerId:"+answer.getWorkerId()+", Question:"+ mtask.getQuestion()+", Answer:"+answer.getOption()+ ", Duration:"+answer.getElapsedTime());
+			logger.info("Event= MICROTASK; WorkerId="+answer.getWorkerId()+"; SessionId=-; Question="+ mtask.getQuestion()+"; Answer="+answer.getOption() +"; Duration="+answer.getElapsedTime()+"; Explanation="+answer.getExplanation());
 			return this.insert(fileName, newfileDebugSession);
 		}
 		catch(Exception e){
@@ -231,7 +231,7 @@ public class MicrotaskStorage {
 	private synchronized boolean updateIndex(Hashtable<String,FileDebugSession> debugSessionMap){
 		try{
 			if(debugSessionMap==null){
-				logger.error("Trying to write a nullpointer to the microtask repository");
+				logger.error("EVENT= ERROR; Trying to write a nullpointer to the microtask repository");
 				return false;
 			}else{
 

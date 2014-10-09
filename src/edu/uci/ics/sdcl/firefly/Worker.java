@@ -119,7 +119,7 @@ public class Worker implements Serializable{
 				String content = this.surveyAnswersMap.get(key);
 				if(content==null || content.isEmpty())
 					content="-";
-				value = value+key+":"+content+", ";	
+				value = value+key+"="+content+"; ";	
 			}
 			return value;
 		}

@@ -42,7 +42,7 @@ public class SurveyServlet extends HttpServlet {
 			subject.setSessionId(sessionId);
 			
 			//Store result
-			subjectStore.insert(request.getParameter("workerId"), subject);
+			subjectStore.insertSurvey(request.getParameter("workerId"), subject);
 			
 			//Displays the Thanks message		
 			request.setAttribute("key", sessionId);

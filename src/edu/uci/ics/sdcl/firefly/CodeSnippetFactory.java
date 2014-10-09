@@ -171,7 +171,7 @@ public class CodeSnippetFactory {
 			
 			
 		}
-		System.out.println();
+		//System.out.println();
 	}
 	
 	public String getFileName(){

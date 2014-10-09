@@ -113,7 +113,7 @@ public class SkillTestServlet extends HttpServlet {
 		int grade = this.countCorrectAnswers(gradeMap);
 
 		worker.setSkillAnswers(rubricMap,gradeMap,answerMap,grade, duration);
-		workerStorage.insert(worker.getWorkerId(), worker);
+		workerStorage.insertSKillTest(worker);
 
 		return grade;
 	}

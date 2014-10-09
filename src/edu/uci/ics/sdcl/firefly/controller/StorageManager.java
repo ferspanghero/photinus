@@ -78,10 +78,10 @@ public class StorageManager {
 	}
 	
 	
-	public String generateWorkerID(Date currentDate){
+	public String generateWorkerID(Date consentDate){
 		String workerId = this.workerStorage.getNewWorkerKey();
-		Worker worker = new Worker(workerId, currentDate);
-		this.workerStorage.insert(workerId, worker);
+		Worker worker = new Worker(workerId, consentDate);
+		this.workerStorage.insertConsent(worker);
 		return workerId;
 	}
 

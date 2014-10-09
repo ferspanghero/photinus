@@ -129,7 +129,7 @@ public class WorkerSessionStorage {
 	public synchronized boolean writeNewWorkerSessionStack(Stack<WorkerSession> newStack){
 		try{
 			if(newStack==null){
-				logger.error("Avoided trying to write nullpointer in Worker repository.");
+				logger.error("EVENT= ERROR; Avoided trying to write nullpointer in Worker repository.");
 				return false;
 			}
 			else{
@@ -215,13 +215,13 @@ public class WorkerSessionStorage {
 
 		WorkerSession session = this.readActiveWorkerSessionByID(sessionId);
 		if(session==null){
-			logger.error("Session is null, id= "+sessionId);
+			logger.error("EVENT= ERROR; Session is null id "+sessionId);
 			return false;
 		}
 		else{
 			if(session.insertMicrotaskAnswer(microtaskId,answer)){
-				logger.info("updating WorkerSession, sessionId:"+ sessionId+", microtaskId:"+microtaskId+
-						", answer:"+answer.getOption()+", workerId: ", answer.getWorkerId());
+				logger.info("EVENT= SESSION; workerId="+ answer.getWorkerId()+"; sessionId="+ sessionId+"; microtaskId="+microtaskId+
+						"; answer="+answer.getOption());
 				return(this.updateActiveWorkerSession(session));
 			}
 			else
@@ -252,7 +252,7 @@ public class WorkerSessionStorage {
 		Vector<WorkerSession> closedSessionList = retrieveClosedSessionStorage();
 		if(closedSessionList!=null){
 			closedSessionList.add(session);
-			logger.info("Closing session workerId"+session.getWorkerId()+", sessionId:"+ session.getId());
+			logger.info("EVENT= CLOSING SESSION; workerId="+session.getWorkerId()+"; sessionId="+ session.getId());
 			if(this.overwriteClosedWorkerSessionList(closedSessionList))
 				return true;
 			else
@@ -273,7 +273,7 @@ public class WorkerSessionStorage {
 	private synchronized boolean overwriteClosedWorkerSessionList(Vector<WorkerSession> closedSessionList){
 		try{
 			if(closedSessionList==null){
-				logger.error("Avoided trying to write nullpointer in Worker repository.");
+				logger.error("EVENT= ERROR; Avoided trying to write nullpointer in Worker repository.");
 				return false;
 			}
 			else{
