@@ -1,7 +1,4 @@
-<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
-<%@ page
-	import="edu.uci.ics.sdcl.firefly.*, java.util.*, java.util.Map.Entry"
-	language="java" contentType="text/html; charset=ISO-8859-1"
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -155,10 +152,11 @@
 		value=${requestScope["calleeLOCS"]}>
 
 
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script
-		src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
+		<script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		
+		<script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+
+<!-- src="https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js" -->
 
 	<div id="failurePrompt">
 		<div id="internalText">
