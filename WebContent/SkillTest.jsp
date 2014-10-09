@@ -24,7 +24,7 @@
 	
 	#editor1 {
 	position: relative;
-	height: 280px;
+	height: 320px;
 	width: 580px;
 	}
 	
