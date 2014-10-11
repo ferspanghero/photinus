@@ -12,7 +12,7 @@ public class PropertyManager {
 
 	private String devPropertyPath= "C:/firefly/";
 
-	private String serverPropertyPath ="/var/lib/tomcat7/webapps/firefly/";   
+	private String serverPropertyPath ="/var/lib/tomcat7/webapps/crowd-debug/";   
 	
 	public String serializationPath;
 

@@ -145,13 +145,14 @@ public class WorkerSessionFactory {
 						
 						//Avoids methods with the same name in the same session.
 						//That avoids the risk of having buggy and fixed versions of the same method in the same session.
-						if (!methodTracker.containsKey(methodName)){ 
+						if (!methodTracker.containsKey(methodName) && !taskAlreadyPerformed(microtask.getID().intValue())){ 
 							methodTracker.put(methodName, microtask);
 							resultList.add(microtask);
 							microtaskList.remove(randomPosition);
 							//Put the map back with the element removed
 							methodMap.put(methodKey, microtaskList);
 							fileMethodMap.put(fileKey, methodMap);
+							System.out.println("microtask added to session: "+microtask.getID());
 						}
 						else{
 							//System.out.println("Successfully dealt with method name collision, method:  "+ methodName);
@@ -314,5 +315,35 @@ public class WorkerSessionFactory {
 		return workerSessionStack;
 	}
 
+	
+	/** Check whether a microtask was already performed */
+	public boolean taskAlreadyPerformed(int taskId){
+		
+		 int [] list =  {0,1,2,3,8,9,10,12,14,15,16,17,18,18,20,20,21,21,22,
+					23,25,26,30,31,33,34,35,35,36,37,38,38,39,42,46,50,51,54,56,56,58,
+					60,61,61,67,72,73,75,75,77,78,79,81,83,84,85,88,97,99,101,102,109,
+					111,112,113,114,115,116,116,117,118,118,119,119,120,121,121,122,122,
+					123,123,124,124,124,126,126,126,127,127,128,128,129,129,130,130,131,
+					131,132,132,132,133,133,134,134,135,135,136,136,137,137,137,138,139,
+					139,142,142,143,143,144,144,145,145,145,145,146,146,146,146,147,147,
+					148,148,148,149,149,150,150,151,151,151,152,152,153,153,153,154,154,
+					155,156,157,157,157,157,157,158,158,158,158,159,159,159,160,160,161,
+					161,161,162,162,162,162,162,162,163,163,163,163,163,163,163,164,164,
+					164,164,165,165,165,165,165,166,166,167,167,167,168,168,169,169,169,
+					169,170,170,171,171,171,172,172,172,172,173,173,173,173,173,174,174,
+					174,174,174,174,175,175,175,175,176,176,176,176,176,176,178,179,180,
+					180,180,182,183,184,185,193,194,195,196,197,198,198,199,199,202,203,
+					204,205,206,208,210,211,213,214} ;
+		
+		for(int id: list){
+			if(id==taskId)
+				return true;
+			else
+				if(id>taskId)
+					break;
+		}
+		return false;
+	}
+	
 	
 }

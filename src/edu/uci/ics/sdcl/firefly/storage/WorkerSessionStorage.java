@@ -30,8 +30,8 @@ public class WorkerSessionStorage {
 	private static String persistentFileNameNew;
 	private static String persistentFileNameClosed;
 
-	private static String fileNameNew = "workersession-storage_new.ser";
-	private static String fileNameClosed = "workersession-storage_closed.ser";
+	private static String fileNameNew = "sessions_new.ser";
+	private static String fileNameClosed = "sessions_closed.ser";
 
 	private Hashtable<String, WorkerSession> activeSessionTable;
 

@@ -30,7 +30,7 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
  */
 public class MicrotaskStorage {
 
-	private String persistentFileName = "microtasks-storage.ser";
+	private String persistentFileName = "microtasks.ser";
 	private static MicrotaskStorage storage;
 	private static Logger logger;
 	private static Hashtable<String,FileDebugSession> debugSessionMap;
@@ -196,6 +196,9 @@ public class MicrotaskStorage {
 
 			debugSessionMap = (Hashtable<String, FileDebugSession>) objInputStream.readObject();
 
+			if(debugSessionMap==null)
+				debugSessionMap = new Hashtable<String, FileDebugSession>();
+			
 			objInputStream.close();
 			return debugSessionMap;
 		}

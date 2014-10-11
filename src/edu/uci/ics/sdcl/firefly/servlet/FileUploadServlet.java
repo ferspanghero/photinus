@@ -11,12 +11,16 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.CodeSnippetFactory;
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.MicrotaskContextFactory;
 import edu.uci.ics.sdcl.firefly.QuestionFactory;
+import edu.uci.ics.sdcl.firefly.SourceFileReader;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.WorkerSessionFactory;
@@ -231,6 +235,9 @@ public class FileUploadServlet extends HttpServlet {
 						"<br> Microtasks generated: " + generatedMicrotasks+"<br>"+
 						"Total Microtasks available now: "+ numberOfMicrotasks + "<br>";
 				
+				Logger logger = LoggerFactory.getLogger(FileUploadServlet.class);
+				logger.info("EVENT: FileUpload; File="+ fileName+"; CodeSnippets="+generatedCodeSnippets+"; Microtasks="+generatedMicrotasks);
+				
 				System.out.println("Results: "+results);
 			}
 			else
@@ -299,6 +306,41 @@ public class FileUploadServlet extends HttpServlet {
 	private void delete(){
 		StorageManager manager = new StorageManager();
 		manager.cleanUpRepositories();
+	}
+	
+	private void standardUpload(){
+	
+	
+		PropertyManager manager = PropertyManager.initializeSingleton();
+		
+		String path = "c:\\firefly\\samples\\";
+		
+		String[] fileList = {"1buggy_ApacheCamel,txt", "2SelectTranslator_buggy.java", "5buggy_PublishDialog_buggy.txt", "6ReviewScopeNode_buggy.java", 
+				"7buggy_ReviewTaskMapper_buggy.txt", "8buggy_AbstractReviewSection_buggy.txt", "9buggy_Hystrix_buggy.txt",
+				"10HashPropertyBuilder_buggy.java", "11ByteArrayBuffer_buggy.java","13buggy_VectorClock_buggy.txt"};
+		
+		String [] methodList = { "acquireExclusiveReadLock","appendColumn","addComments","convertScopeToDescription",
+				"mapScope","appendMessage","endCurrentThreadExecutingCommand","calculateNumPopulatedBytes","grow","merge"};
+		
+		String [] failureList = { "Program execution causes NullPointerException","Program execution causes NullPointerException",
+				"When we can't get a file version for whatever reason, an Null Pointer Exception occurs." ,"Program execution causes NullPointerException",
+				"Program execution causes UnsupportedMethodException","Program execution causes ClassCastException","Program execution causes NoSuchElementException",
+				"Probing algorithm spinning indefinitely trying to find a hole in a byte sequence.",
+				"NegativeArraySizeException for data larger than 2GB / 3." , 
+				"java.lang.IllegalArgumentException: Version -532 is not in the range (1, 32767) in ClockEntry constructor."};
+		
+		for(int i=0; i<fileList.length; i++){
+			String fileName = fileList[i];
+			String methodName = methodList[i];
+			String failureDescription = failureList[i];
+			
+			String fileContent = SourceFileReader.readFileToString(path+fileName);
+			
+			String result = generateMicrotasks(fileName, fileContent, methodName,null, failureDescription);
+			
+			
+		}
+		
 	}
 }
 
