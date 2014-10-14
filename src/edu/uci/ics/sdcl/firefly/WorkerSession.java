@@ -51,7 +51,7 @@ public class WorkerSession implements Serializable{
 	public WorkerSession getLightVersion(){
 		Vector<Microtask> simpleList = new Vector<Microtask>();
 		for(Microtask task: this.microtaskList){
-			simpleList.add(task.getLightVersion());
+			simpleList.add(task.getSimpleVersion());
 		}
 		WorkerSession lightSession = new WorkerSession(this.getId(),simpleList);
 		lightSession.setWorkerId(this.getWorkerId());

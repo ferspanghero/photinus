@@ -23,7 +23,7 @@ public class MicrotaskLite {
 			int startingColumn, int endingLine, int endingColumn,
 			String calleeFileContent, int calleeLOCS, String callerFileContent,
 			int callerLOCS) {
-		super();
+		
 		this.microtaskId = microtaskId;
 		this.question = question;
 		this.failureDescription = failureDescription;

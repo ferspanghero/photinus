@@ -10,7 +10,6 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,9 @@ import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.WorkerSessionFactory;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
+import edu.uci.ics.sdcl.firefly.lite.MicrotaskLite;
 import edu.uci.ics.sdcl.firefly.report.ReportGenerator;
+import edu.uci.ics.sdcl.firefly.storage.LiteContainer;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
@@ -54,6 +55,7 @@ public class FileUploadServlet extends HttpServlet {
 
 			if(subAction.compareTo("generateWorkerSessions")==0){
 				String return_message = this.generateWorkerSessions();
+				//makeSessionsAvailable();
 				String microtasks_message = request.getParameter("microtasks_message");
 				request.setAttribute("microtasks_message", microtasks_message);
 				request.setAttribute("workerSessions_message", return_message);
@@ -91,7 +93,6 @@ public class FileUploadServlet extends HttpServlet {
 		String fileName = new String();
 		String fileContent = new String();
 		String workerId= new String();
-		boolean gotBugReport = false;		// assuming that not all parameters that are necessary are known
 		boolean gotSpecificMethod = false;
 
 		if(ServletFileUpload.isMultipartContent(request)){
@@ -111,16 +112,15 @@ public class FileUploadServlet extends HttpServlet {
 							return_message = "File <b>"+ fileName+"</b> was successfully uploaded.<br> Size: "+sizeInBytes+" bytes <br>";
 							scanner.close();
 						}
-						else
-							return_message = "File <b>"+ fileName+"</b> is empty!";
-
+						else{
+							return_message = "Files loaded <b>"+ this.standardUpload();
+						}
 						request.setAttribute("fileName", fileName);  
 					}
 					else{
 						// getting bug report
 						if (item.getFieldName().equalsIgnoreCase("bugReport")){
 							bugReport = item.getString();
-							gotBugReport = true;
 						}
 						// getting specific method name
 						if (item.getFieldName().equalsIgnoreCase("targetMethod")){
@@ -131,8 +131,9 @@ public class FileUploadServlet extends HttpServlet {
 							}
 							else{
 								targetMethodName = item.getString();
-							}							
-							gotSpecificMethod = true;
+							}
+							if(targetMethodName!=null && targetMethodName.length()>0)
+								gotSpecificMethod = true;
 						}
 						if (item.getFieldName().equalsIgnoreCase("workerId"))
 							workerId = item.getString();
@@ -144,7 +145,7 @@ public class FileUploadServlet extends HttpServlet {
 				fileContent = fileContent.replaceAll("\t","    ");
 				
 				// generating microtasks if...
-				if (gotBugReport && gotSpecificMethod){
+				if (gotSpecificMethod){
 					String results = generateMicrotasks(fileName, fileContent, targetMethodName,numberOfParameters, bugReport);
 
 					//Store the workerId Researcher
@@ -154,6 +155,10 @@ public class FileUploadServlet extends HttpServlet {
 
 					return_message = return_message + results;
 				}
+				else{
+					System.out.println("Specific method not provided.");
+				}
+			
 
 				request.setAttribute("workerSessions_message", "");
 				request.setAttribute("microtasks_message", return_message);
@@ -278,6 +283,27 @@ public class FileUploadServlet extends HttpServlet {
 		return results;
 	}
 	
+	private int makeSessionsAvailable(){
+		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
+		Vector<WorkerSession> sessionList = storage.retrieveNewSessionStorage();
+		
+		Hashtable<String, Vector<Microtask>> sessionTable = new Hashtable<String, Vector<Microtask>>();
+		
+		for(WorkerSession session: sessionList){
+			Vector<Microtask> taskList = session.getMicrotaskList();
+			Vector<Microtask> microtaskLiteVector = new Vector<Microtask>();
+			for(Microtask task: taskList){
+				Microtask taskLite = task.getLiteVersion();
+				microtaskLiteVector.add(taskLite);
+			}
+			sessionTable.put(session.getId(), microtaskLiteVector);
+		}
+		
+		LiteContainer container = LiteContainer.initializeSingleton();
+		container.setSessionTable(sessionTable);
+		return sessionTable.size();
+	}
+	
 	/* 
 	 * Used for testing purposes
 	 */
@@ -308,14 +334,13 @@ public class FileUploadServlet extends HttpServlet {
 		manager.cleanUpRepositories();
 	}
 	
-	private void standardUpload(){
+	private String standardUpload(){
 	
-	
-		PropertyManager manager = PropertyManager.initializeSingleton();
-		
+		Logger logger = LoggerFactory.getLogger(FileUploadServlet.class);
+				
 		String path = "c:\\firefly\\samples\\";
 		
-		String[] fileList = {"1buggy_ApacheCamel,txt", "2SelectTranslator_buggy.java", "5buggy_PublishDialog_buggy.txt", "6ReviewScopeNode_buggy.java", 
+		String[] fileList = {"1buggy_ApacheCamel.txt", "2SelectTranslator_buggy.java", "3buggy_PatchSetContentRemoteFactory_buggy.txt", "6ReviewScopeNode_buggy.java", 
 				"7buggy_ReviewTaskMapper_buggy.txt", "8buggy_AbstractReviewSection_buggy.txt", "9buggy_Hystrix_buggy.txt",
 				"10HashPropertyBuilder_buggy.java", "11ByteArrayBuffer_buggy.java","13buggy_VectorClock_buggy.txt"};
 		
@@ -328,7 +353,7 @@ public class FileUploadServlet extends HttpServlet {
 				"Probing algorithm spinning indefinitely trying to find a hole in a byte sequence.",
 				"NegativeArraySizeException for data larger than 2GB / 3." , 
 				"java.lang.IllegalArgumentException: Version -532 is not in the range (1, 32767) in ClockEntry constructor."};
-		
+		String message="";
 		for(int i=0; i<fileList.length; i++){
 			String fileName = fileList[i];
 			String methodName = methodList[i];
@@ -337,10 +362,11 @@ public class FileUploadServlet extends HttpServlet {
 			String fileContent = SourceFileReader.readFileToString(path+fileName);
 			
 			String result = generateMicrotasks(fileName, fileContent, methodName,null, failureDescription);
-			
-			
+			logger.info("Event = UPLOAD; File="+ fileName+ "; MethodName="+ methodName+ "; Microtasks="+result);
+			message = message + methodName+ ", " ;
 		}
 		
+		return message.substring(0, message.length()-1);
 	}
 }
 

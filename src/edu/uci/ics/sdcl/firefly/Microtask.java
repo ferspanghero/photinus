@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import edu.uci.ics.sdcl.firefly.lite.MicrotaskLite;
+
 public class Microtask implements Serializable
 {	
 	private static final long serialVersionUID = 1L;
@@ -67,7 +69,31 @@ public class Microtask implements Serializable
 		this.question = question;
 	}
 	
-	public Microtask getLightVersion(){
+	
+	/** Light version used during microtask execution */
+	public Microtask(int microtaskId, String question,
+			String failureDescription, String snippetHightlights,
+			String callerHightlights, String calleeHightlights,
+			int startingColumn, int endingLine, int endingColumn,
+			String calleeFileContent, int calleeLOCS, String callerFileContent,
+			int callerLOCS) {
+		
+		this.ID = new Integer(microtaskId);
+		this.question = question;
+		this.failureDescription = failureDescription;
+		this.snippetHightlights = snippetHightlights;
+		this.callerHightlights = callerHightlights;
+		this.calleeHightlights = calleeHightlights;
+		this.startingColumn = startingColumn;
+		this.endingLine = endingLine;
+		this.endingColumn = endingColumn;
+		this.calleeFileContent = calleeFileContent;
+		this.calleeLOCS = calleeLOCS;
+		this.callerFileContent = callerFileContent;
+		this.callerLOCS = callerLOCS;
+	}
+	
+	public Microtask getSimpleVersion(){
 		return new Microtask(this.getQuestion(),this.getID(),this.getAnswerList());
 	}
 
@@ -212,4 +238,21 @@ public class Microtask implements Serializable
 		return foundAnswer;
 	}
 	
+	public Microtask getLiteVersion(){
+		return new Microtask(
+				this.ID,
+				this.question,
+				this.failureDescription,
+				this.snippetHightlights,
+				this.callerHightlights,
+				this.calleeHightlights,
+				this.startingColumn,
+				this.endingLine,
+				this.endingColumn,
+				this.calleeFileContent,
+				this.calleeLOCS,
+				this.callerFileContent,
+				this.callerLOCS
+				);
+	}
 }
