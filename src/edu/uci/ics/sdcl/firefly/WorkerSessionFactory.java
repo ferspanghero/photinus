@@ -145,7 +145,7 @@ public class WorkerSessionFactory {
 						
 						//Avoids methods with the same name in the same session.
 						//That avoids the risk of having buggy and fixed versions of the same method in the same session.
-						if (!methodTracker.containsKey(methodName) && !taskAlreadyPerformed(microtask.getID().intValue())){ 
+						if (!methodTracker.containsKey(methodName)){// && !taskAlreadyPerformed(microtask.getID().intValue())){ 
 							methodTracker.put(methodName, microtask);
 							resultList.add(microtask);
 							microtaskList.remove(randomPosition);
