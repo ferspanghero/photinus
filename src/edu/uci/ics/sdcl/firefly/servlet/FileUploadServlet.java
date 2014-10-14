@@ -24,7 +24,6 @@ import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.WorkerSessionFactory;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
-import edu.uci.ics.sdcl.firefly.lite.MicrotaskLite;
 import edu.uci.ics.sdcl.firefly.report.ReportGenerator;
 import edu.uci.ics.sdcl.firefly.storage.LiteContainer;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
