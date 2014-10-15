@@ -64,7 +64,7 @@ public class FileUploadServlet extends HttpServlet {
 				if(subAction.compareTo("delete")==0){
 					this.delete();
 					request.setAttribute("workerSessions_message", "");
-					request.setAttribute("reports_message", "Repositories Deleted!");
+					request.setAttribute("reports_message", "<b>Repositories Deleted!</b>");
 					request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 				}
 				if(subAction.compareTo("generateReports")==0){
@@ -92,7 +92,7 @@ public class FileUploadServlet extends HttpServlet {
 		String fileName = new String();
 		String fileContent = new String();
 		String workerId= new String();
-		boolean gotSpecificMethod = false;
+		boolean loadPerMethod = false;
 
 		if(ServletFileUpload.isMultipartContent(request)){
 			FileItemFactory factory = new DiskFileItemFactory();
@@ -112,7 +112,8 @@ public class FileUploadServlet extends HttpServlet {
 							scanner.close();
 						}
 						else{
-							return_message = "Files loaded <b>"+ this.standardUpload();
+							//No fileName provided, so it will execute a standard load.
+							loadPerMethod = false;
 						}
 						request.setAttribute("fileName", fileName);  
 					}
@@ -132,7 +133,7 @@ public class FileUploadServlet extends HttpServlet {
 								targetMethodName = item.getString();
 							}
 							if(targetMethodName!=null && targetMethodName.length()>0)
-								gotSpecificMethod = true;
+								loadPerMethod = true;
 						}
 						if (item.getFieldName().equalsIgnoreCase("workerId"))
 							workerId = item.getString();
@@ -143,22 +144,18 @@ public class FileUploadServlet extends HttpServlet {
 				//editor counts a tab as one space, which a tab is actually 4 spaces.
 				fileContent = fileContent.replaceAll("\t","    ");
 				
-				// generating microtasks if...
-				if (gotSpecificMethod){
-					String results = generateMicrotasks(fileName, fileContent, targetMethodName,numberOfParameters, bugReport);
-
-					//Store the workerId Researcher
-					WorkerStorage workerStorage =  WorkerStorage.initializeSingleton();;
-					Worker worker = new Worker(workerId,new Date());
-					workerStorage.insertConsent(worker);
-
-					return_message = return_message + results;
+				//Store the workerId Researcher
+				WorkerStorage workerStorage =  WorkerStorage.initializeSingleton();;
+				Worker worker = new Worker(workerId,new Date());
+				workerStorage.insertConsent(worker);
+				
+				// generating microtasks individualized or in bulk
+				if (loadPerMethod){
+					return_message = return_message + generateMicrotasks(fileName, fileContent, targetMethodName,numberOfParameters, bugReport);;
 				}
-				else{
-					System.out.println("Specific method not provided.");
+				else{//in bulk
+					return_message = return_message + this.bulkUpload();
 				}
-			
-
 				request.setAttribute("workerSessions_message", "");
 				request.setAttribute("microtasks_message", return_message);
 
@@ -274,8 +271,8 @@ public class FileUploadServlet extends HttpServlet {
 		int totalSessions = originalStack.size();
 		int existingSessions = storage.getNumberOfNewWorkerSessions(); 
 	
-		results = results + "Sessions generated: " +totalSessions+"<br>"+ 
-					"Total Sessions available now: "+existingSessions;
+		results = "<b>Sessions generated: </b>" +totalSessions+"<br>"+ 
+					"<b>Total Sessions available now: </b> "+existingSessions;
 
 		//System.out.println("Results: "+results);
 
@@ -333,11 +330,12 @@ public class FileUploadServlet extends HttpServlet {
 		manager.cleanUpRepositories();
 	}
 	
-	private String standardUpload(){
+	private String bulkUpload(){
 	
 		Logger logger = LoggerFactory.getLogger(FileUploadServlet.class);
-				
-		String path = "c:\\firefly\\samples\\";
+		PropertyManager manager = PropertyManager.initializeSingleton();
+		String path = manager.fileUploadSourcePath;
+		System.out.println("path: "+path);
 		
 		String[] fileList = {"1buggy_ApacheCamel.txt", "2SelectTranslator_buggy.java", "3buggy_PatchSetContentRemoteFactory_buggy.txt", "6ReviewScopeNode_buggy.java", 
 				"7buggy_ReviewTaskMapper_buggy.txt", "8buggy_AbstractReviewSection_buggy.txt", "9buggy_Hystrix_buggy.txt",
@@ -364,8 +362,7 @@ public class FileUploadServlet extends HttpServlet {
 			logger.info("Event = UPLOAD; File="+ fileName+ "; MethodName="+ methodName+ "; Microtasks="+result);
 			message = message + methodName+ ", " ;
 		}
-		
-		return message.substring(0, message.length()-1);
+		return  "<b>Loaded methods: </b>" + message.substring(0, message.length()-2);
 	}
 }
 
