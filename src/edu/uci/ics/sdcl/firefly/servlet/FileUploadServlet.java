@@ -76,7 +76,7 @@ public class FileUploadServlet extends HttpServlet {
 				else{
 					request.setAttribute("error", "SubAction unknown");
 					request.setAttribute("executionId", "before consent");
-					request.getRequestDispatcher("/ErrorPage.jsp").include(request, response);
+					request.getRequestDispatcher("/ErrorPage.jsp").forward(request, response);
 				}
 		}
 	}

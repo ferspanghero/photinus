@@ -122,6 +122,8 @@
 					<input type="button" name="yesButton" id="yesButton" 
 					value="Yes, I want to participate" style="float: right;"
 					onclick="proceed()"> 
+					
+					<input type="submit" value="submit">
 					<br>
 			</form>
 

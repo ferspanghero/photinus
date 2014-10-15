@@ -48,7 +48,7 @@ public class ConsentServlet extends HttpServlet {
 				request.setAttribute("subAction", "gradeAnswers");
 				request = this.loadQuestions(request, response);
 				request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-				request.getRequestDispatcher(SkillTestPage).include(request, response);
+				request.getRequestDispatcher(SkillTestPage).forward(request, response);
 			}
 		}
 		else{
@@ -72,7 +72,7 @@ public class ConsentServlet extends HttpServlet {
 	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("error", message);
 		request.setAttribute("executionId", "before consent");
-		request.getRequestDispatcher(ErrorPage).include(request, response);
+		request.getRequestDispatcher(ErrorPage).forward(request, response);
 	}
 
 }

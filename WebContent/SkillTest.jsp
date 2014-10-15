@@ -12,7 +12,6 @@
 		background-color: #D1EEEE;
 		text-align: justify;
 		margin: 0 auto;
-		
 	}
 	
 	#content  {
@@ -192,7 +191,7 @@
 			<br>
 	
 			<INPUT TYPE="button" VALUE="Quit"	onclick="quit()"> 
-			<INPUT TYPE="button" VALUE="Submit answers" onclick="submitAnswers(event)">
+			<INPUT TYPE="button" name="answerButton" VALUE="Submit answers" onclick="submitAnswers(event)">
 
 		</form>
 		<br>
