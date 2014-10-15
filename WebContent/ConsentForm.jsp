@@ -110,14 +110,19 @@
 			<br>
 
 			<form name="consentForm" action="ConsentServlet" method="get">
-				<input type="hidden" id="subAction" name="subAction"
-					value="loadConsentForm"> <input type="checkbox"
-					id="consentBox"><i>By checking this box I hereby state
+				<input type="hidden" id="subAction" name="subAction" value="loadConsentForm"> 
+					
+					<input type="checkbox" name="consentBox" id="consentBox"><i>By checking this box I hereby state
 					that I have read, understood and agreed with the terms above.</i> <br>
-				<br> <input type="button" value="No, thanks"
-					style="float: left;" onclick="quit()"> <input type="button"
+					
+					<br> 
+					<input type="button"  value="No, thanks"
+					style="float: left;" onclick="quit()">
+
+					<input type="button" name="yesButton" id="yesButton" 
 					value="Yes, I want to participate" style="float: right;"
-					onclick="proceed()"> <br>
+					onclick="proceed()"> 
+					<br>
 			</form>
 
 		</div>
