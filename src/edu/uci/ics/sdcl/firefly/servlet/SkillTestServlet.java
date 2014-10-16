@@ -114,6 +114,7 @@ public class SkillTestServlet extends HttpServlet {
 		int grade = this.countCorrectAnswers(gradeMap);
 
 		worker.setSkillAnswers(rubricMap,gradeMap,answerMap,grade, duration);
+		
 		workerStorage.insertSKillTest(worker);
 
 		return grade;
@@ -161,7 +162,6 @@ public class SkillTestServlet extends HttpServlet {
 			showErrorPage(request, response,"@ SkillTestServlet - no microtask available");
 		else{
 			//Restore data for next Request
-			request.setAttribute("sessionId",session.getId());
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 			
 			//Load the new Microtask data into the Request

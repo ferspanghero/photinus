@@ -194,8 +194,7 @@
 				<!-- Hidden fields -->
 				<input type="hidden" name="fileName"
 					value=${requestScope["fileName"]}> <input type="hidden"
-					name="workerId" value=${requestScope["workerId"]}> <input
-					type="hidden" name="sessionId" value=${requestScope["sessionId"]}>
+					name="workerId" value=${requestScope["workerId"]}> 
 				<input type="hidden" name="microtaskId"
 					value=${requestScope["microtaskId"]}> <input type="hidden"
 					name="timeStamp" value=${requestScope["timeStamp"]}> <input
@@ -215,7 +214,7 @@
 
 	<div id="buttons">
 		<center>
-			<INPUT TYPE="button" VALUE="Submit answer"
+			<INPUT TYPE="button" name="submitButton" VALUE="Submit answer"
 				onclick="submitAnswer(event)">
 		</center>
 		<br>

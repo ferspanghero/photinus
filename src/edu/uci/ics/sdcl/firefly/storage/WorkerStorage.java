@@ -109,7 +109,7 @@ public class WorkerStorage {
 		}
 	}
 	
-	private synchronized boolean updateWorker(Worker worker){
+	public synchronized boolean updateWorker(Worker worker){
 		//Object persistence
 		if((workerTable!=null)&&(worker!=null)){
 			workerTable.put(worker.getWorkerId(), worker);
@@ -195,6 +195,8 @@ public class WorkerStorage {
 			return null;
 		}
 	}
+
+	
 
 	
 

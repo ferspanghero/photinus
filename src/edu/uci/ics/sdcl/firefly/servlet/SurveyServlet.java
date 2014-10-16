@@ -38,14 +38,12 @@ public class SurveyServlet extends HttpServlet {
 			subject.addSurveyAnswer(question[3], request.getParameter("experience"));
 			subject.addSurveyAnswer(question[4], request.getParameter("difficulty"));
 			subject.addSurveyAnswer(question[5], request.getParameter("feedback"));
-			String sessionId =  request.getParameter("sessionId");
-			subject.setSessionId(sessionId);
 			
 			//Store result
 			subjectStore.insertSurvey(request.getParameter("workerId"), subject);
 			
 			//Displays the Thanks message		
-			request.setAttribute("key", sessionId);
+			request.setAttribute("key", subject.getSessionId());
 			request.getRequestDispatcher("/Thanks.jsp").forward(request, response);
 		} else{
 			request.setAttribute("executionId", request.getParameter("workerId"));

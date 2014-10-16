@@ -85,7 +85,6 @@ public class MicrotaskServlet extends HttpServlet {
 		else{
 			//Restore data for next Request
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-			request.setAttribute("sessionId",session.getId());
 
 			//load the new Microtask data into the Request
 			request = MicrotaskServlet.generateRequest(request, session.getCurrentMicrotask());
@@ -98,7 +97,9 @@ public class MicrotaskServlet extends HttpServlet {
 
 		int answer = new Integer(request.getParameter("answer")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
-		String sessionId = request.getParameter("sessionId");
+		StorageManager manager = new StorageManager();
+		
+		String sessionId = manager.getSessionId(this.workerId); //request.getParameter("sessionId");
 		String explanation = request.getParameter("explanation");
 		String fileName = request.getParameter("fileName");
 		String timeStamp = request.getParameter("timeStamp");
@@ -106,7 +107,7 @@ public class MicrotaskServlet extends HttpServlet {
 
 
 		//Save answers from the previous microtask
-		StorageManager manager = new StorageManager();
+		
 		boolean success = manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId),
 				new Answer(Answer.mapToString(answer),explanation, this.workerId, elapsedTime, timeStamp));
 
@@ -117,7 +118,6 @@ public class MicrotaskServlet extends HttpServlet {
 		else{
 			//Restore data for next Request
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-			request.setAttribute("sessionId", sessionId);
 
 			//Continue working on existing session
 			WorkerSession session = manager.readActiveSession(sessionId);	

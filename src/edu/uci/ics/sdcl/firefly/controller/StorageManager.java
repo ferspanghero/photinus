@@ -60,6 +60,10 @@ public class StorageManager {
 		if(session!=null){
 			session.setWorkerId(workerId);
 			this.sessionStorage.updateActiveWorkerSession(session);
+			//Now update the worker info.
+			Worker worker = this.workerStorage.readExistingWorker(workerId);
+			worker.setSessionId(session.getId());
+			this.workerStorage.updateWorker(worker);
 			return session;
 		}
 		else
@@ -102,6 +106,7 @@ public class StorageManager {
 		else return true;
 	}
 
-	
-	
+	public String getSessionId(String workerId) {
+		return workerStorage.readExistingWorker(workerId).getSessionId();
+	}
 }
