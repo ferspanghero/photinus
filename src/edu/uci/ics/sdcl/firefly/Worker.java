@@ -23,7 +23,7 @@ public class Worker implements Serializable{
 		this.surveyAnswersMap =  new Hashtable<String,String>();
 		this.grade = -1;
 		this.skillTestDuration = "";
-		this.sessionId = "";		
+		this.sessionId = null;		
 		this.rubricMap = new Hashtable<String,String>();
 		this.skillTestAnswerMap = new Hashtable<String,String>();
 		this.gradeMap = new Hashtable<String, Boolean>();

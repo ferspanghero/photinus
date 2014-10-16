@@ -211,21 +211,24 @@ public class WorkerSessionStorage {
 	 * @param answer the answer provided by a user
 	 * @return true if operation was successful, otherwise false
 	 */
-	public synchronized boolean setSessionMicrotaskAnswer(String sessionId,Integer microtaskId, Answer answer) {
+	public synchronized WorkerSession setSessionMicrotaskAnswer(String sessionId,Integer microtaskId, Answer answer) {
 
 		WorkerSession session = this.readActiveWorkerSessionByID(sessionId);
 		if(session==null){
 			logger.error("EVENT= ERROR; Session is null id "+sessionId);
-			return false;
+			return null;
 		}
 		else{
 			if(session.insertMicrotaskAnswer(microtaskId,answer)){
 				logger.info("EVENT= SESSION; workerId="+ answer.getWorkerId()+"; sessionId="+ sessionId+"; microtaskId="+microtaskId+
 						"; answer="+answer.getOption());
-				return(this.updateActiveWorkerSession(session));
+				if(this.updateActiveWorkerSession(session))
+					return session;
+				else 
+					return null;
 			}
 			else
-				return false;
+				return null;
 		}
 	}
 

@@ -29,6 +29,7 @@ public class Microtask implements Serializable
 	private Integer calleeLOCS;
 	private String callerFileContent;
 	private Integer callerLOCS;
+	private String fileName;
 
 
 	/**
@@ -60,13 +61,15 @@ public class Microtask implements Serializable
 		this.answerList = new Vector<Answer>();
 		this.ID = ID;
 		this.failureDescription = failureDescription;
+		this.fileName = method.getFileName();
 	}
 
 	/** Simplified version with only the data needed to write a Session Report */
-	public Microtask(String question, Integer ID, Vector<Answer> answerList)	{
+	public Microtask(String question, Integer ID, Vector<Answer> answerList, String fileName)	{
 		this.answerList = answerList;
 		this.ID = ID;
 		this.question = question;
+		this.fileName = fileName;
 	}
 	
 	
@@ -76,7 +79,7 @@ public class Microtask implements Serializable
 			String callerHightlights, String calleeHightlights,
 			int startingColumn, int endingLine, int endingColumn,
 			String calleeFileContent, int calleeLOCS, String callerFileContent,
-			int callerLOCS) {
+			int callerLOCS, String fileName) {
 		
 		this.ID = new Integer(microtaskId);
 		this.question = question;
@@ -91,10 +94,11 @@ public class Microtask implements Serializable
 		this.calleeLOCS = calleeLOCS;
 		this.callerFileContent = callerFileContent;
 		this.callerLOCS = callerLOCS;
+		this.fileName = fileName;
 	}
 	
 	public Microtask getSimpleVersion(){
-		return new Microtask(this.getQuestion(),this.getID(),this.getAnswerList());
+		return new Microtask(this.getQuestion(),this.getID(),this.getAnswerList(),this.getFileName());
 	}
 
 	public Integer getID(){
@@ -252,7 +256,12 @@ public class Microtask implements Serializable
 				this.calleeFileContent,
 				this.calleeLOCS,
 				this.callerFileContent,
-				this.callerLOCS
+				this.callerLOCS,
+				this.fileName
 				);
+	}
+
+	public String getFileName() {
+		return this.fileName;
 	}
 }

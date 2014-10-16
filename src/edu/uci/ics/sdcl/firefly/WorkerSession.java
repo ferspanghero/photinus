@@ -123,7 +123,7 @@ public class WorkerSession implements Serializable{
 	public boolean insertMicrotaskAnswer(Integer microtaskId, Answer answer) {
 		
 		Microtask microtask = this.getCurrentMicrotask();
-		if((microtask == null) || (microtask.getID().intValue() != microtaskId.intValue())){
+		if((microtask == null) || microtaskId==null || (microtask.getID().intValue() != microtaskId.intValue())){
 			//logger.error("EVENT= ERROR; workerId="+answer.getWorkerId()+ ";Answer was already stored; microtaskId="+ microtaskId+ "; answer="+ answer.getOption() );
 			return false;
 		}
@@ -150,6 +150,13 @@ public class WorkerSession implements Serializable{
 				totalTime = totalTime + new Double(answer.getElapsedTime());
 		}
 		return Double.toString(totalTime);
+	}
+
+	public Microtask getPreviousMicrotask() {
+		if(this.currentIndex==0)
+			return null;
+		else
+			return this.microtaskList.elementAt(this.currentIndex-1);
 	}
 	
 }

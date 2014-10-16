@@ -52,7 +52,6 @@ public class SkillTestServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		System.out.println("Entered SkillTestServlet");
 		this.workerId = request.getParameter("workerId");
 		String subAction = request.getParameter("subAction");
 
