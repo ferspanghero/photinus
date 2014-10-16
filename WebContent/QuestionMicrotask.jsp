@@ -196,9 +196,7 @@
 					name="workerId" value=${requestScope["workerId"]}> 
 				<input type="hidden" name="microtaskId"
 					value=${requestScope["microtaskId"]}> <input type="hidden"
-					name="timeStamp" value=${requestScope["timeStamp"]}> <input
-					type="hidden" id="subAction" name="subAction"
-					value=${requestScope["subAction"]}>
+					name="timeStamp" value=${requestScope["timeStamp"]}> 
 
 
 				<center>
@@ -207,7 +205,7 @@
 				</center>
 				<br>
 
-			</form>
+			
 		</div>
 	</div>
 
@@ -219,7 +217,7 @@
 		<br>
 	</div>
 
-
+</form>
 
 
 	<div id="questionCode">
