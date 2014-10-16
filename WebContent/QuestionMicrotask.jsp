@@ -192,8 +192,7 @@
 
 
 				<!-- Hidden fields -->
-				<input type="hidden" name="fileName"
-					value=${requestScope["fileName"]}> <input type="hidden"
+				<input type="hidden"
 					name="workerId" value=${requestScope["workerId"]}> 
 				<input type="hidden" name="microtaskId"
 					value=${requestScope["microtaskId"]}> <input type="hidden"

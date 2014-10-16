@@ -32,7 +32,7 @@ public class MicrotaskServlet extends HttpServlet {
 	private String SurveyPage = "/Survey.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
-
+	private StorageManager manager ;
 	private String workerId;
 
 	private MicrotaskContextFactory workerSessionSelector;
@@ -61,8 +61,16 @@ public class MicrotaskServlet extends HttpServlet {
 		//Restore data for next Request
 		request.setAttribute("workerId",this.workerId);
 
-		String subAction = request.getParameter("subAction");
+		//String subAction = request.getParameter("subAction");
 
+		manager = new StorageManager();
+		String sessionId = manager.getSessionId(workerId);
+		if(sessionId == null)
+			loadFirstMicrotask(request, response);
+		else
+			loadNextMicrotask(request, response);
+		
+		/**
 		if(subAction.compareTo("loadFirst")==0)
 			loadFirstMicrotask(request, response);
 		else
@@ -70,13 +78,12 @@ public class MicrotaskServlet extends HttpServlet {
 				loadNextMicrotask(request, response);
 			else
 				showErrorPage(request, response,"@ MicrotaskServlet - subAction not recognized");
-
+				*/
 	}
 
 
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		StorageManager manager = new StorageManager();
 		WorkerSession  session = manager.readNewSession(this.workerId);
 
 		if(session==null || !session.hasCurrent())
@@ -94,21 +101,20 @@ public class MicrotaskServlet extends HttpServlet {
 
 
 	private void loadNextMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		
 		int answer = new Integer(request.getParameter("answer")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
 		StorageManager manager = new StorageManager();
 		
 		String sessionId = manager.getSessionId(this.workerId); //request.getParameter("sessionId");
 		String explanation = request.getParameter("explanation");
-		String fileName = request.getParameter("fileName");
 		String timeStamp = request.getParameter("timeStamp");
 		String elapsedTime = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
 
 
 		//Save answers from the previous microtask
 		
-		boolean success = manager.updateMicrotaskAnswer(fileName, sessionId, new Integer(microtaskId),
+		boolean success = manager.updateMicrotaskAnswer(sessionId, new Integer(microtaskId),
 				new Answer(Answer.mapToString(answer),explanation, this.workerId, elapsedTime, timeStamp));
 
 		if(!success){
@@ -156,8 +162,7 @@ public class MicrotaskServlet extends HttpServlet {
 		//	System.out.println("Retrieved microtask bug report:" + task.getFailureDescription() +  " from fileName: "+task.getCodeSnippet().getFileName());
 
 		request.setAttribute("microtaskId", task.getID());  
-		request.setAttribute("fileName", task.getCodeSnippet().getFileName());
-
+	
 		request.setAttribute("bugReport", task.getFailureDescription());
 		request.setAttribute("question", task.getQuestion());
 		
