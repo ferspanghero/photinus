@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Not enough point to proceed</title>
+<title>Sorry Page</title>
 <style type="text/css" media="screen">
 #base {
 	max-width: 700px;

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Upload Files for Debugging</title>
+<title>File Upload Page</title>
 
 <style type="text/css" media="screen">
 	#external {

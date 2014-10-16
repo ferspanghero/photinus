@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
-<title>Consent form</title>
+<title>Consent Form Page</title>
 
 <style type="text/css" media="screen">
 #container {

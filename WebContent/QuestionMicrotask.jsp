@@ -4,8 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Crowd Debug - Question-Based Software Debugging and Fault
-	Localization</title>
+<title>Microtask Page</title>
 <style type="text/css" media="screen">
 #mainEditor {
 	position: relative;

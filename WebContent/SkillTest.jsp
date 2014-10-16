@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Java Skill Test</title>
+<title>Java Skill Test Page</title>
 
 <style type="text/css" media="screen">
 	#container  {
