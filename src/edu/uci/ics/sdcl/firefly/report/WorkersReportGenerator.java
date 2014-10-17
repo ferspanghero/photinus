@@ -2,6 +2,9 @@ package edu.uci.ics.sdcl.firefly.report;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -88,9 +91,16 @@ private String fileName = "WorkersReport.xlsx";
 			Object[] lineContent = new Object[14]; 		// 14 columns
 			lineContent[0] = worker.getWorkerId();	// user ID (cell 0)
 			
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy:HH:mm:SS");
-			lineContent[1] = formatter.format(worker.getConsentDate());	// date of consent (cell 1)
-			
+			try{
+				
+				// date of consent (cell 1)
+				Date date = new Date(new Integer(worker.getConsentDate()).longValue());
+				 DateFormat df = new SimpleDateFormat("dd:MM:yy:HH:mm:ss");
+				lineContent[1] = df.format(date);
+			}
+			catch(Exception e){
+				lineContent[1] = worker.getConsentDate() + "ms";
+			}
 			lineContent[2] = worker.getGrade();	// Skill score (cell 2)
 			
 			// iterating over the skill questions

@@ -79,7 +79,7 @@ public class WorkerSession implements Serializable{
 	 * @return true if the counter points to a position within the list, otherwise false.
 	 */
 	public boolean hasCurrent(){
-		if(currentIndex<0 || currentIndex>microtaskList.size()-1)
+		if(currentIndex<0 || currentIndex>=microtaskList.size())
 			return false;
 		else
 			return true;
@@ -94,6 +94,7 @@ public class WorkerSession implements Serializable{
 	 * @return null if the list is empty or the counter already reached the end of the list.
 	 */
 	public Microtask getCurrentMicrotask(){
+		System.out.println("getCurrentMicrotask+"+currentIndex);
 		if(!hasCurrent())
 			return null;
 		else

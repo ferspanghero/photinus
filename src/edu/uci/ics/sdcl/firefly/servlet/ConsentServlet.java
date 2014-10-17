@@ -1,12 +1,16 @@
 package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+
 
 
 
@@ -45,7 +49,7 @@ public class ConsentServlet extends HttpServlet {
 		if(subAction.compareTo("loadQuestions")==0){
 			WorkerSessionStorage sessionStorage = WorkerSessionStorage.initializeSingleton();
 			if(sessionStorage.getNumberOfNewWorkerSessions()<=0){
-				this.showErrorPage(request, response, "Dear contributor, there aren't any more tasks available. Please wait for the next batch of HITs");
+				this.showErrorPage(request, response, "Dear contributor, no more tasks are available. Please wait for the next batch of HITs");
 			}
 			else{
 				String consentDateStr= TimeStampUtil.getTimeStampMillisec();

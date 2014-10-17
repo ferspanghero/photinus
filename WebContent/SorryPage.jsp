@@ -25,7 +25,7 @@
 	<div id="base">
 		<div id="internalText">
 			<br> <br>
-			<center>
+			<center>			
 				<b>${requestScope["message"]}</b> <br>
 				<br> <input type="button" value="Close"
 					onclick="window.open('', '_self', ''); window.close();"> <br>
@@ -33,5 +33,8 @@
 			</center>
 		</div>
 	</div>
+	<form name="sorryForm">
+	<input type="hidden" name="message"  value=${requestScope["message"]}>
+	</form>
 </body>
 </html>

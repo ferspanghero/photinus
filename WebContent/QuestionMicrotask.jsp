@@ -205,6 +205,7 @@
 				<center>
 					<INPUT TYPE="button" name="submitButton" id="submitButton" VALUE="Submit answer"
 					onclick="submitAnswer(event)">
+					<input type="submit" name="submit">
 				</center>
 				<br>
 			</form>

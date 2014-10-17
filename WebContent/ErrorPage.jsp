@@ -27,19 +27,25 @@
 
 <div id='container'>
 	<br>
+	
 	<div id = 'content'>
 		<p style="font-size:30px"><b>Oh no! Something unexpected happened!</b></p><br>
 		<p style="font-size:20px">Please send the following report to: adrianoc@uci.edu</p><br><br>
 		
 		<p style="font-size:20px"><b>Bug report</b></p>
 		<table>
+		
 			<tr><td><b>Execution ID:</b></td>			<td><p id="executionId">${requestScope["executionId"]}</p></td></tr>
 			<tr><td><b>Date:</b></td>				<td><p id="dateField"/></td></tr>
 			<tr><td><b>Error description: </b></td> <td><p id="errorField">${requestScope["error"]}</p></td></tr>
+		
 		</table>
 		
 	</div>
 	<br>
+	<form name="errorForm">
+	<input type="hidden" name="message"  value=${requestScope["error"]}>
+	</form>
 </div>
 
 <script>
