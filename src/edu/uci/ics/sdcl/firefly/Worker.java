@@ -8,7 +8,7 @@ import java.util.Iterator;
 public class Worker implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String workerId;
-	private Date consentDate;
+	private String consentDate;
 	private Hashtable<String,String> surveyAnswersMap;
 	private Hashtable<String,String> skillTestAnswerMap;
 	private Hashtable<String, String> rubricMap;
@@ -17,9 +17,9 @@ public class Worker implements Serializable{
 	private String skillTestDuration;
 	private String sessionId; //Stores the single working session session allowed per worker
 
-	public Worker(String workerId, Date consentDate) {
+	public Worker(String workerId, String consentDateStr) {
 		this.workerId = workerId;
-		this.consentDate = consentDate;
+		this.consentDate = consentDateStr;
 		this.surveyAnswersMap =  new Hashtable<String,String>();
 		this.grade = -1;
 		this.skillTestDuration = "";
@@ -34,11 +34,11 @@ public class Worker implements Serializable{
 		return workerId;
 	}
 
-	public Date getConsentDate() {
+	public String getConsentDate() {
 		return consentDate;
 	}
 
-	public void setConsentDate(Date consentDate) {
+	public void setConsentDate(String consentDate) {
 		this.consentDate = consentDate;
 	}	
 

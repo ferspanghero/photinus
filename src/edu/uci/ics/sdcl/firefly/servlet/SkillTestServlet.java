@@ -53,29 +53,28 @@ public class SkillTestServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		this.workerId = request.getParameter("workerId");
-		String subAction = request.getParameter("subAction");
 
 		request.setAttribute("workerId", this.workerId);
-		request.setAttribute("subAction", "submitAnswers");
-
+		request.setAttribute("timeStamp",TimeStampUtil.getTimeStampMillisec() );
+		System.out.println("In SkillTestServlet, workerId = "+this.workerId);
 		//First check if the worker hasn't already taken the test
 		this.workerStorage =   WorkerStorage.initializeSingleton();;
 		Worker worker = workerStorage.readExistingWorker(this.workerId);
-		if(worker.hasTakenTest()){
+		if(worker==null){
+			showErrorPage(request,response, "Execution ID does not exist in database.");
+		}
+		else if(worker.hasTakenTest()){
 			request.setAttribute("message", "Dear worker, you don't qualify to perform the task, because our system indicates that you have already taken this test. Please wait for the next round of experiments.");
 			request.getRequestDispatcher(SorryPage).include(request, response);
 		}
 		else{
-			if(subAction.compareTo("gradeAnswers")==0){
-				int grade = this.processAnswers(request,worker);
-				if (grade>=2){
-					request.setAttribute("subAction", "loadFirst");
-					loadFirstMicrotask(request,response);
-				}
-				else{ 
-					request.setAttribute("message", "Dear worker, you didn't get the minimal qualifying grade to perform the task.");
-					request.getRequestDispatcher(SorryPage).include(request, response);
-				}
+			int grade = this.processAnswers(request,worker);
+			if (grade>=2){
+				loadFirstMicrotask(request,response);
+			}
+			else{ 
+				request.setAttribute("message", "Dear worker, you didn't get the minimal qualifying grade to perform the task.");
+				request.getRequestDispatcher(SorryPage).include(request, response);
 			}
 		}
 	}
@@ -95,7 +94,7 @@ public class SkillTestServlet extends HttpServlet {
 		rubricMap.put(QUESTION4,"b");
 
 		//Retrieve time taken to answer
-		String timeStamp = request.getParameter("timeStamp");
+		String timeStamp = worker.getConsentDate();
 		String duration = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
 
 		//Retrieve answers
@@ -108,12 +107,12 @@ public class SkillTestServlet extends HttpServlet {
 		answerMap.put(QUESTION3, answer3);
 		String answer4 = request.getParameter("QUESTION4");
 		answerMap.put(QUESTION4, answer4);
-		
+
 		Hashtable<String, Boolean> gradeMap = this.gradeAnswers(answerMap);
 		int grade = this.countCorrectAnswers(gradeMap);
 
 		worker.setSkillAnswers(rubricMap,gradeMap,answerMap,grade, duration);
-		
+
 		workerStorage.insertSKillTest(worker);
 
 		return grade;
@@ -162,7 +161,7 @@ public class SkillTestServlet extends HttpServlet {
 		else{
 			//Restore data for next Request
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-			
+
 			//Load the new Microtask data into the Request
 			request = MicrotaskServlet.generateRequest(request, session.getCurrentMicrotask());
 			request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);

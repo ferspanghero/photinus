@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Date;
 import java.util.Hashtable;
 
 import org.slf4j.Logger;
@@ -136,7 +137,7 @@ public class WorkerStorage {
 	/**
 	 * @return a worker identifier that does not exist in the storage yet.
 	 */
-	public synchronized String getNewWorkerKey() {
+	public synchronized Worker generateNewWorker(String consentDateStr) {
 		if(workerTable==null)
 			workerTable = this.retrieveIndex();
 		Integer keyInt = new Integer(workerTable.size()); 
@@ -145,7 +146,9 @@ public class WorkerStorage {
 			keyInt++;
 			key = keyInt.toString();
 		}
-		return key;
+		Worker worker = new Worker(key, consentDateStr);
+		this.insertConsent(worker);
+		return worker;
 	}
 	
 	//------------------------------------------------------------------------------------------------

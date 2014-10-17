@@ -22,6 +22,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 
@@ -132,12 +134,12 @@ public class ServerLoadTest{// implements Runnable{
 
 		form.setActionAttribute("skillTest");
 		HtmlHiddenInput input1 = form.getInputByName("workerId");
-		input1.setValueAttribute("workerId");
+		input1.setValueAttribute(new Integer(this.workerId).toString());
 		HtmlHiddenInput input2 = form.getInputByName("timeStamp");
 		input2.setValueAttribute(TimeStampUtil.getTimeStampMillisec());
 		HtmlHiddenInput input3 = form.getInputByName("subAction");
 		input3.setValueAttribute("gradeAnswers");
-
+		
 		final HtmlInput button = form.getInputByName("answerButton");
 		System.out.println("Test clicked, workerId= "+ this.workerId);
 		final HtmlPage pageMicrotask= button.click();

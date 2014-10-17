@@ -8,8 +8,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+
+
+import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
+import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
+import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
+import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
@@ -36,18 +43,18 @@ public class ConsentServlet extends HttpServlet {
 		String subAction = request.getParameter("subAction");
 
 		if(subAction.compareTo("loadQuestions")==0){
-			Date currentDate = new Date();
-			StorageManager manager = new StorageManager();
-			if(!manager.areThereMicrotasksAvailable()){
+			WorkerSessionStorage sessionStorage = WorkerSessionStorage.initializeSingleton();
+			if(sessionStorage.getNumberOfNewWorkerSessions()<=0){
 				this.showErrorPage(request, response, "Dear contributor, there aren't any more tasks available. Please wait for the next batch of HITs");
 			}
 			else{
-				String workerId = manager.generateWorkerID(currentDate);
+				String consentDateStr= TimeStampUtil.getTimeStampMillisec();
+				WorkerStorage workerStorage = WorkerStorage.initializeSingleton();
+				Worker worker = workerStorage.generateNewWorker(consentDateStr);
 				// now passing parameters to the next page
-				request.setAttribute("workerId", workerId);
+				request.setAttribute("workerId", worker.getWorkerId().toString());
 				request.setAttribute("subAction", "gradeAnswers");
 				request = this.loadQuestions(request, response);
-				request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 				request.getRequestDispatcher(SkillTestPage).forward(request, response);
 			}
 		}

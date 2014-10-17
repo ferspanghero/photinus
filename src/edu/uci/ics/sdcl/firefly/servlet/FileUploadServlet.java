@@ -30,6 +30,7 @@ import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
+import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 import java.util.*; 
 
@@ -146,7 +147,7 @@ public class FileUploadServlet extends HttpServlet {
 				
 				//Store the workerId Researcher
 				WorkerStorage workerStorage =  WorkerStorage.initializeSingleton();;
-				Worker worker = new Worker(workerId,new Date());
+				Worker worker = new Worker(workerId,TimeStampUtil.getTimeStampMillisec());
 				workerStorage.insertConsent(worker);
 				
 				// generating microtasks individualized or in bulk

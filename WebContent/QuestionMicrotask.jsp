@@ -118,8 +118,6 @@
 				//ok, form was not submitted yet
 				var checked = checkAnswer();
 				if (checked != -1) {
-					var subAction = document.getElementById("subAction");
-					subAction.value = "loadNext";
 					formAlreadyPosted = true;
 					document.forms["answerForm"].submit();
 				} else {
@@ -204,19 +202,18 @@
 				</center>
 				<br>
 
+				<center>
+					<INPUT TYPE="button" name="submitButton" id="submitButton" VALUE="Submit answer"
+					onclick="submitAnswer(event)">
+				</center>
+				<br>
+			</form>
 			
 		</div>
 	</div>
 
-	<div id="buttons">
-		<center>
-			<INPUT TYPE="button" name="submitButton" VALUE="Submit answer"
-				onclick="submitAnswer(event)">
-		</center>
-		<br>
-	</div>
+	
 
-</form>
 
 
 	<div id="questionCode">

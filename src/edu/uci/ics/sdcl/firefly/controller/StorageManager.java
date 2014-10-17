@@ -84,14 +84,6 @@ public class StorageManager {
 		WorkerSession session = sessionStorage.readActiveWorkerSessionByID(sessionId);
 		return session;
 	}
-	
-	
-	public synchronized String generateWorkerID(Date consentDate){
-		String workerId = this.workerStorage.getNewWorkerKey();
-		Worker worker = new Worker(workerId, consentDate);
-		this.workerStorage.insertConsent(worker);
-		return workerId;
-	}
 
 	/** Clean repositories by substituting current data structures
 	 * with empty ones.

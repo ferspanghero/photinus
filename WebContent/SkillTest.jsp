@@ -124,7 +124,6 @@
 	
 		<form name="testForm" method="get" action="skillTest">
 			<input type="hidden" name="workerId" value=${requestScope["workerId"]}> 
-			<input type="hidden" name="timeStamp" value=${requestScope["timeStamp"]}> 
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
 			
 			<br> The source code below is used for all the questions below.<br>
