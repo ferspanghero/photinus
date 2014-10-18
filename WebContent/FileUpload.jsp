@@ -70,7 +70,7 @@
 	<table border="0">
 		<tr>
 		
-						<td><img src="./images/crowdebug-img.jpg" width=138 height=42 />
+				   <td><img src="./images/crowdebug-img.jpg" width=138 height=42 />
 				&nbsp;&nbsp;&nbsp;</td>
 				
 					<td><img src="./images/UploadsButton-blue.jpg"></td>

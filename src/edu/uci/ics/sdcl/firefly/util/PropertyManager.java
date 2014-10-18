@@ -14,7 +14,7 @@ public class PropertyManager {
 
 	public String serverPropertyPath ="/var/lib/tomcat7/webapps/crowd-debug/";   
 	
-	public String fileUploadSourcePath = "sample/bulkLoad/";
+	public String fileUploadSourcePath = "samples/bulkLoad/";
 	
 	public String serializationPath;
 

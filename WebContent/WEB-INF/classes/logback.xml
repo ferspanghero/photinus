@@ -4,8 +4,9 @@
 <appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
 <!-- "application-name" is a variable --> 
 <!--  /var/lib/tomcat7/webapps/-->
+<!-- C:\Users\adrianoc\Documents\GitHub\firefly-log.log -->
 
- <file>C:\Users\adrianoc\Documents\GitHub\firefly-log.log</file>
+ <file>C:/Users/Christian Adriano/Documents/GitHub/firefly-log.log</file>
 <layout class="ch.qos.logback.classic.PatternLayout"> 
  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
  

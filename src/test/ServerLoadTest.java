@@ -36,7 +36,7 @@ public class ServerLoadTest implements Runnable{
 	private static int threadId=-1;
 	private int defaultId;
 	private int myThread;
-	private static String path = "http://localhost:8080/firefly/";
+	private static String path = "http://localhost:8080/crowd-debug-firefly/";
 
 	private HtmlPage nextPage;
 	

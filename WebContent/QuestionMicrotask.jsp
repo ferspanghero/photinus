@@ -79,7 +79,7 @@
 	<script>
 		function checkAnswer() {
 
-			var radios = document.getElementsByName('answer');
+			var radios = document.getElementsByName("answer");
 
 			var option = -1;
 			var i = 0;
@@ -177,14 +177,12 @@
 			<form name="answerForm" action="microtask" method="get">
 
 				<center>
-					<br> <a><input type="radio" name="answer" value="1" />Yes
-					</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a><input
-						type="radio" name="answer" value="2" />Probably yes </a> &nbsp;
-					&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a><input type="radio"
-						name="answer" value="3" />I can't tell </a> &nbsp; &nbsp; &nbsp;
-					&nbsp;&nbsp; &nbsp; <a><input type="radio" name="answer"
-						value="4" />Probably not</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
-					<a><input type="radio" name="answer" value="5" />No </a>
+					<br> <a>
+					<input type="radio" name="answer" value="1" />Yes</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
+					<input type="radio" name="answer" value="2" />Probably yes </a> &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
+					<input type="radio" name="answer" value="3" />I can't tell </a> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <a>
+					<input type="radio" name="answer" value="4" />Probably not</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;	<a>
+					<input type="radio" name="answer" value="5" />No </a>
 				</center>
 
 
