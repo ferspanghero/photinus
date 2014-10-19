@@ -12,9 +12,13 @@ public class PropertyManager {
 
 	private String devPropertyPath= "C:/firefly/";
 
-	public String serverPropertyPath ="/var/lib/tomcat7/webapps/firefly/";   
+	public String serverPropertyPath ="/var/lib/tomcat7/webapps/crowd-debug";   
 	
-	public String fileUploadSourcePath = "samples/bulkLoad/";
+	public String serverWebAppPath = "/var/lib/tomcat7/webapps/";
+	
+	public String fileUploadFolder = "samples/bulkLoad/";
+	
+	public String fileUploadSourcePath;
 	
 	public String serializationPath;
 
@@ -71,7 +75,7 @@ public class PropertyManager {
 		try {
 			Properties properties = new Properties();
 			properties.load(new FileInputStream(this.serverPropertyPath+this.fileName));
-			this.fileUploadSourcePath = this.serverPropertyPath +"/../"+ this.fileUploadSourcePath;
+			this.fileUploadSourcePath = this.serverWebAppPath + this.fileUploadFolder;
 			this.reportPath = properties.getProperty("server-SerializationPath");
 			this.serializationPath = properties.getProperty("server-SerializationPath");
 			this.loggerPath = properties.getProperty("server-LoggerPath");
