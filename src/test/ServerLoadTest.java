@@ -36,8 +36,10 @@ public class ServerLoadTest implements Runnable{
 	private static int threadId=-1;
 	private int defaultId;
 	private int myThread;
-	private static String path = "http://localhost:8080/crowd-debug-firefly/";
-
+	private static String localPath = "http://localhost:8080/crowd-debug-firefly/";
+	private static String serverPath = "http://dellserver.ics.uci.edu:8080/firefly/";
+	private static String path;
+			
 	private HtmlPage nextPage;
 	
 	@Before
@@ -53,14 +55,15 @@ public class ServerLoadTest implements Runnable{
 		options.setThrowExceptionOnFailingStatusCode(false);
 		options.setThrowExceptionOnScriptError(false);
 		options.setTimeout(10000);
-		this.webClient.setJavaScriptTimeout(1000);
+		this.webClient.setJavaScriptTimeout(10000);
 		options.setCssEnabled(false);
 	}
 
 
 	public static void main(String args[]){
 		try{
-			int maxThreads = 100;
+			path = serverPath;
+			int maxThreads = 24;
 			while(threadId<maxThreads){
 				threadId++;
 				//	System.out.println("Thread ="+threadId);
@@ -170,14 +173,14 @@ public class ServerLoadTest implements Runnable{
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
-			System.out.println("Tests=FAIILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+			System.out.println("Tests=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 			return false;
 		}else
 			if(nextPage.getTitleText().matches("Sorry Page")){
 				final HtmlForm messageForm = nextPage.getFormByName("sorryForm");
 				final HtmlInput messageInput = messageForm.getInputByName("message");
 				String message = messageInput.getValueAttribute();
-				System.out.println("Tests=FAIILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+				System.out.println("Tests=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 				return false;
 			}
 			else{

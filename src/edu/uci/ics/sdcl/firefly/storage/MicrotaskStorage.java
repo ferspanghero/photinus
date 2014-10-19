@@ -48,7 +48,7 @@ public class MicrotaskStorage {
 			PropertyManager manager = PropertyManager.initializeSingleton();
 			String path = manager.serializationPath;
 			this.persistentFileName = path + this.persistentFileName;
-			logger = LoggerFactory.getLogger(MicrotaskStorage.class);
+			logger = LoggerFactory.getLogger("microtask");
 
 
 			File file = new File(this.persistentFileName);

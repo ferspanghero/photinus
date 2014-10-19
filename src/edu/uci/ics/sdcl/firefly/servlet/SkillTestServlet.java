@@ -56,7 +56,6 @@ public class SkillTestServlet extends HttpServlet {
 
 		request.setAttribute("workerId", this.workerId);
 		request.setAttribute("timeStamp",TimeStampUtil.getTimeStampMillisec() );
-		System.out.println("In SkillTestServlet, workerId = "+this.workerId);
 		//First check if the worker hasn't already taken the test
 		this.workerStorage =   WorkerStorage.initializeSingleton();;
 		Worker worker = workerStorage.readExistingWorker(this.workerId);
@@ -154,7 +153,7 @@ public class SkillTestServlet extends HttpServlet {
 
 		StorageManager manager = new StorageManager();
 		WorkerSession  session = manager.readNewSession(this.workerId);
-		System.out.println("loadFirstMicrotask, session= "+session);
+//		System.out.println("loadFirstMicrotask, session= "+session);
 		if(session==null || !session.hasCurrent())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
 			showErrorPage(request, response,"@ SkillTestServlet - no microtask available");

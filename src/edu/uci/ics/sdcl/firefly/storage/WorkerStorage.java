@@ -34,7 +34,7 @@ public class WorkerStorage {
 		try{
 			PropertyManager manager = PropertyManager.initializeSingleton();
 			String path = manager.serializationPath;
-			logger = LoggerFactory.getLogger(WorkerStorage.class);
+			logger = LoggerFactory.getLogger("consent");
 			
 			this.persistentFileName = path + this.persistentFileName;
 			File file = new File(this.persistentFileName);

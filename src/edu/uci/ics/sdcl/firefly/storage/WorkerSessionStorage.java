@@ -50,7 +50,7 @@ public class WorkerSessionStorage {
 		try{	
 			PropertyManager manager = PropertyManager.initializeSingleton();
 			this.path = manager.serializationPath;
-			logger = LoggerFactory.getLogger(WorkerSessionStorage.class);
+			logger = LoggerFactory.getLogger("session");
 
 			persistentFileNameNew = path + fileNameNew;
 			File fileNewSession = new File(persistentFileNameNew);

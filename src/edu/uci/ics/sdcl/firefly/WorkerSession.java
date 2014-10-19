@@ -94,7 +94,7 @@ public class WorkerSession implements Serializable{
 	 * @return null if the list is empty or the counter already reached the end of the list.
 	 */
 	public Microtask getCurrentMicrotask(){
-		System.out.println("getCurrentMicrotask+"+currentIndex);
+		//System.out.println("getCurrentMicrotask+"+currentIndex);
 		if(!hasCurrent())
 			return null;
 		else

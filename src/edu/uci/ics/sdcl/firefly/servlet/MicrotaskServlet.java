@@ -55,7 +55,7 @@ public class MicrotaskServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("In MicrotaskServlet ");
+		//System.out.println("In MicrotaskServlet ");
 		this.workerId = request.getParameter("workerId");
 
 		//Restore data for next Request
@@ -65,21 +65,11 @@ public class MicrotaskServlet extends HttpServlet {
 
 		manager = new StorageManager();
 		String sessionId = manager.getSessionId(workerId);
-		System.out.println("In MicrotaskServlet: "+sessionId);
+		//System.out.println("In MicrotaskServlet: "+sessionId);
 		if(sessionId == null)
 			loadFirstMicrotask(request, response);
 		else
 			loadNextMicrotask(request, response);
-		
-		/**
-		if(subAction.compareTo("loadFirst")==0)
-			loadFirstMicrotask(request, response);
-		else
-			if(subAction.compareTo("loadNext")==0)
-				loadNextMicrotask(request, response);
-			else
-				showErrorPage(request, response,"@ MicrotaskServlet - subAction not recognized");
-				*/
 	}
 
 

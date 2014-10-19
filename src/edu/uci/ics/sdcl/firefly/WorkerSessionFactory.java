@@ -152,7 +152,7 @@ public class WorkerSessionFactory {
 							//Put the map back with the element removed
 							methodMap.put(methodKey, microtaskList);
 							fileMethodMap.put(fileKey, methodMap);
-							System.out.println("microtask added to session: "+microtask.getID());
+							//System.out.println("microtask added to session: "+microtask.getID());
 						}
 						else{
 							//System.out.println("Successfully dealt with method name collision, method:  "+ methodName);
