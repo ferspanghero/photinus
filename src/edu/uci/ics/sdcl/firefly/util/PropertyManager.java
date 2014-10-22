@@ -12,9 +12,7 @@ public class PropertyManager {
 
 	private String devPropertyPath= "C:/firefly/";
 
-	public String serverPropertyPath ="/var/lib/tomcat7/webapps/crowd-debug";   
-	
-	public String serverWebAppPath = "/var/lib/tomcat7/webapps/";
+	public String serverPropertyPath ="/var/lib/tomcat7/webapps/";   
 	
 	public String fileUploadFolder = "samples/bulkLoad/";
 	
@@ -23,8 +21,6 @@ public class PropertyManager {
 	public String serializationPath;
 
 	public String reportPath;
-	
-	public String loggerPath;
 
 	public int answersPerMicrotask;
 
@@ -62,7 +58,6 @@ public class PropertyManager {
 			this.fileUploadSourcePath = this.devPropertyPath + this.fileUploadFolder;
 			this.reportPath = properties.getProperty("development-ReportPath");
 			this.serializationPath = properties.getProperty("development-SerializationPath");
-			this.loggerPath = properties.getProperty("development-LoggerPath");
 			this.answersPerMicrotask = new Integer(properties.getProperty("answersPerMicrotask")).intValue();
 			this.microtasksPerSession = new Integer(properties.getProperty("microtasksPerSession")).intValue();
 		} 
@@ -75,10 +70,9 @@ public class PropertyManager {
 		try {
 			Properties properties = new Properties();
 			properties.load(new FileInputStream(this.serverPropertyPath+this.fileName));
-			this.fileUploadSourcePath = this.serverWebAppPath + this.fileUploadFolder;
+			this.fileUploadSourcePath = this.serverPropertyPath + this.fileUploadFolder;
 			this.reportPath = properties.getProperty("server-SerializationPath");
 			this.serializationPath = properties.getProperty("server-SerializationPath");
-			this.loggerPath = properties.getProperty("server-LoggerPath");
 			this.answersPerMicrotask = new Integer(properties.getProperty("answersPerMicrotask")).intValue();
 			this.microtasksPerSession = new Integer(properties.getProperty("microtasksPerSession")).intValue();
 		} 

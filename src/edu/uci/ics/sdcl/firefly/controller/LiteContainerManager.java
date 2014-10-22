@@ -115,13 +115,9 @@ public class LiteContainerManager extends StorageStrategy{
 			session.insertMicrotaskAnswer(microtaskId,answer); 
 
 			Microtask microtask = session.getPreviousMicrotask();
-			System.out.println("EVENT=MICROTASK; workerId="+ answer.getWorkerId()+"; sessionId="+ sessionId+
-					"; microtaskId="+microtaskId+"; methodName="+microtask.getFileName()+
-					"; question="+ microtask.getQuestion()+"; answer="+answer.getOption()+
-					"; duration="+answer.getElapsedTime()+"; explanation="+answer.getExplanation());
 			
 			sessionLogger.info("EVENT=MICROTASK; workerId="+ answer.getWorkerId()+"; sessionId="+ sessionId+
-					"; microtaskId="+microtaskId+"; methodName="+microtask.getFileName()+
+					"; microtaskId="+microtaskId+"; fileName="+microtask.getFileName()+
 					"; question="+ microtask.getQuestion()+"; answer="+answer.getOption()+
 					"; duration="+answer.getElapsedTime()+"; explanation="+answer.getExplanation());
 

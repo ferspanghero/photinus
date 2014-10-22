@@ -7,7 +7,7 @@
 <!-- C:\Users\adrianoc\Documents\GitHub\firefly-log.log -->
 <!-- C:/Users/Christian Adriano/Documents/GitHub/ -->
 
- <file>C:\Users\adrianoc\Documents\GitHub\firefly-log.log</file>
+ <file> C:\Users\adrianoc\Documents\GitHub\firefly-log.log</file>
 <layout class="ch.qos.logback.classic.PatternLayout"> 
  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
  
@@ -23,7 +23,7 @@
 <appender name="MICROTASK" class="ch.qos.logback.core.FileAppender"> 
 <!-- "application-name" is a variable --> 
 
- <file>C:\Users\adrianoc\Documents\GitHub\microtask-log.log</file>
+ <file> C:\Users\adrianoc\Documents\GitHub\microtask-log.log</file>
  <layout class="ch.qos.logback.classic.PatternLayout"> 
  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
  
@@ -38,7 +38,7 @@
 <appender name="SESSION" class="ch.qos.logback.core.FileAppender"> 
 <!-- "application-name" is a variable --> 
 
- <file> /var/lib/tomcat7/webapps/session-log.log</file>
+ <file> C:\Users\adrianoc\Documents\GitHub\session-log.log</file>
  <layout class="ch.qos.logback.classic.PatternLayout"> 
  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
  
@@ -52,7 +52,7 @@
 <appender name="CONSENT" class="ch.qos.logback.core.FileAppender"> 
 <!-- "application-name" is a variable --> 
 
- <file> /var/lib/tomcat7/webapps/consent-log.log</file>
+ <file> C:\Users\adrianoc\Documents\GitHub\consent-log.log</file>
 <layout class="ch.qos.logback.classic.PatternLayout"> 
  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
  
