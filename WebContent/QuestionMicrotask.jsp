@@ -201,9 +201,9 @@
 				<br>
 
 				<center>
-					<INPUT TYPE="button" name="submitButton" id="submitButton" VALUE="Submit answer"
+					<INPUT TYPE="button" name="answerButton" id="answerButton" VALUE="Submit answer"
 					onclick="submitAnswer(event)">
-					<input type="submit" name="submit">
+					<INPUT TYPE="submit" name="submit">
 				</center>
 				<br>
 			</form>

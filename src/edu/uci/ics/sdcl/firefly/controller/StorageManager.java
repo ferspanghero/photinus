@@ -3,8 +3,10 @@ package edu.uci.ics.sdcl.firefly.controller;
 import java.util.Date;
 
 import edu.uci.ics.sdcl.firefly.Answer;
+import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
+import edu.uci.ics.sdcl.firefly.servlet.SkillTestServlet;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
@@ -15,7 +17,7 @@ import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
  * @author Christian Medeiros Adriano
  *
  */
-public class StorageManager {
+public class StorageManager extends StorageStrategy{
 
 	private WorkerSessionStorage sessionStorage;
 	private MicrotaskStorage microtaskStorage;
@@ -27,6 +29,10 @@ public class StorageManager {
 		this.workerStorage = WorkerStorage.initializeSingleton();
 	}
 
+	public synchronized Worker generateNewWorker(String consentDateStr){
+		return workerStorage.generateNewWorker(consentDateStr);
+	}
+	
 	/**
 	 * Keeps two storages consistent - microtask storage and worker session storage.
 	 * 
@@ -75,16 +81,14 @@ public class StorageManager {
 	}
 
 
-	/**
-	 * @param sessionId 
-	 * @return a session that is already active (received at least one answer), otherwise null 
-	 * if the session is not active anymore or if the session ID is invalid
-	 */
-	public synchronized WorkerSession readActiveSession(String sessionId){
+	public synchronized  Microtask getNextMicrotask(String sessionId){
 		WorkerSession session = sessionStorage.readActiveWorkerSessionByID(sessionId);
-		return session;
+		if(session!=null)
+			return session.getCurrentMicrotask();
+		else
+			return null;
 	}
-
+	
 	/** Clean repositories by substituting current data structures
 	 * with empty ones.
 	 */
@@ -102,7 +106,25 @@ public class StorageManager {
 		else return true;
 	}
 
-	public String getSessionId(String workerId) {
+	public String getSessionIdForWorker(String workerId) {
 		return workerStorage.readExistingWorker(workerId).getSessionId();
 	}
+	
+	public synchronized boolean insertSkillTest(Worker worker){
+		return workerStorage.insertSkillTest(worker);
+	}
+	
+	public synchronized boolean insertConsent(Worker worker){
+		return workerStorage.insertConsent(worker);
+	}
+	
+	public synchronized boolean insertSurvey(Worker worker){
+		return workerStorage.insertSurvey(worker);
+	}
+
+	@Override
+	public Worker readExistingWorker(String workerId) {
+		return workerStorage.readExistingWorker(workerId);
+	}
+	
 }

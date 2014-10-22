@@ -1,7 +1,6 @@
 package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -10,11 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.uci.ics.sdcl.firefly.MicrotaskContextFactory;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
-import edu.uci.ics.sdcl.firefly.controller.StorageManager;
-import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
+import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
@@ -38,7 +35,7 @@ public class SkillTestServlet extends HttpServlet {
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
 
 	private String workerId;
-	private WorkerStorage workerStorage;
+	private StorageStrategy storage;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -57,8 +54,8 @@ public class SkillTestServlet extends HttpServlet {
 		request.setAttribute("workerId", this.workerId);
 		request.setAttribute("timeStamp",TimeStampUtil.getTimeStampMillisec() );
 		//First check if the worker hasn't already taken the test
-		this.workerStorage =   WorkerStorage.initializeSingleton();;
-		Worker worker = workerStorage.readExistingWorker(this.workerId);
+		this.storage =   StorageStrategy.initializeSingleton();;
+		Worker worker = storage.readExistingWorker(this.workerId);
 		if(worker==null){
 			showErrorPage(request,response, "Execution ID does not exist in database.");
 		}
@@ -112,7 +109,7 @@ public class SkillTestServlet extends HttpServlet {
 
 		worker.setSkillAnswers(rubricMap,gradeMap,answerMap,grade, duration);
 
-		workerStorage.insertSKillTest(worker);
+		storage.insertSkillTest(worker);
 
 		return grade;
 	}
@@ -151,10 +148,10 @@ public class SkillTestServlet extends HttpServlet {
 
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		StorageManager manager = new StorageManager();
-		WorkerSession  session = manager.readNewSession(this.workerId);
-//		System.out.println("loadFirstMicrotask, session= "+session);
-		if(session==null || !session.hasCurrent())
+		StorageStrategy storage = StorageStrategy.initializeSingleton();
+		WorkerSession  session = storage.readNewSession(this.workerId);
+		System.out.println("loadFirstMicrotask, session= "+session);
+		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
 			showErrorPage(request, response,"@ SkillTestServlet - no microtask available");
 		else{
@@ -162,7 +159,7 @@ public class SkillTestServlet extends HttpServlet {
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 
 			//Load the new Microtask data into the Request
-			request = MicrotaskServlet.generateRequest(request, session.getCurrentMicrotask());
+			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
 			request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
 		}
 	}

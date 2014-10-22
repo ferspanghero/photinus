@@ -192,7 +192,7 @@ public class WorkerSessionStorage {
 	public synchronized boolean updateActiveWorkerSession(WorkerSession session){
 
 		if(activeSessionTable !=null){
-			if(!session.hasCurrent()){ //it means that the Session was completed
+			if(session.isClosed()){ //it means that the Session was completed
 				activeSessionTable.remove(session.getId()); //removes from active map
 				return (addClosedWorkerSession(session)); //moves to closed list
 			}

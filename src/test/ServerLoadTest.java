@@ -36,12 +36,12 @@ public class ServerLoadTest implements Runnable{
 	private static int threadId=-1;
 	private int defaultId;
 	private int myThread;
-	private static String localPath = "http://localhost:8080/crowd-debug-firefly/";
+	private static String localPath = "http://localhost:8080/firefly/";
 	private static String serverPath = "http://dellserver.ics.uci.edu:8080/firefly/";
 	private static String path;
-			
+
 	private HtmlPage nextPage;
-	
+
 	@Before
 	public void setupHTMLUnit(){
 		//logger = LoggerFactory.getLogger(ServerLoadTest.class);
@@ -54,8 +54,8 @@ public class ServerLoadTest implements Runnable{
 		WebClientOptions options = webClient.getOptions();
 		options.setThrowExceptionOnFailingStatusCode(false);
 		options.setThrowExceptionOnScriptError(false);
-		options.setTimeout(10000);
-		this.webClient.setJavaScriptTimeout(10000);
+		options.setTimeout(7000);
+		this.webClient.setJavaScriptTimeout(7000);
 		options.setCssEnabled(false);
 	}
 
@@ -63,7 +63,7 @@ public class ServerLoadTest implements Runnable{
 	public static void main(String args[]){
 		try{
 			path = serverPath;
-			int maxThreads = 24;
+			int maxThreads = 150;
 			while(threadId<maxThreads){
 				threadId++;
 				//	System.out.println("Thread ="+threadId);
@@ -89,11 +89,11 @@ public class ServerLoadTest implements Runnable{
 					}
 					System.out.println("Thread ="+this.myThread+"; answered="+new Integer(i).toString()+" times.");
 				}
-			
+
 			/*runConsent();
 			runSkillTest();
 			runMicrotask();
-			*/
+			 */
 		}
 		catch(Exception e){
 			System.err.println(e.toString());
@@ -197,9 +197,9 @@ public class ServerLoadTest implements Runnable{
 		final HtmlForm answerForm = nextPage.getFormByName("answerForm");
 
 		//answerForm.setActionAttribute("microtask");
-	//	HtmlHiddenInput input1 = answerForm.getInputByName("workerId");
+		//	HtmlHiddenInput input1 = answerForm.getInputByName("workerId");
 		//input1.setValueAttribute("workerId");
-	//	HtmlHiddenInput input2 =answerForm.getInputByName("timeStamp");
+		//	HtmlHiddenInput input2 =answerForm.getInputByName("timeStamp");
 		//input2.setValueAttribute(TimeStampUtil.getTimeStampMillisec());
 
 		final HtmlInput radio = answerForm.getInputByName("answer");
@@ -225,12 +225,67 @@ public class ServerLoadTest implements Runnable{
 				System.out.println("Microtask=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 				return false;
 			}
-			else{
-				//System.out.println("Microtask=SUCCESS; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText());
-				return true;
-			}
+			else
+				if(nextPage.getTitleText().matches("Survey Page")){
+					System.out.println("Survey Page");
+					return runSurvey();
+				}
+				else{
+					final HtmlForm microtaskForm = nextPage.getFormByName("answerForm");
+					final HtmlInput microtaskId = microtaskForm.getInputByName("microtaskId");
+					System.out.println("Microtask=SUCCESS; workerId= "+ this.workerId+"; microtaskId="+microtaskId.getValueAttribute()+ "; Page="+nextPage.getTitleText());
+					return true;
+				}
 	}
 
+	@Test
+	public boolean runSurvey() throws Exception {
+		//final HtmlPage page = this.webClient.getPage(path+"QuestionMicrotask.jsp");
+		final HtmlForm surveyForm = nextPage.getFormByName("surveyForm");
+
+		final HtmlInput radioGender = surveyForm.getInputByName("gender");
+		radioGender.click();
+		radioGender.setValueAttribute("Female");
+
+		final HtmlInput age = surveyForm.getInputByName("age");
+		age.setValueAttribute("1");
+
+		final HtmlInput country = surveyForm.getInputByName("country");
+		country.setValueAttribute("1");
+
+		final HtmlInput radiodifficulty = surveyForm.getInputByName("difficulty");
+		radiodifficulty.click();
+		radiodifficulty.setValueAttribute("7");
+
+		final HtmlInput experience = surveyForm.getInputByName("experience");
+		experience.setValueAttribute("5");
+
+		final HtmlSubmitInput button = surveyForm.getInputByName("submit");
+		this.nextPage= button.click();
+
+		if(nextPage.getTitleText().matches("Error Page")){
+			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
+			final HtmlInput messageInput = messageForm.getInputByName("message");
+			String message = messageInput.getValueAttribute();
+			System.out.println("Survey=FAIILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+			return false;
+		}else
+			if(nextPage.getTitleText().matches("Sorry Page")){
+				final HtmlForm messageForm = nextPage.getFormByName("sorryForm");
+				final HtmlInput messageInput = messageForm.getInputByName("message");
+				String message = messageInput.getValueAttribute();
+				System.out.println("Survey=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+				return false;
+			}
+			else{
+				final HtmlForm thanksForm = nextPage.getFormByName("thanksForm");
+				final HtmlInput sessionId = thanksForm.getInputByName("sessionId");
+				System.out.println("Session=CLOSED; workerId= "+ this.workerId+"; sessionId="+sessionId.getValueAttribute());
+				return true;
+			}
+
+
+	}
 
 	//----------------------------------------------------------------------------------------------------------
 	//Old JWebUnit stuff

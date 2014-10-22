@@ -1,11 +1,6 @@
 package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException; 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,12 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.uci.ics.sdcl.firefly.Answer;
-import edu.uci.ics.sdcl.firefly.CodeSnippet;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.MicrotaskContextFactory;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
-import edu.uci.ics.sdcl.firefly.controller.StorageManager;
-import edu.uci.ics.sdcl.firefly.util.PositionFinder;
+import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
@@ -32,7 +25,7 @@ public class MicrotaskServlet extends HttpServlet {
 	private String SurveyPage = "/Survey.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
-	private StorageManager manager ;
+	private StorageStrategy storage ;
 	private String workerId;
 
 	private MicrotaskContextFactory workerSessionSelector;
@@ -63,8 +56,8 @@ public class MicrotaskServlet extends HttpServlet {
 
 		//String subAction = request.getParameter("subAction");
 
-		manager = new StorageManager();
-		String sessionId = manager.getSessionId(workerId);
+		storage = StorageStrategy.initializeSingleton();
+		String sessionId = storage.getSessionIdForWorker(workerId);
 		//System.out.println("In MicrotaskServlet: "+sessionId);
 		if(sessionId == null)
 			loadFirstMicrotask(request, response);
@@ -75,9 +68,9 @@ public class MicrotaskServlet extends HttpServlet {
 
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		WorkerSession  session = manager.readNewSession(this.workerId);
+		WorkerSession  session = storage.readNewSession(this.workerId);
 
-		if(session==null || !session.hasCurrent())
+		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
 			showErrorPage(request, response,"@ MicrotaskServlet - no microtask available");
 		else{
@@ -95,9 +88,8 @@ public class MicrotaskServlet extends HttpServlet {
 		
 		int answer = new Integer(request.getParameter("answer")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
-		StorageManager manager = new StorageManager();
 		
-		String sessionId = manager.getSessionId(this.workerId); //request.getParameter("sessionId");
+		String sessionId = storage.getSessionIdForWorker(this.workerId); //request.getParameter("sessionId");
 		String explanation = request.getParameter("explanation");
 		String timeStamp = request.getParameter("timeStamp");
 		String elapsedTime = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
@@ -105,7 +97,7 @@ public class MicrotaskServlet extends HttpServlet {
 
 		//Save answers from the previous microtask
 		
-		boolean success = manager.updateMicrotaskAnswer(sessionId, new Integer(microtaskId),
+		boolean success = storage.updateMicrotaskAnswer(sessionId, new Integer(microtaskId),
 				new Answer(Answer.mapToString(answer),explanation, this.workerId, elapsedTime, timeStamp));
 
 		if(!success){
@@ -117,15 +109,15 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 
 			//Continue working on existing session
-			WorkerSession session = manager.readActiveSession(sessionId);	
+			Microtask microtask = storage.getNextMicrotask(sessionId);	
 
 			//Decide where to send to send the worker
-			if(session==null || !session.hasCurrent())
+			if(microtask==null)
 				//No more microtasks, move to the Survey page
 				request.getRequestDispatcher(SurveyPage).include(request, response);
 			else{
 				//Displays a new microtask
-				request = MicrotaskServlet.generateRequest(request, session.getCurrentMicrotask());
+				request = MicrotaskServlet.generateRequest(request, microtask);
 				request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
 			}
 		}

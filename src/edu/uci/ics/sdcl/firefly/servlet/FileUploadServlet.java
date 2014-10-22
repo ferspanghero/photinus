@@ -23,9 +23,9 @@ import edu.uci.ics.sdcl.firefly.SourceFileReader;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.WorkerSessionFactory;
+import edu.uci.ics.sdcl.firefly.controller.LiteContainerManager;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.report.ReportGenerator;
-import edu.uci.ics.sdcl.firefly.storage.LiteContainer;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
@@ -238,7 +238,7 @@ public class FileUploadServlet extends HttpServlet {
 						"Total Microtasks available now: "+ numberOfMicrotasks + "<br>";
 				
 				Logger logger = LoggerFactory.getLogger(FileUploadServlet.class);
-				logger.info("EVENT: FileUpload; File="+ fileName+"; CodeSnippets="+generatedCodeSnippets+"; Microtasks="+generatedMicrotasks);
+				logger.info("EVENT =FileUpload; File="+ fileName+"; CodeSnippets="+generatedCodeSnippets+"; Microtasks="+generatedMicrotasks);
 				
 				System.out.println("Results: "+results);
 			}
@@ -280,26 +280,6 @@ public class FileUploadServlet extends HttpServlet {
 		return results;
 	}
 	
-	private int makeSessionsAvailable(){
-		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
-		Vector<WorkerSession> sessionList = storage.retrieveNewSessionStorage();
-		
-		Hashtable<String, Vector<Microtask>> sessionTable = new Hashtable<String, Vector<Microtask>>();
-		
-		for(WorkerSession session: sessionList){
-			Vector<Microtask> taskList = session.getMicrotaskList();
-			Vector<Microtask> microtaskLiteVector = new Vector<Microtask>();
-			for(Microtask task: taskList){
-				Microtask taskLite = task.getLiteVersion();
-				microtaskLiteVector.add(taskLite);
-			}
-			sessionTable.put(session.getId(), microtaskLiteVector);
-		}
-		
-		LiteContainer container = LiteContainer.initializeSingleton();
-		container.setSessionTable(sessionTable);
-		return sessionTable.size();
-	}
 	
 	/* 
 	 * Used for testing purposes
@@ -360,7 +340,7 @@ public class FileUploadServlet extends HttpServlet {
 			String fileContent = SourceFileReader.readFileToString(path+fileName);
 			
 			String result = generateMicrotasks(fileName, fileContent, methodName,null, failureDescription);
-			logger.info("Event = UPLOAD; File="+ fileName+ "; MethodName="+ methodName+ "; Microtasks="+result);
+			logger.info("Event =UPLOAD; File="+ fileName+ "; MethodName="+ methodName+ "; Microtasks="+result);
 			message = message + methodName+ ", " ;
 		}
 		return  "<b>Loaded methods: </b>" + message.substring(0, message.length()-2);

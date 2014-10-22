@@ -152,7 +152,7 @@
 
 				<br> <INPUT TYPE="button" VALUE="Submit Answer"
 					onclick="submitAnswer(event)">
-
+				<input type="submit" name="submit">
 			</form>
 		</div>
 		<br>

@@ -59,7 +59,7 @@ public class PropertyManager {
 		try {
 			Properties properties = new Properties();
 			properties.load(new FileInputStream(this.devPropertyPath+this.fileName));
-			this.fileUploadSourcePath = this.devPropertyPath + this.fileUploadSourcePath;
+			this.fileUploadSourcePath = this.devPropertyPath + this.fileUploadFolder;
 			this.reportPath = properties.getProperty("development-ReportPath");
 			this.serializationPath = properties.getProperty("development-SerializationPath");
 			this.loggerPath = properties.getProperty("development-LoggerPath");

@@ -104,7 +104,7 @@ public class MicrotaskSelectorTest {
 			Vector<Answer> answerList = mtask1.getAnswerList();
 			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.YES,"statement should be executed ealier","workerID", "elapsedTime", "timeStamp"));
-			mtask1.setAnswer(answerList);
+			mtask1.setAnswerList(answerList);
 
 			debugSession.incrementAnswersReceived(answerList.size());
 
@@ -129,7 +129,7 @@ public class MicrotaskSelectorTest {
 			Vector<Answer> answerList = mtask1.getAnswerList();
 			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.YES,"statement should be executed ealier","workerID", "elapsedTime", "timeStamp"));
-			mtask1.setAnswer(answerList);
+			mtask1.setAnswerList(answerList);
 			mMap.put(key, mtask1);
 			debugSession.incrementAnswersReceived(answerList.size());
 			
@@ -138,7 +138,7 @@ public class MicrotaskSelectorTest {
 			answerList = mtask2.getAnswerList();
 			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.NO,"","workerID", "elapsedTime", "timeStamp"));
-			mtask2.setAnswer(answerList);
+			mtask2.setAnswerList(answerList);
 			debugSession.incrementAnswersReceived(answerList.size());
 			
 			//Persist data back
@@ -171,7 +171,7 @@ public class MicrotaskSelectorTest {
 			Vector<Answer> answerList = mtask1.getAnswerList();
 			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.YES,"statement should be executed ealier","workerID", "elapsedTime", "timeStamp"));
-			mtask1.setAnswer(answerList);
+			mtask1.setAnswerList(answerList);
 			mMap.put(key, mtask1);
 			debugSession.incrementAnswersReceived(answerList.size());
 			
@@ -180,7 +180,7 @@ public class MicrotaskSelectorTest {
 			answerList = mtask2.getAnswerList();
 			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.NO,"","workerID", "elapsedTime", "timeStamp"));
-			mtask2.setAnswer(answerList);
+			mtask2.setAnswerList(answerList);
 			debugSession.incrementAnswersReceived(answerList.size());
 			
 			key = new Integer (3);
@@ -189,7 +189,7 @@ public class MicrotaskSelectorTest {
 			if(answerList==null) answerList= new Vector<Answer>();
 			answerList.add(new Answer(Answer.NO,"","workerID", "elapsedTime", "timeStamp"));
 			answerList.add(new Answer(Answer.NO,"","workerID", "elapsedTime", "timeStamp"));
-			mtask3.setAnswer(answerList);
+			mtask3.setAnswerList(answerList);
 			debugSession.incrementAnswersReceived(answerList.size());
 			
 			//Persist data back

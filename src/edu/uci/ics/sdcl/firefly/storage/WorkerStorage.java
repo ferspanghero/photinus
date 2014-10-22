@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Date;
 import java.util.Hashtable;
 
 import org.slf4j.Logger;
@@ -79,7 +78,7 @@ public class WorkerStorage {
 		}
 	}
 	
-	public synchronized boolean insertSurvey(String parameter, Worker worker) {
+	public synchronized boolean insertSurvey(Worker worker) {
 		if(worker!=null){
 			logger.info("EVENT= SURVEY; workerId="+worker.getWorkerId()+ "; sessionId="+worker.getSessionId()
 					+"; survey="+worker.getSurveyAnswersToString());
@@ -92,7 +91,7 @@ public class WorkerStorage {
 	}
 	
 	
-	public synchronized boolean insertSKillTest(Worker worker){
+	public synchronized boolean insertSkillTest(Worker worker){
 		if(worker!=null && worker.getGrade()!=null && worker.getGrade()>0){		
 				logger.info("EVENT= SKILLTEST; workerId="+worker.getWorkerId()+ "; sessionId="+worker.getSessionId()
 					+"; test1="+worker.getGradeMap().get(SkillTestServlet.QUESTION1)

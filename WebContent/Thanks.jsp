@@ -33,8 +33,10 @@ background-color: #FFFFFF;
 	<div id="content">
 		<br>
 		<center><b>Please copy the code below and paste in your HIT at Mechanical Turk.<br><br>
-		
-			<div id=key>${requestScope["key"]}</div>
+			<div id=key>${requestScope["key"]} </div>
+			<form name="thanksForm">
+				<input type="hidden" name="sessionId" value=${requestScope["key"]} >
+			</form>
 		<br>
 		<br>
 		

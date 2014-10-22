@@ -59,48 +59,47 @@ public class WorkerSession implements Serializable{
 		return lightSession;
 	}
 	
-	/** 
-	 * Save a microtask and increments the index to point to the next in the list
-	 * @param task the microtask that was answered
-	 * @return true if the microtask was effectively stored, false otherwise.
-	 */
-	private boolean storeCurrentMicrotask(Microtask task){
-		if(hasCurrent()){
-			this.microtaskList.set(this.currentIndex,task);
-			this.currentIndex++; 
-			return true;
-		}
-		else
-			return false;
-	}
 	
 	/**
 	 * 
 	 * @return true if the counter points to a position within the list, otherwise false.
 	 */
-	public boolean hasCurrent(){
+	public boolean isClosed(){
 		if(currentIndex<0 || currentIndex>=microtaskList.size())
-			return false;
-		else
 			return true;
+		else
+			return false;
 	}
 
+	/**
+	 * 
+	 * @return true if the counter+1 points to a position within the list, otherwise false.
+	 */
+	public boolean hasNext(){
+		if((this.currentIndex+1)<microtaskList.size())
+			return true;
+		else
+			return false;
+	}
+	
 	public String getId(){
 		return this.id;
 	}
 	
-	/**
-	 * 
-	 * @return null if the list is empty or the counter already reached the end of the list.
-	 */
 	public Microtask getCurrentMicrotask(){
-		//System.out.println("getCurrentMicrotask+"+currentIndex);
-		if(!hasCurrent())
+		if(isClosed())
 			return null;
 		else
 			return this.microtaskList.get(currentIndex);
 	}
 
+	public Microtask getPreviousMicrotask() {
+		if(this.currentIndex==0)
+			return null;
+		else
+			return this.microtaskList.elementAt(this.currentIndex-1);
+	}
+	
 	/** 
 	 * 
 	 * @return the position for the current microtask in the list. The position can be out of the range of the list. For that, use the method hasCurrent(); 
@@ -108,7 +107,7 @@ public class WorkerSession implements Serializable{
 	public Integer getCurrentIndex(){
 		return this.currentIndex;
 	}
-
+	
 	public Vector<Microtask> getMicrotaskList() {
 		return this.microtaskList;
 	}
@@ -125,12 +124,12 @@ public class WorkerSession implements Serializable{
 		
 		Microtask microtask = this.getCurrentMicrotask();
 		if((microtask == null) || microtaskId==null || (microtask.getID().intValue() != microtaskId.intValue())){
-			//logger.error("EVENT= ERROR; workerId="+answer.getWorkerId()+ ";Answer was already stored; microtaskId="+ microtaskId+ "; answer="+ answer.getOption() );
 			return false;
 		}
 		else{
 			microtask.addAnswer(answer);
-			this.storeCurrentMicrotask(microtask);
+			this.microtaskList.set(this.currentIndex,microtask);
+			this.currentIndex++;
 			return true;
 		}
 	}
@@ -151,13 +150,6 @@ public class WorkerSession implements Serializable{
 				totalTime = totalTime + new Double(answer.getElapsedTime());
 		}
 		return Double.toString(totalTime);
-	}
-
-	public Microtask getPreviousMicrotask() {
-		if(this.currentIndex==0)
-			return null;
-		else
-			return this.microtaskList.elementAt(this.currentIndex-1);
 	}
 	
 }

@@ -144,7 +144,7 @@ public class Microtask implements Serializable
 		return answerList;
 	}
 
-	public void setAnswer(Vector<Answer> answerList)
+	public void setAnswerList(Vector<Answer> answerList)
 	{
 		this.answerList = answerList;
 	}
