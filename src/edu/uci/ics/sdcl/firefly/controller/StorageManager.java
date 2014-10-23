@@ -28,10 +28,6 @@ public class StorageManager extends StorageStrategy{
 		this.microtaskStorage = MicrotaskStorage.initializeSingleton();
 		this.workerStorage = WorkerStorage.initializeSingleton();
 	}
-
-	public synchronized Worker generateNewWorker(String consentDateStr){
-		return workerStorage.generateNewWorker(consentDateStr);
-	}
 	
 	/**
 	 * Keeps two storages consistent - microtask storage and worker session storage.
@@ -114,8 +110,8 @@ public class StorageManager extends StorageStrategy{
 		return workerStorage.insertSkillTest(worker);
 	}
 	
-	public synchronized boolean insertConsent(Worker worker){
-		return workerStorage.insertConsent(worker);
+	public synchronized Worker insertConsent(String consentDateStr){
+		return this.workerStorage.generateNewWorker(consentDateStr);
 	}
 	
 	public synchronized boolean insertSurvey(Worker worker){

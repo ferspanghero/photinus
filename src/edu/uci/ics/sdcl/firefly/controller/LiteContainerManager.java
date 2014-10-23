@@ -72,12 +72,6 @@ public class LiteContainerManager extends StorageStrategy{
 		else return null;
 	}
 
-	public synchronized Worker generateNewWorker(String consentDateStr){
-		Worker worker = new Worker(new Integer(this.workerTable.size()).toString(),consentDateStr);
-		this.workerTable.put(worker.getWorkerId(),worker);
-		return worker;
-	}
-
 	/** 
 	 * @param workerId is used to associate the WorkerSession with a unique anonymous worker
 	 * @param hitIT is used to associate the WorkerSession with the Mechanical Turk HIT
@@ -155,17 +149,11 @@ public class LiteContainerManager extends StorageStrategy{
 		}
 	}
 
-	public synchronized boolean insertConsent(Worker worker) {
-		if(worker!=null){
-			consentLogger.info("EVENT=CONSENT; workerId="+worker.getWorkerId()+ "; sessionId="+worker.getSessionId()
-					+"; consentDate=" + worker.getConsentDate().toString());	
+	public synchronized Worker insertConsent(String consentDateStr) {
+		Worker worker = new Worker(new Integer(this.workerTable.size()).toString(),consentDateStr);
+			consentLogger.info("EVENT=CONSENT; workerId="+worker.getWorkerId()+ "; consentDate=" + worker.getConsentDate().toString());	
 			this.workerTable.put(worker.getWorkerId(), worker);
-			return true;
-		}
-		else{
-			consentLogger.error("EVENT=ERROR; could not store worker CONSENT.");
-			return false;
-		}
+			return worker;
 	}
 
 	public synchronized boolean insertSurvey(Worker worker) {

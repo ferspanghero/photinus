@@ -48,14 +48,15 @@ public class ServerLoadTest implements Runnable{
 	}
 
 	public ServerLoadTest(int myThread){
+		logger = LoggerFactory.getLogger("info");
 		this.myThread = myThread;
 		this.defaultId = this.myThread+50; //in case there is no workerID returned
 		this.webClient = new WebClient();
 		WebClientOptions options = webClient.getOptions();
 		options.setThrowExceptionOnFailingStatusCode(false);
 		options.setThrowExceptionOnScriptError(false);
-		options.setTimeout(7000);
-		this.webClient.setJavaScriptTimeout(7000);
+		options.setTimeout(20000);
+		this.webClient.setJavaScriptTimeout(20000);
 		options.setCssEnabled(false);
 	}
 
@@ -63,7 +64,7 @@ public class ServerLoadTest implements Runnable{
 	public static void main(String args[]){
 		try{
 			path = serverPath;
-			int maxThreads = 150;
+			int maxThreads = 500;
 			while(threadId<maxThreads){
 				threadId++;
 				//	System.out.println("Thread ="+threadId);
@@ -71,7 +72,7 @@ public class ServerLoadTest implements Runnable{
 			}
 		}
 		catch(Exception e){
-			System.out.println("FAILED Thread ="+threadId);
+			logger.error("FAILED Thread ="+threadId);
 		}
 	}
 
@@ -87,7 +88,7 @@ public class ServerLoadTest implements Runnable{
 						success = runMicrotask();
 						i++;
 					}
-					System.out.println("Thread ="+this.myThread+"; answered="+new Integer(i).toString()+" times.");
+					logger.info("Thread ="+this.myThread+"; answered="+new Integer(i).toString()+" times.");
 				}
 
 			/*runConsent();
@@ -96,7 +97,7 @@ public class ServerLoadTest implements Runnable{
 			 */
 		}
 		catch(Exception e){
-			System.err.println(e.toString());
+			logger.error(e.toString());
 		}
 	}
 
@@ -124,7 +125,7 @@ public class ServerLoadTest implements Runnable{
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
 			this.workerId = this.defaultId;
-			System.out.println("Consent=FAILED; threadId= "+ this.myThread+ "; Page="+ nextPage.getTitleText() + "; message="+message);
+			logger.info("Consent=FAILED; threadId= "+ this.myThread+ "; Page="+ nextPage.getTitleText() + "; message="+message);
 			return false;
 		}
 		else{
@@ -132,7 +133,7 @@ public class ServerLoadTest implements Runnable{
 			final HtmlForm testForm = nextPage.getFormByName("testForm");
 			final HtmlHiddenInput workerIdInput = testForm.getInputByName("workerId");
 			this.workerId = new Integer(workerIdInput.getValueAttribute()).intValue();
-			//System.out.println("Consent=SUCCESS; workerId= "+ this.workerId+ "; Page="+ nextPage.getTitleText());
+			logger.info("Consent=SUCCESS; workerId= "+ this.workerId+ "; Page="+ nextPage.getTitleText());
 			//System.out.println("worker Id set correctly="+this.workerId);
 			return true;
 		}
@@ -173,18 +174,18 @@ public class ServerLoadTest implements Runnable{
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
-			System.out.println("Tests=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+			logger.info("Tests=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 			return false;
 		}else
 			if(nextPage.getTitleText().matches("Sorry Page")){
 				final HtmlForm messageForm = nextPage.getFormByName("sorryForm");
 				final HtmlInput messageInput = messageForm.getInputByName("message");
 				String message = messageInput.getValueAttribute();
-				System.out.println("Tests=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+				logger.info("Tests=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 				return false;
 			}
 			else{
-				//System.out.println("Test=SUCCESS; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText());
+				logger.info("Test=SUCCESS; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText());
 				return true;
 			}
 
@@ -215,25 +216,25 @@ public class ServerLoadTest implements Runnable{
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
-			System.out.println("Microtask=FAIILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+			logger.info("Microtask=FAIILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 			return false;
 		}else
 			if(nextPage.getTitleText().matches("Sorry Page")){
 				final HtmlForm messageForm = nextPage.getFormByName("sorryForm");
 				final HtmlInput messageInput = messageForm.getInputByName("message");
 				String message = messageInput.getValueAttribute();
-				System.out.println("Microtask=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+				logger.info("Microtask=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 				return false;
 			}
 			else
 				if(nextPage.getTitleText().matches("Survey Page")){
-					System.out.println("Survey Page");
+					logger.info("Survey Page");
 					return runSurvey();
 				}
 				else{
 					final HtmlForm microtaskForm = nextPage.getFormByName("answerForm");
 					final HtmlInput microtaskId = microtaskForm.getInputByName("microtaskId");
-					System.out.println("Microtask=SUCCESS; workerId= "+ this.workerId+"; microtaskId="+microtaskId.getValueAttribute()+ "; Page="+nextPage.getTitleText());
+					logger.info("Microtask=SUCCESS; workerId= "+ this.workerId+"; microtaskId="+microtaskId.getValueAttribute()+ "; Page="+nextPage.getTitleText());
 					return true;
 				}
 	}
@@ -267,20 +268,20 @@ public class ServerLoadTest implements Runnable{
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
-			System.out.println("Survey=FAIILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+			logger.info("Survey=FAIILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 			return false;
 		}else
 			if(nextPage.getTitleText().matches("Sorry Page")){
 				final HtmlForm messageForm = nextPage.getFormByName("sorryForm");
 				final HtmlInput messageInput = messageForm.getInputByName("message");
 				String message = messageInput.getValueAttribute();
-				System.out.println("Survey=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+				logger.info("Survey=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 				return false;
 			}
 			else{
 				final HtmlForm thanksForm = nextPage.getFormByName("thanksForm");
 				final HtmlInput sessionId = thanksForm.getInputByName("sessionId");
-				System.out.println("Session=CLOSED; workerId= "+ this.workerId+"; sessionId="+sessionId.getValueAttribute());
+				logger.info("Session=CLOSED; workerId= "+ this.workerId+"; sessionId="+sessionId.getValueAttribute());
 				return true;
 			}
 

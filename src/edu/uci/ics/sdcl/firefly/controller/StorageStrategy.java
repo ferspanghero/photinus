@@ -31,8 +31,7 @@ public abstract class StorageStrategy {
 	
 	//Methods are in order of standard execution by workers performing tasks
 	public abstract void cleanUpRepositories();
-	public abstract Worker generateNewWorker(String consentDateStr);
-	public abstract boolean insertConsent(Worker worker);
+	public abstract Worker insertConsent(String consentDateStr);
 	public abstract WorkerSession readNewSession(String workerId);
 	public abstract String getSessionIdForWorker(String workerId);
 	public abstract boolean areThereMicrotasksAvailable();

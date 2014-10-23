@@ -55,7 +55,7 @@ public class ConsentServlet extends HttpServlet {
 			}
 			else{
 				String consentDateStr= TimeStampUtil.getTimeStampMillisec();
-				Worker worker = storage.generateNewWorker(consentDateStr);
+				Worker worker = storage.insertConsent(consentDateStr);
 				// now passing parameters to the next page
 				request.setAttribute("workerId", worker.getWorkerId().toString());
 				request.setAttribute("subAction", "gradeAnswers");

@@ -150,7 +150,7 @@ public class SkillTestServlet extends HttpServlet {
 
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
 		WorkerSession  session = storage.readNewSession(this.workerId);
-		System.out.println("loadFirstMicrotask, session= "+session);
+		//System.out.println("loadFirstMicrotask, session= "+session);
 		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
 			showErrorPage(request, response,"@ SkillTestServlet - no microtask available");
