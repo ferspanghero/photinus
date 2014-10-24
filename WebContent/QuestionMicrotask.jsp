@@ -203,7 +203,7 @@
 				<center>
 					<INPUT TYPE="button" name="answerButton" id="answerButton" VALUE="Submit answer"
 					onclick="submitAnswer(event)">
-					<INPUT TYPE="submit" name="submit">
+					
 				</center>
 				<br>
 			</form>

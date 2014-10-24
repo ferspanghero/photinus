@@ -133,7 +133,7 @@ public class LiteContainerManager extends StorageStrategy{
 
 	public synchronized boolean insertSkillTest(Worker worker) {
 		if(worker!=null){
-			consentLogger.info("EVENT= SKILLTEST; workerId="+worker.getWorkerId()+ "; sessionId="+worker.getSessionId()
+			consentLogger.info("EVENT= SKILLTEST; workerId="+worker.getWorkerId()
 					+"; test1="+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
 					+"; test2="+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
 					+"; test3="+worker.getGradeMap().get(SkillTestServlet.QUESTION3)
@@ -158,8 +158,8 @@ public class LiteContainerManager extends StorageStrategy{
 
 	public synchronized boolean insertSurvey(Worker worker) {
 		if(worker!=null){
-			consentLogger.info("EVENT=SURVEY; workerId="+worker.getWorkerId()+ "; sessionId="+worker.getSessionId()
-					+"; survey="+worker.getSurveyAnswersToString());
+			consentLogger.info("EVENT=SURVEY; workerId="+worker.getWorkerId()+ "; sessionId="+worker.getSessionId()+
+					"; "+worker.getSurveyAnswersToString());
 			return true;
 		}
 		else{

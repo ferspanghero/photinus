@@ -100,8 +100,6 @@ public class WorkerSessionFactory {
 			//Generate the duplicated WorkerSessions
 			for(int i=0;i<originalStack.size();i++){
 				WorkerSession originalSession = originalStack.elementAt(i);
-				if(originalSession.getId() == null)
-					System.out.println("ERROR originalSession is NULL for i="+i+ " sessionID= "+this.sessionId);
 				this.sessionId = this.keyGenerator.generate();
 				WorkerSession duplicateSession =  new WorkerSession(this.sessionId, originalSession.getMicrotaskList());
 				duplicateStack.push(duplicateSession);
@@ -171,7 +169,7 @@ public class WorkerSessionFactory {
 			
 		}
 		
-		System.out.println("number of microtasks in session: "+ methodTracker.size());
+		//System.out.println("number of microtasks in session: "+ methodTracker.size());
 
 		return resultList;
 	}
@@ -284,12 +282,12 @@ public class WorkerSessionFactory {
 			while(methodIterator.hasNext()){
 				String methodName = methodIterator.next();
 				ArrayList<Microtask> microtaskList = methodMap.get(methodName);
-				System.out.println("original microtaskList.size = "+ microtaskList.size());
+			//	System.out.println("original microtaskList.size = "+ microtaskList.size());
 				if(microtaskList.size()>0){
 					methodMap.put(methodName, this.fillUpList(targetSize, microtaskList));
 					this.fileMethodMap.put(fileName, methodMap);
 				}
-				System.out.println("NEW microtaskList.size = "+ methodMap.get(methodName).size());
+			//	System.out.println("NEW microtaskList.size = "+ methodMap.get(methodName).size());
 			}
 		}
 	}
