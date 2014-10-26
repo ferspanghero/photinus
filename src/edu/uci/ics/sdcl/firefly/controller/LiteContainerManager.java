@@ -83,7 +83,7 @@ public class LiteContainerManager extends StorageStrategy{
 			session = this.newSessionStack.pop();
 			session.setWorkerId(workerId);
 			Worker worker = this.workerTable.get(workerId);
-			sessionLogger.info("EVENT=OPEN SESSION; workerId="+ workerId+"; sessionId="+ session.getId());
+			sessionLogger.info("EVENT%OPEN SESSION% workerId%"+ workerId+"% sessionId%"+ session.getId());
 			worker.setSessionId(session.getId());
 			this.workerTable.put(workerId, worker);
 			this.activeSessionTable.put(session.getId(), session); 
@@ -110,14 +110,16 @@ public class LiteContainerManager extends StorageStrategy{
 
 			Microtask microtask = session.getPreviousMicrotask();
 			
-			sessionLogger.info("EVENT=MICROTASK; workerId="+ answer.getWorkerId()+"; sessionId="+ sessionId+
-					"; microtaskId="+microtaskId+"; fileName="+microtask.getFileName()+
-					"; question="+ microtask.getQuestion()+"; answer="+answer.getOption()+
-					"; duration="+answer.getElapsedTime()+"; explanation="+answer.getExplanation());
+			String explanation = answer.getExplanation().replaceAll("[\n]"," ").replaceAll("[\r]"," ");
+			
+			sessionLogger.info("EVENT%MICROTASK% workerId%"+ answer.getWorkerId()+"% sessionId%"+ sessionId+
+					"% microtaskId%"+microtaskId+"% fileName%"+microtask.getFileName()+
+					"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()+
+					"% duration%"+answer.getElapsedTime()+"% explanation%"+explanation);
 
 			if(session.isClosed()){//Move session to closed //EVENT
 				this.closedSessionVector.add(session);
-				sessionLogger.info("EVENT=CLOSE SESSION; workerId="+ session.getWorkerId()+"; sessionId="+ session.getId());
+				sessionLogger.info("EVENT%CLOSE SESSION% workerId%"+ session.getWorkerId()+"% sessionId%"+ session.getId());
 				this.activeSessionTable.remove(session.getId());
 			}
 			return true;	
@@ -133,37 +135,37 @@ public class LiteContainerManager extends StorageStrategy{
 
 	public synchronized boolean insertSkillTest(Worker worker) {
 		if(worker!=null){
-			consentLogger.info("EVENT= SKILLTEST; workerId="+worker.getWorkerId()
-					+"; test1="+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
-					+"; test2="+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
-					+"; test3="+worker.getGradeMap().get(SkillTestServlet.QUESTION3)
-					+"; test4="+worker.getGradeMap().get(SkillTestServlet.QUESTION4)
-					+"; grade="+worker.getGrade()
-					+"; testDuration="+worker.getSkillTestDuration());
+			consentLogger.info("EVENT%SKILLTEST% workerId%"+worker.getWorkerId()
+					+"% test1%"+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
+					+"% test2%"+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
+					+"% test3%"+worker.getGradeMap().get(SkillTestServlet.QUESTION3)
+					+"% test4%"+worker.getGradeMap().get(SkillTestServlet.QUESTION4)
+					+"% grade%"+worker.getGrade()
+					+"% testDuration%"+worker.getSkillTestDuration());
 			this.workerTable.put(worker.getWorkerId(), worker);
 			return true;
 		}
 		else{
-			consentLogger.error("EVENT= ERROR; could not store worker SKILL TEST.");
+			consentLogger.error("EVENT%ERROR% could not store worker SKILL TEST.");
 			return false;
 		}
 	}
 
 	public synchronized Worker insertConsent(String consentDateStr) {
 		Worker worker = new Worker(new Integer(this.workerTable.size()).toString(),consentDateStr);
-			consentLogger.info("EVENT=CONSENT; workerId="+worker.getWorkerId()+ "; consentDate=" + worker.getConsentDate().toString());	
+			consentLogger.info("EVENT%CONSENT% workerId%"+worker.getWorkerId()+ "% consentDate%" + worker.getConsentDate().toString());	
 			this.workerTable.put(worker.getWorkerId(), worker);
 			return worker;
 	}
 
 	public synchronized boolean insertSurvey(Worker worker) {
 		if(worker!=null){
-			consentLogger.info("EVENT=SURVEY; workerId="+worker.getWorkerId()+ "; sessionId="+worker.getSessionId()+
-					"; "+worker.getSurveyAnswersToString());
+			consentLogger.info("EVENT%SURVEY% workerId%"+worker.getWorkerId()+ "% sessionId%"+worker.getSessionId()+
+					"% "+worker.getSurveyAnswersToString());
 			return true;
 		}
 		else{
-			consentLogger.error("EVENT=ERROR; could not store worker SURVEY.");
+			consentLogger.error("EVENT%ERROR% could not store worker SURVEY.");
 			return false;
 		}
 	}

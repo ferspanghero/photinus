@@ -29,7 +29,7 @@ public class RandomKeyGeneratorTest {
 		System.out.println("Number of keys generated: "+map.size());
 	}
 	
-	@Test
+	//@Test
 	public void testPosition(){
 		ArrayList<String> list = new ArrayList<String>();
 		
@@ -48,4 +48,26 @@ public class RandomKeyGeneratorTest {
 		assertTrue(list.isEmpty());
 	}
 
+	@Test
+	public void removeReturns(){
+	
+		String test1= "\n\rlinha1\n\rlinha2\n\r";
+		System.out.println(test1);
+		test1 = test1.replaceAll("[\r\n]", " ");
+		System.out.println("..................");
+		System.out.println(test1);
+		
+		String test2= "\n linha1\n linha2 \n";
+		System.out.println(test2);
+		test2 = test2.replaceAll("[\n]", " ");
+		System.out.println("..................");
+		System.out.println(test2);
+
+		String test3= "\r\n linha1\r\n linha2 \r\n";
+		System.out.println(test3);
+		test3 = test3.replaceAll("[\r]", " ");
+		System.out.println("..................");
+		System.out.println(test3);
+	}
+	
 }
