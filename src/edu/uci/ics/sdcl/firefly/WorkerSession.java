@@ -151,5 +151,9 @@ public class WorkerSession implements Serializable{
 		}
 		return Double.toString(totalTime);
 	}
+
+	public void setMicrotaskList(Vector<Microtask> list) {
+		this.microtaskList = list;	
+	}
 	
 }
