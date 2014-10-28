@@ -42,10 +42,14 @@ public class LogReport {
 	//Sessions that are considered spurious
 	private	HashMap<String,String> discardMap = new HashMap<String,String>();
 
-	//Microtask IDs that we expect YES or Probably Yes
-	private	int[] yesArray = {3, 20, 25, 18, 61, 53, 51, 33, 171, 169, 139,137,119,132,147,145,151,149,156,153,163,164,171,170,167,176,174,178,188,180};
+	//Bug revealing Microtask IDs that we expect YES or Probably Yes
+	private	int[] yesArray = {1, 3, 20, 25, 18, 61, 53, 51, 33, 69,71, 139,137,119,132,147,145,151,149,156,153,163,164,171,170,167,176,174,178,188,180};
 	private HashMap<String,String> yesMap = new HashMap<String,String>();
-
+	
+	//Bug revealing Microtask IDs for not methodBody Yes or Probably Yes
+	private	int[] yesNotBodyFunctionArray = {3, 20, 25, 18, 61, 53, 51, 71, 139,137,132,147,151,149,156,164,171,170,176,188,180};
+	private HashMap<String,String> yesNotBodyFunctionMap = new HashMap<String,String>();
+	
 	private int totalNumberMicrotasks = 215;
 
 	//File Name, Point (x=start;y=end)
@@ -334,9 +338,17 @@ public class LogReport {
 
 		}
 
-		System.out.println("counterYes="+counterYes);
-		System.out.println("counterNos="+counterNos);
-		System.out.println("counterICantTell="+counterICantTell);
+		System.out.println(" *** BUG REVEALING QUESTIONS - EXPECTED YES/Prob YES ANSWERS: ");
+		counterAnswers = counterYes+counterNos+counterICantTell;
+		System.out.println("Total Bug Revealing Answers="+counterAnswers);
+		System.out.println("counterYes="+counterYes+ " > "+ counterYes/(counterYes+counterNos)*100+ "%");
+		System.out.println("counterNos="+counterNos + " > "+ counterYes/(counterYes+counterNos)*100+ "%");
+		System.out.println("counterICantTell="+counterICantTell + " > "+ counterICantTell/(counterAnswers)*100+ "%");
+		
+		System.out.println("-------------------------------------------");
+		
+		System.out.println("Total of different questions = 215");
+		System.out.println("Total different bug revealing questions = "+this.yesArray.length);
 
 	}
 
