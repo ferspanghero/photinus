@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -14,7 +15,6 @@ import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 public class LogReport {
 
@@ -163,7 +163,6 @@ public class LogReport {
 				this.workerMap.put(worker.getWorkerId(), worker);
 				
 				this.skillTestMap.put(worker.getWorkerId(), worker);
-
 			}
 			else
 				if(token.trim().matches("SURVEY")){
@@ -280,7 +279,14 @@ public class LogReport {
 	}
 
 	public int getNumberOfMicrotasks(){
-		return this.microtaskMap.size();
+		int counter=0;
+		Iterator<String> iter = this.microtaskMap.keySet().iterator();
+		while(iter.hasNext()){
+			String key = iter.next();
+			Microtask task = this.microtaskMap.get(key);
+			counter = counter + task.getNumberOfAnswers();
+		}
+		return counter;
 	}
 	
 	public int getSurveys(){
