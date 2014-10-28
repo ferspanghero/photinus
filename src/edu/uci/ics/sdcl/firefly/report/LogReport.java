@@ -22,7 +22,7 @@ public class LogReport {
 	private	HashMap<String, WorkerSession> sessionMap = new HashMap<String, WorkerSession>(); 
 
 	private	HashMap<String, WorkerSession> closedSessionMap = new HashMap<String, WorkerSession>();
-	
+
 	private	HashMap<String, WorkerSession> openedSessionMap = new HashMap<String, WorkerSession>();
 
 	private	HashMap<String, WorkerSession> incompleteSessionMap = new HashMap<String, WorkerSession>();
@@ -30,11 +30,11 @@ public class LogReport {
 	private	HashMap<String, Microtask> microtaskMap = new HashMap<String, Microtask>();
 
 	private	HashMap<String, Worker> workerMap = new HashMap<String, Worker>();
-	
+
 	private	HashMap<String, Worker> surveyMap = new HashMap<String, Worker>();
-	
+
 	private	HashMap<String, Worker> skillTestMap = new HashMap<String, Worker>();
-	
+
 	private	HashMap<String, Worker> consentMap = new HashMap<String, Worker>();
 
 	private	ArrayList<String> timeStampList = new ArrayList<String>();
@@ -64,9 +64,9 @@ public class LogReport {
 	private File sessionFile;
 
 	public LogReport(String path){
-		
+
 		if(path!=null) this.logPath = path;
-		
+
 		this.sessionFile = new File(logPath+sessionFileName);
 		this.consentFile = new File(logPath+consentFileName);
 		for(int id:yesArray){
@@ -95,21 +95,21 @@ public class LogReport {
 	private boolean loadConsents(){
 		System.out.println("load consent");
 		try(BufferedReader br = new BufferedReader(new FileReader(this.consentFile))) {
-			  for(String line; (line = br.readLine()) != null; ) {
-				  System.out.println("line: "+line);
-				  processConsentLine(line);
-			  }
-			  System.out.println("Consent finished");
-			  return true;
+			for(String line; (line = br.readLine()) != null; ) {
+				System.out.println("line: "+line);
+				processConsentLine(line);
+			}
+			System.out.println("Consent finished");
+			return true;
 		}
 		catch(Exception e){
 			System.err.println(e.toString());	
 			return false;
-			}
+		}
 	}
 
 	public boolean processConsentLine(String line){ 
-		
+
 		StringTokenizer tokenizer = new StringTokenizer(line, "%");
 
 		//Time extraction
@@ -132,15 +132,15 @@ public class LogReport {
 			worker = new Worker(workerId,consentDate);
 			System.out.println("consent found");
 			this.workerMap.put(worker.getWorkerId(), worker);
-			
+
 			this.consentMap.put(worker.getWorkerId(), worker);
 
 		}
 		else
 			if(token.trim().matches("SKILLTEST")){
-				
+
 				worker = this.workerMap.get(workerId);
-				
+
 				Hashtable<String, Boolean> gradeMap = new Hashtable<String, Boolean>();
 				tokenizer.nextToken(); //test 1 label
 				gradeMap.put("QUESTION1", new Boolean(tokenizer.nextToken())); 
@@ -150,18 +150,18 @@ public class LogReport {
 				gradeMap.put("QUESTION3", new Boolean(tokenizer.nextToken()));
 				tokenizer.nextToken(); //test 4 label
 				gradeMap.put("QUESTION4", new Boolean(tokenizer.nextToken()));
-				
+
 				tokenizer.nextToken(); //grade label
 				String grade = tokenizer.nextToken();
 				tokenizer.nextToken(); //duration label
 				String duration = tokenizer.nextToken();
 				worker.setGrade(new Integer(grade).intValue());
-				
+
 				//Retrieve answers
 				worker.setSkillAnswers(null, gradeMap, null, new Integer(grade).intValue(), duration);
-				
+
 				this.workerMap.put(worker.getWorkerId(), worker);
-				
+
 				this.skillTestMap.put(worker.getWorkerId(), worker);
 			}
 			else
@@ -183,16 +183,16 @@ public class LogReport {
 
 	private boolean loadSessions(){
 		try(BufferedReader br = new BufferedReader(new FileReader(this.sessionFile))) {
-			  for(String line; (line = br.readLine()) != null; ) {
-				  System.out.println("line: "+line);
-				  processSessionLine(line);
-			  }
-			  return true;
+			for(String line; (line = br.readLine()) != null; ) {
+				System.out.println("line: "+line);
+				processSessionLine(line);
+			}
+			return true;
 		}
 		catch(Exception e){
 			System.err.println(e.toString());	
 			return false;
-			}
+		}
 	}
 
 	public boolean processSessionLine(String line){
@@ -239,7 +239,7 @@ public class LogReport {
 					explanation= tokenizer.nextToken();
 				else 
 					explanation="";
-				
+
 				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp);
 				Vector<Answer> answerList = new Vector<Answer>();
 				answerList.add(answerObj);
@@ -288,25 +288,62 @@ public class LogReport {
 		}
 		return counter;
 	}
-	
+
 	public int getSurveys(){
 		return this.surveyMap.size();
 	}
-	
+
 	public int getConsents(){
 		return this.consentMap.size();
 	}
-	
+
 	public int getSkillTests(){
 		return this.skillTestMap.size();
 	}
-	
+
 	public int getOpenedSessions(){
 		return this.openedSessionMap.size();
 	}
-	
+
 	public int getClosedSessions(){
 		return this.closedSessionMap.size();
 	}
-	
+
+	public void expectecYesAnswers(){
+		int counterYes=0;
+		int counterAnswers=0;
+		int counterNos=0;
+		int counterICantTell=0;
+		Iterator<String> iter = this.microtaskMap.keySet().iterator();
+		while(iter.hasNext()){
+			String key = iter.next();
+			Microtask task = this.microtaskMap.get(key);
+			if(this.yesMap.containsKey(task.getID().toString())){
+				Vector<Answer> answerList = task.getAnswerList();
+				for(Answer answer: answerList){
+					if(answer.getOption().matches(Answer.YES))
+						counterYes++;
+					else
+						if(answer.getOption().matches(Answer.NO))
+							counterNos++;
+						else
+							if(answer.getOption().matches(Answer.I_CANT_TELL))
+								counterICantTell++;
+				}
+			}
+
+		}
+
+		System.out.println("counterYes="+counterYes);
+		System.out.println("counterNos="+counterNos);
+		System.out.println("counterICantTell="+counterICantTell);
+
+	}
+
+	public int expectedNoAnswers(){
+		int counter=0;
+
+		return counter;
+	}
+
 }
