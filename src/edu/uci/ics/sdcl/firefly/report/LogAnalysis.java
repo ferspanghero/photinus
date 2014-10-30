@@ -65,14 +65,14 @@ public class LogAnalysis {
 		//System.out.println(" *** BUG REVEALING QUESTIONS - EXPECTED YES/Prob YES ANSWERS: ");
 		counterAnswers = counterYes+counterNos+counterICantTell;
 		System.out.println(fileName+ " Bug Revealing Answers="+counterAnswers);
-		System.out.println("counterYes="+counterYes+ " = "+ formatter.format(counterYes/(counterYes+counterNos)*100)+ "%");
-		System.out.println("counterNos="+counterNos + " = "+ formatter.format(counterNos/(counterYes+counterNos)*100)+ "%");
-		System.out.println("counterICantTell="+counterICantTell + " = "+ formatter.format(counterICantTell/(counterAnswers)*100)+ "%");
+		System.out.print("#Yes="+counterYes+ " = "+ formatter.format(counterYes/(counterNos+counterYes)*100)+ "%, ");
+		System.out.print("#Nos="+counterNos + " = "+ formatter.format(counterNos/(counterYes+counterNos)*100)+ "%, ");
+		System.out.println("#ICantTell="+counterICantTell + " = "+ formatter.format(counterICantTell/(counterAnswers)*100)+ "%");
 	
 		this.counterMap.put(fileName,new Counter(counterYes,counterNos, counterICantTell, fileName,counterAnswers));
 
 		
-		System.out.println("-------------------------------------------");
+		//System.out.println("-------------------------------------------");
 		
 	}
 
@@ -144,13 +144,13 @@ public class LogAnalysis {
 			//System.out.println(" *** NO-BUG REVEALING QUESTIONS - EXPECTED No/Prob No ANSWERS: ");
 			counterAnswers = counterYes+counterNos+counterICantTell;
 			System.out.println(fileName+" NO-BUG Expected Answers="+counterAnswers);
-			System.out.println("counterYes="+counterYes+ " = "+ formatter.format(counterYes/(counterNos+counterYes)*100)+ "%");
-			System.out.println("counterNos="+counterNos + " = "+ formatter.format(counterNos/(counterYes+counterNos)*100)+ "%");
-			System.out.println("counterICantTell="+counterICantTell + " = "+ formatter.format(counterICantTell/(counterAnswers)*100)+ "%");
+			System.out.print("#Yes="+counterYes+ " = "+ formatter.format(counterYes/(counterNos+counterYes)*100)+ "%, ");
+			System.out.print("#Nos="+counterNos + " = "+ formatter.format(counterNos/(counterYes+counterNos)*100)+ "%, ");
+			System.out.println("#ICantTell="+counterICantTell + " = "+ formatter.format(counterICantTell/(counterAnswers)*100)+ "%");
 			
 			this.counterMap.put(fileName,new Counter(counterYes,counterNos, counterICantTell, fileName,counterAnswers));
 			
-			System.out.println("-------------------------------------------");
+			//System.out.println("-------------------------------------------");
 			
 		
 
@@ -174,12 +174,14 @@ public class LogAnalysis {
 	}		
 	
 	public static void main(String[] args){
-		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
-		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\Snapshot12\\";
-		LogData data = new LogData();
+		//String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
+		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
+		
+		LogData data = new LogData(true, new Double(240000).doubleValue());
 		data.processLogProduction2(path);
 		
-		path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
+		//path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
+		path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
 		data.processLogProduction1(path);
 		
 		LogAnalysis analysis = new LogAnalysis(data);
@@ -193,6 +195,14 @@ public class LogAnalysis {
 		System.out.println("Sessions Closed: "+data.getClosedSessions());
 		System.out.println("Answers: "+data.getNumberOfMicrotasks());
 		
+		System.out.println("Answer Durations (minutes): "); 
+		System.out.println("  below 1:"+ data.ZeroToOne);
+		System.out.println("  1 to 2:"+ data.OneToTwo);
+		System.out.println("  2 to 3:"+ data.TwoToThree);
+		System.out.println("  3 to 4:"+data.ThreeToFour);
+		System.out.println("  4 to 5:"+data.FourToFive);
+		System.out.println("  5 to 6:"+data.FiveToSix);
+		System.out.println("  above 6:"+data.aboveSix);
 		//Configure the MicrotaskMap
 		
 		//General
@@ -211,7 +221,7 @@ public class LogAnalysis {
 		iter = data.fileNameTaskRange.keySet().iterator();
 		while(iter.hasNext()){
 			String fileName = iter.next();
-			System.out.print("BUG REPORT: "+ fileName+", ");
+			//System.out.print("BUG REPORT: "+ fileName+", ");
 			Point point = data.fileNameTaskRange.get(fileName);
 			analysis.expectedYesAnswers(point,fileName,data.microtaskMap, data.yesMap);
 		}
@@ -222,7 +232,7 @@ public class LogAnalysis {
 		iter = data.fileNameTaskRange.keySet().iterator();
 		while(iter.hasNext()){
 			String fileName = iter.next();
-			System.out.print("BUG REPORT: "+ fileName+", ");
+			//System.out.print("BUG REPORT: "+ fileName+", ");
 			Point point = data.fileNameTaskRange.get(fileName);
 			analysis.expectedNoAnswers(point,fileName,data.microtaskMap, data.yesMap);
 		}
@@ -234,12 +244,11 @@ public class LogAnalysis {
 	data.computeMicrotaskFromCompleteSessions();
 
 	data.workingMicrotaskMap = data.completeSessions_microtaskMap;
-	
+	/*
 	System.out.println("---- EXPECTED YES >>FILTER: ONLY COMPLETE SESSIONS ----");
 	iter = data.fileNameTaskRange.keySet().iterator();
 	while(iter.hasNext()){
 		String fileName = iter.next();
-		System.out.print("BUG REPORT: "+ fileName+", ");
 		Point point = data.fileNameTaskRange.get(fileName);
 		analysis.expectedYesAnswers(point,fileName,data.microtaskMap, data.yesMap);
 	}
@@ -250,11 +259,10 @@ public class LogAnalysis {
 	iter = data.fileNameTaskRange.keySet().iterator();
 	while(iter.hasNext()){
 		String fileName = iter.next();
-		System.out.print("BUG REPORT: "+ fileName+", ");
 		Point point = data.fileNameTaskRange.get(fileName);
 		analysis.expectedNoAnswers(point,fileName,data.microtaskMap, data.yesMap);
 	}
-	
+	*/
 	
 	}
 	

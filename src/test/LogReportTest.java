@@ -29,15 +29,15 @@ public class LogReportTest {
 	public void test_prod2() {
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
 		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
-		LogData report = new LogData();
-		report.processLogProduction2(path);
+		LogData data = new LogData(false,new Double(12000000).doubleValue());
+		data.processLogProduction2(path);
 
-		assertEquals(2577,report.getConsents());
-		assertEquals(234,report.getSurveys());
-		assertEquals(1975,report.getSkillTests());
-		assertEquals(233, report.getClosedSessions());
-		assertEquals(488, report.getOpenedSessions());
-		assertEquals(2778, report.getNumberOfMicrotasks());		
+		assertEquals(2577,data.getConsents());
+		assertEquals(234,data.getSurveys());
+		assertEquals(1975,data.getSkillTests());
+		assertEquals(233, data.getClosedSessions());
+		assertEquals(488, data.getOpenedSessions());
+		assertEquals(2778, data.getNumberOfMicrotasks());		
 	}
 
 
@@ -45,7 +45,7 @@ public class LogReportTest {
 	public void test_prod1() {
 		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\Snapshot12\\";
-		LogData report = new LogData();
+		LogData report =  new LogData(false,new Double(12000000).doubleValue());
 		report.processLogProduction1(path);
 
 
@@ -62,7 +62,7 @@ public class LogReportTest {
 	public void testTotalPerFile_NoFilter(){
 		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\Snapshot12\\";
-		LogData data = new LogData();
+		LogData data = new LogData(false, new Double(12000000));
 		data.processLogProduction2(path);
 
 		path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
@@ -95,7 +95,7 @@ public class LogReportTest {
 
 		//-------------BATCH-1
 		System.out.println("----BATCH-1 TESTING EXPECTED YES ----");
-		data = new LogData();
+		data = new LogData(false,new Double(12000000).doubleValue());
 		path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
 		data.processLogProduction1(path);
 		analysis = new LogAnalysis(data);
@@ -121,7 +121,7 @@ public class LogReportTest {
 		
 		//-------------BATCH-2
 		System.out.println("----BATCH-2 TESTING EXPECTED YES ----");
-		data = new LogData();
+		data = new LogData(false,new Double(12000000).doubleValue());
 		path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
 		data.processLogProduction2(path);
 		analysis = new LogAnalysis(data);
@@ -171,7 +171,8 @@ public class LogReportTest {
 	public void testTotalPerFile_CompletedSessions_Filter(){
 		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\Snapshot12\\";
-		LogData data = new LogData();
+		LogData data = new LogData(false,new Double(12000000).doubleValue());
+
 		data.processLogProduction2(path);
 
 		path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
@@ -204,7 +205,7 @@ public class LogReportTest {
 
 		//-------------BATCH-1
 		System.out.println("----BATCH1 TESTING EXPECTED YES FILTERED----");
-		data = new LogData();
+		data = new LogData(false, new Double(12000000).doubleValue());
 		path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
 		data.processLogProduction1(path);
 		//Configure the MicrotaskMap
@@ -232,7 +233,7 @@ public class LogReportTest {
 		
 		//-------------BATCH-2
 		System.out.println("----BATCH2 TESTING EXPECTED YES FILTERED----");
-		data = new LogData();
+		data = new LogData(false,new Double(12000000).doubleValue());
 		path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
 		data.processLogProduction2(path);
 		//Configure the MicrotaskMap
@@ -277,7 +278,7 @@ public class LogReportTest {
 	//@Test
 	public void printCompletedMap(){
 		System.out.println("----BATCH2 TESTING EXPECTED YES FILTERED----");
-		LogData data = new LogData();
+		LogData data = new LogData(false, new Double(12000000).doubleValue());
 		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
 		data.processLogProduction2(path);
 		//Configure the MicrotaskMap

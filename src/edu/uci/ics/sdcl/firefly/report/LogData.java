@@ -24,7 +24,7 @@ public class LogData {
 	 * the completeSessions_microtaskMap, other subsets will be created.
 	 */
 	public HashMap<String, Microtask> workingMicrotaskMap;
-	
+
 	//Session Map
 	public HashMap<String, WorkerSession> sessionMap = new HashMap<String, WorkerSession>(); 
 
@@ -47,7 +47,34 @@ public class LogData {
 	public	ArrayList<String> timeStampList = new ArrayList<String>();
 
 	//Sessions that are considered spurious
-	public	HashMap<String,String> discardMap = new HashMap<String,String>();
+	public	HashMap<String,String> batch1RejectMap = new HashMap<String,String>();
+
+	public	HashMap<String,String> batch2RejectMap = new HashMap<String,String>();
+
+	//Rejected sessions from Batch-1
+	public String[] batch1Reject= {"109ca-4A-5e-204","119Ia6C3e-214","144aE-9e0e008","152ie5a-2A-74-7",
+			"167iA-7A2E-5-2-1","20ea-3I0I-256","315cA-2A9i9-50","321aG-4c0i3-39",
+			"331Ae4a-4a-201","345GG2a6c-19-9","403gE-8A-5E-6-71","421gg4C-5A7-9-7",
+			"435ci2A-4e304","438Aa6a0e81-9","441aG5g9A-83-4","462ag-3i1A537","496ce9A-5C-8-56",
+			"72ga8I-1e-885","304IA-4a-6i5-28","174ga8a6i2-30",
+			"453ec4C2E-1-12","365ci-2i0i-47-4"};
+
+	//Rejected sessions from Batch-2
+	public String[] batch2Reject= {
+			"497iG2c-8C-94-7","492gc2C-2g-397",
+			"490Cg4a-9G-25-4","483iA4E3I70-1",
+			"463cg-4G4a-780","444Ae0A-2i-16-7",
+			"439aC2g-6C-3-19","436ia-9a-4A-4-7-2",
+			"432gg-1G-3A22-3","433AE9I-9e-56-4",
+			"429CI-6I-5A3-8-4","425ag7c0c8-5-6",
+			"422Ce-6E-9I71-3","415Ig1G3a7-35",
+			"398aC1I6A-6-5-2","395ii4A6A0-95",
+			"394aa-5E-8C-132","393cc0i-8i3-6-6",
+			"392cE2e4i1-77","385ag-6G6I-1-5-1",
+			"378Cc7G1E125",	"373aa8i-2G734",
+			"358Ee1G0i-936","355gi-9C7g-664","356CA-3G-4I099",
+			"349gE8A4G-8-8-6","348CI7I8C-90-7","312gi7C-8c-973","301Ic5G-6c04-3","284aA-1i7a-701","268IA2C-8G757","267EI3A0i5-69","249aI-2A-8g50-7","255gg-8i-8a04-8","247CC0A8c302","224II0C-6c1-7-6","219iA-1A2G-11-8","215Ec-6E-9i0-6-5",	"179ag6G9A-51-8","166EA3G2E-503","153cc-9G-9g-15-8",	"150gg-3c0a-572","135gE7e-5C4-94","115II-2i2g-3-57","102cI4C9A631","77Ic-4c0e-21-3","67Ea8g7I551","29eC0e1G144"};
+
 
 	//Bug revealing Microtask IDs that we expect YES or Probably Yes
 	public	int[] yesArray = {1, 3, 20, 25, 18, 61, 53, 51, 33, 69,71, 139,137,119,132,147,145,151,149,156,153,163,164,171,170,167,176,174,178,188,180};
@@ -64,13 +91,6 @@ public class LogData {
 
 	public static String question[] = {"Gender", "Age", "Country", "Years progr.", "Difficulty", "Feedback"};   
 
-	//Sessions for which the user wrote non-sense in the explanations 
-	public String discardedNoiseSessions[] ={ };
-	
-	//Session Open
-
-	//Microtask
-
 	private String logPath = "c:/firefly/logs/";
 	private String sessionFileName = "session-log.log";
 	private String consentFileName = "consent-log.log";
@@ -79,8 +99,39 @@ public class LogData {
 	private File sessionFile;
 
 	private String batchNumber;
+	/** if true, then discard all sessions listed in the reject arrays (batch1Reject and batch2Reject) */
+	private boolean doReject; 
 
-	public LogData(){
+	/**  minimal time in milliseconds for an answer to be considered. */
+	private double minDuration;
+	
+	public int ZeroToOne=0;
+	public int OneToTwo=0;
+	public int TwoToThree=0;
+	public int ThreeToFour=0;
+	public int FourToFive=0;
+	public int FiveToSix=0;
+	public int aboveSix=0;
+	
+	/**
+	 * 
+	 * @param doReject if true, then discard all sessions listed in the reject arrays (batch1Reject and batch2Reject)
+	 * @param minDuration minimal time in milliseconds for an answer to be considered.
+	 */
+	public LogData(boolean doReject, double minDuration){
+
+		this.minDuration = minDuration;
+		
+		this.doReject=doReject;
+		if(doReject){//Initialize Maps
+			for(String id:this.batch1Reject){
+				this.batch1RejectMap.put(id,id);
+			}
+
+			for(String id:this.batch2Reject){
+				this.batch2RejectMap.put(id,id);
+			}
+		}
 
 		for(int id:yesArray){
 			this.yesMap.put(new Integer(id).toString(),"YES");
@@ -90,10 +141,6 @@ public class LogData {
 			this.yesNotBodyFunctionMap.put(new Integer(id).toString(),"YES");
 		}
 
-		for(String id:this.discardedNoiseSessions){
-			this.discardMap.put(id,id);
-		}
-		
 		fileNameTaskRange.put("9buggy_Hystrix_buggy.txt",new Point(162,165));
 		fileNameTaskRange.put("8buggy_AbstractReviewSection_buggy.txt",new Point(152,161));
 		fileNameTaskRange.put("7buggy_ReviewTaskMapper_buggy.txt",new Point(144,151));
@@ -108,50 +155,72 @@ public class LogData {
 		System.out.println("Total of different questions = 215");
 		System.out.println("Total different bug revealing questions = "+this.yesArray.length);
 
-		
+
+	}
+	
+	private void countDuration(Double duration){
+		 
+		if(duration<=60000.0)
+			this.ZeroToOne++;
+		else
+			if(duration>60000.0 && duration <=120000.0)
+				this.OneToTwo++;
+			else
+			if(duration>120000.0 && duration <=180000.0)
+				this.TwoToThree++;
+			else
+				if(duration>180000.0 && duration <=240000.0)
+					this.ThreeToFour++;
+				else
+					if(duration>240000.0 && duration <=300000.0)
+						this.FourToFive++;
+					else
+						if(duration>300000.0 && duration <=360000.0)
+							this.FiveToSix++;
+						else
+							this.aboveSix++;
 	}
 
 	/**
 	 * Get answers only from session which were completed,i.e., closed
 	 */
 	public void computeMicrotaskFromCompleteSessions(){
-		System.out.println("Compute completed sessions");
 		int counter=0;
 		int microtaskCounter = 0;
 		Iterator<String> iter = this.closedSessionMap.keySet().iterator();
 		while(iter.hasNext()){
 			String sessionId = iter.next();
-			
+
 			WorkerSession session = this.closedSessionMap.get(sessionId);
 			String workerId = session.getWorkerId();
-			
+
 			Vector<Microtask> answerList = session.getMicrotaskList();
-			
-			
+
+
 			if(answerList!=null  && answerList.size()>10)
 				System.out.println("Session id="+sessionId+" has "+answerList.size()+" answers!");
-			
-			
+
+
 			for(Microtask task: answerList){
 				Microtask existing = this.completeSessions_microtaskMap.get(task.getID().toString());
 				Answer answer = task.getAnswerByUserId(workerId);
-				
-				
+
+
 				if(existing==null){
 					existing = task.getSimpleVersion(); //create a new copy of the task, so we don't mixed with the old one.
 				}
 				else{
 					existing.addAnswer(answer);					
 				}
-				
+
 				this.completeSessions_microtaskMap.put(task.getID().toString(), existing);
 				microtaskCounter++;
 			}
 			counter ++;
 		}
-		System.out.println("counter complete sessions:"+counter+ ", complete microtasks:"+microtaskCounter);				
+		//System.out.println("counter complete sessions:"+counter+ ", complete microtasks:"+microtaskCounter);				
 	}
-	
+
 	/**
 	 * 
 	 * @param batchNumber to take the batch into consideration (marks the sessionId with the batchNumber
@@ -172,7 +241,7 @@ public class LogData {
 		System.out.println("Sessions Opened: "+this.getOpenedSessions());
 		System.out.println("Sessions Closed: "+this.getClosedSessions());
 		System.out.println("Answers: "+this.getNumberOfMicrotasks());
-		
+
 		return ok;
 	}
 
@@ -312,8 +381,17 @@ public class LogData {
 		tokenizer.nextToken(); //"workerId label"
 		String workerId = this.batchNumber+tokenizer.nextToken().trim();
 		tokenizer.nextToken(); //"sessionId label"
-		String sessionId = this.batchNumber + tokenizer.nextToken().trim(); 
+		String sessionId = tokenizer.nextToken().trim();
+
+		//Check if session should be rejected
+		if(this.batch2RejectMap.containsKey(sessionId)){
+			return false;
+		}
+
+		sessionId = this.batchNumber + sessionId;  
 		WorkerSession session;
+
+
 
 		//Event resolution
 		if(token.trim().matches("OPEN SESSION")){
@@ -330,15 +408,15 @@ public class LogData {
 				String microtaskId = tokenizer.nextToken().trim();
 				tokenizer.nextToken(); //FileName label
 				String fileName = tokenizer.nextToken().trim();
-				
+
 				//Some answers are associated to the wrong file name
 				if(tasksDoesNotPertainToFileName(microtaskId,fileName))
 					return false;
-				
+
 				//Some answers are duplicated
 				if(taskAlreadyInSession(microtaskId,session))
 					return false;
-				
+
 				tokenizer.nextToken(); //question label
 				String question = tokenizer.nextToken().trim();
 				tokenizer.nextToken(); // answer label
@@ -351,13 +429,24 @@ public class LogData {
 					explanation= tokenizer.nextToken().trim();
 				else 
 					explanation="";
-
+				
+				double durationDouble = new Double(duration);
+				//System.out.println("durationDouble: "+ durationDouble + ", minDuration: "+minDuration);
+				//Discard answers that are too short
+				if(durationDouble<this.minDuration){
+				//	System.out.println("durationDouble: "+ durationDouble + "< minDuration: "+minDuration);
+					return false;
+				}
+			//	else
+				//	System.out.println("durationDouble: "+ durationDouble + "> minDuration: "+minDuration);
+				this.countDuration(durationDouble);
+				
 				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp);
 				Vector<Answer> answerList = new Vector<Answer>();
 				answerList.add(answerObj);
-				
-				
-				
+
+
+
 				Microtask microtask = this.microtaskMap.get(microtaskId);
 				if(microtask==null){
 					microtask = new Microtask(question, new Integer(microtaskId), answerList,fileName);
@@ -366,7 +455,7 @@ public class LogData {
 					microtask.addAnswer(answerObj);
 				}
 				//if(fileName.matches("1buggy_ApacheCamel.txt")&&microtaskId.matches("1"))
-					//System.out.println("####### adding taskId:"+microtaskId+" to 1buggy_ApacheCamel.txt!" +" sessionId="+sessionId);
+				//System.out.println("####### adding taskId:"+microtaskId+" to 1buggy_ApacheCamel.txt!" +" sessionId="+sessionId);
 				this.microtaskMap.put(microtaskId, microtask);
 
 				//Session Microtask
@@ -406,24 +495,24 @@ public class LogData {
 	}
 
 	public boolean tasksDoesNotPertainToFileName(String microtaskId, String fileName) {
-		
+
 		Point point = this.fileNameTaskRange.get(fileName);
 		int id = new Integer(microtaskId).intValue();
 		if((id<point.x)||(id>point.y)){ //Out of expected range for the fileName
 			//System.out.println("%%%%%%% microtask "+ microtaskId+" does not pertain to "+ fileName);
 			return true;
 		}
-		
+
 		else
 			return false;
-		}
+	}
 
 	public String extractTimeStamp(String token){
 		StringTokenizer tokenizer = new StringTokenizer(token,"[");
 		return tokenizer.nextToken().trim();
 	}
 
-	
+
 
 	//-------------------------------------------------------------------------
 
@@ -474,11 +563,11 @@ public class LogData {
 
 	public boolean processConsentLineProduction1(String line){ 
 		//System.out.println("Line : "+line);
-		
+
 		if(line==null || line.length()<=0 || line.indexOf("workerId")<0) //invalid line
 			return false;
-		
-		
+
+
 		//Time extraction
 		String token = line.substring(0,line.indexOf("["));
 		String timeStamp = extractTimeStamp(token.trim());
@@ -559,29 +648,37 @@ public class LogData {
 
 	}
 
-	
+
 	public boolean processSessionLineProduction1(String line){
-		
+
 		//System.out.println("Line : "+line);
-		
+
 		if(line==null ||line.length()<=0 || line.indexOf("workerId")<0) //invalid line
 			return false;
-		
-		
+
+
 		//Time extraction
 		String token = line.substring(0,line.indexOf("["));
 		String timeStamp = extractTimeStamp(token.trim());
 		this.timeStampList.add(timeStamp);
 
 		String workerId = this.batchNumber + nextTokenValue("workerId",line);
-				
+
 		String sessionId = nextTokenValue("sessionId",line);
+
+		//Check if session should be rejected
+		if(this.batch1RejectMap.containsKey(sessionId)){
+			return false;
+		}
+
 		sessionId=this.batchNumber+ sessionId; 
 		WorkerSession session;
 
+
+
 		//Event extraction
 		token = nextTokenValue("EVENT", line);		
-		
+
 		//Event resolution
 		if(token.matches("OPEN SESSION")){
 			session = new WorkerSession(sessionId, new Vector<Microtask>()); 
@@ -596,15 +693,15 @@ public class LogData {
 				String microtaskId = nextTokenValue("microtaskId", line);
 				//fileName label
 				String fileName = nextTokenValue("fileName", line);
-				
+
 				//Some answers are associated to the wrong file name
 				if(tasksDoesNotPertainToFileName(microtaskId,fileName))
 					return false;
-				
+
 				//Some answers are duplicated
 				if(taskAlreadyInSession(microtaskId,session))
 					return false;
-				
+
 				//question label
 				String question = nextTokenValue("question", line);
 				// answer label
@@ -614,12 +711,20 @@ public class LogData {
 				// explanation label
 				String explanation = nextTokenValue("explanation", line);
 				
+				double durationDouble = new Double(duration);
+
+				//Discard answers that are too short
+				if(durationDouble<this.minDuration)
+					return false;
+
+				this.countDuration(durationDouble);
+				
 				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp);
 				Vector<Answer> answerList = new Vector<Answer>();
 				answerList.add(answerObj);
 
-			//	if(microtaskId.matches("1"))
-			//		System.out.println("####### adding taskId:"+microtaskId+" to 1buggy_ApacheCamel.txt!"+"answer: "+answer );
+				//	if(microtaskId.matches("1"))
+				//		System.out.println("####### adding taskId:"+microtaskId+" to 1buggy_ApacheCamel.txt!"+"answer: "+answer );
 				Microtask microtask = this.microtaskMap.get(microtaskId);
 				if(microtask==null){
 					microtask = new Microtask(question, new Integer(microtaskId), answerList,fileName);
@@ -648,7 +753,7 @@ public class LogData {
 
 		return true;
 	}
-	
+
 
 
 
