@@ -98,7 +98,11 @@ public class Microtask implements Serializable
 	}
 	
 	public Microtask getSimpleVersion(){
-		return new Microtask(this.getQuestion(),this.getID(),this.getAnswerList(),this.getFileName());
+		Vector<Answer> answerListCopy = new Vector<Answer>();
+		for(Answer answer: this.getAnswerList()){
+			answerListCopy.add(answer);
+		}
+		return new Microtask(this.getQuestion(),this.getID(),answerListCopy,this.getFileName());
 	}
 
 	public Integer getID(){

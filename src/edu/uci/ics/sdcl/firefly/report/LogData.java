@@ -108,32 +108,43 @@ public class LogData {
 		System.out.println("Total of different questions = 215");
 		System.out.println("Total different bug revealing questions = "+this.yesArray.length);
 
-
+		
 	}
 
 	/**
 	 * Get answers only from session which were completed,i.e., closed
 	 */
 	public void computeMicrotaskFromCompleteSessions(){
+		System.out.println("Compute completed sessions");
 		int counter=0;
 		int microtaskCounter = 0;
 		Iterator<String> iter = this.closedSessionMap.keySet().iterator();
 		while(iter.hasNext()){
 			String sessionId = iter.next();
+			
 			WorkerSession session = this.closedSessionMap.get(sessionId);
 			String workerId = session.getWorkerId();
+			
 			Vector<Microtask> answerList = session.getMicrotaskList();
+			
+			
 			if(answerList!=null  && answerList.size()>10)
 				System.out.println("Session id="+sessionId+" has "+answerList.size()+" answers!");
 			
+			
 			for(Microtask task: answerList){
 				Microtask existing = this.completeSessions_microtaskMap.get(task.getID().toString());
-				if(existing!=null)
-					existing.addAnswer(task.getAnswerByUserId(workerId));
-				else
+				Answer answer = task.getAnswerByUserId(workerId);
+				
+				
+				if(existing==null){
 					existing = task.getSimpleVersion(); //create a new copy of the task, so we don't mixed with the old one.
-
-				this.completeSessions_microtaskMap.put(existing.getID().toString(), existing);
+				}
+				else{
+					existing.addAnswer(answer);					
+				}
+				
+				this.completeSessions_microtaskMap.put(task.getID().toString(), existing);
 				microtaskCounter++;
 			}
 			counter ++;
@@ -194,7 +205,7 @@ public class LogData {
 		token = tokenizer.nextToken();
 
 		tokenizer.nextToken(); //"workerId label"
-		String workerId = tokenizer.nextToken().trim();
+		String workerId = this.batchNumber+tokenizer.nextToken().trim();
 
 		Worker worker;
 		//Event resolution
@@ -299,7 +310,7 @@ public class LogData {
 		token = tokenizer.nextToken();
 
 		tokenizer.nextToken(); //"workerId label"
-		String workerId = tokenizer.nextToken().trim();
+		String workerId = this.batchNumber+tokenizer.nextToken().trim();
 		tokenizer.nextToken(); //"sessionId label"
 		String sessionId = this.batchNumber + tokenizer.nextToken().trim(); 
 		WorkerSession session;
@@ -316,26 +327,37 @@ public class LogData {
 
 				session = this.sessionMap.get(sessionId);
 				tokenizer.nextToken(); //"microtaskId label"
-				String microtaskId = tokenizer.nextToken();
+				String microtaskId = tokenizer.nextToken().trim();
 				tokenizer.nextToken(); //FileName label
-				String fileName = tokenizer.nextToken();
+				String fileName = tokenizer.nextToken().trim();
+				
+				//Some answers are associated to the wrong file name
+				if(tasksDoesNotPertainToFileName(microtaskId,fileName))
+					return false;
+				
+				//Some answers are duplicated
+				if(taskAlreadyInSession(microtaskId,session))
+					return false;
+				
 				tokenizer.nextToken(); //question label
-				String question = tokenizer.nextToken();
+				String question = tokenizer.nextToken().trim();
 				tokenizer.nextToken(); // answer label
-				String answer = tokenizer.nextToken();
+				String answer = tokenizer.nextToken().trim();
 				tokenizer.nextToken(); // duration label
-				String duration = tokenizer.nextToken();
+				String duration = tokenizer.nextToken().trim();
 				tokenizer.nextToken(); // explanation label
 				String explanation;
 				if(totalTokens==18)
-					explanation= tokenizer.nextToken();
+					explanation= tokenizer.nextToken().trim();
 				else 
 					explanation="";
 
 				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp);
 				Vector<Answer> answerList = new Vector<Answer>();
 				answerList.add(answerObj);
-
+				
+				
+				
 				Microtask microtask = this.microtaskMap.get(microtaskId);
 				if(microtask==null){
 					microtask = new Microtask(question, new Integer(microtaskId), answerList,fileName);
@@ -343,23 +365,19 @@ public class LogData {
 				else{
 					microtask.addAnswer(answerObj);
 				}
+				//if(fileName.matches("1buggy_ApacheCamel.txt")&&microtaskId.matches("1"))
+					//System.out.println("####### adding taskId:"+microtaskId+" to 1buggy_ApacheCamel.txt!" +" sessionId="+sessionId);
 				this.microtaskMap.put(microtaskId, microtask);
 
 				//Session Microtask
+				answerList = new Vector<Answer>();
+				answerList.add(answerObj);
 				Microtask sessionMicrotask = new Microtask(question, new Integer(microtaskId), answerList,fileName);
 				Vector<Microtask> microtaskList = session.getMicrotaskList();
-				boolean repeated=false;
-				for(Microtask task: microtaskList){
-					if(task.getID().intValue()==sessionMicrotask.getID().intValue()){
-						repeated=true;
-						break;
-					}
-				}
-				if(!repeated){//There are repeated microtask in logs for the same Worker Session. Weird.
-					microtaskList.add(sessionMicrotask);
-					session.setMicrotaskList(microtaskList);
-					this.sessionMap.put(session.getId(),session);
-				}
+				microtaskList.add(sessionMicrotask);
+				session.setMicrotaskList(microtaskList);
+				this.sessionMap.put(session.getId(),session);
+
 			}
 			else
 				if(token.trim().matches("CLOSE SESSION")){
@@ -373,7 +391,34 @@ public class LogData {
 	}
 
 
-	private String extractTimeStamp(String token){
+	private boolean taskAlreadyInSession(String microtaskId,
+			WorkerSession session) {
+		boolean repeated=false;
+		Vector<Microtask> microtaskList = session.getMicrotaskList();
+		for(Microtask task: microtaskList){
+			if(task.getID().intValue()==new Integer(microtaskId).intValue()){
+				//System.out.println("!!!!!!! repeated microtask "+ microtaskId+" in session " + session.getId());
+				repeated=true;
+				break;
+			}
+		}
+		return repeated;
+	}
+
+	public boolean tasksDoesNotPertainToFileName(String microtaskId, String fileName) {
+		
+		Point point = this.fileNameTaskRange.get(fileName);
+		int id = new Integer(microtaskId).intValue();
+		if((id<point.x)||(id>point.y)){ //Out of expected range for the fileName
+			//System.out.println("%%%%%%% microtask "+ microtaskId+" does not pertain to "+ fileName);
+			return true;
+		}
+		
+		else
+			return false;
+		}
+
+	public String extractTimeStamp(String token){
 		StringTokenizer tokenizer = new StringTokenizer(token,"[");
 		return tokenizer.nextToken().trim();
 	}
@@ -441,7 +486,7 @@ public class LogData {
 
 		//Event extraction
 		//tokenizer.nextToken(""); //"workerId label"
-		String workerId = nextTokenValue("workerId",line);
+		String workerId = this.batchNumber + nextTokenValue("workerId",line);
 
 		token = nextTokenValue("EVENT", line);
 
@@ -528,7 +573,7 @@ public class LogData {
 		String timeStamp = extractTimeStamp(token.trim());
 		this.timeStampList.add(timeStamp);
 
-		String workerId = nextTokenValue("workerId",line);
+		String workerId = this.batchNumber + nextTokenValue("workerId",line);
 				
 		String sessionId = nextTokenValue("sessionId",line);
 		sessionId=this.batchNumber+ sessionId; 
@@ -551,6 +596,15 @@ public class LogData {
 				String microtaskId = nextTokenValue("microtaskId", line);
 				//fileName label
 				String fileName = nextTokenValue("fileName", line);
+				
+				//Some answers are associated to the wrong file name
+				if(tasksDoesNotPertainToFileName(microtaskId,fileName))
+					return false;
+				
+				//Some answers are duplicated
+				if(taskAlreadyInSession(microtaskId,session))
+					return false;
+				
 				//question label
 				String question = nextTokenValue("question", line);
 				// answer label
@@ -564,6 +618,8 @@ public class LogData {
 				Vector<Answer> answerList = new Vector<Answer>();
 				answerList.add(answerObj);
 
+			//	if(microtaskId.matches("1"))
+			//		System.out.println("####### adding taskId:"+microtaskId+" to 1buggy_ApacheCamel.txt!"+"answer: "+answer );
 				Microtask microtask = this.microtaskMap.get(microtaskId);
 				if(microtask==null){
 					microtask = new Microtask(question, new Integer(microtaskId), answerList,fileName);
@@ -574,20 +630,13 @@ public class LogData {
 				this.microtaskMap.put(microtaskId, microtask);
 
 				//Session Microtask
+				answerList = new Vector<Answer>();
+				answerList.add(answerObj);
 				Microtask sessionMicrotask = new Microtask(question, new Integer(microtaskId), answerList,fileName);
 				Vector<Microtask> microtaskList = session.getMicrotaskList();
-				boolean repeated=false;
-				for(Microtask task: microtaskList){
-					if(task.getID().intValue()==sessionMicrotask.getID().intValue()){
-						repeated=true;
-						break;
-					}
-				}
-				if(!repeated){//There are repeated microtask in logs for the same Worker Session. Weird.
-					microtaskList.add(sessionMicrotask);
-					session.setMicrotaskList(microtaskList);
-					this.sessionMap.put(session.getId(),session);
-				}
+				microtaskList.add(sessionMicrotask);
+				session.setMicrotaskList(microtaskList);
+				this.sessionMap.put(session.getId(),session);
 			}
 			else
 				if(token.matches("CLOSE SESSION")){
@@ -598,7 +647,6 @@ public class LogData {
 				}
 
 		return true;
-
 	}
 	
 
