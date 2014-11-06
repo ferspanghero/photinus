@@ -9,6 +9,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
@@ -24,26 +26,26 @@ public class CSVData {
 	private NumberFormat formatter = new DecimalFormat("#0.00"); 
 
 	LogData data;
-	
+
 	public HashMap<String,Counter> counterMap;
 	public HashMap<String, Result> bugReportResultMap;
-	
+
 	public CSVData(LogData data){
 		this.data = data;
 		counterMap = new HashMap<String,Counter>(); 
 		bugReportResultMap = new HashMap<String, Result>();
 	}
-	
+
 	private static CSVData initializeLogs(){
 		LogData data = new LogData(false, 0);
-		
-		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
+
+		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
 		data.processLogProduction1(path);
-		
-		path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
+
+		path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\Snapshot12\\";
 		data.processLogProduction2(path);
-		
+
 		System.out.println("Logs loaded! Totals are:");
 		System.out.println("Consents: "+data.getConsents());
 		System.out.println("SkillTests: "+data.getSkillTests());
@@ -52,23 +54,23 @@ public class CSVData {
 		System.out.println("Sessions Closed: "+data.getClosedSessions());
 		System.out.println("Answers in Map: "+data.getNumberOfMicrotasks());
 		System.out.println("Microtasks in List: "+data.microtaskList.size());
-		
+
 		CSVData csvData = new CSVData(data);
 		return csvData;
 	}
-	
-	
-	private ArrayList<String> writeMicrotaskAnswers(){
-		
+
+
+	private ArrayList<String> writeMicrotaskAnswers_ZeroOnes(){
+
 		ArrayList<String> contentList = new ArrayList<String>();
-		
+
 		System.out.println("Size of list: "+ data.microtaskList.size());
-		
+
 		for(Microtask microtask: data.microtaskList){
 			String yes="0";
 			String no="0";
 			String ICantTell="0";
-			
+
 			StringBuffer buffer = new StringBuffer();
 			buffer.append(microtask.getID().toString());
 			buffer.append("|");
@@ -84,20 +86,75 @@ public class CSVData {
 						ICantTell="1";
 					else
 						System.out.println("Microtask:"+microtask.getID().toString()+"Answer with no option:"+answer.getOption());
-			
+
 			buffer.append(yes);
 			buffer.append("|");
 			buffer.append(no);
 			buffer.append("|");
 			buffer.append(ICantTell);
-						
+
 			contentList.add(buffer.toString());
-			
+
 		}
 		System.out.println("contentList size="+ contentList.size());
 		return contentList;
 	}
-	
+
+	private ArrayList<String> writeMicrotaskAnswers_Labels(){
+
+		ArrayList<String> contentList = new ArrayList<String>();
+
+		System.out.println("Size of list: "+ data.microtaskList.size());
+
+		for(Microtask microtask: data.microtaskList){
+			String yes="0";
+			String no="0";
+			String ICantTell="0";
+
+			StringBuffer buffer = new StringBuffer();
+			buffer.append(microtask.getID().toString());
+			buffer.append("|");
+			Answer answer = microtask.getAnswerList().get(0);			
+			buffer.append(answer.getOption());
+
+			contentList.add(buffer.toString());
+
+		}
+		System.out.println("contentList size="+ contentList.size());
+		return contentList;
+	}	
+
+
+	private ArrayList<String> writeAnswersInTime_Labels(){
+		ArrayList<String> contentList = new ArrayList<String>();
+
+		System.out.println("Size of list: "+ data.microtaskMap.size());
+
+		Iterator<String> iter=data.microtaskMap.keySet().iterator();
+
+		while(iter.hasNext()){
+			StringBuffer buffer = new StringBuffer();//new line
+			String id = iter.next();
+			Microtask task = data.microtaskMap.get(id);
+			buffer.append(task.getID().toString());
+			buffer.append("|");
+
+			Vector<Answer> answerList = task.getAnswerList();
+			for(int i=0;i<answerList.size();i++){
+				Answer answer = answerList.get(i);
+				buffer.append(answer.getOption());
+				if((i+1)<answerList.size()) //only appends if it is not the last position
+					buffer.append("|");
+			}
+			contentList.add(buffer.toString());
+		}
+
+		System.out.println("contentList size="+ contentList.size());
+		return contentList;
+
+	}
+
+
 	private void printToFile(String fileNamePath, ArrayList<String> contentList){
 		try{
 			File file = new File(fileNamePath);
@@ -112,16 +169,26 @@ public class CSVData {
 			System.err.println(e.toString());
 		}
 	}
-	
-		
-	public static void main(String[] args){
-		
-		CSVData csvData = initializeLogs();
-		String fileNamePath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\allAnswers.txt";
 
-		csvData.printToFile(fileNamePath, csvData.writeMicrotaskAnswers());
-		System.out.println("file written, look at: "+fileNamePath);
+
+
+
+	public static void main(String[] args){
+
+		CSVData csvData = initializeLogs();
+
+		String fileNamePath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\all.txt";
+		csvData.printToFile(fileNamePath, csvData.writeMicrotaskAnswers_ZeroOnes());
+
+		fileNamePath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\allAnswers.txt";
+		csvData.printToFile(fileNamePath, csvData.writeMicrotaskAnswers_Labels());
+
+		fileNamePath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\allAnswersInTime.txt";
+		csvData.printToFile(fileNamePath, csvData.writeAnswersInTime_Labels());
+		
+		System.out.println("files written, look at: "+fileNamePath);
+
 	}
-	
-	
+
+
 }
