@@ -96,8 +96,7 @@ public class LogData {
 	public static String question[] = {"Gender", "Age", "Country", "Years progr.", "Difficulty", "Feedback"};   
 
 	private String logPath = "c:/firefly/logs/";
-	private String sessionFileName = "session-log.log";
-	private String consentFileName = "consent-log.log";
+
 
 	private File consentFile; 
 	private File sessionFile;
@@ -234,8 +233,8 @@ public class LogData {
 		this.batchNumber = "2-";
 
 		if(path!=null) this.logPath = path;
-		this.sessionFile = new File(logPath+sessionFileName);
-		this.consentFile = new File(logPath+consentFileName);
+		this.sessionFile = new File(logPath+"session_Run2-28oct.log");
+		this.consentFile = new File(logPath+"consent_Run2-28oct.log");
 
 		return loadConsents(2) && loadSessions(2);
 	}
@@ -556,8 +555,8 @@ public class LogData {
 		this.batchNumber = "1-";
 
 		if(path!=null) this.logPath = path;
-		this.sessionFile = new File(logPath+sessionFileName);
-		this.consentFile = new File(logPath+consentFileName);
+		this.sessionFile = new File(logPath+"session_Run1-Total-25oct.log");
+		this.consentFile = new File(logPath+"consent_Run1-Total-25oct.log");
 
 		boolean ok = loadConsents(1) && loadSessions(1);
 		return ok;
@@ -834,12 +833,10 @@ public class LogData {
 
 
 	private static LogData initializeLogs(){
-		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
-		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\Snapshot12\\";
+		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
 		LogData data = new LogData(true, 0);
 		data.processLogProduction2(path);
-
-		path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
 		data.processLogProduction1(path);
 
 		System.out.println("----------------------------------------------------------------");

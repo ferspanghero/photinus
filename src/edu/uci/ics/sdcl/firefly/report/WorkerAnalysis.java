@@ -12,6 +12,16 @@ import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.report.LogAnalysis.Counter;
 
+/**
+ * This analysis was to compute the answers for 1 worker, 2 workers, 3 workers, ....
+ * I have however did that in Excel by generation for each question the list of answers order in time.
+ * 
+ * My plan for this class is to look at how accurate each worker is.
+ * For that I would have to compute TP, TN, FP, FN for each worker.
+ * 
+ * @author Christian Adriano
+ *
+ */
 public class WorkerAnalysis {
 	
 	private NumberFormat formatter = new DecimalFormat("#0.00"); 
@@ -26,8 +36,7 @@ public class WorkerAnalysis {
 	}
 	
 	
-	//Compute the answers for 1 worker, 2 workers, 3 workers, ....
-	//Ignore workers who haven't answered any question
+
 	private void computeResultsPerWorkerCluster(){
 		int validWorkerCount=0;
 		int totalWorkerCount=0;

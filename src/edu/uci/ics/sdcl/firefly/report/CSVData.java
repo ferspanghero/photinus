@@ -39,11 +39,10 @@ public class CSVData {
 	private static CSVData initializeLogs(){
 		LogData data = new LogData(false, 0);
 
-		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-1\\Oct25\\SnapShot12\\";
+		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
 		data.processLogProduction1(path);
 
-		path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\1Final\\";
-		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\Production-2October25\\Snapshot12\\";
+		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
 		data.processLogProduction2(path);
 
 		System.out.println("Logs loaded! Totals are:");
@@ -64,7 +63,7 @@ public class CSVData {
 
 		ArrayList<String> contentList = new ArrayList<String>();
 
-		System.out.println("Size of list: "+ data.microtaskList.size());
+		//System.out.println("Size of list: "+ data.microtaskList.size());
 
 		for(Microtask microtask: data.microtaskList){
 			String yes="0";
@@ -96,7 +95,7 @@ public class CSVData {
 			contentList.add(buffer.toString());
 
 		}
-		System.out.println("contentList size="+ contentList.size());
+		//System.out.println("contentList size="+ contentList.size());
 		return contentList;
 	}
 
@@ -104,7 +103,7 @@ public class CSVData {
 
 		ArrayList<String> contentList = new ArrayList<String>();
 
-		System.out.println("Size of list: "+ data.microtaskList.size());
+		//System.out.println("Size of list: "+ data.microtaskList.size());
 
 		for(Microtask microtask: data.microtaskList){
 			String yes="0";
@@ -154,6 +153,34 @@ public class CSVData {
 
 	}
 
+	private ArrayList<String> writeAnswersInTime_Duration(){
+		ArrayList<String> contentList = new ArrayList<String>();
+
+		System.out.println("Size of list: "+ data.microtaskMap.size());
+
+		Iterator<String> iter=data.microtaskMap.keySet().iterator();
+
+		while(iter.hasNext()){
+			StringBuffer buffer = new StringBuffer();//new line
+			String id = iter.next();
+			Microtask task = data.microtaskMap.get(id);
+			buffer.append(task.getID().toString());
+			buffer.append("|");
+
+			Vector<Answer> answerList = task.getAnswerList();
+			for(int i=0;i<answerList.size();i++){
+				Answer answer = answerList.get(i);
+				buffer.append(answer.getElapsedTime());
+				if((i+1)<answerList.size()) //only appends if it is not the last position
+					buffer.append("|");
+			}
+			contentList.add(buffer.toString());
+		}
+
+		System.out.println("contentList size="+ contentList.size());
+		return contentList;
+
+	}
 
 	private void printToFile(String fileNamePath, ArrayList<String> contentList){
 		try{
@@ -171,23 +198,21 @@ public class CSVData {
 	}
 
 
-
-
 	public static void main(String[] args){
 
 		CSVData csvData = initializeLogs();
-
-		String fileNamePath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\all.txt";
-		csvData.printToFile(fileNamePath, csvData.writeMicrotaskAnswers_ZeroOnes());
-
-		fileNamePath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\allAnswers.txt";
-		csvData.printToFile(fileNamePath, csvData.writeMicrotaskAnswers_Labels());
-
-		fileNamePath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\allAnswersInTime.txt";
-		csvData.printToFile(fileNamePath, csvData.writeAnswersInTime_Labels());
 		
-		System.out.println("files written, look at: "+fileNamePath);
+		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\";
 
+		csvData.printToFile(path+"all.txt", csvData.writeMicrotaskAnswers_ZeroOnes());
+
+		csvData.printToFile(path+"allAnswer.txt", csvData.writeMicrotaskAnswers_Labels());
+
+		csvData.printToFile(path+"allAnswersInTime.txt", csvData.writeAnswersInTime_Labels());
+		
+		csvData.printToFile(path+"allAnswersInTime_Duration", csvData.writeAnswersInTime_Duration());
+		
+		System.out.println("files written, look at: "+path);
 	}
 
 
