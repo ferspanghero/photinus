@@ -55,7 +55,7 @@ public class LogData {
 
 	public	HashMap<String,String> batch2RejectMap = new HashMap<String,String>();
 
-	//Rejected sessions from Batch-1
+	//Workers with nonsense explanations in Batch-1
 	public String[] batch1Reject= {"109ca-4A-5e-204","119Ia6C3e-214","144aE-9e0e008","152ie5a-2A-74-7",
 			"167iA-7A2E-5-2-1","20ea-3I0I-256","315cA-2A9i9-50","321aG-4c0i3-39",
 			"331Ae4a-4a-201","345GG2a6c-19-9","403gE-8A-5E-6-71","421gg4C-5A7-9-7",
@@ -63,7 +63,7 @@ public class LogData {
 			"72ga8I-1e-885","304IA-4a-6i5-28","174ga8a6i2-30",
 			"453ec4C2E-1-12","365ci-2i0i-47-4"};
 
-	//Rejected sessions from Batch-2
+	//Workers with nonsense explanations in Batch-2
 	public String[] batch2Reject= {
 			"497iG2c-8C-94-7","492gc2C-2g-397",
 			"490Cg4a-9G-25-4","483iA4E3I70-1",
@@ -79,7 +79,9 @@ public class LogData {
 			"358Ee1G0i-936","355gi-9C7g-664","356CA-3G-4I099",
 			"349gE8A4G-8-8-6","348CI7I8C-90-7","312gi7C-8c-973","301Ic5G-6c04-3","284aA-1i7a-701","268IA2C-8G757","267EI3A0i5-69","249aI-2A-8g50-7","255gg-8i-8a04-8","247CC0A8c302","224II0C-6c1-7-6","219iA-1A2G-11-8","215Ec-6E-9i0-6-5",	"179ag6G9A-51-8","166EA3G2E-503","153cc-9G-9g-15-8",	"150gg-3c0a-572","135gE7e-5C4-94","115II-2i2g-3-57","102cI4C9A631","77Ic-4c0e-21-3","67Ea8g7I551","29eC0e1G144"};
 
-
+	//Tracks the number of times a worker answered "I Can't Tell"
+	public HashMap<String,Integer> workerICantTellMap= new HashMap<String,Integer>();
+	
 	//Bug revealing Microtask IDs that we expect YES or Probably Yes
 	public	int[] yesArray = {1, 3, 20, 25, 18, 61, 53, 51, 33, 69,71, 139,137,119,132,147,145,151,149,156,153,163,164,171,170,167,176,174,178,188,180};
 	public HashMap<String,String> yesMap = new HashMap<String,String>();
@@ -426,6 +428,10 @@ public class LogData {
 				String question = tokenizer.nextToken().trim();
 				tokenizer.nextToken(); // answer label
 				String answer = tokenizer.nextToken().trim();
+				
+				//Update the counter of answer types for the worker
+				updateWorkerICantTellMap(workerId,answer);
+				
 				tokenizer.nextToken(); // duration label
 				String duration = tokenizer.nextToken().trim();
 				tokenizer.nextToken(); // explanation label
@@ -738,6 +744,9 @@ public class LogData {
 				String question = nextTokenValue("question", line);
 				// answer label
 				String answer = nextTokenValue("answer", line);
+				
+				this.updateWorkerICantTellMap(answer, workerId);
+				
 				// duration label
 				String duration = nextTokenValue("duration", line);
 				// explanation label
@@ -794,7 +803,18 @@ public class LogData {
 	}
 
 
-
+	private void updateWorkerICantTellMap(String answer, String workerId){
+		if (answer.matches(Answer.I_CANT_TELL)){
+			Integer count = this.workerICantTellMap.get(workerId);
+			if(count==null)
+				count = new Integer(1);
+			else
+				count++;
+			this.workerICantTellMap.put(workerId, count);
+				
+		}
+	}
+	
 
 	//---------------------------------------------------------------------------
 

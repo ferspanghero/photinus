@@ -182,6 +182,41 @@ public class CSVData {
 
 	}
 
+	private ArrayList<String> writeAnswersFilteredWorker_ICantTell(Integer numberOfICanTell){
+		ArrayList<String> contentList = new ArrayList<String>();
+		System.out.println("Size of list: "+ data.microtaskMap.size());
+
+		Iterator<String> iter=data.microtaskMap.keySet().iterator();
+
+		while(iter.hasNext()){
+			boolean bufferHasAtLeastOneAnswer=false;
+			StringBuffer buffer = new StringBuffer();//new line
+			String id = iter.next();
+			Microtask task = data.microtaskMap.get(id);
+			buffer.append(task.getID().toString());
+			buffer.append("|");
+
+			Vector<Answer> answerList = task.getAnswerList();
+			for(int i=0;i<answerList.size();i++){
+				Answer answer = answerList.get(i);
+				String workerId = answer.getWorkerId();
+				Integer count = data.workerICantTellMap.get(workerId);
+				if(count.intValue()<numberOfICanTell){
+					bufferHasAtLeastOneAnswer=true;
+					buffer.append(answer.getElapsedTime());
+					if((i+1)<answerList.size()) //only appends if it is not the last position
+						buffer.append("|");
+				}
+				else
+					System.out.println("Worker "+ workerId+" discarded, I Cannot Tell count= "+count);
+			}
+			//Check if buffer has at least one answer, otherwise, ignore it
+			if(bufferHasAtLeastOneAnswer)
+				contentList.add(buffer.toString());
+		}
+		return contentList;
+	}	
+
 	private void printToFile(String fileNamePath, ArrayList<String> contentList){
 		try{
 			File file = new File(fileNamePath);
@@ -201,7 +236,7 @@ public class CSVData {
 	public static void main(String[] args){
 
 		CSVData csvData = initializeLogs();
-		
+
 		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\";
 
 		csvData.printToFile(path+"all.txt", csvData.writeMicrotaskAnswers_ZeroOnes());
@@ -209,9 +244,9 @@ public class CSVData {
 		csvData.printToFile(path+"allAnswer.txt", csvData.writeMicrotaskAnswers_Labels());
 
 		csvData.printToFile(path+"allAnswersInTime.txt", csvData.writeAnswersInTime_Labels());
-		
+
 		csvData.printToFile(path+"allAnswersInTime_Duration", csvData.writeAnswersInTime_Duration());
-		
+
 		System.out.println("files written, look at: "+path);
 	}
 
