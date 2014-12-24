@@ -804,8 +804,9 @@ public class LogData {
 
 
 	private void updateWorkerICantTellMap(String answer, String workerId){
-		if (answer.matches(Answer.I_CANT_TELL)){
+		
 			Integer count = this.workerICantTellMap.get(workerId);
+			if (answer.matches(Answer.I_CANT_TELL)){
 			if(count==null)
 				count = new Integer(1);
 			else

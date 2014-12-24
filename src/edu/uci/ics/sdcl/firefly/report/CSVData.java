@@ -41,7 +41,8 @@ public class CSVData {
 	private static CSVData initializeLogs(){
 		LogData data = new LogData(false, 0);
 
-		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+	//			"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
 		data.processLogProduction1(path);
 
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
@@ -186,7 +187,7 @@ public class CSVData {
 	
 	//--------------------------------------------------------------------------------
 	//NOT TESTED YET
-	private ArrayList<String> writeAnswersFiltered_by_WorkerICantTell(Integer numberOfICanTell){
+	private ArrayList<String> writeAnswerDuration_Filtered_by_WorkerICantTell(Integer numberOfICanTell){
 		ArrayList<String> contentList = new ArrayList<String>();
 		System.out.println("Size of list: "+ data.microtaskMap.size());
 
@@ -205,7 +206,7 @@ public class CSVData {
 				Answer answer = answerList.get(i);
 				String workerId = answer.getWorkerId();
 				Integer count = data.workerICantTellMap.get(workerId);
-				if(count.intValue()<numberOfICanTell){
+				if(count!=null && count.intValue()<numberOfICanTell){
 					bufferHasAtLeastOneAnswer=true;
 					buffer.append(answer.getElapsedTime());
 					if((i+1)<answerList.size()) //only appends if it is not the last position
@@ -335,7 +336,8 @@ public class CSVData {
 
 		CSVData csvData = initializeLogs();
 
-		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\";
+		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\";
+				//"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\";
 
 		/*csvData.printToFile(path+"all.txt", csvData.writeMicrotaskAnswers_ZeroOnes());
 
@@ -345,9 +347,12 @@ public class CSVData {
 
 		csvData.printToFile(path+"allAnswersInTime_Duration.txt", csvData.writeAnswersInTime_Duration());
 		*/
-		csvData.printToFile(path+"allAnswerDurations-SkillTest-Grade4.txt", csvData.writeAnswerDurations_Filtered_by_SkillTestGrade(4));
+	//	csvData.printToFile(path+"allAnswerDurations-SkillTest-Grade4.txt", csvData.writeAnswerDurations_Filtered_by_SkillTestGrade(4));
 //		csvData.printToFile(path+"allAnswerOptions-SkillTest-Grade2.txt", csvData.writeAnswerLabels_Filtered_by_SkillTest(2));
 
+		csvData.printToFile(path+"allAnswerDurations-ICantTell-2.txt", csvData.writeAnswerDuration_Filtered_by_WorkerICantTell(2));
+//		csvData.printToFile(path+"allAnswerOptions-SkillTest-Grade2.txt", csvData.writeAnswerLabels_Filtered_by_SkillTest(2));
+		
 		System.out.println("files written, look at: "+path);
 	}
 
