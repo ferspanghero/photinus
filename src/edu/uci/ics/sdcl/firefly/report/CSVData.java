@@ -186,7 +186,46 @@ public class CSVData {
 	}
 	
 	//--------------------------------------------------------------------------------
-	//NOT TESTED YET
+
+	private ArrayList<String> writeAnswerLabels_Filtered_by_WorkerICantTell(Integer numberOfICanTell){
+		ArrayList<String> contentList = new ArrayList<String>();
+
+		System.out.println("Size of list: "+ data.microtaskMap.size());
+
+		Iterator<String> iter=data.microtaskMap.keySet().iterator();
+
+		while(iter.hasNext()){
+			boolean bufferHasAtLeastOneAnswer=false;
+			StringBuffer buffer = new StringBuffer();//new line
+			String id = iter.next();
+			Microtask task = data.microtaskMap.get(id);
+			buffer.append(task.getID().toString());
+			buffer.append("|");
+
+			Vector<Answer> answerList = task.getAnswerList();
+			for(int i=0;i<answerList.size();i++){
+				Answer answer = answerList.get(i);
+				String workerId = answer.getWorkerId();
+				Integer count = data.workerICantTellMap.get(workerId);
+				if(count!=null && count.intValue()<numberOfICanTell){
+					bufferHasAtLeastOneAnswer=true;
+					buffer.append(answer.getOption());
+					if((i+1)<answerList.size()) //only appends if it is not the last position
+						buffer.append("|");
+				}
+				else
+					System.out.println("Worker "+ workerId+" discarded, I Cannot Tell count= "+count);
+				
+			}
+			//Check if buffer has at least one answer, otherwise, ignore it
+			if(bufferHasAtLeastOneAnswer)
+				contentList.add(buffer.toString());
+		}
+		System.out.println("contentList size="+ contentList.size());
+		return contentList;
+	}
+	
+	
 	private ArrayList<String> writeAnswerDuration_Filtered_by_WorkerICantTell(Integer numberOfICanTell){
 		ArrayList<String> contentList = new ArrayList<String>();
 		System.out.println("Size of list: "+ data.microtaskMap.size());
@@ -350,8 +389,8 @@ public class CSVData {
 	//	csvData.printToFile(path+"allAnswerDurations-SkillTest-Grade4.txt", csvData.writeAnswerDurations_Filtered_by_SkillTestGrade(4));
 //		csvData.printToFile(path+"allAnswerOptions-SkillTest-Grade2.txt", csvData.writeAnswerLabels_Filtered_by_SkillTest(2));
 
-		csvData.printToFile(path+"allAnswerDurations-ICantTell-2.txt", csvData.writeAnswerDuration_Filtered_by_WorkerICantTell(2));
-//		csvData.printToFile(path+"allAnswerOptions-SkillTest-Grade2.txt", csvData.writeAnswerLabels_Filtered_by_SkillTest(2));
+		//csvData.printToFile(path+"allAnswerDurations-ICantTell-2.txt", csvData.writeAnswerDuration_Filtered_by_WorkerICantTell(2));
+		csvData.printToFile(path+"allAnswerLabels-ICantTell-10.txt", csvData.writeAnswerLabels_Filtered_by_WorkerICantTell(10));
 		
 		System.out.println("files written, look at: "+path);
 	}

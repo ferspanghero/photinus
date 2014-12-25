@@ -745,7 +745,7 @@ public class LogData {
 				// answer label
 				String answer = nextTokenValue("answer", line);
 				
-				this.updateWorkerICantTellMap(answer, workerId);
+				this.updateWorkerICantTellMap(workerId, answer);
 				
 				// duration label
 				String duration = nextTokenValue("duration", line);
@@ -781,8 +781,6 @@ public class LogData {
 				}
 				this.microtaskMap.put(microtaskId, microtask);
 
-				
-
 				//Session Microtask
 				answerList = new Vector<Answer>();
 				answerList.add(answerObj);
@@ -803,17 +801,16 @@ public class LogData {
 	}
 
 
-	private void updateWorkerICantTellMap(String answer, String workerId){
+	private void updateWorkerICantTellMap(String workerId, String answer){
 		
-			Integer count = this.workerICantTellMap.get(workerId);
-			if (answer.matches(Answer.I_CANT_TELL)){
-			if(count==null)
-				count = new Integer(1);
-			else
-				count++;
-			this.workerICantTellMap.put(workerId, count);
-				
-		}
+		Integer count = this.workerICantTellMap.get(workerId);
+		if(count==null) 
+			count =new Integer(0);
+
+		if (answer.matches(Answer.I_CANT_TELL))
+			count++;
+		
+		this.workerICantTellMap.put(workerId, count);
 	}
 	
 
