@@ -47,8 +47,8 @@ public class CSVData {
 	private static CSVData initializeLogs(){
 		LogData data = new LogData(false, 0);
 
-		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		//			"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		//			"C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
 		data.processLogProduction1(path);
 
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
@@ -239,6 +239,47 @@ public class CSVData {
 	}
 	
 
+	private ArrayList<String> writeAnswerLabels_Filtered_by_Combined_IDK_GRADE_DURATION(Integer numberOfICanTell, Integer minimumGrade, Double minimumDuration){
+		ArrayList<String> contentList = new ArrayList<String>();
+
+		System.out.println("Size of microtask Map: "+ data.microtaskMap.size());
+
+		Iterator<String> iter=data.microtaskMap.keySet().iterator();
+		discardedWorker = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
+		int answerCount=0;
+		while(iter.hasNext()){
+			StringBuffer buffer = new StringBuffer();//new line
+			String id = iter.next();
+			Microtask task = data.microtaskMap.get(id);
+			buffer.append(task.getID().toString());
+			buffer.append("|");
+
+			Vector<Answer> answerList = task.getAnswerList();
+			for(int i=0;i<answerList.size();i++){
+				Answer answer = answerList.get(i);
+				String workerId = answer.getWorkerId();
+				Integer count = data.workerICantTellMap.get(workerId);
+				Worker worker = data.workerMap.get(workerId);
+				Integer grade = worker.getGrade();	
+				Double duration = new Double(answer.getElapsedTime());
+				if(count!=null && count.intValue()<numberOfICanTell && grade!=null && grade>=minimumGrade && duration>=minimumDuration){
+					answerCount++;
+					buffer.append(answer.getOption());
+					if((i+1)<answerList.size()) //only appends if it is not the last position
+						buffer.append("|");
+				}
+				else{
+					System.out.println("Worker "+ workerId+" discarded, I Cannot Tell count= "+count+", grade="+grade+", duration="+duration);
+					this.discardedWorker.put(workerId,workerId);
+				}
+			}
+				contentList.add(buffer.toString());
+		}
+		System.out.println("Number of answers="+ answerCount);
+		return contentList;
+	}
+	
+	
 	//--------------------------------------------------------------------------------
 
 	private ArrayList<String> writeAnswerLabels_Filtered_by_WorkerICantTell(Integer numberOfICanTell){
@@ -471,8 +512,9 @@ public class CSVData {
 
 		CSVData csvData = initializeLogs();
 
-		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\";
-		//"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\";
+		String path ="C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\"; 
+
+				//"C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\";
 
 		/*csvData.printToFile(path+"all.txt", csvData.writeMicrotaskAnswers_ZeroOnes());
 
@@ -488,9 +530,10 @@ public class CSVData {
 		//csvData.printToFile(path+"allAnswerDurations-ICantTell-2.txt", csvData.writeAnswerDuration_Filtered_by_WorkerICantTell(2));
 		//csvData.printToFile(path+"allAnswerLabels-ICantTell-2.txt", csvData.writeAnswerLabels_Filtered_by_WorkerICantTell(2));
 		
-		csvData.printToFile(path+"allAnswerLabels-SkillTest-IDK10_Grade3.txt", csvData.writeAnswerLabels_Filtered_by_Combined_WorkerICantTell_WorkerGrade(10,3));
-
-		//csvData.printDiscardedWorkerGrades();
+		//csvData.printToFile(path+"allAnswerLabels-SkillTest-IDK10_Grade3.txt", csvData.writeAnswerLabels_Filtered_by_Combined_WorkerICantTell_WorkerGrade(10,3));
+		csvData.printToFile(path+"allAnswerLabels-SkillTest-4-3-10Kms.txt", csvData.writeAnswerLabels_Filtered_by_Combined_IDK_GRADE_DURATION(4,3,10000.0));
+		
+		csvData.printDiscardedWorkerGrades();
 
 
 		System.out.println("files written, look at: "+path);
