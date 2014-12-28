@@ -31,7 +31,8 @@ public class CSVData {
 
 	public HashMap<String,Counter> counterMap;
 	public HashMap<String, Result> bugReportResultMap;
-	public HashMap<String, String> discardedWorker;
+	public HashMap<String, String> discardedWorkerMap;
+	public HashMap<String, String> activeWorkerMap; //Workers whose answer was included in the analysis.
 
 	//Sessions that are considered spurious
 	public	HashMap<String,String> batch1RejectMap = new HashMap<String,String>();
@@ -201,7 +202,7 @@ public class CSVData {
 		System.out.println("Size of microtask Map: "+ data.microtaskMap.size());
 
 		Iterator<String> iter=data.microtaskMap.keySet().iterator();
-		discardedWorker = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
+		discardedWorkerMap = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
 		int answerCount=0;
 		while(iter.hasNext()){
 		//	boolean bufferHasAtLeastOneAnswer=false;
@@ -219,7 +220,6 @@ public class CSVData {
 				Worker worker = data.workerMap.get(workerId);
 				Integer grade = worker.getGrade();	
 				if(count!=null && count.intValue()<numberOfICanTell && grade!=null && grade>=minimumGrade){
-				//	bufferHasAtLeastOneAnswer=true;
 					answerCount++;
 					buffer.append(answer.getOption());
 					if((i+1)<answerList.size()) //only appends if it is not the last position
@@ -227,11 +227,9 @@ public class CSVData {
 				}
 				else{
 					System.out.println("Worker "+ workerId+" discarded, I Cannot Tell count= "+count+", grade="+grade);
-					this.discardedWorker.put(workerId,workerId);
+					this.discardedWorkerMap.put(workerId,workerId);
 				}
 			}
-			//Check if buffer has at least one answer, otherwise, ignore it
-			//if(bufferHasAtLeastOneAnswer)
 				contentList.add(buffer.toString());
 		}
 		System.out.println("Number of answers="+ answerCount);
@@ -239,45 +237,6 @@ public class CSVData {
 	}
 	
 
-	private ArrayList<String> writeAnswerLabels_Filtered_by_Combined_IDK_GRADE_DURATION(Integer numberOfICanTell, Integer minimumGrade, Double minimumDuration){
-		ArrayList<String> contentList = new ArrayList<String>();
-
-		System.out.println("Size of microtask Map: "+ data.microtaskMap.size());
-
-		Iterator<String> iter=data.microtaskMap.keySet().iterator();
-		discardedWorker = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
-		int answerCount=0;
-		while(iter.hasNext()){
-			StringBuffer buffer = new StringBuffer();//new line
-			String id = iter.next();
-			Microtask task = data.microtaskMap.get(id);
-			buffer.append(task.getID().toString());
-			buffer.append("|");
-
-			Vector<Answer> answerList = task.getAnswerList();
-			for(int i=0;i<answerList.size();i++){
-				Answer answer = answerList.get(i);
-				String workerId = answer.getWorkerId();
-				Integer count = data.workerICantTellMap.get(workerId);
-				Worker worker = data.workerMap.get(workerId);
-				Integer grade = worker.getGrade();	
-				Double duration = new Double(answer.getElapsedTime());
-				if(count!=null && count.intValue()<numberOfICanTell && grade!=null && grade>=minimumGrade && duration>=minimumDuration){
-					answerCount++;
-					buffer.append(answer.getOption());
-					if((i+1)<answerList.size()) //only appends if it is not the last position
-						buffer.append("|");
-				}
-				else{
-					System.out.println("Worker "+ workerId+" discarded, I Cannot Tell count= "+count+", grade="+grade+", duration="+duration);
-					this.discardedWorker.put(workerId,workerId);
-				}
-			}
-				contentList.add(buffer.toString());
-		}
-		System.out.println("Number of answers="+ answerCount);
-		return contentList;
-	}
 	
 	
 	//--------------------------------------------------------------------------------
@@ -288,7 +247,7 @@ public class CSVData {
 		System.out.println("Size of list: "+ data.microtaskMap.size());
 
 		Iterator<String> iter=data.microtaskMap.keySet().iterator();
-		discardedWorker = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
+		discardedWorkerMap = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
 
 		while(iter.hasNext()){
 			boolean bufferHasAtLeastOneAnswer=false;
@@ -311,7 +270,7 @@ public class CSVData {
 				}
 				else{
 					System.out.println("Worker "+ workerId+" discarded, I Cannot Tell count= "+count);
-					this.discardedWorker.put(workerId,workerId);
+					this.discardedWorkerMap.put(workerId,workerId);
 				}
 
 			}
@@ -395,9 +354,7 @@ public class CSVData {
 						buffer.append("|");
 				}
 			}
-			//Check if buffer has at least one answer, otherwise, ignore it
-			if(bufferHasAtLeastOneAnswer)
-				contentList.add(buffer.toString());
+			contentList.add(buffer.toString());
 		}
 
 		System.out.println("Number of Answsers="+ answerCount);
@@ -476,9 +433,11 @@ public class CSVData {
 
 	//----------------------------------------------------------------------------------
 	private void printDiscardedWorkerGrades() {
-		initializeRejectMaps();
-		Iterator<String> iter = this.discardedWorker.keySet().iterator();
-		System.out.println("Total discarded workers "+ this.discardedWorker.size());
+		//initializeRejectMaps();
+		Iterator<String> iter = this.discardedWorkerMap.keySet().iterator();
+		//System.out.println("Total original workers: "+data.workerMap.size());
+		//System.out.println("Total discarded workers "+ this.discardedWorkerMap.size());
+		System.out.println("Active workers: "+this.activeWorkerMap.size());
 		while(iter.hasNext()){
 			String workerId= iter.next();
 			Worker worker = data.workerMap.get(workerId);
@@ -490,6 +449,7 @@ public class CSVData {
 			if(this.batch1RejectMap.containsKey(session) || this.batch2RejectMap.containsKey(session))
 				printSession = session;
 			//System.out.println(workerId+"|"+score+"|"+printSession);
+
 		}
 	}
 
@@ -507,12 +467,63 @@ public class CSVData {
 
 	}
 
+	//----------------------------------------------------------------------------------------------------------
+	
+	private ArrayList<String> writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(Double minimumDuration, Integer minimumGrade, Integer numberOfICanTell){
+		ArrayList<String> contentList = new ArrayList<String>();
+
+		System.out.println("Size of microtask Map: "+ data.microtaskMap.size());
+
+		Iterator<String> iter=data.microtaskMap.keySet().iterator();
+		discardedWorkerMap = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
+		activeWorkerMap = new HashMap<String, String>();
+		int answerCount=0;
+		int validAnswers=0;
+		while(iter.hasNext()){
+			StringBuffer buffer = new StringBuffer();//new line
+			String id = iter.next();
+			Microtask task = data.microtaskMap.get(id);
+			buffer.append(task.getID().toString());
+			buffer.append("|");
+			int validMicrotaskAnswers=0;
+			Vector<Answer> answerList = task.getAnswerList();
+			for(int i=0;i<answerList.size();i++){
+				Answer answer = answerList.get(i);					
+				String workerId = answer.getWorkerId();
+				Integer count = data.workerICantTellMap.get(workerId);
+				Worker worker = data.workerMap.get(workerId);
+				Integer grade = worker.getGrade();	
+				Double duration = new Double(answer.getElapsedTime());
+				if(count!=null && count.intValue()<numberOfICanTell && grade!=null && grade>=minimumGrade && duration>=minimumDuration){
+					answerCount++;
+					validMicrotaskAnswers++;
+					activeWorkerMap.put(workerId, workerId);
+					buffer.append(answer.getOption());
+					buffer.append("|");
+				}
+				else{
+					System.out.println("Worker "+ workerId+" discarded, I Cannot Tell count= "+count+", grade="+grade+", duration="+duration);
+					this.discardedWorkerMap.put(workerId,workerId);
+				}
+			}
+			
+			if(validMicrotaskAnswers>10)
+				validAnswers = validAnswers+10;
+			else
+				validAnswers = validAnswers+validMicrotaskAnswers;
+				contentList.add(buffer.toString());
+		}
+		System.out.println("Total answers="+ answerCount+", valid=" + validAnswers);
+		return contentList;
+	}
+	
+	
 	//-----------------------------------------------------------------------------------
 	public static void main(String[] args){
 
 		CSVData csvData = initializeLogs();
 
-		String path ="C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\"; 
+		String path ="C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined12\\"; 
 
 				//"C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\";
 
@@ -525,17 +536,17 @@ public class CSVData {
 		csvData.printToFile(path+"allAnswersInTime_Duration.txt", csvData.writeAnswersInTime_Duration());
 		 */
 			//csvData.printToFile(path+"allAnswerDurations-SkillTest-Grade4.txt", csvData.writeAnswerDurations_Filtered_by_SkillTestGrade(4));
-		//csvData.printToFile(path+"allAnswerOptions-SkillTest-Grade2.txt", csvData.writeAnswerLabels_Filtered_by_SkillTest(2));
+		//csvData.printToFile(path+"x2.txt", csvData.writeAnswerLabels_Filtered_by_SkillTest(3));
 
 		//csvData.printToFile(path+"allAnswerDurations-ICantTell-2.txt", csvData.writeAnswerDuration_Filtered_by_WorkerICantTell(2));
 		//csvData.printToFile(path+"allAnswerLabels-ICantTell-2.txt", csvData.writeAnswerLabels_Filtered_by_WorkerICantTell(2));
-		
+
 		//csvData.printToFile(path+"allAnswerLabels-SkillTest-IDK10_Grade3.txt", csvData.writeAnswerLabels_Filtered_by_Combined_WorkerICantTell_WorkerGrade(10,3));
-		csvData.printToFile(path+"allAnswerLabels-SkillTest-4-3-10Kms.txt", csvData.writeAnswerLabels_Filtered_by_Combined_IDK_GRADE_DURATION(4,3,10000.0));
+		csvData.printToFile(path+"x.txt", csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(0.0,2,10));
 		
 		csvData.printDiscardedWorkerGrades();
 
-
+		
 		System.out.println("files written, look at: "+path);
 	}
 
