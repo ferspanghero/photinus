@@ -542,7 +542,7 @@ public class CSVData {
 		//csvData.printToFile(path+"allAnswerLabels-ICantTell-2.txt", csvData.writeAnswerLabels_Filtered_by_WorkerICantTell(2));
 
 		//csvData.printToFile(path+"allAnswerLabels-SkillTest-IDK10_Grade3.txt", csvData.writeAnswerLabels_Filtered_by_Combined_WorkerICantTell_WorkerGrade(10,3));
-		csvData.printToFile(path+"x.txt", csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(0.0,2,10));
+		csvData.printToFile(path+"120s.txt", csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(120000.0,2,11));
 		
 		csvData.printDiscardedWorkerGrades();
 
