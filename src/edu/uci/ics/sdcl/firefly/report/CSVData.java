@@ -48,8 +48,8 @@ public class CSVData {
 	private static CSVData initializeLogs(){
 		LogData data = new LogData(false, 0);
 
-		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		//			"C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		//			"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
 		data.processLogProduction1(path);
 
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
@@ -472,7 +472,7 @@ public class CSVData {
 	private ArrayList<String> writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(Double minimumDuration, Integer minimumGrade, Integer numberOfICanTell){
 		ArrayList<String> contentList = new ArrayList<String>();
 
-		System.out.println("Size of microtask Map: "+ data.microtaskMap.size());
+		//System.out.println("Size of microtask Map: "+ data.microtaskMap.size());
 
 		Iterator<String> iter=data.microtaskMap.keySet().iterator();
 		discardedWorkerMap = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
@@ -502,7 +502,7 @@ public class CSVData {
 					buffer.append("|");
 				}
 				else{
-					System.out.println("Worker "+ workerId+" discarded, I Cannot Tell count= "+count+", grade="+grade+", duration="+duration);
+					//System.out.println("Worker "+ workerId+" discarded, I Cannot Tell count= "+count+", grade="+grade+", duration="+duration);
 					this.discardedWorkerMap.put(workerId,workerId);
 				}
 			}
@@ -513,7 +513,8 @@ public class CSVData {
 				validAnswers = validAnswers+validMicrotaskAnswers;
 				contentList.add(buffer.toString());
 		}
-		System.out.println("Total answers="+ answerCount+", valid=" + validAnswers);
+		//System.out.println("valid answers=" + validAnswers+ ", active workers: "+this.activeWorkerMap.size());
+		System.out.println(this.activeWorkerMap.size());// ", active workers: "+);
 		return contentList;
 	}
 	
@@ -523,9 +524,9 @@ public class CSVData {
 
 		CSVData csvData = initializeLogs();
 
-		String path ="C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined12\\"; 
+		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined12\\";
 
-				//"C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\";
+				//"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined12\\";
 
 		/*csvData.printToFile(path+"all.txt", csvData.writeMicrotaskAnswers_ZeroOnes());
 
@@ -542,10 +543,29 @@ public class CSVData {
 		//csvData.printToFile(path+"allAnswerLabels-ICantTell-2.txt", csvData.writeAnswerLabels_Filtered_by_WorkerICantTell(2));
 
 		//csvData.printToFile(path+"allAnswerLabels-SkillTest-IDK10_Grade3.txt", csvData.writeAnswerLabels_Filtered_by_Combined_WorkerICantTell_WorkerGrade(10,3));
-		csvData.printToFile(path+"120s.txt", csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(120000.0,2,11));
 		
-		csvData.printDiscardedWorkerGrades();
-
+		//Integer[] idkList = {2,4,6,8,10};
+		Integer[] scoreList = {2};
+		Integer[] durationList = {10,15,20,30,45,60,120};
+		int i=0;
+		while(i<durationList.length){
+			int j=0;
+			String durationStr = durationList[i].toString();
+			Double duration = new Double(durationList[i].doubleValue()*1000);
+			while(j<scoreList.length){
+				String scoreStr = scoreList[j].toString();
+				Integer score = new Integer(scoreStr); 
+				String fileName = scoreStr+"_"+durationStr+"s.txt";
+			//	System.out.print("fileName:"+fileName+"> ");
+				csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(duration,score,11));
+				
+			//	csvData.printDiscardedWorkerGrades();	
+				j++;
+			}
+			i++;
+		}
+		
+		
 		
 		System.out.println("files written, look at: "+path);
 	}
