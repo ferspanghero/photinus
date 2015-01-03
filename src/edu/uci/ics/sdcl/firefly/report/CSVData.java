@@ -48,8 +48,8 @@ public class CSVData {
 	private static CSVData initializeLogs(){
 		LogData data = new LogData(false, 0);
 
-		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		//			"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		//			"C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
 		data.processLogProduction1(path);
 
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
@@ -513,8 +513,8 @@ public class CSVData {
 				validAnswers = validAnswers+validMicrotaskAnswers;
 			contentList.add(buffer.toString());
 		}
-		//System.out.println("valid answers=" + validAnswers+ ", active workers: "+this.activeWorkerMap.size());
-		System.out.println(validAnswers);//this.activeWorkerMap.size());// ", active workers: "+);
+		System.out.println("valid answers=" + validAnswers+ ", active workers: "+this.activeWorkerMap.size());
+		//System.out.println(validAnswers);//this.activeWorkerMap.size());// ", active workers: "+);
 		return contentList;
 	}
 
@@ -524,9 +524,9 @@ public class CSVData {
 
 		CSVData csvData = initializeLogs();
 
-		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined123\\";
+		String path =  "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined12\\";
 
-		//"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined12\\";
+		// "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined123\\";
 
 		/*csvData.printToFile(path+"all.txt", csvData.writeMicrotaskAnswers_ZeroOnes());
 
@@ -544,9 +544,9 @@ public class CSVData {
 
 		//csvData.printToFile(path+"allAnswerLabels-SkillTest-IDK10_Grade3.txt", csvData.writeAnswerLabels_Filtered_by_Combined_WorkerICantTell_WorkerGrade(10,3));
 
-		Integer[] idkList = {2,4,6,8,10};
-		Integer[] scoreList = {3,4};
-		Integer[] durationList = {10,15,20,30,45,60,120};
+		Integer[] idkList = {11};//2,4,6,8,10};
+		Integer[] scoreList = {4};//,4};
+		Integer[] durationList = {0};//10,15,20,30,45,60,120};
 		int i=0;
 		while(i<durationList.length){
 			int j=0;
