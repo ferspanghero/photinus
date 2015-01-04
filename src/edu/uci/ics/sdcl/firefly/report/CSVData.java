@@ -63,6 +63,7 @@ public class CSVData {
 		System.out.println("Sessions Closed: "+data.getClosedSessions());
 		System.out.println("Answers in Map: "+data.getNumberOfMicrotasks());
 		System.out.println("Microtasks in List: "+data.microtaskList.size());
+		System.out.println("Workers in Map: "+data.workerMap.size());
 
 		CSVData csvData = new CSVData(data);
 		return csvData;
@@ -517,8 +518,8 @@ public class CSVData {
 		//System.out.println(validAnswers);//this.activeWorkerMap.size());// ", active workers: "+);
 		return contentList;
 	}
-
-
+	
+	
 	//-----------------------------------------------------------------------------------
 	public static void main(String[] args){
 
