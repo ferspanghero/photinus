@@ -278,8 +278,8 @@ public class WorkerAnalysis {
 
 		LogData data = new LogData(false, 0);
 
-		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		//			"C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		//			"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
 		data.processLogProduction1(path);
 
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
@@ -374,6 +374,25 @@ public class WorkerAnalysis {
 		}
 	}
 	
+	public void printWorkerYesCount(){
+
+		System.out.println("Workers who answered questions: "+ this.workerAnswerCountMap.size());
+		
+		Iterator<String> iter = this.workerAnswerCountMap.keySet().iterator();
+
+		while(iter.hasNext()){
+			String workerId = iter.next();
+			Integer yesCount = this.workerYesCountMap.get(workerId);
+			if(yesCount==null) yesCount =0;
+			Integer answerCount = this.workerAnswerCountMap.get(workerId);
+			Double percent = this.workerPercentCorrectAnswerMap.get(workerId);
+			Integer correctCount = this.workerCorrectAnswerMap.get(workerId);
+			if(correctCount==null) correctCount =0;
+			System.out.println(correctCount); //workerId+"|"+yesCount+"|"+answerCount+"|"+percent.toString()); //level);//"|"+
+		}
+	}
+	
+	
 	//-------------------------------------------------------------------------------
 	// NOT TESTED YET
 	
@@ -419,8 +438,9 @@ public class WorkerAnalysis {
 
 		analysis.computeCorrectAnswersPerWorker();
 
-		analysis.printPercentCorrectAnswer_WorkerCount();
+	//	analysis.printPercentCorrectAnswer_WorkerCount();
 		//analysis.printWorkerPercentCorrectAnswers();
+		analysis.printWorkerYesCount();
 	}
 
 
