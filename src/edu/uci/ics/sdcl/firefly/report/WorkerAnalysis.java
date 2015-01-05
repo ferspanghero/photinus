@@ -37,6 +37,7 @@ public class WorkerAnalysis {
 	public HashMap<String, Integer> workerProbablyYesCountMap;
 	public HashMap<String, Integer> workerCorrectAnswerMap;
 	public HashMap<String, Double> workerPercentCorrectAnswerMap;
+	public HashMap<String, Integer> yesCountForCorrectLevelMap;
 
 	public HashMap<String, Integer> workerWrongAnswerMap;
 	public HashMap<String, Integer> levelMap;
@@ -323,9 +324,9 @@ public class WorkerAnalysis {
 		Iterator<String> iter = this.workerCorrectAnswerMap.keySet().iterator();
 
 		while(iter.hasNext()){
-			String level = iter.next();
-			Integer workerCount = this.workerCorrectAnswerMap.get(level);
-			System.out.println(level+"|"+workerCount);
+			String workerId = iter.next();
+			Integer workerCount = this.workerCorrectAnswerMap.get(workerId);
+			System.out.println(workerId+"|"+workerCount);
 		}
 	}
 	
@@ -373,8 +374,43 @@ public class WorkerAnalysis {
 		}
 	}
 	
+	//-------------------------------------------------------------------------------
+	// NOT TESTED YET
 	
+	/**
+	 * Just increments the counter for number of answers given by a worker
+	 * @param workerId
 
+	 */
+	private void incrementWorkerCountYesMap(String correctLevel){
+			
+			Integer yesCount = this.yesCountForCorrectLevelMap.get(correctLevel);
+			if(yesCount==null)
+				yesCount = new Integer(1);
+			else
+				yesCount++;
+			this.yesCountForCorrectLevelMap.put(correctLevel, yesCount);
+		}
+	
+	
+	public void printWorkerPercentCorrectAnswers(int numberYes){
+
+		yesCountForCorrectLevelMap = new HashMap<String, Integer>();
+		Iterator<String> iter = this.workerYesCountMap.keySet().iterator();
+		
+		while(iter.hasNext()){
+			String workerId = iter.next();
+			Integer yesCount = workerYesCountMap.get(workerId);
+			if(yesCount==numberYes){
+				Integer workerCount = this.workerCorrectAnswerMap.get(workerId);
+				this.incrementWorkerCountYesMap(workerCount.toString());
+			}
+			//else discard
+		}
+	}
+
+	//---------------------------------------------------------------------------------------
+	
 	public static void main(String[] args){
 
 		WorkerAnalysis analysis = initializeLogs();
