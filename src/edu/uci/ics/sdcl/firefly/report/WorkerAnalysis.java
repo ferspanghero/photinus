@@ -38,7 +38,13 @@ public class WorkerAnalysis {
 	public HashMap<String, Integer> workerCorrectAnswerMap;
 	public HashMap<String, Double> workerPercentCorrectAnswerMap;
 	public HashMap<String, Integer> yesCountForCorrectLevelMap;
+	
+	public HashMap<String, Integer> workerCorrectAnswersBugPointQuestionsMap; //Only count correct answers for bug pointing questions, ignore other questions.
+	public HashMap<String, Double> workerPercentCorrectAnswerBugPointQuestionsMap;
+	public HashMap<String, Integer> workerAnswerBugPointingQuestionCountMap;
 
+	
+	
 	public HashMap<String, Integer> workerWrongAnswerMap;
 	public HashMap<String, Integer> levelMap;
 	public HashMap<String, Integer> percentLevelMap;
@@ -111,6 +117,8 @@ public class WorkerAnalysis {
 		workerProbablyYesCountMap = new HashMap<String,Integer>();
 		workerCorrectAnswerMap = new HashMap<String,Integer>();
 		workerWrongAnswerMap = new  HashMap<String,Integer>();
+		workerCorrectAnswersBugPointQuestionsMap = new  HashMap<String,Integer>();
+		workerAnswerBugPointingQuestionCountMap = new HashMap<String,Integer>();
 
 		Iterator<String> iter = data.workerMap.keySet().iterator();
 
@@ -126,7 +134,6 @@ public class WorkerAnalysis {
 						Vector<Answer>  answerList = task.getAnswerList();
 						for(Answer answer: answerList){
 							if(answer.getWorkerId().matches(workerId)){
-
 								incrementAnswer(workerId);
 								if(answer.getOption().matches(Answer.YES)){
 									incrementYesAnswers(workerId);
@@ -150,6 +157,7 @@ public class WorkerAnalysis {
 		computePercentCorrectWorkerCountMap();
 		computeLevelCorrectWorkers();
 		computePercentageCorrectAnswersPerWorker();
+		computePercentCorrectBugPointingWorkerCountMap();
 	}
 
 	private void checkIncrementCorrectAnswer(String microtaskId, String option, String workerId) {
@@ -157,9 +165,11 @@ public class WorkerAnalysis {
 		if(value!=null){ //means that microtaskId is yes question.
 			if(option.matches(Answer.YES) || option.matches(Answer.PROBABLY_YES)){
 				incrementCorrectAnswer(workerId);
+				incrementBugPointingCorrectAnswers(workerId);
 			}
 			else
 				incrementWrongAnswer(workerId);
+			this.incrementBugPointingAnswerCount(workerId);
 		}
 		else{
 			if(option.matches(Answer.NO) || option.matches(Answer.PROBABLY_NOT)){
@@ -190,7 +200,14 @@ public class WorkerAnalysis {
 		this.workerCorrectAnswerMap.put(workerId, answerCount);	
 	}
 
-
+	private void incrementBugPointingCorrectAnswers(String workerId) {
+		Integer answerCount = this.workerCorrectAnswersBugPointQuestionsMap.get(workerId);
+		if(answerCount==null)
+			answerCount = new Integer(1);
+		else
+			answerCount++;
+		this.workerCorrectAnswersBugPointQuestionsMap.put(workerId, answerCount);	
+	}
 
 	private void incrementProbablyYesAnswers(String workerId) {
 		Integer answerCount = this.workerProbablyYesCountMap.get(workerId);
@@ -223,6 +240,19 @@ public class WorkerAnalysis {
 		this.workerAnswerCountMap.put(workerId, answerCount);
 	}
 
+	/**
+	 * Just increments the counter for number of answers given by a worker
+	 * @param workerId
+	 */
+	private void incrementBugPointingAnswerCount(String workerId) {
+		Integer answerCount = this.workerAnswerBugPointingQuestionCountMap.get(workerId);
+		if(answerCount==null)
+			answerCount = new Integer(1);
+		else
+			answerCount++;
+		this.workerAnswerBugPointingQuestionCountMap.put(workerId, answerCount);
+	}
+
 
 	private void computePercentCorrectWorkerCountMap(){
 		workerPercentCorrectAnswerMap = new HashMap<String,Double>();
@@ -236,6 +266,27 @@ public class WorkerAnalysis {
 			//System.out.println(workerId+"|"+answerCount+"|"+correctCount);
 			if(correctCount==null) correctCount = 0;
 			workerPercentCorrectAnswerMap.put(workerId, new Double(100*correctCount.doubleValue()/answerCount.doubleValue()));
+			
+		}
+	}
+	
+	private void computePercentCorrectBugPointingWorkerCountMap(){
+		workerPercentCorrectAnswerBugPointQuestionsMap = new HashMap<String,Double>();
+		Iterator<String> iter = this.workerAnswerCountMap.keySet().iterator();
+
+		while(iter.hasNext()){
+			String workerId = iter.next();
+			Integer answerCount = this.workerAnswerBugPointingQuestionCountMap.get(workerId);
+			Integer correctCount = this.workerCorrectAnswersBugPointQuestionsMap.get(workerId);
+			
+			//System.out.println(workerId+"|"+answerCount+"|"+correctCount);
+			if(correctCount==null) correctCount = 0;
+			Double percent;
+			if(answerCount!=null)
+				percent = new Double(100*correctCount.doubleValue()/answerCount.doubleValue());
+			else
+				percent = 0.0;
+			workerPercentCorrectAnswerBugPointQuestionsMap.put(workerId, percent );			
 			
 		}
 	}
@@ -374,6 +425,19 @@ public class WorkerAnalysis {
 		}
 	}
 	
+	public void printWorkerPercentCorrectAnswersBugPointingQuestions(){
+
+		System.out.println("Workers who answered questions: "+ this.workerAnswerCountMap.size());
+		
+		Iterator<String> iter = this.workerPercentCorrectAnswerBugPointQuestionsMap.keySet().iterator();
+
+		while(iter.hasNext()){
+			String workerId = iter.next();
+			Double percent = this.workerPercentCorrectAnswerBugPointQuestionsMap.get(workerId);
+			System.out.println(workerId+"|"+percent); //level);//"|"+
+		}
+	}
+	
 	public void printWorkerYesCount(){
 
 		System.out.println("Workers who answered questions: "+ this.workerAnswerCountMap.size());
@@ -392,9 +456,31 @@ public class WorkerAnalysis {
 		}
 	}
 	
-	
+
 	//-------------------------------------------------------------------------------
-	// NOT TESTED YET
+	
+	public void printWorkerProbablyYesCount(){
+
+		System.out.println("Workers who answered questions: "+ this.workerAnswerCountMap.size());
+		
+		Iterator<String> iter = this.workerAnswerCountMap.keySet().iterator();
+
+		while(iter.hasNext()){
+			String workerId = iter.next();
+			Integer yesCount = this.workerYesCountMap.get(workerId);
+			if(yesCount==null) yesCount =0;
+			Integer probablyYesCount = this.workerProbablyYesCountMap.get(workerId);
+			if(probablyYesCount==null) probablyYesCount =0;
+			yesCount = yesCount + probablyYesCount;
+		
+			Integer answerCount = this.workerAnswerCountMap.get(workerId);
+			Double percent = this.workerPercentCorrectAnswerMap.get(workerId);
+			Integer correctCount = this.workerCorrectAnswerMap.get(workerId);
+			if(correctCount==null) correctCount =0;
+			System.out.println(correctCount); //workerId+"|"+yesCount+"|"+answerCount+"|"+percent.toString()); //level);//"|"+
+		}
+	}
+
 	
 	/**
 	 * Just increments the counter for number of answers given by a worker
@@ -427,6 +513,48 @@ public class WorkerAnalysis {
 			//else discard
 		}
 	}
+	
+	
+	
+	public void printWorkerSessionBugPointingQuestions(){
+		Iterator<String> iter = data.workerMap.keySet().iterator();
+
+		int answersToBugPointingQuestions = 0;
+		
+		while(iter.hasNext()){
+			String workerId = iter.next();
+			Worker worker = data.workerMap.get(workerId);
+			String sessionId = worker.getSessionId();
+			if(sessionId!=null){
+				WorkerSession session = data.sessionMap.get(sessionId);
+				Vector<Microtask> taskList = session.getMicrotaskList();
+				if(taskList!=null){
+					for(Microtask task: taskList){
+						String value = data.yesMap.get(task.getID().toString());
+						if(value!=null){ //means that microtaskId is yes question.
+							Vector<Answer>  answerList = task.getAnswerList();
+							for(Answer answer: answerList){
+								if(answer.getWorkerId().matches(workerId)){
+									answersToBugPointingQuestions++;
+								}
+								//else ignores.
+							}//for
+						}
+						else{
+							System.out.println("task is not bug pointing: "+task.getID());
+							}
+					}//for
+				}//task list empty
+			}//else do nothing, because session is empty.
+		}//while
+
+	
+
+		System.out.println("answers to bug pointing questions: "+answersToBugPointingQuestions+"size:"+data.yesMap.size());
+
+		
+	}
+	
 
 	//---------------------------------------------------------------------------------------
 	
@@ -440,7 +568,9 @@ public class WorkerAnalysis {
 
 	//	analysis.printPercentCorrectAnswer_WorkerCount();
 		//analysis.printWorkerPercentCorrectAnswers();
-		analysis.printWorkerYesCount();
+//		analysis.printWorkerProbablyYesCount();
+		//analysis.printWorkerSessionBugPointingQuestions();
+		analysis.printWorkerPercentCorrectAnswersBugPointingQuestions();
 	}
 
 
