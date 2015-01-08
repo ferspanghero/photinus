@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.QuestionType;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.report.LogAnalysis.Counter;
 
@@ -548,6 +549,7 @@ public class CSVData {
 		Integer[] idkList = {11};//2,4,6,8,10};
 		Integer[] scoreList = {4};//,4};
 		Integer[] durationList = {0};//10,15,20,30,45,60,120};
+		String questionType = QuestionType.METHOD_INVOCATION;
 		int i=0;
 		while(i<durationList.length){
 			int j=0;
