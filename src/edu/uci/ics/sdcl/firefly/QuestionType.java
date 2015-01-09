@@ -3,6 +3,7 @@ package edu.uci.ics.sdcl.firefly;
 
 public class QuestionType {
 
+	//Eight basic types
 	public static final String METHOD_INVOCATION = "METHOD_INVOCATION";
 	public static final String METHOD_PARAMETERS = "METHOD_PARAMETERS";
 	public static final String CONDITIONAL_STATEMENT = "CONDITIONAL_STATEMENT";
@@ -22,6 +23,8 @@ public class QuestionType {
 	public static final String CASE_CONDITIONAL = "CASE_CONDITIONAL";
 	
 	private String type = null;
+
+	//Super Types
 	private String methodType = null;
 	private String conditionalType = null;
 	private String loopType = null;

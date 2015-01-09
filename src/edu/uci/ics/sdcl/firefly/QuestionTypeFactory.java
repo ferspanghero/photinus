@@ -12,8 +12,19 @@ public class QuestionTypeFactory {
 	/** Indexed by all of the types in QuestionType */
 	public HashMap<String,HashMap<Integer,QuestionType>> questionTypeMap = new HashMap<String,HashMap<Integer,QuestionType>>(); 
 	
+	/** Indexes all IDs to their question types */
+	//public HashMap<Integer, String> idQuestionTypeMap = new HashMap<Integer, String>(); 
+	
+	/** Indexes all IDs to their question super types */
+	//public HashMap<Integer, String> idQuestionSuperTypeMap = new HashMap<Integer, String>(); 
+
+	/** Indexes all IDs to their question content types */
+	//public HashMap<Integer, String> idQuestionContentTypeMap = new HashMap<Integer, String>(); 
 	
 	
+	/** Instatiate a question type for each microtask. 
+	 * Also initializes the questionTypeMap and idQuestionTypeMap
+	 */
 	public void generateQuestionTypes(){
 		
 		//Yes questions come first than there is a space
@@ -33,7 +44,7 @@ public class QuestionTypeFactory {
 		int[] taskIdList5_1 = {18,53,132,147,   81,121,210,204};
 		generateType(QuestionType.LOOP_BODY,null, QuestionType.FOR_LOOP, QuestionType.BODY, taskIdList5_1);
 
-		int[] taskIdList5_2 = {3, 170, 180     }; //only expected YES questions
+		int[] taskIdList5_2 = {3, 170, 180     }; //only expected YES questions 56 47 = 103
 		generateType(QuestionType.LOOP_BODY,null, QuestionType.WHILE_LOOP, QuestionType.BODY, taskIdList5_2);
 		
 		int[] taskIdList6_1= {20, 51, 61, 156, 10,   31,73,111,135,28,43,49,55,125,196};
@@ -55,7 +66,7 @@ public class QuestionTypeFactory {
 		generateType(QuestionType.CONDITIONAL_STATEMENT,QuestionType.CASE_CONDITIONAL, null, QuestionType.DECLARATION, taskIdList8_2);
 
 		int size = taskIdList1.length+taskIdList2.length+taskIdList3.length+taskIdList4.length+taskIdList5_1.length+taskIdList5_2.length+taskIdList6_1.length+taskIdList6_2.length+taskIdList7_1.length+taskIdList7_2.length+taskIdList8_1.length+taskIdList8_2.length;
-		System.out.println("Total tasks: "+size);
+		System.out.println("Total tasks: "+size);	
 		
 	}
 	
@@ -65,19 +76,24 @@ public class QuestionTypeFactory {
 			addTypeToMap(questionType,type);
 			addTypeToMap(questionType,conditionalType);
 			addTypeToMap(questionType,loopType);
-			addTypeToMap(questionType,contentType);				
+			addTypeToMap(questionType,contentType);		
+		//	this.idQuestionTypeMap.put(new Integer(id), type);
 		}
 	}
 	
-	private void addTypeToMap(QuestionType questionType, String type){
+	private void addTypeToMap(QuestionType questionTypeObj, String typeStr){
 		
-		if(type!=null){
-			HashMap<Integer,QuestionType> idQuestionMap = this.questionTypeMap.get(type);
+		if(typeStr!=null){
+			HashMap<Integer,QuestionType> idQuestionMap = this.questionTypeMap.get(typeStr);
 			if(idQuestionMap==null)
 				idQuestionMap = new HashMap<Integer,QuestionType>();
-			idQuestionMap.put(questionType.getId(), questionType);
-			this.questionTypeMap.put(type, idQuestionMap);
+			idQuestionMap.put(questionTypeObj.getId(), questionTypeObj);
+			this.questionTypeMap.put(typeStr, idQuestionMap);
 		}
+	}
+	
+	public HashMap<String,HashMap<Integer,QuestionType>> getQuestionTypeMap(){
+		return this.questionTypeMap;
 	}
 	
 	public static void main(String args[]){

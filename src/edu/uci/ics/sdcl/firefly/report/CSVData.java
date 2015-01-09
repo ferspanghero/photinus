@@ -16,6 +16,7 @@ import java.util.Vector;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.QuestionType;
+import edu.uci.ics.sdcl.firefly.QuestionTypeFactory;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.report.LogAnalysis.Counter;
 
@@ -29,6 +30,9 @@ public class CSVData {
 	private NumberFormat formatter = new DecimalFormat("#0.00"); 
 
 	LogData data;
+
+	/** Used to filter answers by question type */
+	QuestionTypeFactory questionTypeFactory;
 
 	public HashMap<String,Counter> counterMap;
 	public HashMap<String, Result> bugReportResultMap;
@@ -510,7 +514,7 @@ public class CSVData {
 			}
 
 			if(validMicrotaskAnswers>10)
-				validAnswers = validAnswers+10;
+				validAnswers = validAnswers+10;//because we would ignore anything above 10 answers for one same question.
 			else
 				validAnswers = validAnswers+validMicrotaskAnswers;
 			contentList.add(buffer.toString());
@@ -519,15 +523,88 @@ public class CSVData {
 		//System.out.println(validAnswers);//this.activeWorkerMap.size());// ", active workers: "+);
 		return contentList;
 	}
-	
-	
+	//-----------------------------------------------------------------------------------------------------------------
+
+
+	private ArrayList<String> writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(String questionTypeStr,Double minimumDuration, Integer minimumGrade, Integer numberOfICanTell){
+
+		ArrayList<String> contentList = new ArrayList<String>();
+
+		QuestionTypeFactory questionTypeFactory = new QuestionTypeFactory();
+		questionTypeFactory.generateQuestionTypes();
+
+		//System.out.println("Size of microtask Map: "+ data.microtaskMap.size());
+
+		Iterator<String> iter=data.microtaskMap.keySet().iterator();
+		discardedWorkerMap = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
+		activeWorkerMap = new HashMap<String, String>();
+		int answerCount=0;
+		int validAnswers=0;
+		while(iter.hasNext()){			
+			String id = iter.next();
+			Microtask task = data.microtaskMap.get(id);
+
+			StringBuffer buffer = new StringBuffer();//new line
+			buffer.append(task.getID().toString());
+			buffer.append("|");
+			if(isValidTaskType(task.getID(), questionTypeStr,questionTypeFactory.getQuestionTypeMap())){
+				int validMicrotaskAnswers=0;
+				Vector<Answer> answerList = task.getAnswerList();
+				for(int i=0;i<answerList.size();i++){
+					Answer answer = answerList.get(i);					
+					String workerId = answer.getWorkerId();
+					Integer count = data.workerICantTellMap.get(workerId);
+					Worker worker = data.workerMap.get(workerId);
+					Integer grade = worker.getGrade();	
+					Double duration = new Double(answer.getElapsedTime());
+					if(count!=null && count.intValue()<numberOfICanTell && grade!=null && grade>=minimumGrade && duration>=minimumDuration){
+						answerCount++;
+						validMicrotaskAnswers++;
+						activeWorkerMap.put(workerId, workerId);
+						buffer.append(answer.getOption());
+						buffer.append("|");
+					}
+					else{
+						//System.out.println("Discarded task "+task.getID()+", worker "+ workerId+" discarded, I Cannot Tell count= "+count+", grade="+grade+", duration="+duration);
+						this.discardedWorkerMap.put(workerId,workerId);
+					}
+				}
+
+				if(validMicrotaskAnswers>10)
+					validAnswers = validAnswers+10;//because we would ignore anything above 10 answers for one same question.
+				else
+					validAnswers = validAnswers+validMicrotaskAnswers;
+			}
+			else{
+				//System.out.println("Task "+ id +" not of type: "+questionTypeStr);
+			}
+			contentList.add(buffer.toString());
+		}
+		System.out.println("valid answers=" + validAnswers+ ", active workers: "+this.activeWorkerMap.size());
+		//System.out.println(validAnswers);//this.activeWorkerMap.size());// ", active workers: "+);
+		return contentList;
+	}
+
+
+	private boolean isValidTaskType(Integer id, String desiredQuestionTypeStr, HashMap<String,HashMap<Integer,QuestionType>> questionTypeMap){
+
+		HashMap<Integer,QuestionType> idQuestionTypeMap = questionTypeMap.get(desiredQuestionTypeStr);
+		if(idQuestionTypeMap!=null){
+			if(idQuestionTypeMap.containsKey(id))
+				return true;
+			else 
+				return false;
+		}
+		else 
+			return false;
+	}
+
 	//-----------------------------------------------------------------------------------
 	public static void main(String[] args){
 
 		CSVData csvData = initializeLogs();
 
-		String path =  "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined123\\";
-
+		String path =  "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\questionType\\";
 		// "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined12\\";
 
 		/*csvData.printToFile(path+"all.txt", csvData.writeMicrotaskAnswers_ZeroOnes());
@@ -546,10 +623,12 @@ public class CSVData {
 
 		//csvData.printToFile(path+"allAnswerLabels-SkillTest-IDK10_Grade3.txt", csvData.writeAnswerLabels_Filtered_by_Combined_WorkerICantTell_WorkerGrade(10,3));
 
-		Integer[] idkList = {11};//2,4,6,8,10};
-		Integer[] scoreList = {4};//,4};
-		Integer[] durationList = {0};//10,15,20,30,45,60,120};
-		String questionType = QuestionType.METHOD_INVOCATION;
+		String questionTypeStr = QuestionType.METHOD_PARAMETERS; //CONDITIONAL_BODY CONDITIONAL_STATEMENT; LOOP_BODY; LOOP_STATEMENT;METHOD_BODY;METHOD_DECLARATION;METHOD_INVOCATION;METHOD_PARAMETERS;
+
+
+		Integer[] durationList = {10};//10,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {3};//,4};  //Minimal Score to be considered		
+		Integer[] idkList = {2};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
 		int i=0;
 		while(i<durationList.length){
 			int j=0;
@@ -560,9 +639,9 @@ public class CSVData {
 				int k=0;
 				while(k<idkList.length){
 					String idkStr = idkList[k].toString();
-					String fileName = durationStr+"s_test-"+scoreStr+"_idk-"+idkStr+".txt";
+					String fileName = questionTypeStr+"-"+durationStr+"s_test-"+scoreStr+"_idk-"+idkStr+".txt";
 					//System.out.print("fileName:"+fileName+"> ");
-					csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(duration, scoreList[j],idkList[k]));
+					csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(questionTypeStr, duration, scoreList[j],idkList[k]));
 					k++;
 				}
 				j++;
