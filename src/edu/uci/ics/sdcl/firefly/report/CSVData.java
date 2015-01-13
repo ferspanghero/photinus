@@ -1,16 +1,13 @@
 package edu.uci.ics.sdcl.firefly.report;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.Answer;
@@ -38,7 +35,7 @@ public class CSVData {
 	public HashMap<String, Result> bugReportResultMap;
 	public HashMap<String, String> discardedWorkerMap;
 	public HashMap<String, String> activeWorkerMap; //Workers whose answer was included in the analysis.
-
+	
 	//Sessions that are considered spurious
 	public	HashMap<String,String> batch1RejectMap = new HashMap<String,String>();
 
@@ -538,6 +535,10 @@ public class CSVData {
 		Iterator<String> iter=data.microtaskMap.keySet().iterator();
 		discardedWorkerMap = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
 		activeWorkerMap = new HashMap<String, String>();
+		
+		int bugPointingAnswers=0;
+		int NOT_bugPointingAnswers=0;
+		
 		int answerCount=0;
 		int validAnswers=0;
 		while(iter.hasNext()){			
@@ -570,22 +571,34 @@ public class CSVData {
 					}
 				}
 
-				if(validMicrotaskAnswers>10)
-					validAnswers = validAnswers+10;//because we would ignore anything above 10 answers for one same question.
+				int incrementOfAnswers = 0;
+				
+				if(validMicrotaskAnswers>10){
+					incrementOfAnswers = 10;//because we would ignore anything above 10 answers for one same question.
+				}
+				else{
+					incrementOfAnswers = validMicrotaskAnswers;
+				}
+				
+				validAnswers = validAnswers + incrementOfAnswers;
+		
+				if(this.data.yesMap.containsKey(id))
+					bugPointingAnswers = bugPointingAnswers + incrementOfAnswers;
 				else
-					validAnswers = validAnswers+validMicrotaskAnswers;
+					NOT_bugPointingAnswers = NOT_bugPointingAnswers + incrementOfAnswers;
 			}
 			else{
 				//System.out.println("Task "+ id +" not of type: "+questionTypeStr);
 			}
 			contentList.add(buffer.toString());
 		}
-		System.out.println("valid answers=" + validAnswers+ ", active workers: "+this.activeWorkerMap.size());
+		System.out.println("valid answers=" + validAnswers+ ", active workers: "+this.activeWorkerMap.size()+", bugPointing answers: "+bugPointingAnswers+", not bugPointing: "+NOT_bugPointingAnswers);
 		//System.out.println(validAnswers);//this.activeWorkerMap.size());// ", active workers: "+);
 		return contentList;
 	}
 
 
+	
 	private boolean isValidTaskType(Integer id, String desiredQuestionTypeStr, HashMap<String,HashMap<Integer,QuestionType>> questionTypeMap){
 
 		HashMap<Integer,QuestionType> idQuestionTypeMap = questionTypeMap.get(desiredQuestionTypeStr);
@@ -598,7 +611,8 @@ public class CSVData {
 		else 
 			return false;
 	}
-
+	
+		
 	//-----------------------------------------------------------------------------------
 	public static void main(String[] args){
 
@@ -623,12 +637,12 @@ public class CSVData {
 
 		//csvData.printToFile(path+"allAnswerLabels-SkillTest-IDK10_Grade3.txt", csvData.writeAnswerLabels_Filtered_by_Combined_WorkerICantTell_WorkerGrade(10,3));
 
-		String questionTypeStr = QuestionType.METHOD_PARAMETERS; //CONDITIONAL_BODY CONDITIONAL_STATEMENT; LOOP_BODY; LOOP_STATEMENT;METHOD_BODY;METHOD_DECLARATION;METHOD_INVOCATION;METHOD_PARAMETERS;
+		String questionTypeStr = QuestionType.METHOD_PARAMETERS 	; //CONDITIONAL_BODY CONDITIONAL_STATEMENT; LOOP_BODY; LOOP_STATEMENT;METHOD_BODY;METHOD_DECLARATION;METHOD_INVOCATION;METHOD_PARAMETERS;
 
 
-		Integer[] durationList = {10};//10,15,20,30,45,60,120}; //Minimal duration to be considered
-		Integer[] scoreList = {3};//,4};  //Minimal Score to be considered		
-		Integer[] idkList = {2};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
+		Integer[] durationList = {0};//10,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {2};//,4};  //Minimal Score to be considered		
+		Integer[] idkList = {11};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
 		int i=0;
 		while(i<durationList.length){
 			int j=0;
@@ -639,9 +653,11 @@ public class CSVData {
 				int k=0;
 				while(k<idkList.length){
 					String idkStr = idkList[k].toString();
-					String fileName = questionTypeStr+"-"+durationStr+"s_test-"+scoreStr+"_idk-"+idkStr+".txt";
+					String fileName = durationStr+"s_test-"+scoreStr+"_idk-"+idkStr+".txt";
 					//System.out.print("fileName:"+fileName+"> ");
-					csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(questionTypeStr, duration, scoreList[j],idkList[k]));
+					//csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK( duration, scoreList[j],idkList[k]));
+					//csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(questionTypeStr, duration, scoreList[j],idkList[k]));
+					csvData.writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(questionTypeStr, duration, scoreList[j],idkList[k]);
 					k++;
 				}
 				j++;
