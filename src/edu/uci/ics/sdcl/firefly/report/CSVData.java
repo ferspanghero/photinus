@@ -640,9 +640,9 @@ public class CSVData {
 		String questionTypeStr = QuestionType.METHOD_PARAMETERS 	; //CONDITIONAL_BODY CONDITIONAL_STATEMENT; LOOP_BODY; LOOP_STATEMENT;METHOD_BODY;METHOD_DECLARATION;METHOD_INVOCATION;METHOD_PARAMETERS;
 
 
-		Integer[] durationList = {0};//10,15,20,30,45,60,120}; //Minimal duration to be considered
-		Integer[] scoreList = {2};//,4};  //Minimal Score to be considered		
-		Integer[] idkList = {11};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
+		Integer[] durationList = {10};//10,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {3};//,4};  //Minimal Score to be considered		
+		Integer[] idkList = {2};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
 		int i=0;
 		while(i<durationList.length){
 			int j=0;
@@ -657,7 +657,7 @@ public class CSVData {
 					//System.out.print("fileName:"+fileName+"> ");
 					//csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK( duration, scoreList[j],idkList[k]));
 					//csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(questionTypeStr, duration, scoreList[j],idkList[k]));
-					csvData.writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(questionTypeStr, duration, scoreList[j],idkList[k]);
+					//csvData.writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(questionTypeStr, duration, scoreList[j],idkList[k]);
 					k++;
 				}
 				j++;
