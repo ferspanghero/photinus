@@ -451,8 +451,8 @@ public class WorkerAnalysis {
 
 		while(iter.hasNext()){
 			String workerId = iter.next();
-			Integer workerCount = this.workerCorrectAnswerMap.get(workerId);
-			System.out.println(workerId+"|"+workerCount);
+			Integer correctCount = this.workerCorrectAnswerMap.get(workerId);
+			System.out.println(workerId+"|"+correctCount);
 		}
 	}
 
@@ -544,7 +544,7 @@ public class WorkerAnalysis {
 			Double percent = this.workerPercentCorrectAnswerMap.get(workerId);
 			Integer correctCount = this.workerCorrectAnswerMap.get(workerId);
 			if(correctCount==null) correctCount =0;
-			System.out.println(workerId+"|"+correctCount); //workerId+"|"+yesCount+"|"+answerCount+"|"+percent.toString()); //level);//"|"+
+			System.out.println(workerId+"|"+yesCount); //workerId+"|"+yesCount+"|"+answerCount+"|"+percent.toString()); //level);//"|"+
 		}
 	}
 
@@ -565,13 +565,13 @@ public class WorkerAnalysis {
 			if(yesCount==null) yesCount =0;
 			Integer probablyYesCount = this.workerProbablyYesCountMap.get(workerId);
 			if(probablyYesCount==null) probablyYesCount =0;
-			yesCount = yesCount + probablyYesCount;
+			Integer totalCount = yesCount + probablyYesCount;
 
 			Integer answerCount = this.workerAnswerCountMap.get(workerId);
 			Double percent = this.workerPercentCorrectAnswerMap.get(workerId);
 			Integer correctCount = this.workerCorrectAnswerMap.get(workerId);
 			if(correctCount==null) correctCount =0;
-			System.out.println(workerId+"|"+correctCount);  //workerId+"|"+yesCount+"|"+answerCount+"|"+percent.toString()); //level);//"|"+
+			System.out.println(workerId+"|"+probablyYesCount);  //workerId+"|"+yesCount+"|"+answerCount+"|"+percent.toString()); //level);//"|"+
 		}
 	}
 
@@ -649,16 +649,21 @@ public class WorkerAnalysis {
 
 	}
 	
-	public void printWorkerEfficacy(){
-		Iterator<String> iter = data.workerMap.keySet().iterator();
+	public void printWorkerEfficacy(boolean filtered){
+		Iterator<String> iter;
+		if(filtered)
+			iter = this.workerAnswerCountMap.keySet().iterator();
+		else	
+			iter = data.workerMap.keySet().iterator();
 		
-		System.out.println("WorkerId|TP|FP|TN|FN|I Can't Tell|Bug Pointing| Not Bug Pointing");
+		System.out.println("WorkerId|TP|FP|TN|FN|I Can't Tell|Bug Pointing| Not Bug Pointing | Skill Test Score");
 		
 		while(iter.hasNext()){
 			String workerId = iter.next();
+			Worker worker = data.workerMap.get(workerId);
 			WorkerEfficacy efficacy = this.workerEfficacyMap.get(workerId);
 			if(efficacy!=null)
-				System.out.println(workerId+"|"+efficacy.TP +"|"+efficacy.FP+"|"+efficacy.TN+"|"+efficacy.FN+"|"+efficacy.ICantTell+"|"+efficacy.BugPointingQuestions+"|"+efficacy.NotBugPointingQuestions);
+				System.out.println(workerId+"|"+efficacy.TP +"|"+efficacy.FP+"|"+efficacy.TN+"|"+efficacy.FN+"|"+efficacy.ICantTell+"|"+efficacy.BugPointingQuestions+"|"+efficacy.NotBugPointingQuestions+"|"+worker.getGrade());
 		}
 	}
 
@@ -679,14 +684,15 @@ public class WorkerAnalysis {
 		Integer eliminationLevelOfICanTell = new Integer(2);
 		
 		analysis.computeCorrectAnswersPerWorker(minimalDuration,minimalScore,eliminationLevelOfICanTell);
-		analysis.computeTP_FP_TN_FN_PerWorker();
-		analysis.printWorkerEfficacy();
+		//analysis.computeTP_FP_TN_FN_PerWorker();
+		//analysis.printWorkerEfficacy(true);
 		
-		//analysis.computeTotalAnswersWorker();
+	//	analysis.computeTotalAnswersWorker();
 		
 		//analysis.printWorkerAnswerCount();
 		//analysis.printCorrectAnswer_WorkerCount();
-		//analysis.printWorkerProbablyYesCount();
+		analysis.printWorkerProbablyYesCount();
+		//analysis.printWorkerYesCount();
 		//analysis.printprintWorkerPercentCorrectAnswers();
 
 		//analysis.printWorkerYesCount();
