@@ -13,7 +13,10 @@ public class QuestionTypeFactory {
 	public HashMap<String,HashMap<Integer,QuestionType>> questionTypeMap = new HashMap<String,HashMap<Integer,QuestionType>>(); 
 	
 	/** Indexes all IDs to their question types */
-	//public HashMap<Integer, String> idQuestionTypeMap = new HashMap<Integer, String>(); 
+	public HashMap<Integer, String> idQuestionTypeMap = new HashMap<Integer, String>(); 
+	
+	/** BugPointing question map */
+	public HashMap<Integer, Integer> bugPointingMap = new HashMap<Integer,Integer>();
 	
 	/** Indexes all IDs to their question super types */
 	//public HashMap<Integer, String> idQuestionSuperTypeMap = new HashMap<Integer, String>(); 
@@ -22,10 +25,16 @@ public class QuestionTypeFactory {
 	//public HashMap<Integer, String> idQuestionContentTypeMap = new HashMap<Integer, String>(); 
 	
 	
-	/** Instatiate a question type for each microtask. 
+	/** Instantiate a question type for each microtask. 
 	 * Also initializes the questionTypeMap and idQuestionTypeMap
 	 */
 	public void generateQuestionTypes(){
+		
+		int[] bugPointingList ={1, 3, 20, 25, 18, 61, 53, 51, 33, 69,71, 139,137,119,132,147,145,151,149,156,153,163,164,171,170,167,176,174,178,188,180};
+		for(int id:bugPointingList){
+			Integer IdObj = new Integer(id);
+			this.bugPointingMap.put(IdObj,IdObj);
+		}
 		
 		//Yes questions come first than there is a space
 		
@@ -77,7 +86,7 @@ public class QuestionTypeFactory {
 			addTypeToMap(questionType,conditionalType);
 			addTypeToMap(questionType,loopType);
 			addTypeToMap(questionType,contentType);		
-		//	this.idQuestionTypeMap.put(new Integer(id), type);
+			this.idQuestionTypeMap.put(new Integer(id), type);
 		}
 	}
 	
@@ -96,8 +105,32 @@ public class QuestionTypeFactory {
 		return this.questionTypeMap;
 	}
 	
+	/**
+	 * Prints in the standard output all questions ids followed by their type, 
+	 * and whether they are bug pointing
+	 */
+	public void printNumberType(){
+		
+		System.out.println("Question ID | type | isBugPointing");
+		
+		for(int i=0;i<215;i++){
+			Integer ID = new Integer(i);
+			String type = this.idQuestionTypeMap.get(ID);
+			boolean isBugPointing = this.bugPointingMap.containsKey(ID);
+			
+			System.out.println(ID+"|"+type+"|"+isBugPointing);
+			
+			
+		}
+		
+	}
+	
 	public static void main(String args[]){
 		QuestionTypeFactory factory = new QuestionTypeFactory();
 		factory.generateQuestionTypes();
+		factory.printNumberType();
 	}
+	
+	
+	
 }
