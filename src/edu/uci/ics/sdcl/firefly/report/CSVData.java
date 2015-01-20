@@ -500,7 +500,7 @@ public class CSVData {
 				Double duration = new Double(answer.getElapsedTime());
 				if(count!=null && count.intValue()<numberOfICanTell && count.intValue()>lowerNumberOfICantTell && 
 						grade!=null && grade>=minimumGrade && grade<=maxGrade && 
-						duration>=minimumDuration && duration<=maxDuration){
+						duration>=minimumDuration&& duration<=maxDuration){
 					answerCount++;
 					validMicrotaskAnswers++;
 					activeWorkerMap.put(workerId, workerId);
@@ -646,8 +646,8 @@ public class CSVData {
 		Double maxDuration = new Double(10000);
 		Integer[] durationList = {0};//10,15,20,30,45,60,120}; //Minimal duration to be considered
 		Integer[] scoreList = {2};//,4};  //Minimal Score to be considered		
-		Integer[] idkList = {11};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
-		Integer lowerCut_idk = -1;  //Worker that has an equal amount of below will be cut out of the set.
+		Integer[] idkList = {2};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
+		Integer lowerCut_idk = -1;  //Worker that has an equal amount below will be cut out of the set.
 		Integer maxScore=2; //Worker has to have grade below that.
 		int i=0;
 		while(i<durationList.length){
