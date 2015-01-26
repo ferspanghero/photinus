@@ -25,15 +25,30 @@ import edu.uci.ics.sdcl.firefly.report.LogAnalysis.Counter;
  *
  */
 public class WorkerAnalysis {
-	
+
+	/**Workers that produced the best data set 52% precision, with 71% recall)*/
+	public String[] filteredWorkers = { "2-490","1-1958","2-2011","1-700","1-1758","1-1755","2-302","2-1279",
+			"1-780","1-692","2-604","2-1543","1-2096","2-1271","1-1644","2-2420","2-400","1-338","2-1407","1-1845","2-1168",
+			"2-204","1-1159","1-2155","1-132","2-1268","1-705","1-1025","1-1026","2-298","1-1850","1-349","1-2160","2-1517",
+			"2-567","1-2167","1-579","2-2231","1-1669","1-764","1-763","1-1685","1-451","2-1899","2-702","2-701","2-1737",
+			"2-1239","1-635","1-1725","2-1733","2-220","2-1532","1-1144","1-1539","1-259","1-1140","2-2240","1-1208",
+			"1-1293","1-1699","1-1280","1-540","1-1051","1-2183","2-1631","1-544","1-1913","2-1231","1-743","1-1819",
+			"2-934","1-742","2-445","1-748","1-434","1-1312","2-1588","1-1814","2-1024","1-1991","1-1787","1-656","1-1567",
+			"1-1901","1-1612","1-232","1-1474","2-252","2-1316","1-235","2-2266","2-2263","1-1574","1-1792","1-91","2-856",
+			"2-2484","2-2482","1-389","2-1709","2-38","1-1463","2-127","2-1754","1-931","2-1977","2-2085","2-1995",
+			"1-1589","2-1343","1-297","2-1772","2-1567","1-399","1-2127","1-2019","1-87","1-85","1-2018","1-2133",
+			"2-2077","1-490","1-1634","1-1101","2-1986","1-110","1-1300","1-1967"};
+
+
+
 	public class WorkerEfficacy{
-	
+
 		Integer TP=0;
 		Integer FP=0;
 		Integer TN=0;
 		Integer FN=0;
 		Integer ICantTell=0;
-		
+
 		Integer BugPointingQuestions=0;
 		Integer NotBugPointingQuestions=0;
 	}
@@ -44,7 +59,7 @@ public class WorkerAnalysis {
 
 	public HashMap<String, Integer> originalWorkersMap; //map of all workers to their number of answers, no filter applied
 	public HashMap<String,WorkerEfficacy> workerEfficacyMap; //map workers and the TP (true positive), FP, TN, FN
-	
+
 	public HashMap<String,Counter> counterMap;
 
 	public HashMap<String, Integer> workerAnswerCountMap;
@@ -77,8 +92,8 @@ public class WorkerAnalysis {
 
 		LogData data = new LogData(false, 0);
 
-		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		//			"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		//		"C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
 		data.processLogProduction1(path);
 
 		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
@@ -99,7 +114,58 @@ public class WorkerAnalysis {
 
 
 	/** 
-	 * MAIN METHOD
+	 * MAIN METHOD FOR FIXED LIST OF WORKERS
+	 * 
+	 * Produces a data structure of the following:
+	 * Map<String key, Map<String workerId, Worker workerObj> >  Key is the level of correct answers (from zero to 10) and
+	 */
+	private void computeCorrectAnswersPerWorker(String[] workerIdList){
+		workerAnswerCountMap = new HashMap<String,Integer>();
+		workerYesCountMap = new HashMap<String,Integer>();
+		workerProbablyYesCountMap = new HashMap<String,Integer>();
+		workerCorrectAnswerMap = new HashMap<String,Integer>();
+		workerWrongAnswerMap = new  HashMap<String,Integer>();
+		workerCorrectAnswersBugPointQuestionsMap = new  HashMap<String,Integer>();
+		workerAnswerBugPointingQuestionCountMap = new HashMap<String,Integer>();
+
+		for(String workerId : workerIdList){
+			Worker worker = data.workerMap.get(workerId);
+			String sessionId = worker.getSessionId();
+			if(sessionId!=null){
+				WorkerSession session = data.sessionMap.get(sessionId);
+				Vector<Microtask> taskList = session.getMicrotaskList();
+				if(taskList!=null){
+					for(Microtask task: taskList){
+						Vector<Answer>  answerList = task.getAnswerList();
+						for(Answer answer: answerList){
+							if(answer.getWorkerId().matches(workerId)){
+								incrementAnswer(workerId);
+								if(answer.getOption().matches(Answer.YES)){
+									incrementYesAnswers(workerId);
+								}else
+									if(answer.getOption().matches(Answer.PROBABLY_YES)){
+										incrementProbablyYesAnswers(workerId);
+									}
+								//else ignores
+
+								//Check if answer is correct and increment
+								checkIncrementCorrectAnswer(task.getID().toString(),answer.getOption(),workerId);
+							}
+							//else ignores.
+						}
+					}
+				}
+			}
+		}
+		//else do nothing, because session is empty.
+		//	computePercentCorrectWorkerCountMap();
+		//computeLevelCorrectWorkers();
+		//computePercentageCorrectAnswersPerWorker();
+		//computePercentCorrectBugPointingWorkerCountMap();
+	}
+
+	/** 
+	 * MAIN METHOD FOR WORKERS AND THEIR ANSWERS SELECTED BY FILTER
 	 * 
 	 * Produces a data structure of the following:
 	 * Map<String key, Map<String workerId, Worker workerObj> >  Key is the level of correct answers (from zero to 10) and
@@ -154,7 +220,7 @@ public class WorkerAnalysis {
 		computePercentageCorrectAnswersPerWorker();
 		computePercentCorrectBugPointingWorkerCountMap();
 	}
-	
+
 	private void computeTotalAnswersWorker(){
 		Iterator<String> iter = data.workerMap.keySet().iterator();
 
@@ -171,12 +237,12 @@ public class WorkerAnalysis {
 						if(answer!=null){
 							//Increment answer count for worker.
 							Integer answerCount = this.originalWorkersMap.get(workerId);
-							
+
 							if(answerCount==null) 
 								answerCount = new Integer(1);
 							else
-								 answerCount++;
-							
+								answerCount++;
+
 							this.originalWorkersMap.put(workerId, answerCount);
 						}
 					}
@@ -184,8 +250,8 @@ public class WorkerAnalysis {
 			}
 		}
 	}
-		
-	
+
+
 	private void computeTP_FP_TN_FN_PerWorker(){
 		Iterator<String> iter = data.workerMap.keySet().iterator();
 
@@ -209,13 +275,13 @@ public class WorkerAnalysis {
 			}
 		}
 	}	
-	
+
 	private void incrementTPFN(String workerId,Answer answer){
 		WorkerEfficacy efficacy = this.workerEfficacyMap.get(workerId);
-		
+
 		if(efficacy==null)
 			efficacy = new WorkerEfficacy();
-		
+
 		efficacy.BugPointingQuestions++;
 		if(answer.getOption().matches(Answer.YES) || answer.getOption().matches(Answer.PROBABLY_YES))
 			efficacy.TP++;
@@ -224,17 +290,17 @@ public class WorkerAnalysis {
 				efficacy.FN++;
 			else
 				efficacy.ICantTell++;
-		
+
 		this.workerEfficacyMap.put(workerId, efficacy);
 	}
-	
+
 
 	private void incrementFPTN(String workerId,Answer answer){
 		WorkerEfficacy efficacy = this.workerEfficacyMap.get(workerId);
-		
+
 		if(efficacy==null)
 			efficacy = new WorkerEfficacy();
-		
+
 		efficacy.NotBugPointingQuestions++;
 		if(answer.getOption().matches(Answer.YES) || answer.getOption().matches(Answer.PROBABLY_YES))
 			efficacy.FP++;
@@ -243,11 +309,11 @@ public class WorkerAnalysis {
 				efficacy.TN++;
 			else
 				efficacy.ICantTell++;
-			
+
 		this.workerEfficacyMap.put(workerId, efficacy);
 	}
-	
-	
+
+
 	private boolean isAnswerValid(Answer answer, Double minimumDuration, Integer minimumGrade, Integer numberOfICanTell){
 		String workerId = answer.getWorkerId();
 		Integer count = data.workerICantTellMap.get(workerId);
@@ -442,17 +508,25 @@ public class WorkerAnalysis {
 		}
 	}
 
-	public void printCorrectAnswer_WorkerCount(){
+	public void printCorrectAnswer_WorkerCount(boolean filtered){
 
 		System.out.println("Workers who answered questions: "+ this.workerAnswerCountMap.size());
 		System.out.println("Worker | Number of Correct answers");
 
-		Iterator<String> iter = this.workerCorrectAnswerMap.keySet().iterator();
+		if(filtered){
+			for(String workerId: this.filteredWorkers){
+				Integer correctCount = this.workerCorrectAnswerMap.get(workerId);
+				System.out.println(workerId+"|"+correctCount);
+			}			
+		}
+		else{
+			Iterator<String> iter = this.workerCorrectAnswerMap.keySet().iterator();
 
-		while(iter.hasNext()){
-			String workerId = iter.next();
-			Integer correctCount = this.workerCorrectAnswerMap.get(workerId);
-			System.out.println(workerId+"|"+correctCount);
+			while(iter.hasNext()){
+				String workerId = iter.next();
+				Integer correctCount = this.workerCorrectAnswerMap.get(workerId);
+				System.out.println(workerId+"|"+correctCount);
+			}
 		}
 	}
 
@@ -510,11 +584,11 @@ public class WorkerAnalysis {
 			String workerId = iter.next();
 			Integer answerCount = this.workerAnswerCountMap.get(workerId);
 			Integer originalCount = this.originalWorkersMap.get(workerId);
-			System.out.println(workerId+"|"+answerCount+"|"+originalCount); //level);//"|"+
+			System.out.println(workerId+"|"+answerCount);//+"|"+originalCount); //level);//"|"+
 		}
 	}
-	
-	
+
+
 	public void printWorkerPercentCorrectAnswersBugPointingQuestions(){
 
 		System.out.println("Workers who answered questions: "+ this.workerAnswerCountMap.size());
@@ -533,7 +607,7 @@ public class WorkerAnalysis {
 		System.out.println("Workers who answered questions: "+ this.workerAnswerCountMap.size());
 
 		System.out.println("WorkerId | Yes Count");
-		
+
 		Iterator<String> iter = this.workerAnswerCountMap.keySet().iterator();
 
 		while(iter.hasNext()){
@@ -554,9 +628,9 @@ public class WorkerAnalysis {
 	public void printWorkerProbablyYesCount(){
 
 		System.out.println("Workers who answered questions: "+ this.workerAnswerCountMap.size());
-		
+
 		System.out.println("WorkerId | Probably_Yes Count");
-		
+
 		Iterator<String> iter = this.workerAnswerCountMap.keySet().iterator();
 
 		while(iter.hasNext()){
@@ -648,16 +722,16 @@ public class WorkerAnalysis {
 
 
 	}
-	
+
 	public void printWorkerEfficacy(boolean filtered){
 		Iterator<String> iter;
 		if(filtered)
 			iter = this.workerAnswerCountMap.keySet().iterator();
 		else	
 			iter = data.workerMap.keySet().iterator();
-		
+
 		System.out.println("WorkerId|TP|FP|TN|FN|I Can't Tell|Bug Pointing| Not Bug Pointing | Skill Test Score");
-		
+
 		while(iter.hasNext()){
 			String workerId = iter.next();
 			Worker worker = data.workerMap.get(workerId);
@@ -668,7 +742,7 @@ public class WorkerAnalysis {
 	}
 
 
-	
+
 	//---------------------------------------------------------------------------------------
 
 	public static void main(String[] args){
@@ -678,20 +752,21 @@ public class WorkerAnalysis {
 		//analysis.computeResultsPerWorkerCluster();
 
 		//analysis.computeCorrectAnswersPerWorker();
-		
+
 		Double minimalDuration = new Double(10000.0);
 		Integer minimalScore =new Integer(3);
 		Integer eliminationLevelOfICanTell = new Integer(2);
-		
-		analysis.computeCorrectAnswersPerWorker(minimalDuration,minimalScore,eliminationLevelOfICanTell);
-		//analysis.computeTP_FP_TN_FN_PerWorker();
-		//analysis.printWorkerEfficacy(true);
-		
-	//	analysis.computeTotalAnswersWorker();
-		
+
+		//analysis.computeCorrectAnswersPerWorker(minimalDuration,minimalScore,eliminationLevelOfICanTell);
+		analysis.computeCorrectAnswersPerWorker(analysis.filteredWorkers);
+		analysis.computeTP_FP_TN_FN_PerWorker();
+		analysis.printWorkerEfficacy(true);
+
+		//analysis.computeTotalAnswersWorker();
+
 		//analysis.printWorkerAnswerCount();
-		//analysis.printCorrectAnswer_WorkerCount();
-		analysis.printWorkerProbablyYesCount();
+		//analysis.printCorrectAnswer_WorkerCount(true);
+		//analysis.printWorkerProbablyYesCount();
 		//analysis.printWorkerYesCount();
 		//analysis.printprintWorkerPercentCorrectAnswers();
 
