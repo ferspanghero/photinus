@@ -81,7 +81,7 @@ public class LogData {
 
 	//Tracks the number of times a worker answered "I Can't Tell"
 	public HashMap<String,Integer> workerICantTellMap= new HashMap<String,Integer>();
-	
+
 	//Bug revealing Microtask IDs that we expect YES or Probably Yes
 	public	int[] yesArray = {1, 3, 20, 25, 18, 61, 53, 51, 33, 69,71, 139,137,119,132,147,145,151,149,156,153,163,164,171,170,167,176,174,178,188,180};
 	public HashMap<String,String> yesMap = new HashMap<String,String>();
@@ -428,10 +428,10 @@ public class LogData {
 				String question = tokenizer.nextToken().trim();
 				tokenizer.nextToken(); // answer label
 				String answer = tokenizer.nextToken().trim();
-				
+
 				//Update the counter of answer types for the worker
 				updateWorkerICantTellMap(workerId,answer);
-				
+
 				tokenizer.nextToken(); // duration label
 				String duration = tokenizer.nextToken().trim();
 				tokenizer.nextToken(); // explanation label
@@ -453,14 +453,14 @@ public class LogData {
 				this.countDuration(durationDouble);
 
 				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp);
-				
+
 				//List of sequential microtasks
 				Vector<Answer> singleAnswerList = new Vector<Answer>();
 				singleAnswerList.add(answerObj);
 				Microtask uniqueMicrotask = new Microtask(question, new Integer(microtaskId), singleAnswerList,fileName);
 				this.microtaskList.add(uniqueMicrotask);
-				
-				
+
+
 				//Map of microtasks
 				Vector<Answer> answerList = new Vector<Answer>();
 				answerList.add(answerObj);
@@ -744,9 +744,9 @@ public class LogData {
 				String question = nextTokenValue("question", line);
 				// answer label
 				String answer = nextTokenValue("answer", line);
-				
+
 				this.updateWorkerICantTellMap(workerId, answer);
-				
+
 				// duration label
 				String duration = nextTokenValue("duration", line);
 				// explanation label
@@ -761,17 +761,17 @@ public class LogData {
 				this.countDuration(durationDouble);
 
 				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp);
-				
+
 				//List of sequential microtasks
 				Vector<Answer> singleAnswerList = new Vector<Answer>();
 				singleAnswerList.add(answerObj);
 				Microtask uniqueMicrotask = new Microtask(question, new Integer(microtaskId), singleAnswerList,fileName);
 				this.microtaskList.add(uniqueMicrotask);
-				
+
 				//Map of Microtasks
 				Vector<Answer> answerList = new Vector<Answer>();
 				answerList.add(answerObj);
-				
+
 				Microtask microtask = this.microtaskMap.get(microtaskId);
 				if(microtask==null){
 					microtask = new Microtask(question, new Integer(microtaskId), answerList,fileName);
@@ -802,17 +802,17 @@ public class LogData {
 
 
 	private void updateWorkerICantTellMap(String workerId, String answer){
-		
+
 		Integer count = this.workerICantTellMap.get(workerId);
 		if(count==null) 
 			count =new Integer(0);
 
 		if (answer.matches(Answer.I_CANT_TELL))
 			count++;
-		
+
 		this.workerICantTellMap.put(workerId, count);
 	}
-	
+
 
 	//---------------------------------------------------------------------------
 
@@ -848,6 +848,17 @@ public class LogData {
 		return this.closedSessionMap.size();
 	}
 
+	public void printSummary(){
+		System.out.println("Logs loaded! Totals are:");
+		System.out.println("Consents: "+this.getConsents());
+		System.out.println("SkillTests: "+this.getSkillTests());
+		System.out.println("Surveys: "+this.getSurveys());
+		System.out.println("Sessions Opened: "+this.getOpenedSessions());
+		System.out.println("Sessions Closed: "+this.getClosedSessions());
+		System.out.println("Answers in Map: "+this.getNumberOfMicrotasks());
+		System.out.println("Microtasks in List: "+this.microtaskList.size());
+		System.out.println("Workers in Map: "+this.workerMap.size());
+	}
 
 
 	private static LogData initializeLogs(){
@@ -856,15 +867,8 @@ public class LogData {
 		LogData data = new LogData(true, 0);
 		data.processLogProduction2(path);
 		data.processLogProduction1(path);
-
-		System.out.println("----------------------------------------------------------------");
-		System.out.println("--- CONSOLIDATED BATCHES ---------------------------------------");
-		System.out.println("Consents: "+data.getConsents());
-		System.out.println("SkillTests: "+data.getSkillTests());
-		System.out.println("Surveys: "+data.getSurveys());
-		System.out.println("Sessions Opened: "+data.getOpenedSessions());
-		System.out.println("Sessions Closed: "+data.getClosedSessions());
-		System.out.println("Answers: "+data.getNumberOfMicrotasks());
+		
+		data.printSummary();
 
 		return data;
 	}
