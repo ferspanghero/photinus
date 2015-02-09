@@ -26,6 +26,10 @@ public class CSVData {
 
 	private NumberFormat formatter = new DecimalFormat("#0.00"); 
 
+	static String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
+	static String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
+	static String currentPath = dellPath;
+	
 	LogData data;
 
 	/** Used to filter answers by question type */
@@ -50,12 +54,10 @@ public class CSVData {
 	private static CSVData initializeLogs(){
 		LogData data = new LogData(false, 0);
 
-		String path = 	"C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		//"C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		String path = currentPath;
+		path = path + "\\RawDataLogs\\";
 				
 		data.processLogProduction1(path);
-
-		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
 		data.processLogProduction2(path);
 
 		System.out.println("Logs loaded! Totals are:");
@@ -615,15 +617,21 @@ public class CSVData {
 			return false;
 	}
 	
+	public void printActiveWorkerMap(){
+		System.out.println("Active WorkerMap");
+		Iterator<String> iter = this.activeWorkerMap.keySet().iterator();
+		while(iter.hasNext()){
+			System.out.println(iter.next());
+		}
+	}
 		
 	//-----------------------------------------------------------------------------------
 	public static void main(String[] args){
 
 		CSVData csvData = initializeLogs();
 
-		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\questionType\\";
-			// "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined123\\";
-	
+		String path =  currentPath;
+		path = path +"\\DataAnalysis\\BaseDataInTime\\questionType\\";
 
 		/*csvData.printToFile(path+"all.txt", csvData.writeMicrotaskAnswers_ZeroOnes());
 
@@ -643,12 +651,12 @@ public class CSVData {
 
 		String questionTypeStr = QuestionType.METHOD_PARAMETERS 	; //CONDITIONAL_BODY CONDITIONAL_STATEMENT; LOOP_BODY; LOOP_STATEMENT;METHOD_BODY;METHOD_DECLARATION;METHOD_INVOCATION;METHOD_PARAMETERS;
 
-		Double maxDuration = new Double(10000);
-		Integer[] durationList = {0};//10,15,20,30,45,60,120}; //Minimal duration to be considered
-		Integer[] scoreList = {2};//,4};  //Minimal Score to be considered		
+		Double maxDuration = new Double(Double.MAX_VALUE);
+		Integer[] durationList = {10};//10,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {3};//,4};  //Minimal Score to be considered		
 		Integer[] idkList = {2};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
 		Integer lowerCut_idk = -1;  //Worker that has an equal amount below will be cut out of the set.
-		Integer maxScore=2; //Worker has to have grade below that.
+		Integer maxScore=5; //Worker has to have grade below that.
 		int i=0;
 		while(i<durationList.length){
 			int j=0;
@@ -670,7 +678,10 @@ public class CSVData {
 			}
 			i++;
 		}
+		
+		
 		System.out.println("files written, look at: "+path);
+		csvData.printActiveWorkerMap();
 	}
 
 

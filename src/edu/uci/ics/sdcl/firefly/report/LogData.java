@@ -862,8 +862,8 @@ public class LogData {
 
 
 	private static LogData initializeLogs(){
-		String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		//String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\RawDataLogs\\";
+		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\RawDataLogs\\";
 		LogData data = new LogData(true, 0);
 		data.processLogProduction2(path);
 		data.processLogProduction1(path);

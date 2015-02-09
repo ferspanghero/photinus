@@ -1,5 +1,8 @@
 package edu.uci.ics.sdcl.firefly.report;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,43 +17,62 @@ import edu.uci.ics.sdcl.firefly.report.LogAnalysis.Counter;
 public class FirstAnswersAnalysis {
 
 	LogData data;
-	
+
 	HashMap<Integer,Microtask> filteredMicrotaskMap; 
-	
+	HashMap<String, String> discardedWorkerMap;
+	HashMap<String, String> activeWorkerMap;
+
+	static String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
+	static String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
+	static String currentPath = dellPath;
+
 	public FirstAnswersAnalysis(LogData data){
 		this.data = data;
-		filteredMicrotaskMap = new HashMap<Integer,Microtask>();
-		//counterMap = new HashMap<String,Counter>(); 
-		//bugReportResultMap = new HashMap<String, Result>();
+		initializeMap();
 	}
-	
+
+	private void initializeMap(){		
+
+		filteredMicrotaskMap = new HashMap<Integer,Microtask>();		
+
+		for(int i=0;i<215;i++){
+			Integer id = new Integer(i);
+			Microtask originalMicrotask = this.data.microtaskMap.get(id.toString());
+			Microtask simpleTask = originalMicrotask.getSimpleVersion();
+			simpleTask.setAnswerList(new Vector<Answer>());
+			filteredMicrotaskMap.put(id, simpleTask);
+		}
+	}
+
 	/**
 	 * Remove all answers above a threshold
 	 * @param maximumAnswers the number of answers that will be considered for each worker
 	 */
 	public void filterWorkerAnswers(int maximumAnswers){	
-		
+
 		Iterator<String> workerIdIter = data.workerMap.keySet().iterator();
 		while(workerIdIter.hasNext()){
 			String workerId = workerIdIter.next();
 			Worker worker = data.workerMap.get(workerId);
 			String sessionId = worker.getSessionId();
-			WorkerSession session = data.sessionMap.get(sessionId);
-			Vector<Microtask> microtaskVector = session.getMicrotaskList();
-			int i=0;
-			while(i<microtaskVector.size() && i<maximumAnswers){
-				Microtask workerMicrotask = microtaskVector.elementAt(i);
-				addToFilteredMicrotasks(workerMicrotask,workerId);
-				i++;
+			if(sessionId!=null){
+				WorkerSession session = data.sessionMap.get(sessionId);
+				Vector<Microtask> microtaskVector = session.getMicrotaskList();
+				int i=0;
+				while(i<microtaskVector.size() && i<maximumAnswers){
+					Microtask workerMicrotask = microtaskVector.elementAt(i);
+					addToFilteredMicrotasks(workerMicrotask, workerId);
+					i++;
+				}
 			}
 		}
 	}
-	
+
 	/** Add the worker's microtask to the list */
 	public void addToFilteredMicrotasks(Microtask workerMicrotask, String workerId){
-	
+
 		Microtask filteredMicrotask = this.filteredMicrotaskMap.get(workerMicrotask.getID());
-		
+
 		if(filteredMicrotask==null)
 			this.filteredMicrotaskMap.put(workerMicrotask.getID(), workerMicrotask);
 		else{
@@ -58,23 +80,34 @@ public class FirstAnswersAnalysis {
 			filteredMicrotask.addAnswer(workerAnswer);
 			this.filteredMicrotaskMap.put(filteredMicrotask.getID(), filteredMicrotask);
 		}
-		
 	}
 
-	private ArrayList<String> writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(Double minimumDuration, Double maxDuration, Integer minimumGrade, Integer maxGrade, Integer numberOfICanTell, Integer lowerNumberOfICantTell){
+	/**
+	 * 
+	 * @param answerOption if true, collect answer option, otherwise, answer elapsed Time. 
+	 * @param minimumDuration
+	 * @param maxDuration
+	 * @param minimumGrade
+	 * @param maxGrade
+	 * @param maxNumberOfICanTell
+	 * @param lowerNumberOfICantTell
+	 * @return
+	 */
+	private ArrayList<String> writeAnswers_Filtered_by_DURATION_GRADE_IDK(boolean answerOption, Double minimumDuration, Double maxDuration,
+			Integer minimumGrade, Integer maxGrade, Integer maxNumberOfICanTell, Integer lowerNumberOfICantTell){
 		ArrayList<String> contentList = new ArrayList<String>();
 
 		//System.out.println("Size of microtask Map: "+ data.microtaskMap.size());
 
-		Iterator<String> iter=data.microtaskMap.keySet().iterator();
+		Iterator<Integer> iter=this.filteredMicrotaskMap.keySet().iterator();
 		discardedWorkerMap = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
 		activeWorkerMap = new HashMap<String, String>();
 		int answerCount=0;
 		int validAnswers=0;
 		while(iter.hasNext()){
 			StringBuffer buffer = new StringBuffer();//new line
-			String id = iter.next();
-			Microtask task = data.microtaskMap.get(id);
+			Integer id = iter.next();
+			Microtask task = this.filteredMicrotaskMap.get(id);
 			buffer.append(task.getID().toString());
 			buffer.append("|");
 			int validMicrotaskAnswers=0;
@@ -86,13 +119,16 @@ public class FirstAnswersAnalysis {
 				Worker worker = data.workerMap.get(workerId);
 				Integer grade = worker.getGrade();	
 				Double duration = new Double(answer.getElapsedTime());
-				if(count!=null && count.intValue()<numberOfICanTell && count.intValue()>lowerNumberOfICantTell && 
+				if(count!=null && count.intValue()<maxNumberOfICanTell && count.intValue()>lowerNumberOfICantTell && 
 						grade!=null && grade>=minimumGrade && grade<=maxGrade && 
 						duration>=minimumDuration&& duration<=maxDuration){
 					answerCount++;
 					validMicrotaskAnswers++;
 					activeWorkerMap.put(workerId, workerId);
-					buffer.append(answer.getOption());
+					if(answerOption)
+						buffer.append(answer.getOption());
+					else
+						buffer.append(answer.getElapsedTime());
 					buffer.append("|");
 				}
 				else{
@@ -112,43 +148,75 @@ public class FirstAnswersAnalysis {
 		return contentList;
 	}
 
-	
+	public void printActiveWorkerMap(){
+		System.out.println("Active WorkerMap");
+		Iterator<String> iter = this.activeWorkerMap.keySet().iterator();
+		while(iter.hasNext()){
+			System.out.println(iter.next());
+		}
+	}
+
 	private static FirstAnswersAnalysis initializeLogs(){
 		boolean rejectNoisyWorkers = false;
 		double minimalDuration = 0;
 		LogData data = new LogData(false, 0);	
-		
-		String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		String path = samsungPath;
-		
+
+		String path = currentPath;
+		path = path + "\\RawDataLogs\\";
+
 		data.processLogProduction1(path);
 		data.processLogProduction2(path);
 
 		data.printSummary();
-		
+
 		FirstAnswersAnalysis firstData = new FirstAnswersAnalysis(data);
 		return firstData;
 	}
-	
-	
+
+	private void printToFile(String fileNamePath, ArrayList<String> contentList){
+		try{
+			File file = new File(fileNamePath);
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			for(String content: contentList){
+				writer.write(content);
+				writer.newLine();
+			}
+			writer.close();
+		}
+		catch(Exception e){
+			System.err.println(e.toString());
+		}
+	}
+
+
+	//--------------------------------------------------------------------------
+
 	public static void main(String[] args){
 
 		FirstAnswersAnalysis firstData = initializeLogs();
 
-		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\questionType\\";
-			// "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\DataAnalysis\\BaseDataInTime\\combined123\\";
+		String path =  currentPath;
+		path = path +"\\DataAnalysis\\BaseDataInTime\\firstAnswers\\";
 
 		Double minDuration = new Double(0.00);
-		Double maxDuration = new Double(10000.00);
+		Double maxDuration = new Double(60*1000*60); //max is 1h
 		int minScore=3;
-		int maxScore=4;
+		int maxScore=5;
 		int maxICT=2;
-		int minICT=0;
-		String fileName;
-		int firstAnswer=1;
-		
-		//firstData.printToFile(path+fileName, firstData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK( minDration, maxDuration, minScore,maxScore,maxICT,minICT,firstAnswers));
+		int minICT=-1;
+		int count=2;
+		boolean answerOption = false; //collects elapsed time
+
+		for(int i=1;i<=10;i++){
+
+			String fileName = "first_"+i+"_answers_time.txt";
+
+			firstData.filterWorkerAnswers(i);
+			firstData.printToFile(path+fileName, 
+					firstData.writeAnswers_Filtered_by_DURATION_GRADE_IDK(answerOption, minDuration, maxDuration, minScore, maxScore, maxICT, minICT));
+
+			System.out.println("files written, look at: "+path+fileName);
+		}
 	}
-	
+
 }
