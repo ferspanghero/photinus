@@ -28,7 +28,6 @@ public class FirstAnswersAnalysis {
 
 	public FirstAnswersAnalysis(LogData data){
 		this.data = data;
-		initializeMap();
 	}
 
 	private void initializeMap(){		
@@ -49,7 +48,7 @@ public class FirstAnswersAnalysis {
 	 * @param maximumAnswers the number of answers that will be considered for each worker
 	 */
 	public void filterWorkerAnswers(int maximumAnswers){	
-
+		initializeMap();
 		Iterator<String> workerIdIter = data.workerMap.keySet().iterator();
 		while(workerIdIter.hasNext()){
 			String workerId = workerIdIter.next();
@@ -119,7 +118,7 @@ public class FirstAnswersAnalysis {
 				Worker worker = data.workerMap.get(workerId);
 				Integer grade = worker.getGrade();	
 				Double duration = new Double(answer.getElapsedTime());
-				if(count!=null && count.intValue()<maxNumberOfICanTell && count.intValue()>lowerNumberOfICantTell && 
+				if(count!=null && count.intValue()<maxNumberOfICanTell && count.intValue()>=lowerNumberOfICantTell && 
 						grade!=null && grade>=minimumGrade && grade<=maxGrade && 
 						duration>=minimumDuration&& duration<=maxDuration){
 					answerCount++;
@@ -198,23 +197,24 @@ public class FirstAnswersAnalysis {
 		String path =  currentPath;
 		path = path +"\\DataAnalysis\\BaseDataInTime\\firstAnswers\\";
 
-		Double minDuration = new Double(0.00);
-		Double maxDuration = new Double(60*1000*60); //max is 1h
+		Double minDuration = new Double(10000.00);
+		Double maxDuration = new Double(Double.MAX_VALUE); //for duration average I cut at 1h, but for answer option not.
 		int minScore=3;
-		int maxScore=5;
-		int maxICT=2;
-		int minICT=-1;
-		int count=2;
-		boolean answerOption = false; //collects elapsed time
+		int maxScore=4;
+		int eliminationICT=2; //2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
+		int minICT=0;
+		boolean answerOption = true; //collects elapsed time
 
 		for(int i=1;i<=10;i++){
 
-			String fileName = "first_"+i+"_answers_time.txt";
+			String fileName = "first_"+i+"_answers_option.txt";
 
 			firstData.filterWorkerAnswers(i);
 			firstData.printToFile(path+fileName, 
-					firstData.writeAnswers_Filtered_by_DURATION_GRADE_IDK(answerOption, minDuration, maxDuration, minScore, maxScore, maxICT, minICT));
+					firstData.writeAnswers_Filtered_by_DURATION_GRADE_IDK(answerOption, minDuration, maxDuration, minScore, maxScore, eliminationICT, minICT));
 
+			
+			
 			System.out.println("files written, look at: "+path+fileName);
 		}
 	}
