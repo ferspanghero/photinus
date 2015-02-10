@@ -24,7 +24,7 @@ public class FirstAnswersAnalysis {
 
 	static String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
 	static String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
-	static String currentPath = dellPath;
+	static String currentPath = samsungPath;
 
 	public FirstAnswersAnalysis(LogData data){
 		this.data = data;
@@ -205,18 +205,18 @@ public class FirstAnswersAnalysis {
 		int minICT=0;
 		boolean answerOption = true; //collects elapsed time
 
-		for(int i=1;i<=10;i++){
+		//for(int i=1;i<=10;i++){
 
-			String fileName = "first_"+i+"_answers_option.txt";
+			String fileName = "first_"+10+"_answers_option.txt";
 
-			firstData.filterWorkerAnswers(i);
+			firstData.filterWorkerAnswers(10);
 			firstData.printToFile(path+fileName, 
 					firstData.writeAnswers_Filtered_by_DURATION_GRADE_IDK(answerOption, minDuration, maxDuration, minScore, maxScore, eliminationICT, minICT));
 
 			
 			
 			System.out.println("files written, look at: "+path+fileName);
-		}
+		//}
 	}
 
 }

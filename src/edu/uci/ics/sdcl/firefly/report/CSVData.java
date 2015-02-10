@@ -28,7 +28,7 @@ public class CSVData {
 
 	static String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
 	static String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
-	static String currentPath = dellPath;
+	static String currentPath = samsungPath;
 	
 	LogData data;
 
@@ -631,7 +631,7 @@ public class CSVData {
 		CSVData csvData = initializeLogs();
 
 		String path =  currentPath;
-		path = path +"\\DataAnalysis\\BaseDataInTime\\questionType\\";
+		path = path +"\\DataAnalysis\\BaseDataInTime\\combined12\\";
 
 		/*csvData.printToFile(path+"all.txt", csvData.writeMicrotaskAnswers_ZeroOnes());
 
@@ -652,9 +652,9 @@ public class CSVData {
 		String questionTypeStr = QuestionType.METHOD_PARAMETERS 	; //CONDITIONAL_BODY CONDITIONAL_STATEMENT; LOOP_BODY; LOOP_STATEMENT;METHOD_BODY;METHOD_DECLARATION;METHOD_INVOCATION;METHOD_PARAMETERS;
 
 		Double maxDuration = new Double(Double.MAX_VALUE);
-		Integer[] durationList = {10};//10,15,20,30,45,60,120}; //Minimal duration to be considered
-		Integer[] scoreList = {3};//,4};  //Minimal Score to be considered		
-		Integer[] idkList = {2};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
+		Integer[] durationList = {10,15,20,30,45,60,120};//10,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {2};//,4};  //Minimal Score to be considered		
+		Integer[] idkList = {11};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
 		Integer lowerCut_idk = -1;  //Worker that has an equal amount below will be cut out of the set.
 		Integer maxScore=5; //Worker has to have grade below that.
 		int i=0;
