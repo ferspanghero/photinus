@@ -40,6 +40,7 @@ public class CSVData {
 	public HashMap<String, String> discardedWorkerMap;
 	public HashMap<String, String> activeWorkerMap; //Workers whose answer was included in the analysis.
 	
+	
 	//Sessions that are considered spurious
 	public	HashMap<String,String> batch1RejectMap = new HashMap<String,String>();
 
@@ -624,6 +625,8 @@ public class CSVData {
 			System.out.println(iter.next());
 		}
 	}
+	
+	
 		
 	//-----------------------------------------------------------------------------------
 	public static void main(String[] args){

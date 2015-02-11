@@ -2,10 +2,10 @@ package edu.uci.ics.sdcl.firefly.report;
 
 public class Result {
 
-	String truePositives;
-	String trueNegatives;
-	String falsePositives;
-	String falseNegatives;
+	String truePositives="0";
+	String trueNegatives="0";
+	String falsePositives="0";
+	String falseNegatives="0";
 	
 	String percent_TruePositives;
 	String percent_TrueNegatives;
