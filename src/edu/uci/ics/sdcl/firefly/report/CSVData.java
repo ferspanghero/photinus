@@ -652,9 +652,9 @@ public class CSVData {
 		String questionTypeStr = QuestionType.METHOD_PARAMETERS 	; //CONDITIONAL_BODY CONDITIONAL_STATEMENT; LOOP_BODY; LOOP_STATEMENT;METHOD_BODY;METHOD_DECLARATION;METHOD_INVOCATION;METHOD_PARAMETERS;
 
 		Double maxDuration = new Double(Double.MAX_VALUE);
-		Integer[] durationList = {10,15,20,30,45,60,120};//10,15,20,30,45,60,120}; //Minimal duration to be considered
-		Integer[] scoreList = {2};//,4};  //Minimal Score to be considered		
-		Integer[] idkList = {11};//2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
+		Integer[] durationList = {20};//10,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {3,4};  //Minimal Score to be considered		
+		Integer[] idkList = {11};// 2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
 		Integer lowerCut_idk = -1;  //Worker that has an equal amount below will be cut out of the set.
 		Integer maxScore=5; //Worker has to have grade below that.
 		int i=0;
@@ -667,7 +667,7 @@ public class CSVData {
 				int k=0;
 				while(k<idkList.length){
 					String idkStr = idkList[k].toString();
-					String fileName = maxDuration.toString()+"_"+durationStr+"s_test-"+scoreStr+"_"+maxScore+"_idk-"+idkStr+"_"+lowerCut_idk.toString()+".txt";
+					String fileName = durationStr+"s_test-"+scoreStr+"_"+maxScore+"_idk-"+idkStr+"_"+lowerCut_idk.toString()+".txt";
 					//System.out.print("fileName:"+fileName+"> ");
 					csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK( duration, maxDuration, scoreList[j],maxScore,idkList[k],lowerCut_idk));
 					//csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(questionTypeStr, duration, scoreList[j],idkList[k]));
@@ -681,7 +681,7 @@ public class CSVData {
 		
 		
 		System.out.println("files written, look at: "+path);
-		csvData.printActiveWorkerMap();
+		//csvData.printActiveWorkerMap();
 	}
 
 
