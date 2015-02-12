@@ -28,7 +28,7 @@ public class CSVData {
 
 	static String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
 	static String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
-	static String currentPath = samsungPath;
+	static String currentPath = dellPath;
 	
 	LogData data;
 
@@ -40,6 +40,7 @@ public class CSVData {
 	public HashMap<String, String> discardedWorkerMap;
 	public HashMap<String, String> activeWorkerMap; //Workers whose answer was included in the analysis.
 	
+	public HashMap<String, Microtask> scoreFilterCutMicrotaskMap; //Remove all microtasks from workers with Score below and cut to the first N answers for each microtask
 	
 	//Sessions that are considered spurious
 	public	HashMap<String,String> batch1RejectMap = new HashMap<String,String>();
@@ -475,13 +476,77 @@ public class CSVData {
 	}
 
 	//----------------------------------------------------------------------------------------------------------
-
-	private ArrayList<String> writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(Double minimumDuration, Double maxDuration, Integer minimumGrade, Integer maxGrade, Integer numberOfICanTell, Integer lowerNumberOfICantTell){
+	
+	/**Filter Score 2 workers and cut.
+	 * 
+	 * @param cutlevel initally 10, but could be larger.
+	 * @param minimumDuration
+	 * @param maxDuration
+	 * @param minimumGrade
+	 * @param maxGrade
+	 * @param numberOfICanTell
+	 * @param lowerNumberOfICantTell
+	 * @return
+	 */
+	private void filterCutMicrotasks(int cutLevel, int score){
+		
+		System.out.println("Cut:");
+		this.scoreFilterCutMicrotaskMap = new HashMap<String,Microtask>();
+		
+		Iterator<String> iter=data.microtaskMap.keySet().iterator();
+		int  totalAnswers=0;
+		while(iter.hasNext()){
+			String taskID = iter.next();
+			Microtask task = data.microtaskMap.get(taskID);
+			Microtask newTask = task.getSimpleVersion();
+			newTask.setAnswerList(new Vector<Answer>());//Remove all answers
+			int validMicrotaskAnswers=0;
+			Vector<Answer> answerList = task.getAnswerList();
+			for(int i=0;i<answerList.size();i++){
+				Answer answer = answerList.get(i);					
+				String workerId = answer.getWorkerId();
+				Worker worker = data.workerMap.get(workerId);
+				if(worker!=null && worker.getGrade()>score){
+					if(newTask.getAnswerList().size()<cutLevel){//Add only answers if we didn't have reached the cut level
+						newTask.addAnswer(answer);
+						validMicrotaskAnswers++;
+					}
+				}
+				//else discard answer from worker
+			}
+			this.scoreFilterCutMicrotaskMap.put(taskID, newTask);
+			System.out.println(taskID+":"+validMicrotaskAnswers);
+			totalAnswers = totalAnswers + validMicrotaskAnswers;
+		}
+		System.out.println("TotalAnswers:"+totalAnswers);
+		System.out.println("----------------------------");
+	}
+	
+	
+	
+	
+	//----------------------------------------------------------------------------------------------------------
+/**
+ * 
+ * @param filterCut means that must use the microtasks from scoreFilterCutMicrotaskMap which were filtered and cut.
+ * @param minimumDuration
+ * @param maxDuration
+ * @param minimumGrade
+ * @param maxGrade
+ * @param numberOfICanTell
+ * @param lowerNumberOfICantTell
+ * @return
+ */
+	private ArrayList<String> writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(boolean filterCut, Double minimumDuration, Double maxDuration, Integer minimumGrade, Integer maxGrade, Integer numberOfICanTell, Integer lowerNumberOfICantTell){
 		ArrayList<String> contentList = new ArrayList<String>();
 
 		//System.out.println("Size of microtask Map: "+ data.microtaskMap.size());
-
-		Iterator<String> iter=data.microtaskMap.keySet().iterator();
+		Iterator<String> iter;
+		if(filterCut)
+			iter = this.scoreFilterCutMicrotaskMap.keySet().iterator();
+		else
+			iter = data.microtaskMap.keySet().iterator();
+		
 		discardedWorkerMap = new HashMap<String, String>();//just to analyze who are the workers in terms of skill test score
 		activeWorkerMap = new HashMap<String, String>();
 		int answerCount=0;
@@ -634,7 +699,7 @@ public class CSVData {
 		CSVData csvData = initializeLogs();
 
 		String path =  currentPath;
-		path = path +"\\DataAnalysis\\BaseDataInTime\\combined12\\";
+		path = path +"\\DataAnalysis\\BaseDataInTime\\combined123\\";
 
 		/*csvData.printToFile(path+"all.txt", csvData.writeMicrotaskAnswers_ZeroOnes());
 
@@ -655,12 +720,15 @@ public class CSVData {
 		String questionTypeStr = QuestionType.METHOD_PARAMETERS 	; //CONDITIONAL_BODY CONDITIONAL_STATEMENT; LOOP_BODY; LOOP_STATEMENT;METHOD_BODY;METHOD_DECLARATION;METHOD_INVOCATION;METHOD_PARAMETERS;
 
 		Double maxDuration = new Double(Double.MAX_VALUE);
-		Integer[] durationList = {20};//10,15,20,30,45,60,120}; //Minimal duration to be considered
-		Integer[] scoreList = {3,4};  //Minimal Score to be considered		
+		Integer[] durationList = {0};//,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {3};//,4};  //Minimal Score to be considered		
 		Integer[] idkList = {11};// 2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
 		Integer lowerCut_idk = -1;  //Worker that has an equal amount below will be cut out of the set.
 		Integer maxScore=5; //Worker has to have grade below that.
 		int i=0;
+		
+		csvData.filterCutMicrotasks(10,3);
+		
 		while(i<durationList.length){
 			int j=0;
 			String durationStr = durationList[i].toString();
@@ -672,7 +740,7 @@ public class CSVData {
 					String idkStr = idkList[k].toString();
 					String fileName = durationStr+"s_test-"+scoreStr+"_"+maxScore+"_idk-"+idkStr+"_"+lowerCut_idk.toString()+".txt";
 					//System.out.print("fileName:"+fileName+"> ");
-					csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK( duration, maxDuration, scoreList[j],maxScore,idkList[k],lowerCut_idk));
+					csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(true, duration, maxDuration, scoreList[j],maxScore,idkList[k],lowerCut_idk));
 					//csvData.printToFile(path+fileName, csvData.writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(questionTypeStr, duration, scoreList[j],idkList[k]));
 					//csvData.writeAnswerLabels_Filtered_by_QUESTIONTYPE_DURATION_GRADE_IDK(questionTypeStr, duration, scoreList[j],idkList[k]);
 					k++;
