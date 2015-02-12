@@ -10,6 +10,8 @@ import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.QuestionType;
+import edu.uci.ics.sdcl.firefly.QuestionTypeFactory;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.report.LogAnalysis.Counter;
@@ -26,7 +28,11 @@ import edu.uci.ics.sdcl.firefly.report.LogAnalysis.Counter;
  */
 public class WorkerAnalysis {
 
-	/**Workers that produced the best data set 52% precision, with 71% recall)*/
+	static String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
+	static String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
+	static String currentPath = dellPath;
+
+	/**Workers that produced the best data set 55% precision, with 71% recall)*/
 	public String[] filteredWorkers = { "2-490","1-1958","2-2011","1-700","1-1758","1-1755","2-302","2-1279",
 			"1-780","1-692","2-604","2-1543","1-2096","2-1271","1-1644","2-2420","2-400","1-338","2-1407","1-1845","2-1168",
 			"2-204","1-1159","1-2155","1-132","2-1268","1-705","1-1025","1-1026","2-298","1-1850","1-349","1-2160","2-1517",
@@ -92,11 +98,10 @@ public class WorkerAnalysis {
 
 		LogData data = new LogData(false, 0);
 
-		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		//		"C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
-		data.processLogProduction1(path);
+		String path = currentPath;
+		path = path + "\\RawDataLogs\\";
 
-		//String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\1.Fall2014-Experiments\\RawDataLogs\\";
+		data.processLogProduction1(path);
 		data.processLogProduction2(path);
 
 		System.out.println("Logs loaded! Totals are:");
@@ -170,7 +175,7 @@ public class WorkerAnalysis {
 	 * Produces a data structure of the following:
 	 * Map<String key, Map<String workerId, Worker workerObj> >  Key is the level of correct answers (from zero to 10) and
 	 */
-	private void computeCorrectAnswersPerWorker(Double duration, Integer score, Integer idkCount){
+	private void computeCorrectAnswersPerWorker(Double duration, Integer score, Integer idkCount, String questionTypeStr){
 
 		workerAnswerCountMap = new HashMap<String,Integer>();
 		workerYesCountMap = new HashMap<String,Integer>();
@@ -179,6 +184,9 @@ public class WorkerAnalysis {
 		workerWrongAnswerMap = new  HashMap<String,Integer>();
 		workerCorrectAnswersBugPointQuestionsMap = new  HashMap<String,Integer>();
 		workerAnswerBugPointingQuestionCountMap = new HashMap<String,Integer>();
+
+		QuestionTypeFactory questionTypeFactory = new QuestionTypeFactory();
+		questionTypeFactory.generateQuestionTypes();
 
 		Iterator<String> iter = data.workerMap.keySet().iterator();
 
@@ -191,23 +199,25 @@ public class WorkerAnalysis {
 				Vector<Microtask> taskList = session.getMicrotaskList();
 				if(taskList!=null){
 					for(Microtask task: taskList){
-						Vector<Answer>  answerList = task.getAnswerList();
-						for(Answer answer: answerList){
-							if(isAnswerValid(answer, duration, score, idkCount)){//Ignore answers that are out the range (duration, skill test score, and number of I can't tell answers)
-								if(answer.getWorkerId().matches(workerId)){
-									incrementAnswer(workerId);
-									if(answer.getOption().matches(Answer.YES)){
-										incrementYesAnswers(workerId);
-									}else
-										if(answer.getOption().matches(Answer.PROBABLY_YES)){
-											incrementProbablyYesAnswers(workerId);
-										}
-									//else ignores
+						if(isValidTaskType(task.getID(), questionTypeStr,questionTypeFactory.getQuestionTypeMap())){
+							Vector<Answer>  answerList = task.getAnswerList();
+							for(Answer answer: answerList){
+								if(isAnswerValid(answer, duration, score, idkCount)){//Ignore answers that are out the range (duration, skill test score, and number of I can't tell answers)
+									if(answer.getWorkerId().matches(workerId)){
+										incrementAnswer(workerId);
+										if(answer.getOption().matches(Answer.YES)){
+											incrementYesAnswers(workerId);
+										}else
+											if(answer.getOption().matches(Answer.PROBABLY_YES)){
+												incrementProbablyYesAnswers(workerId);
+											}
+										//else ignores
 
-									//Check if answer is correct and increment
-									checkIncrementCorrectAnswer(task.getID().toString(),answer.getOption(),workerId);
+										//Check if answer is correct and increment
+										checkIncrementCorrectAnswer(task.getID().toString(),answer.getOption(),workerId);
+									}
+									//else ignores.
 								}
-								//else ignores.
 							}
 						}
 					}
@@ -215,10 +225,10 @@ public class WorkerAnalysis {
 			}
 		}
 		//else do nothing, because session is empty.
-		computePercentCorrectWorkerCountMap();
-		computeLevelCorrectWorkers();
-		computePercentageCorrectAnswersPerWorker();
-		computePercentCorrectBugPointingWorkerCountMap();
+		//computePercentCorrectWorkerCountMap();
+		//computeLevelCorrectWorkers();
+		//computePercentageCorrectAnswersPerWorker();
+		//computePercentCorrectBugPointingWorkerCountMap();
 	}
 
 	private void computeTotalAnswersWorker(){
@@ -251,6 +261,18 @@ public class WorkerAnalysis {
 		}
 	}
 
+	private boolean isValidTaskType(Integer id, String desiredQuestionTypeStr, HashMap<String,HashMap<Integer,QuestionType>> questionTypeMap){
+
+		HashMap<Integer,QuestionType> idQuestionTypeMap = questionTypeMap.get(desiredQuestionTypeStr);
+		if(idQuestionTypeMap!=null){
+			if(idQuestionTypeMap.containsKey(id))
+				return true;
+			else 
+				return false;
+		}
+		else 
+			return false;
+	}
 
 	private void computeTP_FP_TN_FN_PerWorker(){
 		Iterator<String> iter = data.workerMap.keySet().iterator();
@@ -269,6 +291,34 @@ public class WorkerAnalysis {
 						}
 						else{
 							incrementFPTN(workerId,task.getAnswerByUserId(workerId));
+						}
+					}
+				}
+			}
+		}
+	}	
+
+	private void computeTP_FP_TN_FN_PerFilteredWorker(Double duration, Integer score, Integer idkCount, String questionTypeStr){
+
+		QuestionTypeFactory questionTypeFactory = new QuestionTypeFactory();
+		questionTypeFactory.generateQuestionTypes();
+
+		for(String workerId: this.filteredWorkers){
+			Worker worker = data.workerMap.get(workerId);
+			String sessionId = worker.getSessionId();
+			if(sessionId!=null){
+				WorkerSession session = data.sessionMap.get(sessionId);
+				Vector<Microtask> taskList = session.getMicrotaskList();
+				for(Microtask task: taskList){
+					if((task!=null) && 	(isValidTaskType(task.getID(), questionTypeStr,questionTypeFactory.getQuestionTypeMap()))){
+						Answer answer = task.getAnswerByUserId(workerId);
+						if(isAnswerValid(answer, duration, score, idkCount)){//Ignore answers that are out the range (duration, skill test score, and number of I can't tell answers)
+							if(data.yesMap.containsKey(task.getID().toString())){
+								incrementTPFN(workerId,answer);
+							}
+							else{
+								incrementFPTN(workerId,answer);
+							}
 						}
 					}
 				}
@@ -649,6 +699,37 @@ public class WorkerAnalysis {
 		}
 	}
 
+	//----------------------------------------------------------------------------	
+	public void printFilteredWorkerYesProbablyYes_and_Correct_Wrong_TP(){
+
+		System.out.println("Workers selected questions: "+ this.workerAnswerCountMap.size());
+		System.out.println("WorkerId | AnswerCount | Yes | ProbYes | CorrectCount | WrongCount | TP");
+
+		for(String workerId: this.filteredWorkers){
+			Integer yesCount = this.workerYesCountMap.get(workerId);
+			if(yesCount==null) yesCount =0;
+			Integer probablyYesCount = this.workerProbablyYesCountMap.get(workerId);
+			if(probablyYesCount==null) probablyYesCount =0;
+
+			Integer correctCount = this.workerCorrectAnswerMap.get(workerId);
+			if(correctCount==null) correctCount =0;
+
+			Integer wrongCount = this.workerWrongAnswerMap.get(workerId);
+			if(wrongCount==null) wrongCount =0;
+
+
+			Integer answerCount =  workerAnswerCountMap.get(workerId);
+			if(answerCount==null) answerCount =0;
+
+
+			WorkerEfficacy efficacy = workerEfficacyMap.get(workerId);
+			Integer TP=0;
+			if(efficacy!=null)
+				TP = efficacy.TP;
+
+			System.out.println(workerId+"|"+answerCount+"|"+yesCount+"|"+probablyYesCount+"|"+correctCount+"|"+wrongCount+"|"+TP); 
+		}
+	}
 
 	/**
 	 * Just increments the counter for number of answers given by a worker
@@ -749,6 +830,10 @@ public class WorkerAnalysis {
 
 		WorkerAnalysis analysis = initializeLogs();
 
+		String path =  currentPath;
+		path = path +"\\DataAnalysis\\BaseDataInTime\\workerAnalysis\\";
+
+
 		//analysis.computeResultsPerWorkerCluster();
 
 		//analysis.computeCorrectAnswersPerWorker();
@@ -757,10 +842,14 @@ public class WorkerAnalysis {
 		Integer minimalScore =new Integer(3);
 		Integer eliminationLevelOfICanTell = new Integer(2);
 
-		//analysis.computeCorrectAnswersPerWorker(minimalDuration,minimalScore,eliminationLevelOfICanTell);
-		analysis.computeCorrectAnswersPerWorker(analysis.filteredWorkers);
-		analysis.computeTP_FP_TN_FN_PerWorker();
-		analysis.printWorkerEfficacy(true);
+		String questionTypeStr = QuestionType.METHOD_INVOCATION; //CONDITIONAL_BODY CONDITIONAL_STATEMENT; LOOP_BODY; LOOP_STATEMENT;METHOD_BODY;METHOD_DECLARATION;METHOD_INVOCATION;METHOD_PARAMETERS;
+		analysis.computeCorrectAnswersPerWorker(minimalDuration,minimalScore,eliminationLevelOfICanTell,questionTypeStr);
+		analysis.computeTP_FP_TN_FN_PerFilteredWorker(minimalDuration,minimalScore,eliminationLevelOfICanTell,questionTypeStr);
+		analysis.printFilteredWorkerYesProbablyYes_and_Correct_Wrong_TP();
+
+		//analysis.computeCorrectAnswersPerWorker(analysis.filteredWorkers);
+		//analysis.computeTP_FP_TN_FN_PerWorker();
+		//analysis.printWorkerEfficacy(true);
 
 		//analysis.computeTotalAnswersWorker();
 
