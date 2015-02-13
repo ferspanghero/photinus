@@ -28,7 +28,7 @@ public class CSVData {
 
 	static String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
 	static String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
-	static String currentPath = dellPath;
+	static String currentPath = samsungPath;
 	
 	LogData data;
 
@@ -477,9 +477,9 @@ public class CSVData {
 
 	//----------------------------------------------------------------------------------------------------------
 	
-	/**Filter Score 2 workers and cut.
+	/**Discard workers below certain Score workers, then cut.
 	 * 
-	 * @param cutlevel initally 10, but could be larger.
+	 * @param cutlevel initially 10, but could be larger.
 	 * @param minimumDuration
 	 * @param maxDuration
 	 * @param minimumGrade
@@ -727,7 +727,7 @@ public class CSVData {
 		Integer maxScore=5; //Worker has to have grade below that.
 		int i=0;
 		
-		csvData.filterCutMicrotasks(10,3);
+		csvData.filterCutMicrotasks(10,2);
 		
 		while(i<durationList.length){
 			int j=0;
