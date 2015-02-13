@@ -145,9 +145,9 @@ public class AnswerPerQuestionAnalysis {
 		AnswerPerQuestionAnalysis analysis = initializeLogs();
 
 		String path =  currentPath;
-		path = path +"\\DataAnalysis\\BaseDataInTime\\combined12\\";
+		path = path +"\\DataAnalysis\\BaseDataInTime\\cutFilter\\";
 		
-		analysis.filterCutMicrotasks(10, 1);
+		analysis.filterCutMicrotasks(-1, 1);
 		analysis.printQuestionAnswers();
 		
 	}
