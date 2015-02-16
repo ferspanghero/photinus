@@ -117,7 +117,9 @@ public class CutFilterData {
  * @param lowerNumberOfICantTell
  * @return
  */
-	private HashMap<String,String> writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(HashMap<String, Microtask> microtaskMap, Double minimumDuration, Double maxDuration, Integer minimumGrade, Integer maxGrade, Integer numberOfICanTell, Integer lowerNumberOfICantTell){
+	private HashMap<String,String> writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(HashMap<String, Microtask> microtaskMap, 
+			Double minimumDuration, Double maxDuration, Integer minimumGrade, Integer maxGrade, Integer numberOfICanTell, 
+			Integer lowerNumberOfICantTell){
 		
 		HashMap<String, String> contentMap = new HashMap<String, String>();
 
@@ -164,7 +166,9 @@ public class CutFilterData {
 			contentMap.put(task.getID().toString(), buffer.toString());
 		}
 		//System.out.println("duration|validAnswers|activeWorkers");
-		System.out.println(minimumDuration/1000+"|"+validAnswers+"|"+this.activeWorkerMap.size());
+		String duration = new Double(minimumDuration/1000).toString();
+		duration = duration.substring(0, duration.length()-2);
+		System.out.println(duration+"|"+numberOfICanTell+"|"+validAnswers+"|"+this.activeWorkerMap.size());
 		
 		//System.out.println(validAnswers);//this.activeWorkerMap.size());// ", active workers: "+);
 		return contentMap;
@@ -207,12 +211,12 @@ public class CutFilterData {
 		CutFilterData cutData = initializeLogs();
 
 		String path =  currentPath;
-		path = path +"\\1.DataAnalysis(CutFirst)\\data\\filter2\\";
+		path = path +"\\1.DataAnalysis(CutFirst)\\data\\filter13\\";
 
 		Double maxDuration = new Double(Double.MAX_VALUE);
-		Integer[] durationList = {0};//,10,15,20,30,45,60,120}; //Minimal duration to be considered
-		Integer[] scoreList = {2};//,4};  //Minimal Score to be considered		
-		Integer[] idkList = {11};// 2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
+		Integer[] durationList = {10,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {2};//,3,4};//,4};  //Minimal Score to be considered		
+		Integer[] idkList = {2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
 		Integer lowerCut_idk = -1;  //Worker that has an equal amount below will be cut out of the set.
 		Integer maxScore=5; //Worker has to have grade below that.
 		int i=0;
@@ -228,7 +232,7 @@ public class CutFilterData {
 				int k=0;
 				while(k<idkList.length){
 					String idkStr = idkList[k].toString();
-					String fileName = "Cut_Filter_"+durationStr+"s_test-"+scoreStr+"_"+maxScore+"_idk-"+idkStr+"_"+lowerCut_idk.toString()+".txt";
+					String fileName = "Cut_Filter_"+durationStr+"_"+idkStr+".txt"; //"s_test-"+scoreStr+"_"+maxScore+"
 					ArrayList<String> sortedList = cutData.mapToSortedList(cutData.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(cutMap, duration, maxDuration, scoreList[j],maxScore,idkList[k],lowerCut_idk));
 					cutData.printToFile(path+fileName, sortedList);
 					k++;
