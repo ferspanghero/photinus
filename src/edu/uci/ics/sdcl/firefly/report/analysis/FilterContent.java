@@ -1,11 +1,12 @@
 package edu.uci.ics.sdcl.firefly.report.analysis;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.uci.ics.sdcl.firefly.report.Result;
 
-public class FilterContent {
+public class FilterContent implements Serializable{
 
 	/** in milliseconds */
 	Double minimalDuration;
@@ -38,23 +39,24 @@ public class FilterContent {
 	}
 	
 	public String getFilterName(){
-		String minimalDurationStr = minimalDuration.toString();
+		Double seconds=minimalDuration/1000;
+		String minimalDurationStr = seconds.toString();
 		minimalDurationStr = minimalDurationStr.substring(0, minimalDurationStr.length()-2);
-		String name = "Duration-"+minimalDuration+"_Score-"+workerScore+"_ICT-"+maxICantTell; 
+		String name = "Duration-"+minimalDurationStr+"_Score-"+workerScore+"_ICT-"+maxICantTell; 
 		return name;
 	}
 	
-	public String convertWorkerScore(){
+	public Double convertWorkerScore(){
 		if(workerScore==2)
-			return "50%";
+			return 0.50;
 		else
 			if(workerScore==3)
-				return "75%";
+				return 0.75;
 			else
 				if(workerScore==4)
-					return "100%";
+					return 1.0;
 				else 
-					return "";
+					return 0.0;
 	}
 	
 	

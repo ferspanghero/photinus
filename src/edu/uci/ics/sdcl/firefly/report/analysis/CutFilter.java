@@ -98,11 +98,17 @@ public class CutFilter {
 			totalAnswers = totalAnswers + validMicrotaskAnswers;
 		}
 		System.out.println("TotalAnswers:"+totalAnswers);
-		System.out.println("----------------------------");
+		//System.out.println("----------------------------");
 		return cutMap;
 	}
 	
-	
+	public void printActiveWorkerMap(){
+		System.out.println("Active WorkerMap");
+		Iterator<String> iter = this.activeWorkerMap.keySet().iterator();
+		while(iter.hasNext()){
+			System.out.println(iter.next());
+		}
+	}
 	
 	
 	//----------------------------------------------------------------------------------------------------------
@@ -133,7 +139,6 @@ public class CutFilter {
 			contentList = new ArrayList<String>();
 			String id = iter.next();
 			Microtask task = microtaskMap.get(id);
-			contentList.add(task.getID().toString());
 			Vector<Answer> answerList = task.getAnswerList();
 			for(int i=0;i<answerList.size();i++){
 				Answer answer = answerList.get(i);					

@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.report.AnalysisPath;
 import edu.uci.ics.sdcl.firefly.report.Result;
 
@@ -36,62 +37,63 @@ public class SpreadsheetFactory {
 	String templateDataWorksheet = "data";
 
 	Double minPrecision = new Double(0.0);
-	Double minRecall = new Double(70.0);
+	Double minRecall = new Double(0.7);
 	AnalysisPath analysisPath;
-	
+
 	public SpreadsheetFactory(){
 		this.analysisPath = AnalysisPath.getInstance(); 
 		this.templatePath = analysisPath.analysisTypePath;
 	}
 
 
-	private Path copyFile(String templatePath, String templateName, String copyPath, String copyName){
+	private boolean copyTemplateFile(String copyPath, String copyName){
 
-		Path baseExcelPath = FileSystems.getDefault().getPath(templatePath, templateName);
+		Path baseExcelPath = FileSystems.getDefault().getPath(this.templatePath, this.templateName);
 		Path newFilePath = FileSystems.getDefault().getPath(copyPath,copyName);
 
 		try {
 			Files.copy(baseExcelPath, newFilePath, StandardCopyOption.REPLACE_EXISTING);
-			return newFilePath.getFileName();
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;			
+			return false;			
 		}
 	}
 
-	private int populateWorksheet(HashMap<String,ArrayList<String>> contentMap, String spreadsheetFileNamePath,String worksheetName){
+	private int populateWorksheet(HashMap<String,ArrayList<String>> contentMap, String calculationSheetNamePath,String worksheetName){
 		try{
 			//Open workbook
-			FileInputStream file = new FileInputStream(new File(spreadsheetFileNamePath));
+			FileInputStream file = new FileInputStream(new File(calculationSheetNamePath));
 			XSSFWorkbook workbook = new XSSFWorkbook(file);
 			XSSFSheet sheet = workbook.getSheet(worksheetName);
 
 			int answerCount=0;
 			Iterator<String> iter = contentMap.keySet().iterator();
-			int rowInt=1; //skips the first row, because it has the titles.
 			while(iter.hasNext()){
 				String taskId = iter.next();
+				Integer rowInt = new Integer(taskId) + 1;
 				ArrayList<String> answerList = contentMap.get(taskId);
-				Row row = sheet.getRow(rowInt);
+				Row row = sheet.getRow(rowInt.intValue());
 				if(answerList!=null && answerList.size()>0){
 					int columnIndex=1;//skips the first column, because it has the titles.
 					for(String answer: answerList){
 						Cell cell = row.getCell(columnIndex);
 						cell.setCellValue(answer);
-
-						//open worksheet
-						//write to worksheet
 						columnIndex++;
 					}
+					//System.out.println("TaskID: "+ taskId+", Row: "+rowInt+", answers: "+ answerList.size());
 					answerCount = answerCount + answerList.size(); 
 				}
-
-				//update and close workbook
-				FileOutputStream out = new FileOutputStream(new File(spreadsheetFileNamePath));
-				workbook.write(out);
-				out.flush();
-				out.close();
 			}
+			
+			file.close(); //close the input.
+			
+			//update and close workbook
+			FileOutputStream out = new FileOutputStream(new File(calculationSheetNamePath));
+			workbook.write(out);
+			out.flush();
+			out.close();
+			
 			return answerCount;
 		}
 		catch(Exception e){
@@ -106,26 +108,33 @@ public class SpreadsheetFactory {
 		try{
 			//columnList = {"E", "J", "O", "T", "Y", "AD", "AI", "AN", "AS", "AX"};
 			Integer[] columnList = {4, 9, 14, 19, 24, 29, 34, 39, 44, 49}; 
-			Integer[] recallRowList = {3,6,9,12};
+			Integer[] recallRowList = {2, 5, 8, 11};
 
 			Double precision=0.0;
 			Double recall=0.0;
 			Double auxPrecision=0.0;
 			Double auxRecall=0.0;
 
+			FileInputStream file = new FileInputStream(new File(spreadsheetFileNamePath));
+			XSSFWorkbook workbook = new XSSFWorkbook(file);
+			XSSFSheet sheet = workbook.getSheet(worksheetName);
+			
 			for(Integer column: columnList){
 				for(Integer row: recallRowList){
-					auxRecall = getCellValue(column, row, spreadsheetFileNamePath, worksheetName);
-					if(auxRecall>=this.minRecall){
-						auxPrecision = getCellValue(column, row-1, spreadsheetFileNamePath, worksheetName);
-						if((auxPrecision>precision) || (auxPrecision==precision && auxRecall>recall)){
+					auxRecall = getCellValue(column, row, sheet);
+					if(auxRecall.doubleValue()>=this.minRecall.doubleValue()){
+						auxPrecision = getCellValue(column, row-1, sheet);
+						if((auxPrecision.doubleValue()>precision.doubleValue()) || 
+								(auxPrecision.doubleValue()==precision.doubleValue() && auxRecall.doubleValue()>recall.doubleValue())){
 							precision = auxPrecision;
 							recall = auxRecall;
 						}
 					}
 				}
 			}
-
+			//close
+			file.close();
+			
 			Result result = new Result();
 			result.precision = precision;
 			result.recall = recall;
@@ -140,33 +149,39 @@ public class SpreadsheetFactory {
 	/** Reads the MajorityVoting worksheet from the template spreadsheet */
 	public Result readMajorityVotingResults(String spreadsheetFileNamePath,String worksheetName){
 
+		try{
 		Integer column = 5;
-		Integer precisionRow = 2;
-		Integer recallRow = 3;
+		Integer precisionRow = 1;
+		Integer recallRow = 2;
+		
+		FileInputStream file = new FileInputStream(new File(spreadsheetFileNamePath));
+		XSSFWorkbook workbook = new XSSFWorkbook(file);
+		XSSFSheet sheet = workbook.getSheet(worksheetName);
 
 		Result result = new Result();
-		result.precision = getCellValue(column, precisionRow, spreadsheetFileNamePath, worksheetName);;
-		result.recall = getCellValue(column, recallRow, spreadsheetFileNamePath, worksheetName);;
-		return result;		
+		result.precision = getCellValue(column, precisionRow, sheet);
+		result.recall = getCellValue(column, recallRow, sheet);
+		file.close();
+		return result;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 
-	private Double getCellValue(Integer columnInt, Integer rowInt, String fileNamePath, String worksheetName){
+	private Double getCellValue(Integer columnInt, Integer rowInt, XSSFSheet sheet){
 
 		try{
+			//System.out.println("row:"+rowInt.toString()+", column:"+columnInt.toString());
 			Double cellValue = 0.0;
-			//Open workbook
-			FileInputStream file = new FileInputStream(new File(fileNamePath));
-			XSSFWorkbook workbook = new XSSFWorkbook(file);
-			XSSFSheet sheet = workbook.getSheet(worksheetName);
-
+			
 			Row row = sheet.getRow(rowInt.intValue());
 			Cell cell = row.getCell(columnInt.intValue());
-			String cellValueStr = cell.getStringCellValue();
+			double cellValueStr = cell.getNumericCellValue();//getCellFormula();
+			//System.out.println("cellValue: "+ cellValueStr+"at row:"+rowInt.toString()+", column:"+columnInt.toString());
 			cellValue = new Double(cellValueStr);
-
-			//close
-			file.close();
 
 			return cellValue;
 		}
@@ -176,7 +191,7 @@ public class SpreadsheetFactory {
 		}
 	}
 
-	public boolean writeResult(String reportFileNamePath, String worksheetName, Integer initialRow, Integer initialColumn, ArrayList<ArrayList<String>> resultMatrix){
+	public boolean writeResult(String reportFileNamePath, String worksheetName, Integer initialRow, Integer initialColumn, ArrayList<ArrayList<Double>> resultMatrix){
 
 		try{
 			//Open workbook
@@ -185,9 +200,9 @@ public class SpreadsheetFactory {
 			XSSFSheet sheet = workbook.getSheet(worksheetName);
 
 			int rowIndex = initialRow.intValue();
-			for(ArrayList<String> line: resultMatrix){
+			for(ArrayList<Double> line: resultMatrix){
 				int columnIndex = initialColumn.intValue();
-				for(String result: line){
+				for(Double result: line){
 					Row row = sheet.getRow(rowIndex);
 					Cell cell = row.getCell(columnIndex);
 					cell.setCellValue(result);
@@ -196,12 +211,14 @@ public class SpreadsheetFactory {
 				rowIndex++;
 			}       
 
+			file.close();
+			
 			//update and close workbook
 			FileOutputStream out = new FileOutputStream(new File(reportFileNamePath));
 			workbook.write(out);
 			out.flush();
 			out.close();
-
+			
 			return true;
 		}
 		catch(Exception e){
@@ -211,19 +228,70 @@ public class SpreadsheetFactory {
 	}
 
 	public void calculateResults(String fileName, FilterContent content){
-		Path path = this.copyFile(this.templatePath, this.templateName, analysisPath.calculationsPath, fileName);
-		int answerCount = this.populateWorksheet(content.answerMap, analysisPath.calculationsPath, this.templateDataWorksheet);
-		if(answerCount!=content.validAnswers){
-			System.out.println("ERROR: wrong number of anwers written in spreadsheet "+fileName);
-			System.out.println("Expected:"+content.validAnswers+", actual: "+answerCount);
-		}
+		if(this.copyTemplateFile(analysisPath.calculationsPath, fileName)){
+			int answerCount = this.populateWorksheet(content.answerMap, analysisPath.calculationsPath+fileName, this.templateDataWorksheet);
+			if(answerCount!=content.validAnswers){
+				System.out.println("ERROR: wrong number of anwers written in spreadsheet "+fileName);
+				System.out.println("Expected:"+content.validAnswers+", actual: "+answerCount);
+			}
+		}	
 	}
 
+
 	public static void main(String[] args){
-
+		SpreadsheetFactory factory = new SpreadsheetFactory();
+		factory.testWriteResults();
+	}	
 		
-		
+	public void testCalculateResults(){
+		AnalysisPath analysisPath = AnalysisPath.getInstance();
+		SpreadsheetFactory factory = new SpreadsheetFactory();
 
+		factory.copyTemplateFile(analysisPath.analysisTypePath, "copy.xlsx");
+
+		CutFilter cutFilter = new CutFilter();
+
+		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(10,1);
+		FilterContent content = cutFilter.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(cutMap, new Double(0.0), Double.MAX_VALUE, 2, 5, 11, -1);
+
+		factory.calculateResults("copy.xlsx", content);
+	}
+
+	
+	public void testWriteResults(){
+		AnalysisPath analysisPath = AnalysisPath.getInstance();
+		SpreadsheetFactory factory = new SpreadsheetFactory();
+	
+		FilterContent content = new FilterContent(0.0,1,-1);
+		content.majorityResult = factory.readMajorityVotingResults(analysisPath.calculationsPath+"copy.xlsx", "MajorityVoting");
+		content.strengthSignalResult = factory.readStrengthSignalResults(analysisPath.calculationsPath+"copy.xlsx", "Panel");	
+		
+		System.out.println("majority precision:recall= "+ content.majorityResult.precision.toString()+":"+content.majorityResult.recall.toString());
+		System.out.println("strengthSignal precision:recall= "+ content.strengthSignalResult.precision.toString()+":"+content.strengthSignalResult.recall.toString());
+		
+		ArrayList<FilterContent> contentList = new ArrayList<FilterContent>();
+		contentList.add(content);
+		
+		ArrayList<ArrayList<Double>> reportTable = new ArrayList<ArrayList<Double>>();
+		ArrayList<Double> line = new ArrayList<Double>();
+		//String durationStr = content.minimalDuration.toString();
+		line.add(content.minimalDuration/1000);
+		//String workerScoreStr = content.convertWorkerScore();
+		line.add(new Double(content.workerScore.doubleValue()));
+		//String ictStr = content.maxICantTell.toString();
+		line.add(new Double(content.maxICantTell.doubleValue()));
+		
+		line.add(new Double(2089));//content.validAnswers.toString());
+		line.add(new Double(522));//content.activeWorkers.toString());
+		
+		line.add(content.majorityResult.precision);
+		line.add(content.majorityResult.recall);
+		line.add(content.strengthSignalResult.precision);
+		line.add(content.strengthSignalResult.recall);
+		
+		reportTable.add(line);
+		
+		factory.writeResult(analysisPath.analysisTypePath+"Results.xlsx", "Results", new Integer(5), new Integer(1), reportTable);
 	}
 
 }

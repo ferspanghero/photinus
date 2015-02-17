@@ -96,11 +96,11 @@ public class CutFilterData {
 				//else discard answer 
 			}
 			this.cutMicrotaskMap.put(taskID, newTask);
-			//System.out.println(taskID+":"+validMicrotaskAnswers);
+			System.out.println(taskID+":"+validMicrotaskAnswers);
 			totalAnswers = totalAnswers + validMicrotaskAnswers;
 		}
-	//	System.out.println("TotalAnswers:"+totalAnswers);
-	//	System.out.println("----------------------------");
+		System.out.println("TotalAnswers:"+totalAnswers);
+		System.out.println("----------------------------");
 		return this.cutMicrotaskMap;
 	}
 	
@@ -169,8 +169,8 @@ public class CutFilterData {
 		String duration = new Double(minimumDuration/1000).toString();
 		duration = duration.substring(0, duration.length()-2);
 		System.out.println(duration+"|"+numberOfICanTell+"|"+validAnswers+"|"+this.activeWorkerMap.size());
-		
-		//System.out.println(validAnswers);//this.activeWorkerMap.size());// ", active workers: "+);
+		//
+		System.out.println(validAnswers);//this.activeWorkerMap.size());// ", active workers: "+);
 		return contentMap;
 	}
 	
@@ -204,6 +204,14 @@ public class CutFilterData {
 			System.err.println(e.toString());
 		}
 	}
+
+	public void printActiveWorkerMap(){
+		System.out.println("Active WorkerMap");
+		Iterator<String> iter = this.activeWorkerMap.keySet().iterator();
+		while(iter.hasNext()){
+			System.out.println(iter.next());
+		}
+	}
 	
 	//-----------------------------------------------------------------------------------
 	public static void main(String[] args){
@@ -214,14 +222,14 @@ public class CutFilterData {
 		path = path +"\\1.DataAnalysis(CutFirst)\\data\\filter13\\";
 
 		Double maxDuration = new Double(Double.MAX_VALUE);
-		Integer[] durationList = {10,15,20,30,45,60,120}; //Minimal duration to be considered
-		Integer[] scoreList = {2};//,3,4};//,4};  //Minimal Score to be considered		
-		Integer[] idkList = {2,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
+		Integer[] durationList = {10};//,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {3};//,4};//,4};  //Minimal Score to be considered		
+		Integer[] idkList = {2};//,4,6,8,10}; //I Can't Tell answer count that would eliminate workers
 		Integer lowerCut_idk = -1;  //Worker that has an equal amount below will be cut out of the set.
 		Integer maxScore=5; //Worker has to have grade below that.
 		int i=0;
 		
-		HashMap<String, Microtask> cutMap = cutData.cutMicrotaskMap(10);//just cut the 10 first answers
+		HashMap<String, Microtask> cutMap = cutData.cutMicrotaskMap(204);//just cut the 10 first answers
 		
 		while(i<durationList.length){
 			int j=0;
@@ -242,6 +250,10 @@ public class CutFilterData {
 			i++;
 		}	
 		System.out.println("files written, look at: "+path);
+		
+		cutData.printActiveWorkerMap();
+
 	}
+	
 	
 }
