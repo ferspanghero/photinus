@@ -537,7 +537,7 @@ public class CSVData {
  * @param lowerNumberOfICantTell
  * @return
  */
-	private ArrayList<String> writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(boolean filterCut, Double minimumDuration, Double maxDuration, Integer minimumGrade, Integer maxGrade, Integer numberOfICanTell, Integer lowerNumberOfICantTell){
+	ArrayList<String> writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(boolean filterCut, Double minimumDuration, Double maxDuration, Integer minimumGrade, Integer maxGrade, Integer numberOfICanTell, Integer lowerNumberOfICantTell){
 		ArrayList<String> contentList = new ArrayList<String>();
 
 		//System.out.println("Size of microtask Map: "+ data.microtaskMap.size());

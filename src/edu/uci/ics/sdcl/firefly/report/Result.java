@@ -15,6 +15,9 @@ public class Result {
 	String percent_Inconclusive="0%";
 	double inconclusive=0.0;
 	
+	public Double precision=0.0;
+	public Double recall=0.0;
+	
 	double total=0.0;
 	
 	String fileName;
