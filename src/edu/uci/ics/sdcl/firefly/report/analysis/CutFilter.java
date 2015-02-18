@@ -95,10 +95,10 @@ public class CutFilter {
 				//else discard answer from worker
 			}
 			cutMap.put(taskID, newTask);
-			System.out.println(taskID+":"+validMicrotaskAnswers);
+		//	System.out.println(taskID+":"+validMicrotaskAnswers);
 			totalAnswers = totalAnswers + validMicrotaskAnswers;
 		}
-		System.out.println("TotalAnswers:"+totalAnswers);
+		System.out.println("Cut at: " + cutLevel + ", answers after cut:"+totalAnswers);
 		//System.out.println("----------------------------");
 		return cutMap;
 	}
@@ -148,7 +148,7 @@ public class CutFilter {
 		activeWorkerMap = new HashMap<String, String>();
 		int answerCount=0;
 		ArrayList<String> contentList;
-		System.out.println("Worker ID| option | duration");
+		//System.out.println("Worker ID| option | duration");
 		while(iter.hasNext()){
 			contentList = new ArrayList<String>();
 			String id = iter.next();
@@ -164,7 +164,7 @@ public class CutFilter {
 				if(count!=null && count.intValue()<numberOfICanTell && count.intValue()>lowerNumberOfICantTell && 
 						grade!=null && grade>=minimumGrade && grade<=maxGrade && 
 						duration>=minimumDuration&& duration<=maxDuration){
-					System.out.println(workerId+"|"+answer.getOption()+"|"+duration.toString());
+					//System.out.println(workerId+"|"+answer.getOption()+"|"+duration.toString());
 					answerCount++;
 					activeWorkerMap.put(workerId, workerId);
 					contentList.add(answer.getOption());

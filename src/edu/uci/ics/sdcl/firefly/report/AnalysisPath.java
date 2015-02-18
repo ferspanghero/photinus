@@ -4,7 +4,7 @@ public class AnalysisPath {
 
 	public  String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
 	public  String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
-	public  String currentPath = samsungPath;
+	public  String currentPath = dellPath;
 	
 	public  String rawDataLogPath; //the raw data
 	public  String calculationsPath; //the spreadsheets with formulas

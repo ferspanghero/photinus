@@ -1,21 +1,17 @@
 package edu.uci.ics.sdcl.firefly.report.analysis;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.QuestionType;
-import edu.uci.ics.sdcl.firefly.QuestionTypeFactory;
 import edu.uci.ics.sdcl.firefly.Worker;
-import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.report.LogData;
 
 /**
- * Compute how accurate each worker is.
+ * Compute the positive answers from workers how accurate each worker is.
  * For that I would have to compute TP, TN, FP, FN for each worker.
  * @author adrianoc
  *

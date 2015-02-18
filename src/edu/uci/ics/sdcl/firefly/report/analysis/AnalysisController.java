@@ -26,15 +26,11 @@ public class AnalysisController {
 		cutFilter = new CutFilter();
 	}
 
-	public void cutFilter(){
-		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(17, 2);
-		cutFilter.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(cutMap, new Double(10000), Double.MAX_VALUE, 3, 5, 2, -1);
-		cutFilter.printActiveWorkerMap();
-	}
 	
+
 	public void run(){	
 		Double maxDuration = new Double(Double.MAX_VALUE);
-		Integer[] durationList = {10,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] durationList = {0};//,10,15,20,30,45,60,120}; //Minimal duration to be considered
 		Integer[] scoreList = {3,4};  //Minimal Score to be considered		
 		Integer[] idkList = {2,4,6,8,10,11}; //I Can't Tell answer count that would eliminate workers
 		Integer lowerCut_idk = -1;  //Worker that has an equal amount below will be cut out of the set.
@@ -42,7 +38,7 @@ public class AnalysisController {
 		int i=0;
 
 		filterContentList = new ArrayList<FilterContent>(); 		
-		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(17,2);
+		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(17,2); //cut level, score level
 		SpreadsheetFactory factory = new SpreadsheetFactory();
 
 		while(i<durationList.length){
@@ -107,7 +103,7 @@ public class AnalysisController {
 			line.add(new Double(content.convertWorkerScore()));
 			//String ictStr = content.maxICantTell.toString();
 			line.add(new Double(content.maxICantTell.doubleValue()));
-			
+
 
 			line.add(content.validAnswers.doubleValue());
 			line.add(content.activeWorkers.doubleValue());
@@ -123,13 +119,26 @@ public class AnalysisController {
 	}
 
 
-
+	/** How to run.
+	 * 1.call run().
+	 * 2.open spreadsheets to be calculated
+	 * 3.call generatedReport()
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args){
 		AnalysisController controller = new AnalysisController();
-		controller.cutFilter();
-		//controller.run();
-		//controller.generateReport();
+		//controller.run(); //first
+		controller.generateReport();  //second
 	}
 
+	/**
+	 * Test method to check whether quantities match the expected.
+	 */
+	public void testCutFilter(){
+		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(17, 2);
+		cutFilter.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(cutMap, new Double(10000), Double.MAX_VALUE, 3, 5, 2, -1);
+		cutFilter.printActiveWorkerMap();
+	}
 
 }
