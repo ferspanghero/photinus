@@ -8,6 +8,7 @@ import java.util.Vector;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.report.AnalysisPath;
 import edu.uci.ics.sdcl.firefly.report.LogData;
 import edu.uci.ics.sdcl.firefly.report.Result;
@@ -105,8 +106,20 @@ public class CutFilter {
 	public void printActiveWorkerMap(){
 		System.out.println("Active WorkerMap");
 		Iterator<String> iter = this.activeWorkerMap.keySet().iterator();
+		System.out.println("worker"); //| score | number of answers ");
 		while(iter.hasNext()){
-			System.out.println(iter.next());
+			String workerID = iter.next();
+			Worker worker = this.data.workerMap.get(workerID);
+			//discovers grade score
+			Integer score = worker.getGrade();
+			//discover number of answers
+			String sessionID = worker.getSessionId();
+			WorkerSession session = this.data.sessionMap.get(sessionID);
+			Vector<Microtask> taskList = session.getMicrotaskList();
+			int count =0;
+			if(taskList!=null)
+				 count = taskList.size();
+			System.out.print("'"+workerID+"',");//,"+score+"|"+count);
 		}
 	}
 	
@@ -135,6 +148,7 @@ public class CutFilter {
 		activeWorkerMap = new HashMap<String, String>();
 		int answerCount=0;
 		ArrayList<String> contentList;
+		System.out.println("Worker ID| option | duration");
 		while(iter.hasNext()){
 			contentList = new ArrayList<String>();
 			String id = iter.next();
@@ -150,6 +164,7 @@ public class CutFilter {
 				if(count!=null && count.intValue()<numberOfICanTell && count.intValue()>lowerNumberOfICantTell && 
 						grade!=null && grade>=minimumGrade && grade<=maxGrade && 
 						duration>=minimumDuration&& duration<=maxDuration){
+					System.out.println(workerId+"|"+answer.getOption()+"|"+duration.toString());
 					answerCount++;
 					activeWorkerMap.put(workerId, workerId);
 					contentList.add(answer.getOption());

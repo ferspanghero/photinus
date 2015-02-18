@@ -30,10 +30,10 @@ public class WorkerAnalysis {
 
 	static String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
 	static String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
-	static String currentPath = dellPath;
+	static String currentPath = samsungPath;
 
 	/**Workers that produced the best data set 55% precision, with 71% recall)*/
-	public String[] filteredWorkers = { "2-490","1-1958","2-2011","1-700","1-1758","1-1755","2-302","2-1279",
+	public String[] cutAfterFilteredWorkers = { "2-490","1-1958","2-2011","1-700","1-1758","1-1755","2-302","2-1279",
 			"1-780","1-692","2-604","2-1543","1-2096","2-1271","1-1644","2-2420","2-400","1-338","2-1407","1-1845","2-1168",
 			"2-204","1-1159","1-2155","1-132","2-1268","1-705","1-1025","1-1026","2-298","1-1850","1-349","1-2160","2-1517",
 			"2-567","1-2167","1-579","2-2231","1-1669","1-764","1-763","1-1685","1-451","2-1899","2-702","2-701","2-1737",
@@ -44,6 +44,18 @@ public class WorkerAnalysis {
 			"2-2484","2-2482","1-389","2-1709","2-38","1-1463","2-127","2-1754","1-931","2-1977","2-2085","2-1995",
 			"1-1589","2-1343","1-297","2-1772","2-1567","1-399","1-2127","1-2019","1-87","1-85","1-2018","1-2133",
 			"2-2077","1-490","1-1634","1-1101","2-1986","1-110","1-1300","1-1967"};
+	
+	/** 92 workers who produced the best data point of 57% precision, 71% recall from cutting at 17 answers/questions */
+	public String[] filteredWorkers = {"1-1958","2-490","2-2011","1-700","1-1758","1-1755","1-780","2-302","2-1279","1-692","2-604",
+			"1-2096","2-1543","2-1271","1-1644","2-400","1-338","2-1407","1-1845","2-1168","2-204","1-1159","1-2155","1-132","1-705",
+			"2-1268","1-1025","1-1026","2-298","1-1850","1-349","1-2160","2-1517","2-567","1-2167","1-579","2-2231","1-1669","1-764",
+			"1-763","1-1685","1-451","2-1899","2-702","2-701","2-1737","2-1239","1-635","1-1725","2-1733","2-220","2-1532","1-1144",
+			"1-1539","1-1140","1-259","2-2240","1-1208","1-1293","1-1699","1-1280","1-540","1-1051","1-2183","1-1913","1-544","2-1631",
+			"2-1231","1-743","2-934","1-1819","1-742","1-748","2-445","1-434","1-1312","1-1814","2-1588","2-1024","1-1991","1-1787","1-1567",
+			"1-656","1-1901","1-1612","1-232","1-1474","2-252","2-1316","1-235","2-2266","2-2263","1-1574","1-1792","1-91","2-856","2-2482",
+			"1-389","2-1709","2-38","1-1463","2-127","2-1754","1-931","2-1977","2-2085",
+		"2-1995","1-1589","2-1772","2-1343","1-297","2-1567","1-399","1-2127","1-2019","1-87","1-85","1-2018","1-2133","2-2077","1-490",
+		"1-1634","1-1101","1-1300","1-110","1-1967","2-1986"};
 
 
 
@@ -297,7 +309,35 @@ public class WorkerAnalysis {
 			}
 		}
 	}	
+	
+	/** This method ignores answers that were not included in the filter */
+	private void computeTP_FP_TN_FN_PerFilteredWorker(){
 
+		QuestionTypeFactory questionTypeFactory = new QuestionTypeFactory();
+		questionTypeFactory.generateQuestionTypes();
+
+		for(String workerId: this.filteredWorkers){
+			Worker worker = data.workerMap.get(workerId);
+			String sessionId = worker.getSessionId();
+			if(sessionId!=null){
+				WorkerSession session = data.sessionMap.get(sessionId);
+				Vector<Microtask> taskList = session.getMicrotaskList();
+				for(Microtask task: taskList){
+					if(task!=null){
+						Answer answer = task.getAnswerByUserId(workerId);
+						if(data.yesMap.containsKey(task.getID().toString())){
+							incrementTPFN(workerId,answer);
+						}
+						else{
+							incrementFPTN(workerId,answer);
+						}
+					}
+				}
+			}
+		}
+	}	
+
+	/** This method ignores answers that were not included in the filter */
 	private void computeTP_FP_TN_FN_PerFilteredWorker(Double duration, Integer score, Integer idkCount, String questionTypeStr){
 
 		QuestionTypeFactory questionTypeFactory = new QuestionTypeFactory();
@@ -843,9 +883,10 @@ public class WorkerAnalysis {
 		Integer eliminationLevelOfICanTell = new Integer(2);
 
 		String questionTypeStr = QuestionType.METHOD_INVOCATION; //CONDITIONAL_BODY CONDITIONAL_STATEMENT; LOOP_BODY; LOOP_STATEMENT;METHOD_BODY;METHOD_DECLARATION;METHOD_INVOCATION;METHOD_PARAMETERS;
-		analysis.computeCorrectAnswersPerWorker(minimalDuration,minimalScore,eliminationLevelOfICanTell,questionTypeStr);
+		//analysis.computeCorrectAnswersPerWorker(minimalDuration,minimalScore,eliminationLevelOfICanTell,questionTypeStr);
 		analysis.computeTP_FP_TN_FN_PerFilteredWorker(minimalDuration,minimalScore,eliminationLevelOfICanTell,questionTypeStr);
-		analysis.printFilteredWorkerYesProbablyYes_and_Correct_Wrong_TP();
+		analysis.printWorkerEfficacy(true);
+		//analysis.printFilteredWorkerYesProbablyYes_and_Correct_Wrong_TP();
 
 		//analysis.computeCorrectAnswersPerWorker(analysis.filteredWorkers);
 		//analysis.computeTP_FP_TN_FN_PerWorker();

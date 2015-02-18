@@ -11,6 +11,7 @@ import java.util.Vector;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.WorkerSession;
 
 /** 
  * Produces a data set for spreadsheets run analyzes.
@@ -23,7 +24,7 @@ public class CutFilterData {
 
 	private static String samsungPath = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
 	private static String dellPath = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\";
-	private static String currentPath = dellPath;
+	private static String currentPath = samsungPath;
 	
 	private HashMap<String, Microtask> cutMicrotaskMap; //Remove all microtasks above a cut level
 	
@@ -129,6 +130,7 @@ public class CutFilterData {
 		activeWorkerMap = new HashMap<String, String>();
 		int answerCount=0;
 		int validAnswers=0;
+		System.out.println("Worker ID| option | duration");
 		while(iter.hasNext()){
 			StringBuffer buffer = new StringBuffer();//new line
 			String id = iter.next();
@@ -137,6 +139,7 @@ public class CutFilterData {
 			buffer.append("|");
 			int validMicrotaskAnswers=0;
 			Vector<Answer> answerList = task.getAnswerList();
+			
 			for(int i=0;i<answerList.size();i++){
 				Answer answer = answerList.get(i);					
 				String workerId = answer.getWorkerId();
@@ -147,6 +150,8 @@ public class CutFilterData {
 				if(count!=null && count.intValue()<numberOfICanTell && count.intValue()>lowerNumberOfICantTell && 
 						grade!=null && grade>=minimumGrade && grade<=maxGrade && 
 						duration>=minimumDuration&& duration<=maxDuration){
+					System.out.println(workerId+"|"+answer.getOption()+"|"+duration.toString());
+					
 					answerCount++;
 					validMicrotaskAnswers++;
 					activeWorkerMap.put(workerId, workerId);
@@ -208,10 +213,23 @@ public class CutFilterData {
 	public void printActiveWorkerMap(){
 		System.out.println("Active WorkerMap");
 		Iterator<String> iter = this.activeWorkerMap.keySet().iterator();
+		System.out.println("worker | score | number of answers ");
 		while(iter.hasNext()){
-			System.out.println(iter.next());
+			String workerID = iter.next();
+			Worker worker = this.data.workerMap.get(workerID);
+			//discovers grade score
+			Integer score = worker.getGrade();
+			//discover number of answers
+			String sessionID = worker.getSessionId();
+			WorkerSession session = this.data.sessionMap.get(sessionID);
+			Vector<Microtask> taskList = session.getMicrotaskList();
+			int count =0;
+			if(taskList!=null)
+				 count = taskList.size();
+			System.out.println(workerID+"|"+score+"|"+count);
 		}
 	}
+	
 	
 	//-----------------------------------------------------------------------------------
 	public static void main(String[] args){
@@ -229,7 +247,7 @@ public class CutFilterData {
 		Integer maxScore=5; //Worker has to have grade below that.
 		int i=0;
 		
-		HashMap<String, Microtask> cutMap = cutData.cutMicrotaskMap(204);//just cut the 10 first answers
+		HashMap<String, Microtask> cutMap = cutData.cutMicrotaskMap(205);//just cut the 10 first answers
 		
 		while(i<durationList.length){
 			int j=0;

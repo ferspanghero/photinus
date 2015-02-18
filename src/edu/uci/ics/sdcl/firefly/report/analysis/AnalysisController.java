@@ -2,11 +2,11 @@ package edu.uci.ics.sdcl.firefly.report.analysis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+
+
 
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.report.AnalysisPath;
-import edu.uci.ics.sdcl.firefly.report.Result;
 import edu.uci.ics.sdcl.firefly.storage.FilterContentStorage;
 
 public class AnalysisController {
@@ -27,33 +27,34 @@ public class AnalysisController {
 	}
 
 	public void cutFilter(){
-		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(10, 1);
+		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(17, 2);
 		cutFilter.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(cutMap, new Double(10000), Double.MAX_VALUE, 3, 5, 2, -1);
 		cutFilter.printActiveWorkerMap();
 	}
 	
 	public void run(){	
 		Double maxDuration = new Double(Double.MAX_VALUE);
-		Integer[] durationList = {0,10,15,20,30,45,60,120}; //Minimal duration to be considered
-		Integer[] scoreList = {2,3,4};  //Minimal Score to be considered		
+		Integer[] durationList = {10,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {3,4};  //Minimal Score to be considered		
 		Integer[] idkList = {2,4,6,8,10,11}; //I Can't Tell answer count that would eliminate workers
 		Integer lowerCut_idk = -1;  //Worker that has an equal amount below will be cut out of the set.
 		Integer maxScore=5; //Worker has to have grade below that.
 		int i=0;
 
 		filterContentList = new ArrayList<FilterContent>(); 		
-		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(17,1);
+		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(17,2);
 		SpreadsheetFactory factory = new SpreadsheetFactory();
 
 		while(i<durationList.length){
 			int j=0;
-			Double duration = new Double(durationList[i].doubleValue()*1000);
+			Double minDuration = new Double(durationList[i].doubleValue()*1000);
 			while(j<scoreList.length){
 				int k=0;
 				while(k<idkList.length){
-					FilterContent content = cutFilter.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(cutMap, duration, maxDuration,
+					FilterContent content = cutFilter.writeAnswerLabels_Filtered_by_DURATION_GRADE_IDK(cutMap, minDuration, maxDuration,
 							scoreList[j],maxScore,
 							idkList[k],lowerCut_idk);
+
 					String fileName = content.getFilterName() + ".xlsx";
 					content.fileName = fileName;
 					factory.calculateResults(fileName, content);
@@ -64,10 +65,8 @@ public class AnalysisController {
 			}
 			i++;
 		}
-
 		FilterContentStorage storage = new FilterContentStorage();
 		storage.write(filterContentList);
-
 		System.out.println("files written, look at: "+analysisPath.calculationsPath);
 	}
 
@@ -99,6 +98,7 @@ public class AnalysisController {
 		for(FilterContent content : this.filterContentList){
 
 			ArrayList<Double> line = new ArrayList<Double>();
+
 			Double seconds = content.minimalDuration/1000;
 			//String durationStr = seconds.toString();
 			//durationStr = durationStr.substring(0, durationStr.length()-2);//remove the .0
@@ -126,8 +126,8 @@ public class AnalysisController {
 
 	public static void main(String[] args){
 		AnalysisController controller = new AnalysisController();
-		//controller.cutFilter();
-		controller.run();
+		controller.cutFilter();
+		//controller.run();
 		//controller.generateReport();
 	}
 
