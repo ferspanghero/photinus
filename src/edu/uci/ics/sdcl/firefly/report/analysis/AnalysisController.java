@@ -30,15 +30,15 @@ public class AnalysisController {
 
 	public void run(){	
 		Double maxDuration = new Double(Double.MAX_VALUE);
-		Integer[] durationList = {0};//,10,15,20,30,45,60,120}; //Minimal duration to be considered
-		Integer[] scoreList = {3,4};  //Minimal Score to be considered		
-		Integer[] idkList = {2,4,6,8,10,11}; //I Can't Tell answer count that would eliminate workers
+		Integer[] durationList = {0,10,15,20,30,45,60,120}; //Minimal duration to be considered
+		Integer[] scoreList = {2,3,4};  //Minimal Score to be considered		
+		Integer[] idkList = {2,4,6,8,10,11}; //I can't tell answer count that would eliminate workers
 		Integer lowerCut_idk = -1;  //Worker that has an equal amount below will be cut out of the set.
 		Integer maxScore=5; //Worker has to have grade below that.
 		int i=0;
 
 		filterContentList = new ArrayList<FilterContent>(); 		
-		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(17,2); //cut level, score level
+		HashMap<String, Microtask> cutMap = cutFilter.filterCutMicrotasks(10,1); //cut level, score level
 		SpreadsheetFactory factory = new SpreadsheetFactory();
 
 		while(i<durationList.length){
