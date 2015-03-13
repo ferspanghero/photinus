@@ -165,7 +165,8 @@ public class CutFilter {
 						grade!=null && grade>=minimumGrade && grade<=maxGrade && 
 						duration>=minimumDuration&& duration<=maxDuration){
 					//System.out.println(workerId+"|"+answer.getOption()+"|"+duration.toString());
-					answerCount++;
+					answerCount++; 
+					
 					activeWorkerMap.put(workerId, workerId);
 					contentList.add(answer.getOption());
 				}
