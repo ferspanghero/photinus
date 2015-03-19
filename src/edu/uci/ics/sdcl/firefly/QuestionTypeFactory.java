@@ -24,6 +24,9 @@ public class QuestionTypeFactory {
 	/** Indexes all IDs to their question content types */
 	//public HashMap<Integer, String> idQuestionContentTypeMap = new HashMap<Integer, String>(); 
 	
+	protected String[] questionTypeList = {QuestionType.METHOD_INVOCATION, QuestionType.METHOD_PARAMETERS, QuestionType.METHOD_DECLARATION,
+			QuestionType.METHOD_BODY, QuestionType.LOOP_BODY, QuestionType.CONDITIONAL_BODY,QuestionType.LOOP_STATEMENT,QuestionType.CONDITIONAL_STATEMENT};
+
 	
 	/** Instantiate a question type for each microtask. 
 	 * Also initializes the questionTypeMap and idQuestionTypeMap
@@ -103,6 +106,25 @@ public class QuestionTypeFactory {
 	
 	public HashMap<String,HashMap<Integer,QuestionType>> getQuestionTypeMap(){
 		return this.questionTypeMap;
+	}
+	
+	public boolean isQuestionIdOfType(String id, String questionType){
+		HashMap<Integer, QuestionType> idQuestionMap = this.questionTypeMap.get(questionType);
+		return idQuestionMap.containsKey(new Integer(id));
+	}
+	
+	public String retrieveQuestionIdType(String id){
+		String foundType=null;
+		int i=0;
+		while(i<this.questionTypeList.length){
+			if(isQuestionIdOfType(id,this.questionTypeList[i])){
+				foundType = this.questionTypeList[i];
+				i = questionTypeList.length;
+			}
+			else
+				i++;
+		}
+		return foundType;
 	}
 	
 	/**
