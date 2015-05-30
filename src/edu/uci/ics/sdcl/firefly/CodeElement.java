@@ -15,6 +15,7 @@ public class CodeElement implements Serializable {
 //	public final static String METHOD_PARAMETERS = "METHOD_PARAMETERS"; 
 //	public final static String METHOD_NAME = "METHOD_NAME";
 //	public static final String RETURN_STATEMENT = "RETURN_STATEMENT";
+	public static final String VARIABLE_DECLARATION = "VARIABLE_DECLARATION";
 	public static final String COMMENT_STATEMENT = "COMMENT_STATEMENT";
 	public static final Integer NO_NUMBER_ASSOCIATED = -1;
 

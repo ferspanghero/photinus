@@ -4,11 +4,9 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Stack;
 
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.ConstructorInvocation;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.Expression;
@@ -77,7 +75,7 @@ public class MyVisitor extends ASTVisitor {
 	public boolean visit(TypeDeclaration node)
 	{
 		//System.out.println("TypeDeclaration at line: " + cu.getLineNumber(node.getStartPosition()));	
-	//	System.out.println("TypeDeclaration name: " + node.getName());
+		//	System.out.println("TypeDeclaration name: " + node.getName());
 		this.className = node.getName().toString();
 		return true;
 	}
@@ -236,11 +234,11 @@ public class MyVisitor extends ASTVisitor {
 			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
 
 			String name = node.getName().toString();
-		   // System.out.println("node.getName: " +name+ " expression= "+node.getExpression());
+			// System.out.println("node.getName: " +name+ " expression= "+node.getExpression());
 			String expression = node.getExpression()==null ? "" : node.getExpression().toString(); 
 			String arguments = node.arguments()==null ? "" : node.arguments().toString();
 			Integer numberOfArguments = node.arguments()==null ? 0 : node.arguments().size();
-			
+
 			String line = this.snippetFactory.getFileContentPerLine()[this.elementStartingLine-1];
 			this.elementStartingColumn = line.indexOf(node.getName().toString()); 
 			this.elementEndingColumn = this.elementStartingColumn+ node.getName().toString().length();
@@ -258,7 +256,7 @@ public class MyVisitor extends ASTVisitor {
 								" under method "+
 									newMethod.getMethodSignature().getName()+"(" +
 									newMethod.getMethodSignature().getParameterList().size() +" parameters )");
-									*/	
+			 */	
 
 			this.newMethod.addElement(methodCall);
 
@@ -489,6 +487,22 @@ public class MyVisitor extends ASTVisitor {
 		//		System.out.println("While statement: " + node.getBody().toString());
 		return true;
 	}
+
+	public boolean visit(SingleVariableDeclaration node)
+	{
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+		this.elementEndingLine = this.elementStartingLine;
+		this.elementEndingColumn = this.elementStartingColumn + node.getName().getLength();
+
+		MyVariable element = new MyVariable(node.getName().getFullyQualifiedName(), 
+				this.elementStartingLine, this.elementStartingColumn, 
+				this.elementEndingLine, this.elementEndingColumn);
+
+		this.newMethod.addElement(element);
+		return true;
+	}
+
 
 	/* public boolean visit(ReturnStatement node)
 	{
