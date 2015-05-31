@@ -13,7 +13,8 @@ public class Inscriber {
 			title = "Concentric";
 		}
 		else{
-			fig1.x = shift(fig1.diameter,fig2.diameter,fig2.x);
+			fig1.getDiameter().intValue();//This situation must be covered by one single question about getDiameter, intValue
+			fig1.x = checkShift(shift(fig1.diameter,fig2.diameter,fig2.x)); //This as well, checkShift shift
 			title = "Side-by-Side";
 		}
 		fig1.draw();
@@ -23,5 +24,9 @@ public class Inscriber {
 	
 	public static int shift(int center, int size1, int size2){
 		return (center + (size2+size1)/2);
+	}
+	
+	public static int checkShift(int i){
+		return i;
 	}
 }
