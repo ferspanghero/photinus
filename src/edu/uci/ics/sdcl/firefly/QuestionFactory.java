@@ -12,7 +12,7 @@ import java.util.Vector;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 public class QuestionFactory {
-	
+
 	/* Template Lists */
 	public ArrayList<String> templateMethodDeclaration = new ArrayList<String>();
 	public ArrayList<String> templateMethodInvocation = new ArrayList<String>();
@@ -46,18 +46,12 @@ public class QuestionFactory {
 				+ "by function '<F>' when called by function '<G>' at line <#> (e.g., wrong variables used as "
 				+ "parameters, wrong order, missing or wrong type of parameter, values of the parameters are not checked, etc .)?");
 		/* Conditional */
-		templateConditional.add("Is it possible that the conditional clause at line <#> has "
-				+ "problems (e.g., wrong Boolean operator, wrong comparison, misplaced parentheses, etc.)?");
-		templateConditional.add("Is there maybe something wrong with the body of the conditional clause between lines <#1> and <#2> "
-				+ "(e.g., enters the wrong branch, makes a call to a null pointer, calls a wrong type, etc.)?");
+		templateConditional.add("Is there any issue with the conditional clause between lines <#1> and <#2> that might be related to the failure?");
 		/* Loops */
-		templateLoop.add("Is there maybe something wrong with the '<L>-loop' construct at line <#> "
-				+ "(e.g., incorrect initialization, wrong counter increment, wrong exit condition, etc.)?");
-		templateLoop.add("Is the body of the '<L>-loop' between lines <#1> and <#2> "
-				+ "possibly not producing what it is supposed to (e.g., does not compute the expected result, does not exit at the expected iteration, etc.)?");
+		templateLoop.add("Is there any issue with the <L>-loop between lines <#1> and <#2> that might be related to the failure?");
 	}
 
-	
+
 	/**
 	 * 
 	 * @param methodsParsed only the code snippets for which microtasks will be generated
@@ -128,7 +122,7 @@ public class QuestionFactory {
 						/* setting up the position for the element */
 
 						questionPrompt = new String(templateForQuestion);
-					
+
 						if ( -1 != questionPrompt.indexOf("parameters"))	// question about parameters
 						{	// are there parameters? ('2' for the brackets) 
 							if (1 < elementCall.getNumberOfParameters())	
@@ -136,18 +130,18 @@ public class QuestionFactory {
 						}
 						else
 							addQuestion = true;		// other questions are always good formed
-						
+
 						if (addQuestion)
 						{	// then add question!
 							this.startingLine = elementCall.getElementStartingLine();
 							this.startingColumn = elementCall.getElementStartingColumn();
 							this.endingLine = elementCall.getElementEndingLine();
 							this.endingColumn = elementCall.getElementEndingColumn();
-							
+
 							questionPrompt = questionPrompt.replaceAll("<F>", elementCall.getName());
 							questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
 							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
-							
+
 							question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, elementCall, 
 									questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport);
 							this.microtaskMap.put(question.getID(),question);
@@ -161,39 +155,32 @@ public class QuestionFactory {
 					{
 						MyIfStatement elementIf = (MyIfStatement)element;
 						questionPrompt = new String(templateForQuestion);
-						/* setting up question prompt */
-						if (questionPrompt.indexOf("<#1>") > 0)	//it means it will ask about the body
+						
+						// the starting line of the body
+						this.startingLine = elementIf.getElementStartingLine();
+						this.startingColumn = elementIf.getElementStartingColumn();
+						
+						// Verifies existence of else clause
+						if (elementIf.isThereIsElse())
+						{	// get Else statement end
+							this.endingLine = elementIf.getElseEndingLine();
+							this.endingColumn = elementIf.getElseEndingColumn();
+						} else 
+						{	// no Else then get just body  end (then statement end)
+							this.endingLine = elementIf.getBodyEndingLine();
+							this.endingColumn = elementIf.getBodyEndingColumn();
+						}
+						
+						// Changes the template according to the line structure of the statement
+						if ( this.startingLine != this.endingLine )
 						{
-							// the starting line of the body
-							this.startingLine = elementIf.getBodyStartingLine();
-							this.startingColumn = elementIf.getBodyStartingColumn();
-							if (elementIf.isThereIsElse())
-							{	// get Else statement end
-								this.endingLine = elementIf.getElseEndingLine();
-								this.endingColumn = elementIf.getElseEndingColumn();
-							} else 
-							{	// no Else then get just body  end (then statement end)
-								this.endingLine = elementIf.getBodyEndingLine();
-								this.endingColumn = elementIf.getBodyEndingColumn();
-							}
-							if ( this.startingLine != this.endingLine )
-							{
-								questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
-								questionPrompt = questionPrompt.replaceAll("<#2>", this.endingLine.toString());
-							}
-							else
-							{
-								questionPrompt = questionPrompt.substring(0, questionPrompt.indexOf("between")) + "at line " +
-										this.startingLine + questionPrompt.substring(questionPrompt.indexOf("<#2>")+4);
-							}
-						} else
-						{	/* setting up the position for the element */
-							this.startingLine = elementIf.getElementStartingLine();
-							this.startingColumn = elementIf.getElementStartingColumn();
-							this.endingLine = elementIf.getElementEndingLine();
-							this.endingColumn = elementIf.getElementEndingColumn();
-
-							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
+							questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
+							questionPrompt = questionPrompt.replaceAll("<#2>", this.endingLine.toString());
+						}
+						else
+						{
+							questionPrompt = questionPrompt.substring(0, questionPrompt.indexOf("between")) + "at line " +
+									this.startingLine + questionPrompt.substring(questionPrompt.indexOf("<#2>")+4);
 						}
 						question = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippet, elementIf, 
 								questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport);
@@ -255,8 +242,8 @@ public class QuestionFactory {
 		}
 		return this.microtaskMap;
 	}
-	
-	
+
+
 	private String setUpQuestionPrompt(String questionPromptArg, CodeElement elementArg)
 	{
 		if (questionPromptArg.indexOf("<#1>") > 0)	//it means it will ask about the body
@@ -267,7 +254,7 @@ public class QuestionFactory {
 			this.endingLine = elementArg.getBodyEndingLine();
 			this.endingColumn = elementArg.getBodyEndingColumn();
 
-//			System.out.println("Starting and ending line: " + this.startingLine + ", " + this.endingLine);
+			//			System.out.println("Starting and ending line: " + this.startingLine + ", " + this.endingLine);
 			if ( this.startingLine != this.endingLine )
 			{
 				questionPromptArg = questionPromptArg.replaceAll("<#1>", this.startingLine.toString());
@@ -293,7 +280,7 @@ public class QuestionFactory {
 		return questionPromptArg;
 	}
 
-	
+
 	public Hashtable<Integer, Microtask> getConcreteQuestions() {
 		return microtaskMap;
 	}
