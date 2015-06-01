@@ -13,6 +13,10 @@ public class Circle {
 		this.diameter = diameter;
 	}
 	
+	public Integer getDiameter(){
+		return new Integer(diameter);
+	}
+	
 	public void draw(){};
 	
 	

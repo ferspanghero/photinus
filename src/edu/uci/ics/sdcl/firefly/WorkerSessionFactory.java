@@ -68,7 +68,7 @@ public class WorkerSessionFactory {
 		//Obtain a list of N microtasks from N different codesnippets (i.e., methods)
 		Vector<Microtask> mtaskList = this.nextMicrotaskList(this.microtaskPerSession);
 		//Generate the original WorkerSessions
-		while(mtaskList.size()==this.microtaskPerSession){
+		while(mtaskList.size()> 0){
 			this.sessionId = this.keyGenerator.generate();
 			WorkerSession session = new WorkerSession(this.sessionId, mtaskList);
 			originalList.add(session);
