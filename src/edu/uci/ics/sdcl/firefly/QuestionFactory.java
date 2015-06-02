@@ -73,7 +73,7 @@ public class QuestionFactory {
 				if (questionPrompt.indexOf("<#1>") > 0)	//it means it will ask about the body
 				{
 					/* setting up the position for the body */
-					this.startingLine = codeSnippet.getBodyStartingLine();
+					this.startingLine = codeSnippet.getElementStartingLine();
 					this.startingColumn = codeSnippet.getBodyStartingColumn();
 					this.endingLine = codeSnippet.getBodyEndingLine();
 					this.endingColumn = codeSnippet.getBodyEndingColumn();
@@ -211,6 +211,12 @@ public class QuestionFactory {
 					{
 						questionPrompt = new String(templateLoopQuestion);
 						questionPrompt = this.setUpQuestionPrompt(questionPrompt, element);
+						questionPrompt = questionPrompt.replaceAll("<#1>", element.getElementStartingLine().toString());
+						questionPrompt = questionPrompt.replaceAll("<#2>", element.getElementEndingLine().toString());
+						this.startingLine = element.getElementStartingLine();
+						this.startingColumn = element.getElementStartingColumn();
+						/*this.endingLine = element.getElementEndingLine();
+						this.endingColumn = element.getElementEndingColumn();*/
 						switch (element.getType()) {
 						case CodeElement.FOR_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "For");
@@ -218,6 +224,10 @@ public class QuestionFactory {
 									questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport);
 							break;
 						case CodeElement.DO_LOOP:
+							this.startingLine = element.getBodyStartingLine();
+							this.startingColumn = element.getBodyStartingColumn();
+							this.endingColumn = element.getBodyEndingColumn();
+							this.endingLine = element.getBodyEndingLine();
 							questionPrompt = questionPrompt.replaceAll("<L>", "Do");
 							question = new Microtask(CodeElement.DO_LOOP, codeSnippet, element, 
 									questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport);
