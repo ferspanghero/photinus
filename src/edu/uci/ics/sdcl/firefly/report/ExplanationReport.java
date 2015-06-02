@@ -77,6 +77,7 @@ public class ExplanationReport {
 
 	public class ExplanationTuple{
 		public String explanation;
+		public Integer explanationSize;
 		public String answerOption;
 		public String duration;
 		public String taskID;
@@ -85,6 +86,7 @@ public class ExplanationReport {
 
 		public ExplanationTuple(String explanation, String answerOption, String duration, String taskID, String questionType, String bugPointing ){
 			this.explanation = explanation;
+			this.explanationSize = explanation.length();
 			this.answerOption = answerOption;
 			this.duration = duration;
 			this.taskID = taskID;
@@ -143,7 +145,7 @@ public class ExplanationReport {
 			File file = new File(fileNamePath);
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			for(ExplanationTuple tuple: contentList){
-				writer.write(tuple.taskID +"|" + tuple.answerOption +"|" +tuple.bugPointing+"|" +tuple.duration +"|"+tuple.explanation);
+				writer.write(tuple.taskID +"|" + tuple.answerOption +"|" +tuple.bugPointing+"|" +tuple.duration +"|"+tuple.explanation+"|"+tuple.explanationSize);
 				writer.newLine();
 			}
 			writer.close();
@@ -164,8 +166,8 @@ public class ExplanationReport {
 		String path =  reportData.analysisPath.currentPath;
 		path = path +"\\1.DataAnalysis(CutFirst)\\data\\explanation\\";
 
-		String[] questionTypeList = {QuestionType.METHOD_INVOCATION, QuestionType.METHOD_PARAMETERS, QuestionType.METHOD_DECLARATION,
-				QuestionType.METHOD_BODY, QuestionType.LOOP_BODY, QuestionType.CONDITIONAL_BODY,QuestionType.LOOP_STATEMENT,QuestionType.CONDITIONAL_STATEMENT};
+		String[] questionTypeList = {QuestionType.METHOD_INVOCATION}; //{QuestionType.METHOD_INVOCATION, QuestionType.METHOD_PARAMETERS, QuestionType.METHOD_DECLARATION,
+				//QuestionType.METHOD_BODY, QuestionType.LOOP_BODY, QuestionType.CONDITIONAL_BODY,QuestionType.LOOP_STATEMENT,QuestionType.CONDITIONAL_STATEMENT};
 
 		//reportData.filteredWorkerMap
 
