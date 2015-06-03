@@ -178,11 +178,16 @@
 
 				<center>
 					<br> <a>
-					<input type="radio" name="answer" value="1" />Yes</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
-					<input type="radio" name="answer" value="2" />Probably yes </a> &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
-					<input type="radio" name="answer" value="3" />I can't tell </a> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <a>
-					<input type="radio" name="answer" value="4" />Probably not</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;	<a>
-					<input type="radio" name="answer" value="5" />No </a>
+					 Very confident
+ Confident
+ Somewhat confident
+ Unsure
+ Not at all
+					<input type="radio" name="answer" value="1" />Very Confident</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
+					<input type="radio" name="answer" value="2" />Confident</a> &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
+					<input type="radio" name="answer" value="3" />Somewhat Confident </a> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <a>
+					<input type="radio" name="answer" value="4" />Unsure</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;	<a>
+					<input type="radio" name="answer" value="5" />Not at all</a>
 				</center>
 
 
