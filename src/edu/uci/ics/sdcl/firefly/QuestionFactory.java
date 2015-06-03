@@ -18,6 +18,7 @@ public class QuestionFactory {
 	public ArrayList<String> templateMethodInvocation = new ArrayList<String>();
 	public ArrayList<String> templateConditional = new ArrayList<String>();
 	public ArrayList<String> templateLoop = new ArrayList<String>();
+	public ArrayList<String> templateVariable = new ArrayList<String>();
 
 	private String questionPrompt;
 	private Microtask question;
@@ -49,6 +50,8 @@ public class QuestionFactory {
 		templateConditional.add("Is there any issue with the conditional clause between lines <#1> and <#2> that might be related to the failure?");
 		/* Loops */
 		templateLoop.add("Is there any issue with the <L>-loop between lines <#1> and <#2> that might be related to the failure?");
+		/* Variables */
+		templateVariable.add("Is there any issue with the definition OR the use of  variable \"<#>\" THAT might be related to the failure?");
 	}
 
 
@@ -109,9 +112,9 @@ public class QuestionFactory {
 
 			Vector<CodeElement> statements = codeSnippet.getStatements();	// now getting the question for the statements
 
-
 			for (CodeElement element : statements)
 			{
+				System.out.println(element.getType());
 				switch (element.getType())
 				{
 				case CodeElement.METHOD_INVOCATION:
@@ -242,8 +245,21 @@ public class QuestionFactory {
 						microtaskId++;
 					}
 					break;
-					// Add more cases here 
-
+					// Variable declarations 
+				case CodeElement.VARIABLE_DECLARATION:
+					this.startingLine = element.getElementStartingLine();
+					this.startingColumn = element.getElementStartingColumn();
+					this.endingLine = element.getElementEndingLine();
+					this.endingColumn = element.getElementEndingColumn();
+					
+					for (String templateVariableQuestion : templateVariable) {
+						questionPrompt = new String(templateVariableQuestion);
+						questionPrompt = questionPrompt.replaceAll("<#>", ((MyVariable)element).getName() );
+						question = new Microtask(CodeElement.VARIABLE_DECLARATION, codeSnippet, element,
+								questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport);
+						this.microtaskMap.put(question.getID(), question);
+					}
+					// Add more cases here
 				default:
 					System.out.println("!!! Type of element did not matched: " + element.getType() + " !!!");
 					break;

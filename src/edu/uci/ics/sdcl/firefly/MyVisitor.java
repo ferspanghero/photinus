@@ -19,6 +19,8 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.SwitchCase;
 import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 
 import edu.uci.ics.sdcl.firefly.util.PositionFinder;
@@ -488,18 +490,21 @@ public class MyVisitor extends ASTVisitor {
 		return true;
 	}
 
-	public boolean visit(SingleVariableDeclaration node)
+	public boolean visit(VariableDeclarationFragment node)
 	{
-		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
-		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
-		this.elementEndingLine = this.elementStartingLine;
-		this.elementEndingColumn = this.elementStartingColumn + node.getName().getLength();
+		if(this.newMethod != null)
+		{
+			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+			this.elementEndingLine = this.elementStartingLine;
+			this.elementEndingColumn = this.elementStartingColumn + node.getName().getLength();
 
-		MyVariable element = new MyVariable(node.getName().getFullyQualifiedName(), 
-				this.elementStartingLine, this.elementStartingColumn, 
-				this.elementEndingLine, this.elementEndingColumn);
+			MyVariable element = new MyVariable(node.getName().getFullyQualifiedName(), 
+					this.elementStartingLine, this.elementStartingColumn, 
+					this.elementEndingLine, this.elementEndingColumn);
 
-		this.newMethod.addElement(element);
+			this.newMethod.addElement(element);
+		}
 		return true;
 	}
 
