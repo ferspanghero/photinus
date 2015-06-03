@@ -807,7 +807,7 @@ public class LogData {
 		if(count==null) 
 			count =new Integer(0);
 
-		if (answer.matches(Answer.I_CANT_TELL))
+		if (answer.matches(Answer.I_DONT_KNOW))
 			count++;
 
 		this.workerICantTellMap.put(workerId, count);

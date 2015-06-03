@@ -40,7 +40,7 @@ public class LogAnalysis {
 		double yes=0;
 		double total=0;
 		double no=0;
-		double iCantTell=0;
+		double iDontKnow=0;
 		
 		Iterator<String> iter = taskMap.keySet().iterator();
 		while(iter.hasNext()){
@@ -54,25 +54,25 @@ public class LogAnalysis {
 				yes=0;
 				no=0;
 				total=0;
-				iCantTell=0;
+				iDontKnow=0;
 				System.out.print(task.getID()+"|"+ task.getQuestion()+"|");
 				Vector<Answer> answerList = task.getAnswerList();
 				for(Answer answer: answerList){
 					
-					if(answer.getOption().trim().matches(Answer.YES) || answer.getOption().trim().matches(Answer.PROBABLY_YES))
+					if(answer.getOption().trim().matches(Answer.YES))
 						yes++;
 					else
-						if(answer.getOption().trim().matches(Answer.NO) || answer.getOption().trim().matches(Answer.PROBABLY_NOT))
+						if(answer.getOption().trim().matches(Answer.NO))
 							no++;
 						else
-							if(answer.getOption().matches(Answer.I_CANT_TELL))
-								iCantTell++;
+							if(answer.getOption().matches(Answer.I_DONT_KNOW))
+								iDontKnow++;
 				}
-				total = yes+ no+iCantTell;
+				total = yes+ no+ iDontKnow;
 				System.out.print("total|"+total);
 				System.out.print("| #Yes|"+yes+ "|"+ formatter.format(yes/(total)*100)+ "%");
 				System.out.print("| #Nos|"+no + "|"+ formatter.format(no/(total)*100)+ "%");
-				System.out.print("| #ICantTell|"+iCantTell + "|"+ formatter.format(iCantTell/(total)*100)+ "%");
+				System.out.print("| #IDontKnow|"+iDontKnow + "|"+ formatter.format(iDontKnow/(total)*100)+ "%");
 				System.out.println();
 			}		
 		}
@@ -89,7 +89,7 @@ public class LogAnalysis {
 		double counterYes=0;
 		double total=0;
 		double counterNos=0;
-		double counterICantTell=0;
+		double counterIDontKnow=0;
 		Iterator<String> iter = microtaskMap.keySet().iterator();
 		while(iter.hasNext()){
 			String key = iter.next();
@@ -102,33 +102,33 @@ public class LogAnalysis {
 				for(Answer answer: answerList){
 					//if(fileName.trim().matches("1buggy_ApacheCamel.txt") && id==1)
 						//System.out.println("####### counting TOTALs taskId:"+id+" to 1buggy_ApacheCamel.txt!" + " answer="+answer.getOption());
-					if(answer.getOption().trim().matches(Answer.YES) || answer.getOption().trim().matches(Answer.PROBABLY_YES)){
+					if(answer.getOption().trim().matches(Answer.YES)){
 						
 						counterYes++;
 					}
 					else
-						if(answer.getOption().trim().matches(Answer.NO) || answer.getOption().trim().matches(Answer.PROBABLY_NOT)){
+						if(answer.getOption().trim().matches(Answer.NO)){
 
 							counterNos++;
 						}
 						else
-							if(answer.getOption().matches(Answer.I_CANT_TELL)){
+							if(answer.getOption().matches(Answer.I_DONT_KNOW)){
 							
-								counterICantTell++;
+								counterIDontKnow++;
 							}		
 				}
 			}
 		}
 
 		//System.out.println(" *** BUG REVEALING QUESTIONS - EXPECTED YES/Prob YES ANSWERS: ");
-		total = counterYes+counterNos+counterICantTell;
+		total = counterYes+counterNos+counterIDontKnow;
 		/*System.out.println(fileName+ " Bug Revealing Answers="+total);
 		System.out.println("counterYes="+counterYes+ " = "+ formatter.format(counterYes/(total)*100)+ "%");
 		System.out.println("counterNos="+counterNos + " = "+ formatter.format(counterNos/(total)*100)+ "%");
 		System.out.println("counterICantTell="+counterICantTell + " = "+ formatter.format(counterICantTell/(total)*100)+ "%");
 		System.out.println("-------------------------------------------");
 	*/
-		this.counterMap.put(fileName,new Counter(counterYes,counterNos, counterICantTell, fileName,total));
+		this.counterMap.put(fileName,new Counter(counterYes,counterNos, counterIDontKnow, fileName,total));
 
 		Result result = this.bugReportResultMap.get(fileName);
 		if(result==null)
@@ -141,7 +141,7 @@ public class LogAnalysis {
 
 		result.total = result.total + total;
 		
-		result.inconclusive = result.inconclusive + counterICantTell;
+		result.inconclusive = result.inconclusive + counterIDontKnow;
 		result.percent_Inconclusive = formatter.format(result.inconclusive/result.total*100) + "%";
 		
 		result.fileName = fileName;
@@ -154,7 +154,7 @@ public class LogAnalysis {
 			double counterYes=0;
 			double total=0;
 			double counterNos=0;
-			double counterICantTell=0;
+			double counterIDontKnow=0;
 			Iterator<String> iter = microtaskMap.keySet().iterator();
 			while(iter.hasNext()){
 				String key = iter.next();
@@ -163,20 +163,20 @@ public class LogAnalysis {
 				if(!yesMap.containsKey(task.getID().toString())&& id>=point.x && id<=point.y){
 					Vector<Answer> answerList = task.getAnswerList();
 					for(Answer answer: answerList){
-						if(answer.getOption().trim().matches(Answer.YES) || answer.getOption().trim().matches(Answer.PROBABLY_YES))
+						if(answer.getOption().trim().matches(Answer.YES))
 							counterYes++;
 						else
-							if(answer.getOption().trim().matches(Answer.NO) || answer.getOption().trim().matches(Answer.PROBABLY_NOT))
+							if(answer.getOption().trim().matches(Answer.NO))
 								counterNos++;
 							else
-								if(answer.getOption().trim().matches(Answer.I_CANT_TELL))
-									counterICantTell++;
+								if(answer.getOption().trim().matches(Answer.I_DONT_KNOW))
+									counterIDontKnow++;
 					}
 				}
 			}
 
 			//System.out.println(" *** NO-BUG REVEALING QUESTIONS - EXPECTED No/Prob No ANSWERS: ");
-			total = counterYes+counterNos+counterICantTell;
+			total = counterYes+counterNos+counterIDontKnow;
 			/*System.out.println(fileName+" NO-BUG Expected Answers="+total);
 			System.out.println("counterYes="+counterYes+ " = "+ formatter.format(counterYes/(total)*100)+ "%");
 			System.out.println("counterNos="+counterNos + " = "+ formatter.format(counterNos/(total)*100)+ "%");
@@ -195,14 +195,14 @@ public class LogAnalysis {
 			
 			result.total = result.total + total;
 			
-			result.inconclusive = result.inconclusive + counterICantTell;
+			result.inconclusive = result.inconclusive + counterIDontKnow;
 			result.percent_Inconclusive = formatter.format(result.inconclusive/result.total*100) + "%";
 			
 			result.fileName = fileName;
 			
 			this.bugReportResultMap.put(fileName, result);
 			
-			this.counterMap.put(fileName,new Counter(counterYes,counterNos, counterICantTell, fileName,total));
+			this.counterMap.put(fileName,new Counter(counterYes,counterNos, counterIDontKnow, fileName,total));
 		}
 	
 	public class Counter{

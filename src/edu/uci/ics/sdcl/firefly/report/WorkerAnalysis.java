@@ -65,7 +65,7 @@ public class WorkerAnalysis {
 		Integer FP=0;
 		Integer TN=0;
 		Integer FN=0;
-		Integer ICantTell=0;
+		Integer IDontKnow=0;
 
 		Integer BugPointingQuestions=0;
 		Integer NotBugPointingQuestions=0;
@@ -159,13 +159,7 @@ public class WorkerAnalysis {
 								incrementAnswer(workerId);
 								if(answer.getOption().matches(Answer.YES)){
 									incrementYesAnswers(workerId);
-								}else
-									if(answer.getOption().matches(Answer.PROBABLY_YES)){
-										incrementProbablyYesAnswers(workerId);
-									}
-								//else ignores
-
-								//Check if answer is correct and increment
+								}//Check if answer is correct and increment
 								checkIncrementCorrectAnswer(task.getID().toString(),answer.getOption(),workerId);
 							}
 							//else ignores.
@@ -219,13 +213,7 @@ public class WorkerAnalysis {
 										incrementAnswer(workerId);
 										if(answer.getOption().matches(Answer.YES)){
 											incrementYesAnswers(workerId);
-										}else
-											if(answer.getOption().matches(Answer.PROBABLY_YES)){
-												incrementProbablyYesAnswers(workerId);
-											}
-										//else ignores
-
-										//Check if answer is correct and increment
+										}//Check if answer is correct and increment
 										checkIncrementCorrectAnswer(task.getID().toString(),answer.getOption(),workerId);
 									}
 									//else ignores.
@@ -373,13 +361,13 @@ public class WorkerAnalysis {
 			efficacy = new WorkerEfficacy();
 
 		efficacy.BugPointingQuestions++;
-		if(answer.getOption().matches(Answer.YES) || answer.getOption().matches(Answer.PROBABLY_YES))
+		if(answer.getOption().matches(Answer.YES))
 			efficacy.TP++;
 		else
-			if(answer.getOption().matches(Answer.NO) || answer.getOption().matches(Answer.PROBABLY_NOT))
+			if(answer.getOption().matches(Answer.NO))
 				efficacy.FN++;
 			else
-				efficacy.ICantTell++;
+				efficacy.IDontKnow++;
 
 		this.workerEfficacyMap.put(workerId, efficacy);
 	}
@@ -392,13 +380,13 @@ public class WorkerAnalysis {
 			efficacy = new WorkerEfficacy();
 
 		efficacy.NotBugPointingQuestions++;
-		if(answer.getOption().matches(Answer.YES) || answer.getOption().matches(Answer.PROBABLY_YES))
+		if(answer.getOption().matches(Answer.YES))
 			efficacy.FP++;
 		else
-			if(answer.getOption().matches(Answer.NO) || answer.getOption().matches(Answer.PROBABLY_NOT))
+			if(answer.getOption().matches(Answer.NO))
 				efficacy.TN++;
 			else
-				efficacy.ICantTell++;
+				efficacy.IDontKnow++;
 
 		this.workerEfficacyMap.put(workerId, efficacy);
 	}
@@ -416,7 +404,7 @@ public class WorkerAnalysis {
 	private void checkIncrementCorrectAnswer(String microtaskId, String option, String workerId) {
 		String value = data.yesMap.get(microtaskId);
 		if(value!=null){ //means that microtaskId is yes question.
-			if(option.matches(Answer.YES) || option.matches(Answer.PROBABLY_YES)){
+			if(option.matches(Answer.YES)){
 				incrementCorrectAnswer(workerId);
 				incrementBugPointingCorrectAnswers(workerId);
 			}
@@ -425,7 +413,7 @@ public class WorkerAnalysis {
 			this.incrementBugPointingAnswerCount(workerId);
 		}
 		else{
-			if(option.matches(Answer.NO) || option.matches(Answer.PROBABLY_NOT)){
+			if(option.matches(Answer.NO)){
 				incrementCorrectAnswer(workerId);
 			}
 			else
@@ -858,7 +846,7 @@ public class WorkerAnalysis {
 			Worker worker = data.workerMap.get(workerId);
 			WorkerEfficacy efficacy = this.workerEfficacyMap.get(workerId);
 			if(efficacy!=null)
-				System.out.println(workerId+"|"+efficacy.TP +"|"+efficacy.FP+"|"+efficacy.TN+"|"+efficacy.FN+"|"+efficacy.ICantTell+"|"+efficacy.BugPointingQuestions+"|"+efficacy.NotBugPointingQuestions+"|"+worker.getGrade());
+				System.out.println(workerId+"|"+efficacy.TP +"|"+efficacy.FP+"|"+efficacy.TN+"|"+efficacy.FN+"|"+efficacy.IDontKnow+"|"+efficacy.BugPointingQuestions+"|"+efficacy.NotBugPointingQuestions+"|"+worker.getGrade());
 		}
 	}
 

@@ -197,11 +197,11 @@ public class MajorityVoting {
 				
 			for(Answer answer: answerList ){
 				String option = answer.getOption();
-				if(option.matches(Answer.YES) || option.matches(Answer.PROBABLY_YES)){
+				if(option.matches(Answer.YES)){
 					yesCount++;
 				}
 				else
-					if(option.matches(Answer.NO) || option.matches(Answer.PROBABLY_NOT)){
+					if(option.matches(Answer.NO)){
 						noCount++;
 					}
 			}

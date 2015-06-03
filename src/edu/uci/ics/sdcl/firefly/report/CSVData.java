@@ -86,21 +86,21 @@ public class CSVData {
 		for(Microtask microtask: data.microtaskList){
 			String yes="0";
 			String no="0";
-			String ICantTell="0";
+			String iDontKnow="0";
 
 			StringBuffer buffer = new StringBuffer();
 			buffer.append(microtask.getID().toString());
 			buffer.append("|");
 			Answer answer = microtask.getAnswerList().get(0);
 
-			if(answer.getOption().trim().matches(Answer.YES) || answer.getOption().trim().matches(Answer.PROBABLY_YES))
+			if(answer.getOption().trim().matches(Answer.YES))
 				yes="1";
 			else
-				if(answer.getOption().trim().matches(Answer.NO) || answer.getOption().trim().matches(Answer.PROBABLY_NOT))
+				if(answer.getOption().trim().matches(Answer.NO))
 					no="1";
 				else
-					if(answer.getOption().matches(Answer.I_CANT_TELL))
-						ICantTell="1";
+					if(answer.getOption().matches(Answer.I_DONT_KNOW))
+						iDontKnow="1";
 					else
 						System.out.println("Microtask:"+microtask.getID().toString()+"Answer with no option:"+answer.getOption());
 
@@ -108,7 +108,7 @@ public class CSVData {
 			buffer.append("|");
 			buffer.append(no);
 			buffer.append("|");
-			buffer.append(ICantTell);
+			buffer.append(iDontKnow);
 
 			contentList.add(buffer.toString());
 

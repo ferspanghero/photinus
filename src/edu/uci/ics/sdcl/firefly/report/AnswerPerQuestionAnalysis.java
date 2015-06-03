@@ -109,20 +109,18 @@ public class AnswerPerQuestionAnalysis {
 	private void printQuestionAnswers(){
 		Iterator<String> iter= this.scoreFilterCutMicrotaskMap.keySet().iterator(); 
 
-		System.out.println("Task ID | Total Answers | Yes | Probably Yes");
+		System.out.println("Task ID | Total Answers | Yes");
 		while(iter.hasNext()){
 			String taskID = iter.next();
 			Microtask task = this.scoreFilterCutMicrotaskMap.get(taskID);
 			Vector<Answer> answerList = task.getAnswerList();
 			Integer yesCount=0;
-			Integer probablyYesCount=0;
 			Integer answerListSize=0;
 			if(answerList!=null && answerList.size()>0){
 				answerListSize = answerList.size();
 				yesCount = this.countAnswerOption(answerList, Answer.YES);
-				probablyYesCount = this.countAnswerOption(answerList, Answer.PROBABLY_YES);
 			}
-			System.out.println(taskID+"|"+answerListSize+"|"+yesCount+"|"+probablyYesCount);
+			System.out.println(taskID+"|"+answerListSize+"|"+yesCount);
 		}
 
 	}
