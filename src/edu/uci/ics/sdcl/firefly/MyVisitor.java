@@ -19,8 +19,8 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.SwitchCase;
 import org.eclipse.jdt.core.dom.SwitchStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
-import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 
 import edu.uci.ics.sdcl.firefly.util.PositionFinder;
@@ -490,7 +490,32 @@ public class MyVisitor extends ASTVisitor {
 		return true;
 	}
 
+	/**
+	 * Encapsulates the visit VariableDeclaration, it
+	 * is used by the Java parser.
+	 */
+	public boolean visit(SingleVariableDeclaration node)
+	{
+		return visit((VariableDeclaration)node);
+	}
+
+	/**
+	 * Encapsulates the visit VariableDeclaration, it
+	 * is used by the Java parser.
+	 */
 	public boolean visit(VariableDeclarationFragment node)
+	{
+		return visit((VariableDeclaration)node);
+	}
+	
+	/**
+	 * Treats the two scenarios of variable declaration
+	 * statements. Encapsulated by overrode methods.
+	 * 
+	 * @param node: Can be SingleVariableDeclaration or VariableDeclarationFragment
+	 * @return
+	 */
+	public boolean visit(VariableDeclaration node)
 	{
 		if(this.newMethod != null)
 		{
@@ -507,7 +532,9 @@ public class MyVisitor extends ASTVisitor {
 		}
 		return true;
 	}
-
+	
+	
+	
 
 	/* public boolean visit(ReturnStatement node)
 	{
