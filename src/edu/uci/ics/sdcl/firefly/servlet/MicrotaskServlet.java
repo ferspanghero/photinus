@@ -87,6 +87,7 @@ public class MicrotaskServlet extends HttpServlet {
 	private void loadNextMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		int answer = new Integer(request.getParameter("answer")).intValue();
+		int confidenceAnswer = new Integer(request.getParameter("confidence")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
 		
 		String sessionId = storage.getSessionIdForWorker(this.workerId); //request.getParameter("sessionId");
@@ -98,7 +99,7 @@ public class MicrotaskServlet extends HttpServlet {
 		//Save answers from the previous microtask
 		
 		boolean success = storage.updateMicrotaskAnswer(sessionId, new Integer(microtaskId),
-				new Answer(Answer.mapToString(answer),explanation, this.workerId, elapsedTime, timeStamp));
+				new Answer(Answer.mapOptionToString(answer), Answer.mapConfidenceToString(confidenceAnswer),explanation, this.workerId, elapsedTime, timeStamp));
 
 		if(!success){
 			this.showErrorPage(request, response, "Your answer could not be stored. In case you have used the back button, "
@@ -122,8 +123,6 @@ public class MicrotaskServlet extends HttpServlet {
 			}
 		}
 	}
-
-
 
 	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("error", message);

@@ -115,6 +115,7 @@ public class LiteContainerManager extends StorageStrategy{
 			sessionLogger.info("EVENT%MICROTASK% workerId%"+ answer.getWorkerId()+"% sessionId%"+ sessionId+
 					"% microtaskId%"+microtaskId+"% fileName%"+microtask.getFileName()+
 					"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()+
+					"% confidenceLevel%"+answer.getConfidenceOption()+
 					"% duration%"+answer.getElapsedTime()+"% explanation%"+explanation);
 
 			if(session.isClosed()){//Move session to closed //EVENT

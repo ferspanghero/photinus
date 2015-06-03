@@ -80,8 +80,11 @@
 		function checkAnswer() {
 
 			var radios = document.getElementsByName("answer");
-
+			var confidenceRadios = document.getElementsByName("confidence");
+			
 			var option = -1;
+			var option2 = -1;
+			
 			var i = 0;
 
 			for (i = 0; i < radios.length; i++) {
@@ -90,7 +93,7 @@
 					break;
 				}
 			}
-
+			
 			if (option == -1) {
 				alert("Please select an answer.");
 				return -1;
@@ -98,12 +101,25 @@
 				//yes, probably yes, I can't tell must provide an explanation
 				if ((radios[0].checked) || (radios[1].checked)
 						|| (radios[2].checked)) {
-					if (document.getElementById("explanation").value == '') {
-						alert("Please provide an explanation for your answer.");
+					//check the confidence answer
+					for (i=0; i<confidenceRadios.length;i++){
+						if(confidenceRadios[i].checked){
+							option2 = i;
+						}
+					}
+					
+					if(option2 == -1){
+						alert("Please select a confidence level.");
 						return -1;
-					} else
-						return option;
-				} else
+					}else{
+						if (document.getElementById("explanation").value == '') {
+							alert("Please provide an explanation for your answer.");
+							return -1;
+						} else{
+							return option;
+						}
+					}
+				}else
 					return option;
 			}
 		}
@@ -178,16 +194,22 @@
 
 				<center>
 					<br> <a>
-					 Very confident
- Confident
- Somewhat confident
- Unsure
- Not at all
-					<input type="radio" name="answer" value="1" />Very Confident</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
-					<input type="radio" name="answer" value="2" />Confident</a> &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
-					<input type="radio" name="answer" value="3" />Somewhat Confident </a> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <a>
-					<input type="radio" name="answer" value="4" />Unsure</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;	<a>
-					<input type="radio" name="answer" value="5" />Not at all</a>
+					<input type="radio" name="answer" value="1" />Yes, there is an issue</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
+					<input type="radio" name="answer" value="2" />I don't know</a> &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
+					<input type="radio" name="answer" value="3" />No, there is not an issue</a> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <a>
+				</center>
+				<br>
+				<label>
+					How confident are you with your answer?
+				</label>
+				<br>
+				<center>
+					<br>
+					<input type="radio" name="confidence" value="1" />Very confident &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+					<input type="radio" name="confidence" value="2" />Confident &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+					<input type="radio" name="confidence" value="3" />Somewhat Confident &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
+					<input type="radio" name="confidence" value="2" />Unsure &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+					<input type="radio" name="confidence" value="3" />Not at all &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
 				</center>
 
 

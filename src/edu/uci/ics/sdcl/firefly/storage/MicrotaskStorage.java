@@ -128,7 +128,7 @@ public class MicrotaskStorage {
 			mtask.addAnswer(answer);
 			newfileDebugSession.incrementAnswersReceived(mtask.getNumberOfAnswers());
 			newfileDebugSession.insertMicrotask(microtaskId, mtask);
-			logger.info("EVENT%MICROTASK% WorkerId%"+answer.getWorkerId()+"% SessionId%-% MicrotaskId%"+microtaskId+"% Question%"+ mtask.getQuestion()+"% Answer%"+answer.getOption() +"% Duration%"+answer.getElapsedTime()+"% Explanation%"+answer.getExplanation());
+			logger.info("EVENT%MICROTASK% WorkerId%"+answer.getWorkerId()+"% SessionId%-% MicrotaskId%"+microtaskId+"% Question%"+ mtask.getQuestion()+"% Answer%"+answer.getOption()+"% Confidence Level%"+answer.getConfidenceOption()+"% Duration%"+answer.getElapsedTime()+"% Explanation%"+answer.getExplanation());
 			return this.insert(fileName, newfileDebugSession);
 		}
 		catch(Exception e){

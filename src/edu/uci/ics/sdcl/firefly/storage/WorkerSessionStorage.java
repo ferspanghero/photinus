@@ -221,7 +221,7 @@ public class WorkerSessionStorage {
 		else{
 			if(session.insertMicrotaskAnswer(microtaskId,answer)){
 				logger.info("EVENT%SESSION% workerId%"+ answer.getWorkerId()+"% sessionId%"+ sessionId+"% microtaskId%"+microtaskId+
-						"% answer%"+answer.getOption());
+						"% answer%"+answer.getOption()+"% Confidence Level%"+answer.getConfidenceOption());
 				if(this.updateActiveWorkerSession(session))
 					return session;
 				else 

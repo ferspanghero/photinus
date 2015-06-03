@@ -40,7 +40,7 @@ public class WorkerPositiveAnswerAnalysis {
 		Integer FP=0;
 		Integer TN=0;
 		Integer FN=0;
-		Integer ICantTell=0;
+		Integer IDontKnow=0;
 
 		Integer BugPointingQuestions=0;
 		Integer NotBugPointingQuestions=0;
@@ -147,7 +147,7 @@ public class WorkerPositiveAnswerAnalysis {
 
 	private void incrementWorkerYes_ProbablyYesCount(Answer answer, String workerId) {
 		String option = answer.getOption();
-		if(option.matches(Answer.YES) || option.matches(Answer.PROBABLY_YES)){
+		if(option.matches(Answer.YES)){
 
 			WorkerEfficacy efficacy = this.workerEfficacyMap.get(workerId);
 			if(efficacy==null){
@@ -179,13 +179,13 @@ public class WorkerPositiveAnswerAnalysis {
 			efficacy = new WorkerEfficacy();
 
 		efficacy.BugPointingQuestions++;
-		if(answer.getOption().matches(Answer.YES) || answer.getOption().matches(Answer.PROBABLY_YES))
+		if(answer.getOption().matches(Answer.YES))
 			efficacy.TP++;
 		else
-			if(answer.getOption().matches(Answer.NO) || answer.getOption().matches(Answer.PROBABLY_NOT))
+			if(answer.getOption().matches(Answer.NO))
 				efficacy.FN++;
 			else
-				efficacy.ICantTell++;
+				efficacy.IDontKnow++;
 
 		this.workerEfficacyMap.put(workerId, efficacy);
 	}
@@ -198,13 +198,13 @@ public class WorkerPositiveAnswerAnalysis {
 			efficacy = new WorkerEfficacy();
 
 		efficacy.NotBugPointingQuestions++;
-		if(answer.getOption().matches(Answer.YES) || answer.getOption().matches(Answer.PROBABLY_YES))
+		if(answer.getOption().matches(Answer.YES))
 			efficacy.FP++;
 		else
-			if(answer.getOption().matches(Answer.NO) || answer.getOption().matches(Answer.PROBABLY_NOT))
+			if(answer.getOption().matches(Answer.NO))
 				efficacy.TN++;
 			else
-				efficacy.ICantTell++;
+				efficacy.IDontKnow++;
 
 		this.workerEfficacyMap.put(workerId, efficacy);
 	}
@@ -217,7 +217,7 @@ public class WorkerPositiveAnswerAnalysis {
 			Worker worker = data.workerMap.get(workerId);
 			WorkerEfficacy efficacy = this.workerEfficacyMap.get(workerId);
 			if(efficacy!=null)
-				System.out.println(workerId+"|"+efficacy.TP +"|"+efficacy.FP+"|"+efficacy.TN+"|"+efficacy.FN+"|"+efficacy.ICantTell+
+				System.out.println(workerId+"|"+efficacy.TP +"|"+efficacy.FP+"|"+efficacy.TN+"|"+efficacy.FN+"|"+efficacy.IDontKnow+
 						"|"+efficacy.positiveAnswers+"|"+efficacy.totalAnswers+"|"+worker.getGrade());
 		}
 	}
@@ -232,7 +232,7 @@ public class WorkerPositiveAnswerAnalysis {
 			Worker worker = data.workerMap.get(workerId);
 			WorkerEfficacy efficacy = this.workerEfficacyMap.get(workerId);
 			if(efficacy!=null)
-				System.out.println(workerId+"|"+efficacy.TP +"|"+efficacy.FP+"|"+efficacy.TN+"|"+efficacy.FN+"|"+efficacy.ICantTell+
+				System.out.println(workerId+"|"+efficacy.TP +"|"+efficacy.FP+"|"+efficacy.TN+"|"+efficacy.FN+"|"+efficacy.IDontKnow+
 						"|"+efficacy.positiveAnswers+"|"+efficacy.totalAnswers+"|"+worker.getGrade());
 		}
 	}
