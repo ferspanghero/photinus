@@ -125,6 +125,10 @@
 							<td><input type="text" name="targetMethod" size="54"/></td>		 
 						</tr>
 						<tr>
+							<td align="right">Test Case:</td>
+							<td><textarea name="testCase" rows="4" cols="55" style="width: 405px; resize: none;"/></textarea></td>		 
+						</tr>
+						<tr>
 							<td><input type="submit" value="Generate Microtasks"/></td>	
 							<td>${requestScope["microtasks_message"]}</td>
 						</tr>

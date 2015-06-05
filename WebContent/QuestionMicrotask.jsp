@@ -183,6 +183,7 @@
 		<div id="internalText">
 			<br> The bug we specifically could use your help with today is
 			the following: <br> <b>${requestScope["bugReport"]}</b><br>
+			<br> Test Case: <br> <b>${requestScope["testCase"]}</b><br>
 			<br> ${requestScope["question"]}<br>
 		</div>
 	</div>

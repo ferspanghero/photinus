@@ -146,6 +146,7 @@ public class MicrotaskServlet extends HttpServlet {
 		request.setAttribute("microtaskId", task.getID());  
 	
 		request.setAttribute("bugReport", task.getFailureDescription());
+		request.setAttribute("testCase", task.getTestCase());
 		request.setAttribute("question", task.getQuestion());
 		
 		//set source code of codeSnippet - First ACE Editor

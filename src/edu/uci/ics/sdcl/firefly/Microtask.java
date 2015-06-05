@@ -11,6 +11,7 @@ public class Microtask implements Serializable
 	private static final long serialVersionUID = 1L;
 	private String question;
 	private String failureDescription;
+	private String testCase;
 	private CodeSnippet method;
 	private CodeElement codeElement;
 	private String codeElementType;
@@ -48,7 +49,7 @@ public class Microtask implements Serializable
 	 * @param ID
 	 */
 	public Microtask(String codeElementType, CodeSnippet method, CodeElement codeElement, String question, Integer startingLineNumber, 
-			Integer startingColumnNumber, Integer endingLineNumber, Integer endingColumnNumber, Integer ID, String failureDescription)
+			Integer startingColumnNumber, Integer endingLineNumber, Integer endingColumnNumber, Integer ID, String failureDescription, String testCase)
 	{
 		this.setCodeSnippet(method);
 		this.setQuestion(question);
@@ -61,6 +62,7 @@ public class Microtask implements Serializable
 		this.answerList = new Vector<Answer>();
 		this.ID = ID;
 		this.failureDescription = failureDescription;
+		this.testCase = testCase;
 		this.fileName = method.getFileName();
 	}
 
@@ -75,7 +77,7 @@ public class Microtask implements Serializable
 	
 	/** Light version used during microtask execution */
 	public Microtask(int microtaskId, String question,
-			String failureDescription, String snippetHightlights,
+			String failureDescription, String testCase, String snippetHightlights,
 			String callerHightlights, String calleeHightlights,
 			int startingColumn, int endingLine, int endingColumn,
 			String calleeFileContent, int calleeLOCS, String callerFileContent,
@@ -84,6 +86,7 @@ public class Microtask implements Serializable
 		this.ID = new Integer(microtaskId);
 		this.question = question;
 		this.failureDescription = failureDescription;
+		this.testCase = testCase;
 		this.snippetHightlights = snippetHightlights;
 		this.callerHightlights = callerHightlights;
 		this.calleeHightlights = calleeHightlights;
@@ -181,6 +184,10 @@ public class Microtask implements Serializable
 	public String getFailureDescription() {
 		return failureDescription;
 	}
+	
+	public String getTestCase(){
+		return testCase;
+	}
 
 	public String getSnippetHightlights() {
 		return snippetHightlights;
@@ -251,6 +258,7 @@ public class Microtask implements Serializable
 				this.ID,
 				this.question,
 				this.failureDescription,
+				this.testCase,
 				this.snippetHightlights,
 				this.callerHightlights,
 				this.calleeHightlights,

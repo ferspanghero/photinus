@@ -90,6 +90,7 @@ public class FileUploadServlet extends HttpServlet {
 		String targetMethodName = new String();
 		String numberOfParameters = null;
 		String bugReport = new String();
+		String testCase = new String();
 		String fileName = new String();
 		String fileContent = new String();
 		String workerId= new String();
@@ -122,6 +123,8 @@ public class FileUploadServlet extends HttpServlet {
 						// getting bug report
 						if (item.getFieldName().equalsIgnoreCase("bugReport")){
 							bugReport = item.getString();
+						}if (item.getFieldName().equalsIgnoreCase("testCase")){
+							testCase = item.getString();
 						}
 						// getting specific method name
 						if (item.getFieldName().equalsIgnoreCase("targetMethod")){
@@ -152,7 +155,7 @@ public class FileUploadServlet extends HttpServlet {
 				
 				// generating microtasks individualized or in bulk
 				if (loadPerMethod){
-					return_message = return_message + generateMicrotasks(fileName, fileContent, targetMethodName,numberOfParameters, bugReport);;
+					return_message = return_message + generateMicrotasks(fileName, fileContent, targetMethodName,numberOfParameters, bugReport, testCase);;
 				}
 				else{//in bulk
 					return_message = return_message + this.bulkUpload();
@@ -172,7 +175,7 @@ public class FileUploadServlet extends HttpServlet {
 	}
 
 
-	private String generateMicrotasks(String fileName, String fileContent, String methodName, String numberOfParameters, String bugReport){
+	private String generateMicrotasks(String fileName, String fileContent, String methodName, String numberOfParameters, String bugReport, String testCase){
 		//calls CodeSnippetFactory
 		CodeSnippetFactory codeSnippetFactory = new CodeSnippetFactory(fileName,fileContent);
 		Vector<CodeSnippet> snippetList = codeSnippetFactory.generateSnippetsForFile();
@@ -221,7 +224,7 @@ public class FileUploadServlet extends HttpServlet {
 			MicrotaskContextFactory contextFactory = new MicrotaskContextFactory();
 			MicrotaskStorage storage = MicrotaskStorage.initializeSingleton();;
 			
-			Hashtable<Integer, Microtask> microtaskMap = questionFactory.generateMicrotasks(filteredCodeSnippets, bugReport, storage.getNumberOfMicrotask());
+			Hashtable<Integer, Microtask> microtaskMap = questionFactory.generateMicrotasks(filteredCodeSnippets, bugReport,testCase, storage.getNumberOfMicrotask());
 			microtaskMap = contextFactory.generateMicrotaskContext(microtaskMap);
 			
 			if (microtaskMap!= null && microtaskMap.size() > 0){
@@ -339,7 +342,7 @@ public class FileUploadServlet extends HttpServlet {
 			
 			String fileContent = SourceFileReader.readFileToString(path+fileName);
 			
-			String result = generateMicrotasks(fileName, fileContent, methodName,null, failureDescription);
+			String result = generateMicrotasks(fileName, fileContent, methodName,null, failureDescription, "");
 			logger.info("Event =UPLOAD; File="+ fileName+ "; MethodName="+ methodName+ "; Microtasks="+result);
 			message = message + methodName+ ", " ;
 		}

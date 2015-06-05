@@ -62,7 +62,7 @@ public class QuestionFactory {
 	 * @param bugReport 
 	 * @return the map of microtasks
 	 */
-	public Hashtable<Integer, Microtask> generateMicrotasks(Vector<CodeSnippet> methodsParsed, String bugReport, int numberOfExistingMicrotasks)
+	public Hashtable<Integer, Microtask> generateMicrotasks(Vector<CodeSnippet> methodsParsed, String bugReport, String testCase, int numberOfExistingMicrotasks)
 	{
 		Integer microtaskId = numberOfExistingMicrotasks;
 		this.microtaskMap = new  Hashtable<Integer, Microtask>();
@@ -103,7 +103,7 @@ public class QuestionFactory {
 				}
 				/* setting and adding a concrete question */
 				question = new Microtask(CodeElement.METHOD_DECLARATION, codeSnippet, null,
-						questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport);
+						questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport, testCase);
 
 				this.microtaskMap.put(question.getID(),question);
 				microtaskId++;
@@ -146,7 +146,7 @@ public class QuestionFactory {
 							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 
 							question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, elementCall, 
-									questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport);
+									questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport, testCase);
 							this.microtaskMap.put(question.getID(),question);
 							microtaskId++;
 						}
@@ -186,7 +186,7 @@ public class QuestionFactory {
 									this.startingLine + questionPrompt.substring(questionPrompt.indexOf("<#2>")+4);
 						}
 						question = new Microtask(CodeElement.IF_CONDITIONAL, codeSnippet, elementIf, 
-								questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport);
+								questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport, testCase);
 
 						this.microtaskMap.put(question.getID(),question);
 						microtaskId++;
@@ -200,7 +200,7 @@ public class QuestionFactory {
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = this.setUpQuestionPrompt(questionPrompt, element);
 						question = new Microtask(CodeElement.SWITCH_CONDITIONAL, codeSnippet, element, 
-								questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport);
+								questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport, testCase);
 
 						this.microtaskMap.put(question.getID(),question);
 						microtaskId++;
@@ -224,7 +224,7 @@ public class QuestionFactory {
 						case CodeElement.FOR_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "For");
 							question = new Microtask(CodeElement.FOR_LOOP, codeSnippet, element, 
-									questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport);
+									questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport, testCase);
 							break;
 						case CodeElement.DO_LOOP:
 							this.startingLine = element.getBodyStartingLine();
@@ -233,12 +233,12 @@ public class QuestionFactory {
 							this.endingLine = element.getBodyEndingLine();
 							questionPrompt = questionPrompt.replaceAll("<L>", "Do");
 							question = new Microtask(CodeElement.DO_LOOP, codeSnippet, element, 
-									questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport);
+									questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport, testCase);
 							break;
 						case CodeElement.WHILE_LOOP:
 							questionPrompt = questionPrompt.replaceAll("<L>", "While");
 							question = new Microtask(CodeElement.WHILE_LOOP, codeSnippet, element, 
-									questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport);
+									questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport, testCase);
 							break;
 						}
 						this.microtaskMap.put(question.getID(),question);
@@ -256,7 +256,7 @@ public class QuestionFactory {
 						questionPrompt = new String(templateVariableQuestion);
 						questionPrompt = questionPrompt.replaceAll("<#>", ((MyVariable)element).getName() );
 						question = new Microtask(CodeElement.VARIABLE_DECLARATION, codeSnippet, element,
-								questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport);
+								questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport, testCase);
 						this.microtaskMap.put(question.getID(), question);
 					}
 					// Add more cases here
