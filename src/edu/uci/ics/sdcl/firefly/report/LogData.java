@@ -452,7 +452,7 @@ public class LogData {
 				//	System.out.println("durationDouble: "+ durationDouble + "> minDuration: "+minDuration);
 				this.countDuration(durationDouble);
 
-				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp);
+				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp, null);
 
 				//List of sequential microtasks
 				Vector<Answer> singleAnswerList = new Vector<Answer>();
@@ -760,7 +760,7 @@ public class LogData {
 
 				this.countDuration(durationDouble);
 
-				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp);
+				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp, null);
 
 				//List of sequential microtasks
 				Vector<Answer> singleAnswerList = new Vector<Answer>();
