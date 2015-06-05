@@ -14,8 +14,8 @@ import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
  * Servlet implementation class SurveyServlet
  */
 public class SurveyServlet extends HttpServlet {
-    public static String question[] = {"Gender", "Age", "Country", "Years progr.", "Difficulty", "Feedback"};   
-
+    //public static String question[] = {"Gender", "Age", "Country", "Years progr.", "Difficulty", "Feedback"};   
+    public static String question[] = {"Difficulty", "Feedback"};   
     public SurveyServlet() {
         super();
     }
@@ -24,12 +24,12 @@ public class SurveyServlet extends HttpServlet {
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
 		Worker subject = storage.readExistingWorker(request.getParameter("workerId"));
 		if (null != subject){
-			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
-			subject.addSurveyAnswer(question[1], request.getParameter("age"));
-			subject.addSurveyAnswer(question[2], request.getParameter("country"));
-			subject.addSurveyAnswer(question[3], request.getParameter("experience"));
-			subject.addSurveyAnswer(question[4], request.getParameter("difficulty"));
-			subject.addSurveyAnswer(question[5], request.getParameter("feedback"));
+//			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
+//			subject.addSurveyAnswer(question[1], request.getParameter("age"));
+//			subject.addSurveyAnswer(question[2], request.getParameter("country"));
+//			subject.addSurveyAnswer(question[3], request.getParameter("experience"));
+			subject.addSurveyAnswer(question[0], request.getParameter("difficulty"));
+			subject.addSurveyAnswer(question[1], request.getParameter("feedback"));
 			
 			//Store result
 			storage.insertSurvey(subject);

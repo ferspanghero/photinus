@@ -30,47 +30,47 @@
 	<script>
 		function checkAnswers() {
 
-			var gender = document.getElementsByName("gender");
-			var genderOption = -1;
-			var i = 0;
+// 			var gender = document.getElementsByName("gender");
+// 			var genderOption = -1;
+// 			var i = 0;
 
-			for (i = 0; i < gender.length; i++) {
-				if (gender[i].checked) {
-					genderOption = i;
-					break;
-				}
-			}
-			if (genderOption === -1) {
-				alert("Please select a gender option.");
-				return -1;
-			}
+// 			for (i = 0; i < gender.length; i++) {
+// 				if (gender[i].checked) {
+// 					genderOption = i;
+// 					break;
+// 				}
+// 			}
+// 			if (genderOption === -1) {
+// 				alert("Please select a gender option.");
+// 				return -1;
+// 			}
 
-			var ageField = document.getElementById("age");
-			ageField.value = ageField.value.trim();
-			if (!ageField.value) {
-				alert("Please enter your age.");
-				return -1;
-			} else if (isNaN(ageField.value)) {
-				alert("Age must be number.");
-				return -1;
-			}
+// 			var ageField = document.getElementById("age");
+// 			ageField.value = ageField.value.trim();
+// 			if (!ageField.value) {
+// 				alert("Please enter your age.");
+// 				return -1;
+// 			} else if (isNaN(ageField.value)) {
+// 				alert("Age must be number.");
+// 				return -1;
+// 			}
 
-			var countryField = document.getElementById("country");
-			countryField.value = countryField.value.trim();
-			if (!countryField.value) {
-				alert("Please enter your country of residence.");
-				return -1;
-			}
+// 			var countryField = document.getElementById("country");
+// 			countryField.value = countryField.value.trim();
+// 			if (!countryField.value) {
+// 				alert("Please enter your country of residence.");
+// 				return -1;
+// 			}
 
-			var experienceField = document.getElementById("experience");
-			experienceField.value = experienceField.value.trim();
-			if (!experienceField.value) {
-				alert("Please enter your years of programming experience.");
-				return -1;
-			} else if (isNaN(experienceField.value)) {
-				alert("Years of experience must be a number.");
-				return -1;
-			}
+// 			var experienceField = document.getElementById("experience");
+// 			experienceField.value = experienceField.value.trim();
+// 			if (!experienceField.value) {
+// 				alert("Please enter your years of programming experience.");
+// 				return -1;
+// 			} else if (isNaN(experienceField.value)) {
+// 				alert("Years of experience must be a number.");
+// 				return -1;
+// 			}
 
 			var difficulty = document.getElementsByName("difficulty");
 			var difficultyOption = -1;
@@ -114,7 +114,7 @@
 
 
 			<form name="surveyForm" method="get" action="survey">
-
+<!-- 
 				<br> What is your gender?<br> &nbsp;&nbsp;<input
 					type="radio" name="gender" value="Female">Female<br>
 				&nbsp;&nbsp;<input type="radio" name="gender" value="Male">Male<br>
@@ -126,7 +126,7 @@
 				<br> What is your country of residence?</b> <input type=text
 					name="country" id="country" size="25" /><br>
 				<br> How many years of programming experience do you have?</b> <input
-					type=text name="experience" id="experience" size="2" /><br>
+					type=text name="experience" id="experience" size="2" /><br> -->
 				<br> From 1(easy) to 7(hard), how do you rank this task? <br>
 				&nbsp;&nbsp;<input type="radio" name="difficulty" value="1">1
 				&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;<input type="radio"
