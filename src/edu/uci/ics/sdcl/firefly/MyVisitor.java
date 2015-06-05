@@ -1,10 +1,11 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -13,7 +14,6 @@ import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -52,6 +52,9 @@ public class MyVisitor extends ASTVisitor {
 	private CodeSnippetFactory snippetFactory;       //Factory that keeps track of the fileName and fileContent being parsed
 
 	private int numberOfMethodInvocations;
+	
+	private List<String> callees = new ArrayList<String>(); // holds the nested methods of a node
+	boolean invertNestedMethodStack = false; // some nested methods are inverted in the stack, this helps get a default arrange of the stack
 	private boolean nestedMethodFlag = false; // Helps determining the nested methods cases
 	/* NESTED METHODS EXAMPLES
 	fig1.getDiameter().intValue(); This situation must be covered by one single question about getDiameter, intValue
@@ -254,6 +257,16 @@ public class MyVisitor extends ASTVisitor {
 			MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, numberOfArguments,
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
+			if(callees.size() != 0)
+			{
+				if(this.invertNestedMethodStack)
+				{
+					Collections.reverse(callees);
+					this.invertNestedMethodStack = false;
+				}
+				methodCall.setNestedMethods(callees);
+				callees = new ArrayList<String>();
+			}
 
 			//System.out.println(methodCall.toString());
 			//System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
@@ -577,18 +590,22 @@ public class MyVisitor extends ASTVisitor {
 	}
 
 	private boolean isInvalidMethodInvocation(MethodInvocation node){
-		
 		if(node==null)
 			return true;
 		// handles the methodA().methodB() cases
-		if(node.getExpression() != null)
+		if((node.getExpression() != null))
 		{
+			this.invertNestedMethodStack = true;
 			this.nestedMethodFlag = true;
+			callees.add(node.getName().toString());
 			return true;
 		}
 		// handles the methodA(methodB()) cases
 		if(node.getParent().getNodeType() != node.EXPRESSION_STATEMENT && !this.nestedMethodFlag)
+		{
+			callees.add(node.getName().toString());
 			return true;
+		}
 		this.nestedMethodFlag = false;
 		return isInvalidCall(node.getParent().getNodeType(),node.getName().toString(), node.getExpression());
 	}

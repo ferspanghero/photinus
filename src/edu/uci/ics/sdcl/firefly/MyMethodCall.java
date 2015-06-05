@@ -1,9 +1,8 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-
-import org.eclipse.jdt.core.dom.Expression;
 
 public class MyMethodCall extends CodeElement implements Serializable
 {
@@ -13,6 +12,8 @@ public class MyMethodCall extends CodeElement implements Serializable
 	private String expression;
 	private String parameters;
 	private Integer numberOfParameters;
+	// handles the nested methods cases methodA().methodB() or methodA(methodB())
+	private List<String> nestedMethods = new ArrayList<String>(); 
 	
 	public MyMethodCall(String nameArg, String expressionArg, String parametersArg, Integer numberOfParameters, 
 			Integer elementStartingLineArg, Integer elementStartingColumnArg,
@@ -43,6 +44,16 @@ public class MyMethodCall extends CodeElement implements Serializable
 
 	public Integer getNumberOfParameters(){
 		return this.numberOfParameters;
+	}
+	
+	public void setNestedMethods(List<String> nestedMethods)
+	{
+		this.nestedMethods = nestedMethods;
+	}
+	
+	public List<String> getNestedMethods()
+	{
+		return this.nestedMethods;
 	}
 	
 	

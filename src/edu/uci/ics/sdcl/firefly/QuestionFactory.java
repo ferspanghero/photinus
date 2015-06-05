@@ -1,15 +1,9 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Vector;
-
-import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 public class QuestionFactory {
 
@@ -40,13 +34,7 @@ public class QuestionFactory {
 		templateMethodDeclaration.add("Is there possibly something wrong with the body of function '<F>' between lines "
 				+ "<#1> and <#2> (e.g., function produces an incorrect return value, return statement is at the wrong place, does not properly handle error situations, etc.)?");
 		/* Method invocation */
-		/*templateMethodInvocation.add("Is there maybe something wrong with the invocation of function '<F>' in function "
-				+ "'<G>' at line <#> (e.g., should be at a different place in the code, should invoke a different "
-				+ "function, has unanticipated side effects, return value is improperly used, etc.)");
-		templateMethodInvocation.add("Is there perhaps something wrong with the values of the parameters received "
-				+ "by function '<F>' when called by function '<G>' at line <#> (e.g., wrong variables used as "
-				+ "parameters, wrong order, missing or wrong type of parameter, values of the parameters are not checked, etc .)?");*/
-		templateMethodInvocation.add("Is there any issue with the  method invocations \"<M>\"  at line  <#> that might be related to the failure?");
+		templateMethodInvocation.add("Is there any issue with the  method invocation(s) \"<M>\"  at line  <#> that might be related to the failure?");
 		/* Conditional */
 		templateConditional.add("Is there any issue with the conditional clause between lines <#1> and <#2> that might be related to the failure?");
 		/* Loops */
@@ -124,7 +112,18 @@ public class QuestionFactory {
 						boolean addQuestion = false; 		// assuming question is NOT good formed 
 						MyMethodCall elementCall = (MyMethodCall)element;
 						/* setting up the position for the element */
-
+						
+						StringBuilder methodNames = new StringBuilder();
+						methodNames.append(elementCall.getName());
+						if(elementCall.getNestedMethods().size() > 0)
+						{
+							List<String> nestedMethods = elementCall.getNestedMethods();
+							for(int i=0; i<nestedMethods.size();i++)
+							{
+								methodNames.append(", ");
+								methodNames.append(nestedMethods.get(i));
+							}
+						}
 						questionPrompt = new String(templateForQuestion);
 
 						if ( -1 != questionPrompt.indexOf("parameters"))	// question about parameters
@@ -142,7 +141,7 @@ public class QuestionFactory {
 							this.endingLine = elementCall.getElementEndingLine();
 							this.endingColumn = elementCall.getElementEndingColumn();
 
-							questionPrompt = questionPrompt.replaceAll("<M>", elementCall.getName());
+							questionPrompt = questionPrompt.replaceAll("<M>", methodNames.toString());
 							//questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
 							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 
