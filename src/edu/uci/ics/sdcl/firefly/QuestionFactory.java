@@ -40,12 +40,13 @@ public class QuestionFactory {
 		templateMethodDeclaration.add("Is there possibly something wrong with the body of function '<F>' between lines "
 				+ "<#1> and <#2> (e.g., function produces an incorrect return value, return statement is at the wrong place, does not properly handle error situations, etc.)?");
 		/* Method invocation */
-		templateMethodInvocation.add("Is there maybe something wrong with the invocation of function '<F>' in function "
+		/*templateMethodInvocation.add("Is there maybe something wrong with the invocation of function '<F>' in function "
 				+ "'<G>' at line <#> (e.g., should be at a different place in the code, should invoke a different "
 				+ "function, has unanticipated side effects, return value is improperly used, etc.)");
 		templateMethodInvocation.add("Is there perhaps something wrong with the values of the parameters received "
 				+ "by function '<F>' when called by function '<G>' at line <#> (e.g., wrong variables used as "
-				+ "parameters, wrong order, missing or wrong type of parameter, values of the parameters are not checked, etc .)?");
+				+ "parameters, wrong order, missing or wrong type of parameter, values of the parameters are not checked, etc .)?");*/
+		templateMethodInvocation.add("Is there any issue with the  method invocations \"<M>\"  at line  <#> that might be related to the failure?");
 		/* Conditional */
 		templateConditional.add("Is there any issue with the conditional clause between lines <#1> and <#2> that might be related to the failure?");
 		/* Loops */
@@ -141,8 +142,8 @@ public class QuestionFactory {
 							this.endingLine = elementCall.getElementEndingLine();
 							this.endingColumn = elementCall.getElementEndingColumn();
 
-							questionPrompt = questionPrompt.replaceAll("<F>", elementCall.getName());
-							questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
+							questionPrompt = questionPrompt.replaceAll("<M>", elementCall.getName());
+							//questionPrompt = questionPrompt.replaceAll("<G>", codeSnippet.getMethodSignature().getName());
 							questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
 
 							question = new Microtask(CodeElement.METHOD_INVOCATION, codeSnippet, elementCall, 

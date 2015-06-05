@@ -4,6 +4,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Stack;
 
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -12,6 +13,7 @@ import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -50,7 +52,11 @@ public class MyVisitor extends ASTVisitor {
 	private CodeSnippetFactory snippetFactory;       //Factory that keeps track of the fileName and fileContent being parsed
 
 	private int numberOfMethodInvocations;
-
+	private boolean nestedMethodFlag = false; // Helps determining the nested methods cases
+	/* NESTED METHODS EXAMPLES
+	fig1.getDiameter().intValue(); This situation must be covered by one single question about getDiameter, intValue
+	fig1.x = checkShift(shift(fig1.diameter,fig2.diameter,fig2.x)); This as well, checkShift shift
+	 */
 
 
 	public MyVisitor(CompilationUnit cuArg, CodeSnippetFactory snippetFactory)
@@ -228,7 +234,6 @@ public class MyVisitor extends ASTVisitor {
 	/* Method Calls */
 	public boolean visit(MethodInvocation node)
 	{
-
 		if(isInvalidMethodInvocation(node)) 
 			return true;
 		else{
@@ -572,10 +577,20 @@ public class MyVisitor extends ASTVisitor {
 	}
 
 	private boolean isInvalidMethodInvocation(MethodInvocation node){
+		
 		if(node==null)
 			return true;
-		else
-			return isInvalidCall(node.getParent().getNodeType(),node.getName().toString(), node.getExpression());
+		// handles the methodA().methodB() cases
+		if(node.getExpression() != null)
+		{
+			this.nestedMethodFlag = true;
+			return true;
+		}
+		// handles the methodA(methodB()) cases
+		if(node.getParent().getNodeType() != node.EXPRESSION_STATEMENT && !this.nestedMethodFlag)
+			return true;
+		this.nestedMethodFlag = false;
+		return isInvalidCall(node.getParent().getNodeType(),node.getName().toString(), node.getExpression());
 	}
 
 	private boolean isInvalidClassInstantiation(ClassInstanceCreation node){
