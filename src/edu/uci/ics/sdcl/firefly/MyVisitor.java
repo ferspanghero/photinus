@@ -515,6 +515,8 @@ public class MyVisitor extends ASTVisitor {
 	 */
 	public boolean visit(SingleVariableDeclaration node)
 	{
+		if(node.getParent().getNodeType() == ASTNode.CATCH_CLAUSE) // ignores variables declared as catch parameters
+			return true;
 		return visit((VariableDeclaration)node);
 	}
 
