@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -601,7 +602,7 @@ public class MyVisitor extends ASTVisitor {
 			return true;
 		}
 		// handles the methodA(methodB()) cases
-		if(node.getParent().getNodeType() != node.EXPRESSION_STATEMENT && !this.nestedMethodFlag)
+		if(node.getParent().getNodeType() != ASTNode.EXPRESSION_STATEMENT && !this.nestedMethodFlag)
 		{
 			callees.add(node.getName().toString());
 			return true;
@@ -612,6 +613,8 @@ public class MyVisitor extends ASTVisitor {
 
 	private boolean isInvalidClassInstantiation(ClassInstanceCreation node){
 		if(node==null)
+			return true;
+		if(node.getParent().getNodeType() == ASTNode.THROW_STATEMENT)
 			return true;
 		else
 			return isInvalidCall(node.getParent().getNodeType(),node.getType().toString(),node.getExpression());
