@@ -258,6 +258,7 @@ public class QuestionFactory {
 						question = new Microtask(CodeElement.VARIABLE_DECLARATION, codeSnippet, element,
 								questionPrompt, this.startingLine, this.startingColumn, this.endingLine, this.endingColumn, microtaskId, bugReport, testCase);
 						this.microtaskMap.put(question.getID(), question);
+						microtaskId++;
 					}
 					// Add more cases here
 				default:
