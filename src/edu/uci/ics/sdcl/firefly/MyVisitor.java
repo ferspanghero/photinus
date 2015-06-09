@@ -300,95 +300,98 @@ public class MyVisitor extends ASTVisitor {
 	/*Statements */
 	public boolean visit(IfStatement node)
 	{
-		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
-		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
-		setupElementEndPosition();
-		this.bodyStartingLine = cu.getLineNumber(node.getThenStatement().getStartPosition());
-		this.bodyStartingColumn = cu.getColumnNumber(node.getThenStatement().getStartPosition());
-		setupBodyEndPostition();
+		if(this.newMethod != null)
+		{
+			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+			setupElementEndPosition();
+			this.bodyStartingLine = cu.getLineNumber(node.getThenStatement().getStartPosition());
+			this.bodyStartingColumn = cu.getColumnNumber(node.getThenStatement().getStartPosition());
+			setupBodyEndPostition();
 
-		//		System.out.println(":::If at line: " + this.elementStartingLine);	
+			//		System.out.println(":::If at line: " + this.elementStartingLine);	
 
-		MyIfStatement ifCreated = (MyIfStatement)element;
-		if (null == node.getElseStatement()) // There is no else statement (body = then statement)
-		{	// just create the element
-			ifCreated = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
-					this.elementEndingLine, this.elementEndingColumn,
-					this.bodyStartingLine, this.bodyStartingColumn,
-					this.bodyEndingLine, this.bodyEndingColumn);
-
-			// checking if belongs to an else-if statement
-			if (MyIfStatement.isIfofAnElseIfCase(this.snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
-			{	// match this if with its else-if case on hold onto stack
-				//				System.out.println("!:This if w NO else is part of an Else-If case");
-				ifCreated.setIfOfAnElse(true);
-
-				MyIfStatement ifElementOnStack;
-				do
-				{
-					ifElementOnStack = this.ifElements.pop();
-					ifElementOnStack.setElseEndingLine(this.bodyEndingLine);
-					ifElementOnStack.setElseEndingColumn(this.bodyEndingColumn);
-					this.newMethod.addElement(ifElementOnStack);
-				}while( ifElementOnStack.isIfOfAnElse() );
-
-			}
-			this.newMethod.addElement(ifCreated);
-		}
-		else	// there is an else statement 
-		{			
-			Integer elseStartingLine = cu.getLineNumber(node.getElseStatement().getStartPosition());
-			Integer elseStartingColumn = cu.getColumnNumber(node.getElseStatement().getStartPosition());
-			if ( node.getElseStatement().toString().substring(0, 2).equals("if") )
-			{	// else-if case
-				// setting the element as unknown end position
+			MyIfStatement ifCreated = (MyIfStatement)element;
+			if (null == node.getElseStatement()) // There is no else statement (body = then statement)
+			{	// just create the element
 				ifCreated = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
 						this.elementEndingLine, this.elementEndingColumn,
 						this.bodyStartingLine, this.bodyStartingColumn,
-						this.bodyEndingLine, this.bodyEndingColumn,
-						elseStartingLine, elseStartingColumn,
-						CodeElement.NO_NUMBER_ASSOCIATED, CodeElement.NO_NUMBER_ASSOCIATED);
-
-				if (MyIfStatement.isIfofAnElseIfCase(snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
-				{	// match this if with its else-if case on hold onto stack
-					//					System.out.println("!:This if w NO else is part of an Else-If case");
-					ifCreated.setIfOfAnElse(true);
-				}
-				// adding element to the stack, not added on NewMethod yet
-				this.ifElements.push(ifCreated);
-				//				System.out.println("This if is now onto Stack!");
-
-			} 
-			else
-			{	/* Finding the end position for the else [not the else-if case] */
-				this.bodyPosition = new PositionFinder(elseStartingLine, elseStartingColumn, 
-						snippetFactory.getFileContentPerLine(), '{', '}');
-				this.bodyPosition.computeEndPosition();
-				Integer elseEndingLine = this.bodyPosition.getEndingLineNumber();
-				Integer elseEndingColumn = this.bodyPosition.getEndingColumnNumber();
-				ifCreated = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
-						this.elementEndingLine, this.elementEndingColumn,
-						this.bodyStartingLine, this.bodyStartingColumn,
-						this.bodyEndingLine, this.bodyEndingColumn,
-						elseStartingLine, elseStartingColumn,
-						elseEndingLine, elseEndingColumn);
+						this.bodyEndingLine, this.bodyEndingColumn);
 
 				// checking if belongs to an else-if statement
-				if (MyIfStatement.isIfofAnElseIfCase(snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
+				if (MyIfStatement.isIfofAnElseIfCase(this.snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
 				{	// match this if with its else-if case on hold onto stack
-					//					System.out.println("::This if w else is part of an Else-If case");
+					//				System.out.println("!:This if w NO else is part of an Else-If case");
 					ifCreated.setIfOfAnElse(true);
 
 					MyIfStatement ifElementOnStack;
 					do
 					{
 						ifElementOnStack = this.ifElements.pop();
-						ifElementOnStack.setElseEndingLine(elseEndingLine);
-						ifElementOnStack.setElseEndingColumn(elseEndingColumn);
+						ifElementOnStack.setElseEndingLine(this.bodyEndingLine);
+						ifElementOnStack.setElseEndingColumn(this.bodyEndingColumn);
 						this.newMethod.addElement(ifElementOnStack);
 					}while( ifElementOnStack.isIfOfAnElse() );
+
 				}
 				this.newMethod.addElement(ifCreated);
+			}
+			else	// there is an else statement 
+			{			
+				Integer elseStartingLine = cu.getLineNumber(node.getElseStatement().getStartPosition());
+				Integer elseStartingColumn = cu.getColumnNumber(node.getElseStatement().getStartPosition());
+				if ( node.getElseStatement().toString().substring(0, 2).equals("if") )
+				{	// else-if case
+					// setting the element as unknown end position
+					ifCreated = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
+							this.elementEndingLine, this.elementEndingColumn,
+							this.bodyStartingLine, this.bodyStartingColumn,
+							this.bodyEndingLine, this.bodyEndingColumn,
+							elseStartingLine, elseStartingColumn,
+							CodeElement.NO_NUMBER_ASSOCIATED, CodeElement.NO_NUMBER_ASSOCIATED);
+
+					if (MyIfStatement.isIfofAnElseIfCase(snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
+					{	// match this if with its else-if case on hold onto stack
+						//					System.out.println("!:This if w NO else is part of an Else-If case");
+						ifCreated.setIfOfAnElse(true);
+					}
+					// adding element to the stack, not added on NewMethod yet
+					this.ifElements.push(ifCreated);
+					//				System.out.println("This if is now onto Stack!");
+
+				} 
+				else
+				{	/* Finding the end position for the else [not the else-if case] */
+					this.bodyPosition = new PositionFinder(elseStartingLine, elseStartingColumn, 
+							snippetFactory.getFileContentPerLine(), '{', '}');
+					this.bodyPosition.computeEndPosition();
+					Integer elseEndingLine = this.bodyPosition.getEndingLineNumber();
+					Integer elseEndingColumn = this.bodyPosition.getEndingColumnNumber();
+					ifCreated = new MyIfStatement(this.elementStartingLine, this.elementStartingColumn, 
+							this.elementEndingLine, this.elementEndingColumn,
+							this.bodyStartingLine, this.bodyStartingColumn,
+							this.bodyEndingLine, this.bodyEndingColumn,
+							elseStartingLine, elseStartingColumn,
+							elseEndingLine, elseEndingColumn);
+
+					// checking if belongs to an else-if statement
+					if (MyIfStatement.isIfofAnElseIfCase(snippetFactory.getFileContentPerLine(), this.elementStartingLine-1))
+					{	// match this if with its else-if case on hold onto stack
+						//					System.out.println("::This if w else is part of an Else-If case");
+						ifCreated.setIfOfAnElse(true);
+
+						MyIfStatement ifElementOnStack;
+						do
+						{
+							ifElementOnStack = this.ifElements.pop();
+							ifElementOnStack.setElseEndingLine(elseEndingLine);
+							ifElementOnStack.setElseEndingColumn(elseEndingColumn);
+							this.newMethod.addElement(ifElementOnStack);
+						}while( ifElementOnStack.isIfOfAnElse() );
+					}
+					this.newMethod.addElement(ifCreated);
+				}
 			}
 		}
 
@@ -452,23 +455,26 @@ public class MyVisitor extends ASTVisitor {
 
 	public boolean visit(EnhancedForStatement node)
 	{
-		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
-		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
-		setupElementEndPosition();
+		if(this.newMethod != null) // static statements have null newMethod
+		{
+			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+			setupElementEndPosition();
 
-		this.bodyStartingLine = cu.getLineNumber(node.getBody().getStartPosition());
-		this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
-		setupBodyEndPostition();
+			this.bodyStartingLine = cu.getLineNumber(node.getBody().getStartPosition());
+			this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
+			setupBodyEndPostition();
 
-		//		System.out.println("ForEach at line: " + cu.getLineNumber(node.getStartPosition()));
-		CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
-				this.elementStartingLine, this.elementStartingColumn, 
-				this.elementEndingLine, this.elementEndingColumn,
-				this.bodyStartingLine, this.bodyStartingColumn,
-				this.bodyEndingLine, this.bodyEndingColumn);
+			//		System.out.println("ForEach at line: " + cu.getLineNumber(node.getStartPosition()));
+			CodeElement element = new CodeElement(CodeElement.FOR_LOOP, 
+					this.elementStartingLine, this.elementStartingColumn, 
+					this.elementEndingLine, this.elementEndingColumn,
+					this.bodyStartingLine, this.bodyStartingColumn,
+					this.bodyEndingLine, this.bodyEndingColumn);
 
-		this.newMethod.addElement(element);
-		//		System.out.println("For statement: " + node.getBody().toString());
+			this.newMethod.addElement(element);
+			//		System.out.println("For statement: " + node.getBody().toString());
+		}
 		return true;
 	}
 
@@ -667,32 +673,35 @@ public class MyVisitor extends ASTVisitor {
 	
 	private void flushCallees()
 	{
-		if(callees.size() != 0)
+		if(this.newMethod != null)
 		{
-			MethodInvocation caller = callees.get(0);
-			callees.remove(caller);
-			int elementStartingLine = cu.getLineNumber(caller.getStartPosition());
-			int elementStartingColumn = cu.getColumnNumber(caller.getStartPosition());
-			String line = this.snippetFactory.getFileContentPerLine()[ elementStartingLine-1];
-			elementStartingColumn = line.indexOf(caller.getName().toString()); 
-			int elementEndingColumn = elementStartingColumn+ caller.getName().toString().length();
-			int elementEndingLine = elementStartingLine;
-			MyMethodCall methodCall = new MyMethodCall(caller.getName().toString(), caller.getExpression()==null ? "" : caller.getExpression().toString(),
-					caller.arguments()==null ? "" : caller.arguments().toString(), caller.arguments()==null ? 0 : caller.arguments().size(),
-					elementStartingLine, elementStartingColumn,
-					elementEndingLine, elementEndingColumn);
-			if(this.invertNestedMethodStack)
+			if(callees.size() != 0)
 			{
-				Collections.reverse(callees);
-				this.invertNestedMethodStack = false;
+				MethodInvocation caller = callees.get(0);
+				callees.remove(caller);
+				int elementStartingLine = cu.getLineNumber(caller.getStartPosition());
+				int elementStartingColumn = cu.getColumnNumber(caller.getStartPosition());
+				String line = this.snippetFactory.getFileContentPerLine()[ elementStartingLine-1];
+				elementStartingColumn = line.indexOf(caller.getName().toString()); 
+				int elementEndingColumn = elementStartingColumn+ caller.getName().toString().length();
+				int elementEndingLine = elementStartingLine;
+				MyMethodCall methodCall = new MyMethodCall(caller.getName().toString(), caller.getExpression()==null ? "" : caller.getExpression().toString(),
+						caller.arguments()==null ? "" : caller.arguments().toString(), caller.arguments()==null ? 0 : caller.arguments().size(),
+								elementStartingLine, elementStartingColumn,
+								elementEndingLine, elementEndingColumn);
+				if(this.invertNestedMethodStack)
+				{
+					Collections.reverse(callees);
+					this.invertNestedMethodStack = false;
+				}
+				List<String> aux = new ArrayList<String>();
+				for (MethodInvocation methodInvocation : callees) {
+					aux.add(methodInvocation.getName().toString());
+				}
+				methodCall.setNestedMethods(aux);
+				this.newMethod.addElement(methodCall);
+				callees = new ArrayList<MethodInvocation>();
 			}
-			List<String> aux = new ArrayList<String>();
-			for (MethodInvocation methodInvocation : callees) {
-				aux.add(methodInvocation.getName().toString());
-			}
-			methodCall.setNestedMethods(aux);
-			this.newMethod.addElement(methodCall);
-			callees = new ArrayList<MethodInvocation>();
 		}
 	}
 }
