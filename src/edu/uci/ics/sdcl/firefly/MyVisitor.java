@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
+import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
@@ -15,6 +16,7 @@ import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -54,8 +56,9 @@ public class MyVisitor extends ASTVisitor {
 
 	private int numberOfMethodInvocations;
 	
-	private List<String> callees = new ArrayList<String>(); // holds the nested methods of a node
-	boolean invertNestedMethodStack = false; // some nested methods are inverted in the stack, this helps get a default arrange of the stack
+	private int nestedMethodLine = 0;
+	private List<MethodInvocation> callees = new ArrayList<MethodInvocation>(); // holds the nested methods of a node
+	private boolean invertNestedMethodStack = false; // some nested methods are inverted in the stack, this helps get a default arrange of the stack
 	private boolean nestedMethodFlag = false; // Helps determining the nested methods cases
 	/* NESTED METHODS EXAMPLES
 	fig1.getDiameter().intValue(); This situation must be covered by one single question about getDiameter, intValue
@@ -258,6 +261,11 @@ public class MyVisitor extends ASTVisitor {
 			MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, numberOfArguments,
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
+			if((this.nestedMethodLine != cu.getLineNumber(node.getStartPosition())))
+			{
+				flushCallees();
+				this.nestedMethodLine = 0;
+			}
 			if(callees.size() != 0)
 			{
 				if(this.invertNestedMethodStack)
@@ -265,8 +273,12 @@ public class MyVisitor extends ASTVisitor {
 					Collections.reverse(callees);
 					this.invertNestedMethodStack = false;
 				}
-				methodCall.setNestedMethods(callees);
-				callees = new ArrayList<String>();
+				List<String> aux = new ArrayList<String>();
+				for (MethodInvocation methodInvocation : callees) {
+					aux.add(methodInvocation.getName().toString());
+				}
+				methodCall.setNestedMethods(aux);
+				callees = new ArrayList<MethodInvocation>();
 			}
 
 			//System.out.println(methodCall.toString());
@@ -598,15 +610,25 @@ public class MyVisitor extends ASTVisitor {
 		// handles the methodA().methodB() cases
 		if((node.getExpression() != null))
 		{
-			this.invertNestedMethodStack = true;
-			this.nestedMethodFlag = true;
-			callees.add(node.getName().toString());
-			return true;
+			if((this.nestedMethodLine == 0) || (this.nestedMethodLine == cu.getLineNumber(node.getStartPosition())))
+			{
+				this.invertNestedMethodStack = true;
+				this.nestedMethodFlag = true;
+				callees.add(node);
+				this.nestedMethodLine = cu.getLineNumber(node.getStartPosition());
+				return true;
+			}
+			else
+			{
+				flushCallees();
+				this.nestedMethodLine = cu.getLineNumber(node.getStartPosition());
+			}
+			
 		}
 		// handles the methodA(methodB()) cases
 		if(node.getParent().getNodeType() != ASTNode.EXPRESSION_STATEMENT && !this.nestedMethodFlag)
 		{
-			callees.add(node.getName().toString());
+			callees.add(node);
 			return true;
 		}
 		this.nestedMethodFlag = false;
@@ -641,5 +663,36 @@ public class MyVisitor extends ASTVisitor {
 		this.bodyPosition.computeEndPosition();
 		this.bodyEndingLine = this.bodyPosition.getEndingLineNumber();
 		this.bodyEndingColumn = this.bodyPosition.getEndingColumnNumber();
+	}
+	
+	private void flushCallees()
+	{
+		if(callees.size() != 0)
+		{
+			MethodInvocation caller = callees.get(0);
+			callees.remove(caller);
+			int elementStartingLine = cu.getLineNumber(caller.getStartPosition());
+			int elementStartingColumn = cu.getColumnNumber(caller.getStartPosition());
+			String line = this.snippetFactory.getFileContentPerLine()[ elementStartingLine-1];
+			elementStartingColumn = line.indexOf(caller.getName().toString()); 
+			int elementEndingColumn = elementStartingColumn+ caller.getName().toString().length();
+			int elementEndingLine = elementStartingLine;
+			MyMethodCall methodCall = new MyMethodCall(caller.getName().toString(), caller.getExpression()==null ? "" : caller.getExpression().toString(),
+					caller.arguments()==null ? "" : caller.arguments().toString(), caller.arguments()==null ? 0 : caller.arguments().size(),
+					elementStartingLine, elementStartingColumn,
+					elementEndingLine, elementEndingColumn);
+			if(this.invertNestedMethodStack)
+			{
+				Collections.reverse(callees);
+				this.invertNestedMethodStack = false;
+			}
+			List<String> aux = new ArrayList<String>();
+			for (MethodInvocation methodInvocation : callees) {
+				aux.add(methodInvocation.getName().toString());
+			}
+			methodCall.setNestedMethods(aux);
+			this.newMethod.addElement(methodCall);
+			callees = new ArrayList<MethodInvocation>();
+		}
 	}
 }

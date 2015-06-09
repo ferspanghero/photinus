@@ -260,6 +260,7 @@ public class QuestionFactory {
 						this.microtaskMap.put(question.getID(), question);
 						microtaskId++;
 					}
+					break;
 					// Add more cases here
 				default:
 					System.out.println("!!! Type of element did not matched: " + element.getType() + " !!!");

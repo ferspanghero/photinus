@@ -31,6 +31,7 @@ public class JavaParser {
 		Map options = JavaCore.getOptions();
 		JavaCore.setComplianceOptions(JavaCore.VERSION_1_7, options);
 		parser.setCompilerOptions(options);
+		parser.setBindingsRecovery(true);
 		
 		this.unit  = (CompilationUnit) parser.createAST(null);
 		
