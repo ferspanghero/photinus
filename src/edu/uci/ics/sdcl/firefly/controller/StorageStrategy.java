@@ -38,7 +38,6 @@ public abstract class StorageStrategy {
 	public abstract boolean updateMicrotaskAnswer(String sessionId, Integer microtaskId, Answer answer);
 	public abstract Microtask getNextMicrotask(String sessionId);
 	public abstract boolean insertSkillTest(Worker worker);
-	public abstract boolean insertQuitReason(Worker worker, String answer);
 	public abstract Worker readExistingWorker(String workerId);
 	public abstract boolean insertSurvey(Worker worker);
 

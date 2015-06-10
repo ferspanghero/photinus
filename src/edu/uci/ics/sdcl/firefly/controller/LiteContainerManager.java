@@ -130,8 +130,7 @@ public class LiteContainerManager extends StorageStrategy{
 	}
 
 	public synchronized String getSessionIdForWorker(String workerId) {
-		String test= workerTable.get(workerId).getSessionId();
-		return test;
+		return workerTable.get(workerId).getSessionId();
 	}
 
 
@@ -149,22 +148,6 @@ public class LiteContainerManager extends StorageStrategy{
 		}
 		else{
 			consentLogger.error("EVENT%ERROR% could not store worker SKILL TEST.");
-			return false;
-		}
-	}
-	
-	public synchronized boolean insertQuitReason(Worker worker, String answer){
-		if(worker != null){
-			consentLogger.info("EVENT%EXITREASON% workerId%"+worker.getWorkerId()
-					+"% sessionID%"+worker.getSessionId()+"% answer%"+answer);
-			this.workerTable.put(worker.getWorkerId(), worker);
-			return true;
-		}else{
-			if(answer=="consentForm"){
-				consentLogger.error("EVENT%ERROR% user quit in consent page.");
-			}else{
-				consentLogger.error("EVENT%ERROR% could not store worker EXIT REASON.");
-			}
 			return false;
 		}
 	}
