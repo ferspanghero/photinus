@@ -122,5 +122,11 @@ public class StorageManager extends StorageStrategy{
 	public Worker readExistingWorker(String workerId) {
 		return workerStorage.readExistingWorker(workerId);
 	}
+
+	@Override
+	public boolean insertQuitReason(Worker worker, String answer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }
