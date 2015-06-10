@@ -76,8 +76,8 @@
 
 <body>
 
-	<script>
-		function checkAnswer() {
+	<script type="text/javascript">	
+		function checkAnswer(){
 
 			var radios = document.getElementsByName("answer");
 			var confidenceRadios = document.getElementsByName("confidence");
@@ -135,7 +135,9 @@
 				var checked = checkAnswer();
 				if (checked != -1) {
 					formAlreadyPosted = true;
-					document.forms["answerForm"].submit();
+					var form = document.forms["answerForm"];
+					form.action='microtask';
+					form.submit();
 				} else {
 					//nothing to do.
 				}
@@ -191,7 +193,7 @@
 
 	<div id="thumbs">
 		<div id="internalText">
-			<form name="answerForm" action="microtask" method="get">
+			<form name="answerForm" method="get">
 
 				<center>
 					<br> <a>
@@ -219,29 +221,24 @@
 					name="workerId" value=${requestScope["workerId"]}> 
 				<input type="hidden" name="microtaskId"
 					value=${requestScope["microtaskId"]}> <input type="hidden"
-					name="timeStamp" value=${requestScope["timeStamp"]}> 
-
-
+					name="timeStamp" value=${requestScope["timeStamp"]}>
+					<input type="hidden"
+					name="sessionId" value=${requestScope["sesionId"]}> 
 				<center>
 					<br>Please provide an explanation for your answer: <br>
 					<textarea name="explanation" id="explanation" rows="3" cols="82"></textarea>
 				</center>
-				<br>
-
-				<center>
-					<INPUT TYPE="button" name="answerButton" id="answerButton" VALUE="Submit answer"
+				<center>				<br>
+				<INPUT TYPE="button" name="answerButton" id="answerButton" VALUE="Submit answer"
 					onclick="submitAnswer(event)">
-					
+					<input type="submit"  value="Quit" onclick='javascript: form.action="quit";'>
 				</center>
-				<br>
+										
+				<br><br>
 			</form>
 			
 		</div>
 	</div>
-
-	
-
-
 
 	<div id="questionCode">
 		<div id="internalText">
@@ -427,6 +424,18 @@
 								document.getElementById('context').innerHTML = '<b>Functions that call or are called by the source code above:</b>';
 
 						}, 100);
+				
+				function quit() {
+					if (confirm('Confirm quitting the study ?')) {
+						console.log("entrou")
+						//window.location.href="QuitReason.jsp?workerId="+${requestScope["workerId"]}+"&microtaskId="+${requestScope["microtaskId"]}+"&timestamp="+${requestScope["timeStamp"]};
+						document.forms["quitForm"].submit();
+						//window.open('exitReason.jsp');
+						//window.open('', '_self', '');
+						formAlreadyPosted=true;
+						//window.close();
+					}
+				}
 			</script>
 			<br>
 		</div>

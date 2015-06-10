@@ -79,7 +79,7 @@
 		}
 
 		var formAlreadyPosted = false;
-	
+		console.log("here");
 		function submitAnswers() {
 			//first thing is to check whether the form was already submitted
 			if (formAlreadyPosted) {
@@ -91,7 +91,9 @@
 					var subAction = document.getElementById("subAction");
 					subAction.value = "gradeAnswers";
 					formAlreadyPosted = true;
-					document.forms["testForm"].submit();
+					var form = document.forms["testForm"];
+					form.action='skillTest';
+					form.submit();
 				} else {
 					//nothing to do.
 				}
@@ -100,9 +102,7 @@
 
 		function quit() {
 			if (confirm('Confirm quitting the study ?')) {
-				window.open('', '_self', '');
-				formAlreadyPosted=true;
-				window.close();
+				//window.close()
 			}
 		}
 	</script>
@@ -189,7 +189,7 @@
 			<input type="radio" name="QUESTION4" value="d">1<br>
 			<br>
 	
-			<INPUT TYPE="button" VALUE="Quit"	onclick="quit()"> 
+					<input type="submit"  value="Quit" onclick='javascript: form.action="quit";'>
 			<INPUT TYPE="button" name="answerButton" VALUE="Submit answers" onclick="submitAnswers(event)">
 
 		</form>

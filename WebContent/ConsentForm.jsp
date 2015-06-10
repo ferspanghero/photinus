@@ -111,14 +111,12 @@
 
 			<form name="consentForm" action="ConsentServlet" method="get">
 				<input type="hidden" id="subAction" name="subAction" value="loadConsentForm"> 
-					
+				<input type="hidden" id="workerId" name="workerId" value="consentForm">	
 					<input type="checkbox" name="consentBox" id="consentBox"><i>By checking this box I hereby state
 					that I have read, understood and agreed with the terms above.</i> <br>
 					
 					<br> 
-					<input type="button"  value="No, thanks"
-					style="float: left;" onclick="quit()">
-
+					<input type="submit" style="float: left;" value="No, thanks" onclick='javascript: form.action="quit";'>
 					<input type="button" name="yesButton" id="yesButton" 
 					value="Yes, I want to participate" style="float: right;"
 					onclick="proceed()"> 
@@ -146,8 +144,7 @@
 					var subAction = document.getElementById("subAction");
 					subAction.value = "loadQuestions";
 					var consentForm = document.forms["consentForm"];
-					//consentForm.Submit.value = 'Please Wait';
-					//consentForm.Submit.disabled = true;
+					consentForm.action = "ConsentServlet";
 					consentForm.submit();
 				} else {
 					formAlreadyPosted = false;
@@ -158,8 +155,6 @@
 
 		function quit() {
 			if (confirm('Confirm quitting the study ?')) {
-				window.open('', '_self', '');
-				formAlreadyPosted=true;
 				window.close();
 			}
 		}

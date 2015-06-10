@@ -28,6 +28,12 @@
 <body>
 
 	<script>
+		function quit() {
+			if (confirm('Confirm quitting the study ?')) {
+				formAlreadyPosted=true;
+				window.close();
+			}
+		}
 		function checkAnswers() {
 
 // 			var gender = document.getElementsByName("gender");
@@ -98,7 +104,9 @@
 				var checked = checkAnswers();
 				if (checked != -1) {
 					formAlreadyPosted = true;
-					document.forms["surveyForm"].submit();
+					var form = document.forms["surveyForm"];
+					form.action = "survey";
+					form.submit();
 				} else {
 					//nothing to do.
 				}
@@ -150,7 +158,11 @@
 					name="workerId" value=${requestScope["workerId"]}> <input
 					type="hidden" name="hitId" value=${requestScope["hitId"]}>
 
-				<br> <INPUT TYPE="button" VALUE="Submit Answer"
+				<br>
+				
+					<input type="submit"  value="Quit" onclick='javascript: form.action="quit";'>
+					&nbsp;&nbsp;
+				 <INPUT TYPE="button" VALUE="Submit Answer"
 					onclick="submitAnswer(event)">
 
 			</form>
