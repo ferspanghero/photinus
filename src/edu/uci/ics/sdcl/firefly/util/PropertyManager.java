@@ -8,13 +8,13 @@ import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 public class PropertyManager {
 
-	private String fileName="firefly.properties";
+	private String fileName="WebContent\\firefly.properties";
 
-	private String devPropertyPath= "C:/firefly/";
+	private String devPropertyPath= "C:\\Workspace\\photinus\\";
 
 	public String serverPropertyPath ="/var/lib/tomcat7/webapps/";   
 	
-	public String fileUploadFolder = "samples/bulkLoad/";
+	public String fileUploadFolder = "samples\\bulkLoad";
 	
 	public String fileUploadSourcePath;
 	
