@@ -9,11 +9,13 @@ import java.util.Stack;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -56,7 +58,10 @@ public class MyVisitor extends ASTVisitor {
 
 	private int numberOfMethodInvocations;
 	
+	private int nestedMethodExpressionStart = 0;
+	private int nestedMethodExpressionEnd = 0;
 	private int nestedMethodLine = 0;
+	private boolean processCallees = false;
 	private List<MethodInvocation> callees = new ArrayList<MethodInvocation>(); // holds the nested methods of a node
 	private boolean invertNestedMethodStack = false; // some nested methods are inverted in the stack, this helps get a default arrange of the stack
 	private boolean nestedMethodFlag = false; // Helps determining the nested methods cases
@@ -64,7 +69,7 @@ public class MyVisitor extends ASTVisitor {
 	fig1.getDiameter().intValue(); This situation must be covered by one single question about getDiameter, intValue
 	fig1.x = checkShift(shift(fig1.diameter,fig2.diameter,fig2.x)); This as well, checkShift shift
 	 */
-
+	private Assignment assignment = null;
 
 	public MyVisitor(CompilationUnit cuArg, CodeSnippetFactory snippetFactory)
 	{
@@ -243,6 +248,8 @@ public class MyVisitor extends ASTVisitor {
 	{
 		if(isInvalidMethodInvocation(node)) 
 			return true;
+		if(verifyNestedMethod(node))
+			return true;
 		else{
 			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
 			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
@@ -261,7 +268,7 @@ public class MyVisitor extends ASTVisitor {
 			MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, numberOfArguments,
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
-			if((this.nestedMethodLine != cu.getLineNumber(node.getStartPosition())))
+/*			if((this.nestedMethodLine != cu.getLineNumber(node.getStartPosition())))
 			{
 				flushCallees();
 				this.nestedMethodLine = 0;
@@ -279,7 +286,7 @@ public class MyVisitor extends ASTVisitor {
 				}
 				methodCall.setNestedMethods(aux);
 				callees = new ArrayList<MethodInvocation>();
-			}
+			}*/
 
 			//System.out.println(methodCall.toString());
 			//System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
@@ -614,7 +621,7 @@ public class MyVisitor extends ASTVisitor {
 		if(node==null)
 			return true;
 		// handles the methodA().methodB() cases
-		if((node.getExpression() != null))
+		/*if((node.getExpression() != null))
 		{
 			if((this.nestedMethodLine == 0) || (this.nestedMethodLine == cu.getLineNumber(node.getStartPosition())))
 			{
@@ -637,8 +644,35 @@ public class MyVisitor extends ASTVisitor {
 			callees.add(node);
 			return true;
 		}
-		this.nestedMethodFlag = false;
+		this.nestedMethodFlag = false;*/
+		/*int methodStart = cu.getColumnNumber(node.getStartPosition());
+		int assignmentStart = cu.getColumnNumber(assignment.getRightHandSide().getStartPosition());
+		int assignmentEnd = assignment.getLength() + assignmentStart;
+		if(methodStart <= assignmentEnd && methodStart >= assignmentStart)
+		{
+			
+		}*/
 		return isInvalidCall(node.getParent().getNodeType(),node.getName().toString(), node.getExpression());
+	}
+	
+	private boolean verifyNestedMethod(MethodInvocation node)
+	{
+		int a = node.getStartPosition();
+		if(node.getParent().getNodeType() == ASTNode.EXPRESSION_STATEMENT)
+		{
+			flushCallees();
+			ExpressionStatement statement = (ExpressionStatement) node.getParent();
+			this.nestedMethodExpressionStart = statement.getStartPosition();
+			this.nestedMethodExpressionEnd = this.nestedMethodExpressionStart + statement.getLength();
+			this.callees.add(node);
+		}
+		else if((node.getStartPosition() <= this.nestedMethodExpressionEnd) && (node.getStartPosition() >= this.nestedMethodExpressionStart))
+		{
+			this.callees.add(node);
+		}
+		else
+			return false;
+		return true;
 	}
 
 	private boolean isInvalidClassInstantiation(ClassInstanceCreation node){
@@ -703,5 +737,11 @@ public class MyVisitor extends ASTVisitor {
 				callees = new ArrayList<MethodInvocation>();
 			}
 		}
+	}
+	
+	public boolean visit(Assignment node)
+	{
+		this.assignment = node;
+		return true;
 	}
 }

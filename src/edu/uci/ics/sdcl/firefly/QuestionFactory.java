@@ -8,7 +8,6 @@ import java.util.Vector;
 public class QuestionFactory {
 
 	/* Template Lists */
-	public ArrayList<String> templateMethodDeclaration = new ArrayList<String>();
 	public ArrayList<String> templateMethodInvocation = new ArrayList<String>();
 	public ArrayList<String> templateConditional = new ArrayList<String>();
 	public ArrayList<String> templateLoop = new ArrayList<String>();
@@ -28,11 +27,6 @@ public class QuestionFactory {
 	public QuestionFactory()
 	{
 		this.microtaskMap = new Hashtable<Integer, Microtask>();
-		/* Method Declaration */
-		templateMethodDeclaration.add("Is there maybe something wrong in the declaration of function '<F>' at line <#> " 
-				+ "(e.g., requires a parameter that is not listed, needs different parameters to produce the correct result, specifies the wrong or no return type, etc .)?");
-		templateMethodDeclaration.add("Is there possibly something wrong with the body of function '<F>' between lines "
-				+ "<#1> and <#2> (e.g., function produces an incorrect return value, return statement is at the wrong place, does not properly handle error situations, etc.)?");
 		/* Method invocation */
 		templateMethodInvocation.add("Is there any issue with the  method invocation(s) \"<M>\"  at line  <#> that might be related to the failure?");
 		/* Conditional */
@@ -57,48 +51,6 @@ public class QuestionFactory {
 		this.microtaskMap = new  Hashtable<Integer, Microtask>();
 		for (CodeSnippet codeSnippet : methodsParsed)
 		{
-			for (String templateForQuestion : templateMethodDeclaration)
-			{
-				questionPrompt = new String(templateForQuestion);
-				questionPrompt = questionPrompt.replaceAll("<F>", codeSnippet.getMethodSignature().getName());
-
-				if (questionPrompt.indexOf("<#1>") > 0)	//it means it will ask about the body
-				{
-					/* setting up the position for the body */
-					this.startingLine = codeSnippet.getElementStartingLine();
-					this.startingColumn = codeSnippet.getBodyStartingColumn();
-					this.endingLine = codeSnippet.getBodyEndingLine();
-					this.endingColumn = codeSnippet.getBodyEndingColumn();
-
-					if ( this.startingLine != this.endingLine )
-					{	// different lines, so between is OK
-						questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
-						questionPrompt = questionPrompt.replaceAll("<#2>", this.endingLine.toString());
-					}
-					else
-					{	// same lines, so between is has to be replaced
-						questionPrompt = questionPrompt.substring(0, questionPrompt.indexOf("between")) + "at line " +
-								this.startingLine + questionPrompt.substring(questionPrompt.indexOf("<#2>")+4); 
-					}
-				} else
-				{
-					/* setting up the position for the element */
-					this.startingLine = codeSnippet.getElementStartingLine();
-					this.startingColumn = codeSnippet.getElementStartingColumn();
-					this.endingLine = codeSnippet.getElementEndingLine();
-					this.endingColumn = codeSnippet.getElementEndingColumn();
-
-					questionPrompt = questionPrompt.replaceAll("<#>", this.startingLine.toString());
-				}
-				/* setting and adding a concrete question */
-				question = new Microtask(CodeElement.METHOD_DECLARATION, codeSnippet, null,
-						questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport, testCase);
-
-				this.microtaskMap.put(question.getID(),question);
-				microtaskId++;
-
-			}
-
 			Vector<CodeElement> statements = codeSnippet.getStatements();	// now getting the question for the statements
 
 			for (CodeElement element : statements)
