@@ -36,6 +36,7 @@ public class SurveyServlet extends HttpServlet {
 			
 			//Displays the Thanks message		
 			request.setAttribute("key", subject.getSessionId());
+			System.out.println("Session ID = " + request.getParameter("key"));
 			request.getRequestDispatcher("/Thanks.jsp").forward(request, response);
 		} else{
 			request.setAttribute("executionId", request.getParameter("workerId"));
