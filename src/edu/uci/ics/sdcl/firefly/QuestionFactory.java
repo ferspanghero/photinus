@@ -127,7 +127,7 @@ public class QuestionFactory {
 						}
 						
 						// Changes the template according to the line structure of the statement
-						if ( this.startingLine != this.endingLine )
+						if ( !(this.startingLine.equals(this.endingLine)))
 						{
 							questionPrompt = questionPrompt.replaceAll("<#1>", this.startingLine.toString());
 							questionPrompt = questionPrompt.replaceAll("<#2>", this.endingLine.toString());
