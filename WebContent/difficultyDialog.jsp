@@ -44,18 +44,29 @@ function submitSurveyAnswer() {
 <body>
 <!-- Dialog Content -->
 	<div id="survey">
-		<br>
 		<div id="content">
 
 			<form name="surveyForm" method="get" action="survey">
-
-				<input type="radio" name="difficulty" value="1">Very Easy<br>
-				<input type="radio" name="difficulty" value="2">Easy<br>
-				<input type="radio" name="difficulty" value="3">Somewhat difficult<br>
-				<input type="radio" name="difficulty" value="4">Difficult<br>
-				<input type="radio" name="difficulty" value="5">Very Difficult
-				<br>
-
+			<center>
+				<table>
+					<tr>
+					<td><center>Very difficult</center></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><center>Not difficult</center></td>
+					</tr>
+					
+					<tr>
+					<td><a><center><input type="radio" name="difficulty" value="5" />5</center></a></td>
+					<td><a><center><input type="radio" name="difficulty" value="4" />4</center></a></td>
+					<td><a><center> <input type="radio" name="difficulty" value="3" />3</center></a></td>
+					<td><a><center><input type="radio" name="difficulty" value="2" />2</center></a></td>
+					<td><a><center><input type="radio" name="difficulty" value="1" />1</center></a></td>
+					</tr>
+					</table> 
+			</center>
+			
 				<!-- Hidden fields -->
 				<input type="hidden" name="sessionId"
 					value=${requestScope["sessionId"]}> <input type="hidden"
@@ -64,7 +75,7 @@ function submitSurveyAnswer() {
 
 				<br>
 				<center>
-				 <INPUT TYPE="button" VALUE="Submit Answer"
+				 <INPUT TYPE="button" VALUE="Submit answer"
 					onclick="submitSurveyAnswer(event)">
 				</center>
 			</form>
