@@ -108,8 +108,6 @@
 				if (checked != -1) {
 					formAlreadyPosted = true;
 					document.forms["reasonForm"].submit();
-					//trying to close
-					console.log("close");
 					open("QuitReason.jsp", '_self').close();
 
 				} else {

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.MicrotaskContextFactory;
+import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
@@ -23,6 +24,7 @@ public class MicrotaskServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private String SurveyPage = "/Survey.jsp";
+	private String ThanksPage = "/Thanks.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
 	private StorageStrategy storage ;
@@ -89,7 +91,7 @@ public class MicrotaskServlet extends HttpServlet {
 		int answer = new Integer(request.getParameter("answer")).intValue();
 		int confidenceAnswer = new Integer(request.getParameter("confidence")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
-		
+		Worker subject = storage.readExistingWorker(this.workerId);
 		String sessionId = storage.getSessionIdForWorker(this.workerId); //request.getParameter("sessionId");
 		String explanation = request.getParameter("explanation");
 		String timeStamp = request.getParameter("timeStamp");
@@ -113,9 +115,11 @@ public class MicrotaskServlet extends HttpServlet {
 			Microtask microtask = storage.getNextMicrotask(sessionId);	
 
 			//Decide where to send to send the worker
-			if(microtask==null)
+			if(microtask==null){
 				//No more microtasks, move to the Survey page
-				request.getRequestDispatcher(SurveyPage).include(request, response);
+				request.setAttribute("key", subject.getSessionId());
+				request.getRequestDispatcher(ThanksPage).include(request, response);
+			}
 			else{
 				//Displays a new microtask
 				request = MicrotaskServlet.generateRequest(request, microtask);

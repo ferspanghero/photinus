@@ -71,12 +71,22 @@
 	*display: inline;
 	zoom: 1;
 }
+
+.ui-dialog-titlebar-close {
+  visibility: hidden;
+}
 </style>
+
 </head>
-
+ <link rel="stylesheet" href="jquery/jquery-ui-1.10.4.custom.min.css">
+ 	<!--  <script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+  <script src="jquery/jquery-1.10.2.js"></script>
+  <script src="jquery/jquery-ui-1.10.4.custom.min.js"></script>
+  <script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
 <body>
-
-	<script type="text/javascript">	
+  
+	<script type="text/javascript">
+		
 		function checkAnswer(){
 
 			var radios = document.getElementsByName("answer");
@@ -125,7 +135,18 @@
 		}
 
 		var formAlreadyPosted = false;
-
+		function showDialog(){
+			//load dialog - popup
+			$("#survey").load("difficultyDialog.jsp").dialog({
+			    autoOpen: false,
+			    modal: true,
+			    bgiframe: true,
+			    width: 700,
+			    closeOnEscape: false,
+			    title: "How difficult were these questions for you to answer?"
+			});
+			$("#survey").dialog('open');
+		}
 		function submitAnswer() {
 			//first thing is to check whether the form was already submitted
 			if (formAlreadyPosted) {
@@ -137,7 +158,8 @@
 					formAlreadyPosted = true;
 					var form = document.forms["answerForm"];
 					form.action='microtask';
-					form.submit();
+					showDialog();
+					$( "#survey" ).on( "dialogclose", function() { form.submit(); } );
 				} else {
 					//nothing to do.
 				}
@@ -165,14 +187,9 @@
 		value=${requestScope["callerLOCS"]}>
 	<input type="hidden" id="calleeLOCS"
 		value=${requestScope["calleeLOCS"]}>
-
-
-		<script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		
-		<script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
-
+	<div style="display: none;" id="survey"></div>
 <!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
-
 	<div id="failurePrompt">
 		<div id="internalText">
 			Thanks for using <b>Crowd Debug!</b> and for helping us debug
@@ -427,13 +444,8 @@
 				
 				function quit() {
 					if (confirm('Confirm quitting the study ?')) {
-						console.log("entrou")
-						//window.location.href="QuitReason.jsp?workerId="+${requestScope["workerId"]}+"&microtaskId="+${requestScope["microtaskId"]}+"&timestamp="+${requestScope["timeStamp"]};
 						document.forms["quitForm"].submit();
-						//window.open('exitReason.jsp');
-						//window.open('', '_self', '');
 						formAlreadyPosted=true;
-						//window.close();
 					}
 				}
 			</script>
