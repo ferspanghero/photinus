@@ -193,17 +193,18 @@
 	<div id="failurePrompt">
 		<div id="internalText">
 			Thanks for using <b>Crowd Debug!</b> and for helping us debug
-			software from all over the world. <br>
+			software from all over the world. 
+			<br><b> We are executing the following test:</b>
+				<pre><code>${requestScope["testCase"]}</code></pre>			
+			<br><b> But we are receiving the following failure:</b>
+			   <pre><code>${requestScope["bugReport"]}</code></pre>
 		</div>
 	</div>
 
 
 	<div id="questionPrompt">
 		<div id="internalText">
-			<br> The bug we specifically could use your help with today is
-			the following: <br> <b>${requestScope["bugReport"]}</b><br>
-			<br> Test Case: <br> <b>${requestScope["testCase"]}</b><br>
-			<br> ${requestScope["question"]}<br>
+			<b><br> ${requestScope["question"]}</b>
 		</div>
 	</div>
 
@@ -213,21 +214,19 @@
 			<form name="answerForm" method="get">
 
 				<center>
-					<br> <a>
+					<a>
 					<input type="radio" name="answer" value="1" />Yes, there is an issue</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
 					<input type="radio" name="answer" value="2" />I don't know</a> &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
 					<input type="radio" name="answer" value="3" />No, there is not an issue</a> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <a>
 				</center>
 				<br>
 				<label>
-					How confident are you with your answer?
+					<b>How confident are you with your answer?</b>
 				</label>
-				<br>
 				<center>
-					<br>
 					<input type="radio" name="confidence" value="1" />Very confident &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
 					<input type="radio" name="confidence" value="2" />Confident &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
-					<input type="radio" name="confidence" value="3" />Somewhat Confident &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
+					<input type="radio" name="confidence" value="3" />Somewhat confident &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
 					<input type="radio" name="confidence" value="2" />Unsure &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
 					<input type="radio" name="confidence" value="3" />Not at all &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
 				</center>
@@ -237,21 +236,24 @@
 				<input type="hidden"
 					name="workerId" value=${requestScope["workerId"]}> 
 				<input type="hidden" name="microtaskId"
-					value=${requestScope["microtaskId"]}> <input type="hidden"
+					value=${requestScope["microtaskId"]}> 
+				<input type="hidden"
 					name="timeStamp" value=${requestScope["timeStamp"]}>
-					<input type="hidden"
+				<input type="hidden"
 					name="sessionId" value=${requestScope["sesionId"]}> 
+				
 				<center>
 					<br>Please provide an explanation for your answer: <br>
 					<textarea name="explanation" id="explanation" rows="3" cols="82"></textarea>
 				</center>
 				<center>				<br>
+					<input type="submit"  value="Quit" onclick='javascript: form.action="quit";'>
 				<INPUT TYPE="button" name="answerButton" id="answerButton" VALUE="Submit answer"
 					onclick="submitAnswer(event)">
-					<input type="submit"  value="Quit" onclick='javascript: form.action="quit";'>
+				
 				</center>
 										
-				<br><br>
+				<br>
 			</form>
 			
 		</div>

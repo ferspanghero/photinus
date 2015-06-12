@@ -354,8 +354,8 @@ public class FileUploadServlet extends HttpServlet {
 		String [] failureList = { "java.lang.IllegalArgumentException: Minutes out of range: -15",
 				"java.lang.IllegalArgumentException: Color parameter outside of expected range: Red Green Blue",
 				"java.lang.StringIndexOutOfBoundsException: String index out of range: 2",
-				"junit.framework.AssertionFailedError: expected:<1> but was:<3>",
-				"junit.framework.ComparisonFailure: expected:<var x=[-0.]0> but was:<var x=[]0>",
+				"junit.framework.AssertionFailedError: expected:&lt;1&gt; but was:&lt;3&gt;",
+				"junit.framework.ComparisonFailure: expected:&lt;var x=[-0.]0&gt; but was:&lt;var x=[]0&gt;",
 				"java.lang.ClassCastException: [Ljava.lang.Object; cannot be cast to [Ljava.lang.String;",
 				" java.lang.IllegalArgumentException: Invalid locale format: fr__POSIX",
 				"java.lang.NullPointerException"
