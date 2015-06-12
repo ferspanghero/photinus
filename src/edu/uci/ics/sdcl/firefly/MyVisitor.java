@@ -61,7 +61,6 @@ public class MyVisitor extends ASTVisitor {
 	
 	private int nestedMethodExpressionStart = 0;
 	private int nestedMethodExpressionEnd = 0;
-	private int previousMethod = 0;
 	private List<MethodInvocation> callees = new ArrayList<MethodInvocation>(); // holds the nested methods of a node
 	private boolean invertNestedMethodStack = false; // some nested methods are inverted in the stack, this helps get a default arrange of the stack
 	/* NESTED METHODS EXAMPLES
@@ -254,7 +253,6 @@ public class MyVisitor extends ASTVisitor {
 			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
 
 			String name = node.getName().toString();
-			// System.out.println("node.getName: " +name+ " expression= "+node.getExpression());
 			String expression = node.getExpression()==null ? "" : node.getExpression().toString(); 
 			String arguments = node.arguments()==null ? "" : node.arguments().toString();
 			Integer numberOfArguments = node.arguments()==null ? 0 : node.arguments().size();
@@ -267,35 +265,6 @@ public class MyVisitor extends ASTVisitor {
 			MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, numberOfArguments,
 					this.elementStartingLine, this.elementStartingColumn,
 					this.elementEndingLine, this.elementEndingColumn);
-/*			if((this.nestedMethodLine != cu.getLineNumber(node.getStartPosition())))
-			{
-				flushCallees();
-				this.nestedMethodLine = 0;
-			}
-			if(callees.size() != 0)
-			{
-				if(this.invertNestedMethodStack)
-				{
-					Collections.reverse(callees);
-					this.invertNestedMethodStack = false;
-				}
-				List<String> aux = new ArrayList<String>();
-				for (MethodInvocation methodInvocation : callees) {
-					aux.add(methodInvocation.getName().toString());
-				}
-				methodCall.setNestedMethods(aux);
-				callees = new ArrayList<MethodInvocation>();
-			}*/
-
-			//System.out.println(methodCall.toString());
-			//System.out.println("# of Method invocations: " + ++numberOfMethodInvocations+ "\n");
-
-			/*	System.out.println("Adding methodCall "+methodCall.getName()+"(" +
-							methodCall.getParameters() +")"+ 
-								" under method "+
-									newMethod.getMethodSignature().getName()+"(" +
-									newMethod.getMethodSignature().getParameterList().size() +" parameters )");
-			 */	
 
 			this.newMethod.addElement(methodCall);
 
@@ -674,8 +643,6 @@ public class MyVisitor extends ASTVisitor {
 		else if((node.getStartPosition() <= this.nestedMethodExpressionEnd) && (node.getStartPosition() >= this.nestedMethodExpressionStart))
 		{
 			this.callees.add(node);
-			this.totalNestedMethods -= (previousMethod - (node.getLength()));
-			previousMethod = node.getLength();
 		}
 		else
 			return false;
