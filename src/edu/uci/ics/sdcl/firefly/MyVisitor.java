@@ -9,6 +9,7 @@ import java.util.Stack;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -212,7 +213,25 @@ public class MyVisitor extends ASTVisitor {
 		return true;
 	}
 
+	public boolean visit(ArrayCreation node)
+	{
+		Integer numberOfArguments = 0;
+		//System.out.println("Class instantiation..."+node.getExpression()+" type:"+node.getType());
+		String name = node.getType().toString();
+		String expression =""; //There is no expression value in ConstructionInvocation node
+		String arguments = "";
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+		this.elementEndingColumn = this.elementStartingColumn+ node.getLength();
+		this.elementEndingLine = this.elementStartingLine;
 
+		MyMethodCall methodCall = new MyMethodCall(name, expression, arguments,numberOfArguments, 
+				this.elementStartingLine, this.elementStartingColumn,
+				this.elementEndingLine, this.elementEndingColumn);
+
+		this.newMethod.addElement(methodCall);
+		return true;
+	}
 	public boolean visit(ClassInstanceCreation node)
 	{
 		if(isInvalidClassInstantiation(node))
