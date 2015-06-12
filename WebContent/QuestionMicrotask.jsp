@@ -75,6 +75,7 @@
 .ui-dialog-titlebar-close {
   visibility: hidden;
 }
+
 </style>
 
 </head>
@@ -141,9 +142,10 @@
 			    autoOpen: false,
 			    modal: true,
 			    bgiframe: true,
-			    width: 700,
+			    width: 485,
+			    resizable: false,
 			    closeOnEscape: false,
-			    title: "How difficult were these questions for you to answer?"
+			    title: "How difficult was this question for you to answer?"
 			});
 			$("#survey").dialog('open');
 		}
@@ -214,7 +216,7 @@
 			<form name="answerForm" method="get">
 
 				<center>
-					<a>
+					<br> <a>
 					<input type="radio" name="answer" value="1" />Yes, there is an issue</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
 					<input type="radio" name="answer" value="2" />I don't know</a> &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
 					<input type="radio" name="answer" value="3" />No, there is not an issue</a> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <a>
@@ -223,7 +225,9 @@
 				<label>
 					<b>How confident are you with your answer?</b>
 				</label>
+				<br>
 				<center>
+					<br>
 					<input type="radio" name="confidence" value="1" />Very confident &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
 					<input type="radio" name="confidence" value="2" />Confident &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
 					<input type="radio" name="confidence" value="3" />Somewhat confident &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
@@ -236,24 +240,21 @@
 				<input type="hidden"
 					name="workerId" value=${requestScope["workerId"]}> 
 				<input type="hidden" name="microtaskId"
-					value=${requestScope["microtaskId"]}> 
-				<input type="hidden"
+					value=${requestScope["microtaskId"]}> <input type="hidden"
 					name="timeStamp" value=${requestScope["timeStamp"]}>
-				<input type="hidden"
+					<input type="hidden"
 					name="sessionId" value=${requestScope["sesionId"]}> 
-				
 				<center>
 					<br>Please provide an explanation for your answer: <br>
 					<textarea name="explanation" id="explanation" rows="3" cols="82"></textarea>
 				</center>
 				<center>				<br>
-					<input type="submit"  value="Quit" onclick='javascript: form.action="quit";'>
-				<INPUT TYPE="button" name="answerButton" id="answerButton" VALUE="Submit answer"
+				<INPUT TYPE="button" name="answerButton" id="answerButton" VALUE="Submit"
 					onclick="submitAnswer(event)">
-				
+					<input type="submit"  value="Quit" onclick='javascript: form.action="quit";'>
 				</center>
 										
-				<br>
+				<br><br>
 			</form>
 			
 		</div>
