@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ConditionalExpression;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.Expression;
@@ -296,7 +297,33 @@ public class MyVisitor extends ASTVisitor {
 		}
 		return true;
 	}
-
+	
+	public boolean visit(ConditionalExpression node)
+	{
+		if(this.newMethod != null)
+		{
+			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+			this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+			this.bodyStartingLine = cu.getLineNumber(node.getThenExpression().getStartPosition());
+			this.bodyStartingColumn = cu.getColumnNumber(node.getThenExpression().getStartPosition());
+			this.bodyEndingColumn = node.getElseExpression().getStartPosition() + node.getElseExpression().getLength();
+			this.bodyEndingLine = cu.getLineNumber(node.getElseExpression().getStartPosition() + node.getElseExpression().getLength());
+			this.elementEndingColumn = bodyEndingColumn;
+			this.elementEndingLine = bodyEndingLine;
+			int elseStartLine = cu.getLineNumber(node.getElseExpression().getStartPosition());
+			int elseEndLine = bodyEndingLine;
+			int elseStartColumn = cu.getColumnNumber(node.getElseExpression().getStartPosition());
+			int elseEndColumn = bodyEndingColumn;
+			MyIfStatement element = new MyIfStatement(elementStartingLine, elementStartingColumn,
+					elementEndingLine, elementEndingColumn, bodyStartingLine,
+					bodyStartingColumn, bodyEndingLine, bodyEndingColumn,
+					elseStartLine, elseStartColumn,
+					elseEndLine, elseEndColumn);
+			this.newMethod.addElement(element);
+		}
+		return true;
+	}
+	
 	/*Statements */
 	public boolean visit(IfStatement node)
 	{
