@@ -5,6 +5,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Java Skill Test Page</title>
+<link rel="stylesheet" href="jquery/jquery-ui-1.10.4.custom.min.css">
+  <script src="jquery/jquery-1.10.2.js"></script>
+  <script src="jquery/jquery-ui-1.10.4.custom.min.js"></script>
+  <script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
 
 <style type="text/css" media="screen">
 	#container  {
@@ -39,6 +43,65 @@
 
 <body>
 	<script>
+	function showQuitDialog() {
+		//load dialog - popup
+		$("#quit").dialog({
+			autoOpen : false,
+			modal : true,
+			bgiframe : true,
+			width : 485,
+			resizable : false,
+			closeOnEscape : false,
+			title : "Why did you decide to quit ?"
+		});
+		$("#quit").dialog('open');
+	}
+	function checkQuitAnswer() {
+
+		var radios = document.getElementsByName("reason");
+		
+		var option = -1;
+		
+		var i = 0;
+
+		for (i = 0; i < radios.length; i++) {
+			if (radios[i].checked) {
+				option = i;
+				break;
+			}
+		}
+		
+		if (option == -1) {
+			alert("Please select an answer.");
+			return -1;
+		}
+	}
+
+	var quitFormAlreadyPosted = false;
+
+
+		function submitQuitAnswer() {
+			//first thing is to check whether the form was already submitted
+			if (quitFormAlreadyPosted) {
+				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
+			} else {
+				//ok, form was not submitted yet
+				var checked = checkQuitAnswer();
+				if (checked != -1) {
+					//$("#quit").on( "dialogclose", function() { 
+					var form = document.forms["reasonForm"];
+					form.action = "quit";
+					form.submit();
+					$("#quit").dialog("close");
+					var workerId = document.getElementById("workerId").value;
+					quitFormAlreadyPosted = true;
+				} else {
+					//nothing to do.
+				}
+			}
+		}
+
+	
 		function isEmpty(value) {
 			return (value.length === 0 || !value.trim());
 		}
@@ -107,15 +170,38 @@
 		}
 	</script>
 	
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<div style="display: none;" id="quit">
+		<div id="internalText">
+			<form name="reasonForm" method="get" onsubmit="submitQuitAnswer()">
+				<input type="radio" name="reason" value="hard" />The task is too
+				hard &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
+					type="radio" name="reason" value="boring" />The task is too boring
+				&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
+					type="radio" name="reason" value="long" />The task is too long
+				&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <br> <input
+					type="radio" name="reason" value="other" />Other&nbsp; &nbsp;
+				&nbsp; &nbsp;&nbsp; &nbsp;
+				
+				<!-- Hidden fields -->
+				<input type="hidden"
+					name="workerId" id="workerId" value=${requestScope["workerId"]}> 
+				<input type="hidden" name="microtaskId"
+					value=${requestScope["microtaskId"]}> <input type="hidden"
+					name="timeStamp" value=${requestScope["timeStamp"]}>
+					<input type="hidden"
+					name="sessionId" value=${requestScope["sesionId"]}> 
+					
+				<center>
+					<INPUT TYPE="submit" name="reasonButton" id="reasonButton"
+						VALUE="Submit">
+				</center>
+				<br>
+			</form>
+
+		</div>
+	</div>
 	
-		<script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
-
-<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
-
-
-		
 <div id="container"><br>
 	<div id="content">
 		<b>Thank you for interest in participating in the study. We need to evaluate your 
@@ -189,7 +275,7 @@
 			<input type="radio" name="QUESTION4" value="d">1<br>
 			<br>
 	
-					<input type="submit"  value="Quit" onclick='javascript: form.action="quit";'>
+					<input type="button"  value="Quit" onclick='showQuitDialog()'>
 			<INPUT TYPE="button" name="answerButton" VALUE="Submit answers" onclick="submitAnswers(event)">
 
 		</form>

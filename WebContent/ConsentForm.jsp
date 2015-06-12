@@ -25,6 +25,100 @@
 
 </head>
 
+<link rel="stylesheet" href="jquery/jquery-ui-1.10.4.custom.min.css">
+  <script src="jquery/jquery-1.10.2.js"></script>
+  <script src="jquery/jquery-ui-1.10.4.custom.min.js"></script>
+  <script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+	<script>
+	function checkQuitAnswer() {
+
+		var radios = document.getElementsByName("reason");
+		
+		var option = -1;
+		
+		var i = 0;
+
+		for (i = 0; i < radios.length; i++) {
+			if (radios[i].checked) {
+				option = i;
+				break;
+			}
+		}
+		
+		if (option == -1) {
+			alert("Please select an answer.");
+			return -1;
+		}
+	}
+
+	var quitFormAlreadyPosted = false;
+
+
+		function submitQuitAnswer() {
+			//first thing is to check whether the form was already submitted
+			if (quitFormAlreadyPosted) {
+				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
+			} else {
+				//ok, form was not submitted yet
+				var checked = checkQuitAnswer();
+				if (checked != -1) {
+					//$("#quit").on( "dialogclose", function() { 
+					var form = document.forms["reasonForm"];
+					form.action = "quit";
+					form.submit();
+					$("#quit").dialog("close");
+					var workerId = document.getElementById("workerId").value;
+					quitFormAlreadyPosted = true;
+				} else {
+					//nothing to do.
+				}
+			}
+		}
+		
+		function showQuitDialog() {
+			//load dialog - popup
+			$("#quit").dialog({
+				autoOpen : false,
+				modal : true,
+				bgiframe : true,
+				width : 485,
+				resizable : false,
+				closeOnEscape : false,
+				title : "Why did you decide to quit ?"
+			});
+			$("#quit").dialog('open');
+		}
+			
+		var formAlreadyPosted = false;
+
+		function proceed() {
+
+			//first thing is to check whether the form was already submitted
+			if (formAlreadyPosted) {
+				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
+			} else {
+				//ok, form was not submitted yet
+				var consented = document.getElementById('consentBox').checked;
+				if (consented) {
+					formAlreadyPosted = true;
+					var subAction = document.getElementById("subAction");
+					subAction.value = "loadQuestions";
+					var consentForm = document.forms["consentForm"];
+					consentForm.action = "ConsentServlet";
+					consentForm.submit();
+				} else {
+					formAlreadyPosted = false;
+					alert("You have to agree with the terms before proceeding");
+				}
+			}
+		}
+
+		function quit() {
+			if (confirm('Confirm quitting the study ?')) {
+				window.close();
+			}
+		}
+	</script>
 <body>
 
 
@@ -116,7 +210,7 @@
 					that I have read, understood and agreed with the terms above.</i> <br>
 					
 					<br> 
-					<input type="submit" style="float: left;" value="No, thanks" onclick='javascript: form.action="quit";'>
+					<input type="button" style="float: left;" value="No, thanks" onclick='showQuitDialog()'>
 					<input type="button" name="yesButton" id="yesButton" 
 					value="Yes, I want to participate" style="float: right;"
 					onclick="proceed()"> 
@@ -125,40 +219,34 @@
 			</form>
 
 		</div>
+		<div style="display: none;" id="quit">
+		<div id="internalText">
+			<form name="reasonForm" method="get" onsubmit="submitQuitAnswer()">
+				<input type="radio" name="reason" value="hard" />The task is too
+				hard &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
+					type="radio" name="reason" value="boring" />The task is too boring
+				&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
+					type="radio" name="reason" value="long" />The task is too long
+				&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <br> <input
+					type="radio" name="reason" value="other" />Other&nbsp; &nbsp;
+				&nbsp; &nbsp;&nbsp; &nbsp;
+				
+				<!-- Hidden fields -->
+				<input type="hidden"
+					name="workerId" id="workerId" value="consentForm"> 
+				<center>
+					<INPUT TYPE="submit" name="reasonButton" id="reasonButton"
+						VALUE="Submit">
+				</center>
+				<br>
+			</form>
+
+		</div>
+	</div>
+		
+		
 		<br>
 	</div>
-
-	<script>
-		var formAlreadyPosted = false;
-
-		function proceed() {
-
-			//first thing is to check whether the form was already submitted
-			if (formAlreadyPosted) {
-				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
-			} else {
-				//ok, form was not submitted yet
-				var consented = document.getElementById('consentBox').checked;
-				if (consented) {
-					formAlreadyPosted = true;
-					var subAction = document.getElementById("subAction");
-					subAction.value = "loadQuestions";
-					var consentForm = document.forms["consentForm"];
-					consentForm.action = "ConsentServlet";
-					consentForm.submit();
-				} else {
-					formAlreadyPosted = false;
-					alert("You have to agree with the terms before proceeding");
-				}
-			}
-		}
-
-		function quit() {
-			if (confirm('Confirm quitting the study ?')) {
-				window.close();
-			}
-		}
-	</script>
-
+ 
 </body>
 </html>

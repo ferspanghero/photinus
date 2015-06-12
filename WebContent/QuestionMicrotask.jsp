@@ -87,15 +87,59 @@
 <body>
   
 	<script type="text/javascript">
+	function checkQuitAnswer() {
+
+		var radios = document.getElementsByName("reason");
 		
-		function checkAnswer(){
+		var option = -1;
+		
+		var i = 0;
+
+		for (i = 0; i < radios.length; i++) {
+			if (radios[i].checked) {
+				option = i;
+				break;
+			}
+		}
+		
+		if (option == -1) {
+			alert("Please select an answer.");
+			return -1;
+		}
+	}
+
+	var quitFormAlreadyPosted = false;
+
+
+		function submitQuitAnswer() {
+			//first thing is to check whether the form was already submitted
+			if (quitFormAlreadyPosted) {
+				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
+			} else {
+				//ok, form was not submitted yet
+				var checked = checkQuitAnswer();
+				if (checked != -1) {
+					//$("#quit").on( "dialogclose", function() { 
+					var form = document.forms["reasonForm"];
+					form.action = "quit";
+					form.submit();
+					$("#quit").dialog("close");
+					var workerId = document.getElementById("workerId").value;
+					quitFormAlreadyPosted = true;
+				} else {
+					//nothing to do.
+				}
+			}
+		}
+
+		function checkAnswer() {
 
 			var radios = document.getElementsByName("answer");
 			var confidenceRadios = document.getElementsByName("confidence");
-			
+
 			var option = -1;
 			var option2 = -1;
-			
+
 			var i = 0;
 
 			for (i = 0; i < radios.length; i++) {
@@ -104,7 +148,7 @@
 					break;
 				}
 			}
-			
+
 			if (option == -1) {
 				alert("Please select an answer.");
 				return -1;
@@ -113,42 +157,57 @@
 				if ((radios[0].checked) || (radios[1].checked)
 						|| (radios[2].checked)) {
 					//check the confidence answer
-					for (i=0; i<confidenceRadios.length;i++){
-						if(confidenceRadios[i].checked){
+					for (i = 0; i < confidenceRadios.length; i++) {
+						if (confidenceRadios[i].checked) {
 							option2 = i;
 						}
 					}
-					
-					if(option2 == -1){
+
+					if (option2 == -1) {
 						alert("Please select a confidence level.");
 						return -1;
-					}else{
+					} else {
 						if (document.getElementById("explanation").value == '') {
 							alert("Please provide an explanation for your answer.");
 							return -1;
-						} else{
+						} else {
 							return option;
 						}
 					}
-				}else
+				} else
 					return option;
 			}
 		}
 
 		var formAlreadyPosted = false;
-		function showDialog(){
+		function showDifficultDialog() {
 			//load dialog - popup
 			$("#survey").load("difficultyDialog.jsp").dialog({
-			    autoOpen: false,
-			    modal: true,
-			    bgiframe: true,
-			    width: 485,
-			    resizable: false,
-			    closeOnEscape: false,
-			    title: "How difficult was this question for you to answer?"
+				autoOpen : false,
+				modal : true,
+				bgiframe : true,
+				width : 485,
+				resizable : false,
+				closeOnEscape : false,
+				title : "How difficult was this question for you to answer?"
 			});
 			$("#survey").dialog('open');
 		}
+
+		function showQuitDialog() {
+			//load dialog - popup
+			$("#quit").dialog({
+				autoOpen : false,
+				modal : true,
+				bgiframe : true,
+				width : 485,
+				resizable : false,
+				closeOnEscape : false,
+				title : "Why did you decide to quit ?"
+			});
+			$("#quit").dialog('open');
+		}
+
 		function submitAnswer() {
 			//first thing is to check whether the form was already submitted
 			if (formAlreadyPosted) {
@@ -159,9 +218,11 @@
 				if (checked != -1) {
 					formAlreadyPosted = true;
 					var form = document.forms["answerForm"];
-					form.action='microtask';
-					showDialog();
-					$( "#survey" ).on( "dialogclose", function() { form.submit(); } );
+					form.action = 'microtask';
+					showDifficultDialog();
+					$("#survey").on("dialogclose", function() {
+						form.submit();
+					});
 				} else {
 					//nothing to do.
 				}
@@ -191,7 +252,38 @@
 		value=${requestScope["calleeLOCS"]}>
 		
 	<div style="display: none;" id="survey"></div>
-<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
+	<div style="display: none;" id="quit">
+		<div id="internalText">
+			<form name="reasonForm" method="get" onsubmit="submitQuitAnswer()">
+				<input type="radio" name="reason" value="hard" />The task is too
+				hard &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
+					type="radio" name="reason" value="boring" />The task is too boring
+				&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
+					type="radio" name="reason" value="long" />The task is too long
+				&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <br> <input
+					type="radio" name="reason" value="other" />Other&nbsp; &nbsp;
+				&nbsp; &nbsp;&nbsp; &nbsp;
+				
+				<!-- Hidden fields -->
+				<input type="hidden"
+					name="workerId" id="workerId" value=${requestScope["workerId"]}> 
+				<input type="hidden" name="microtaskId"
+					value=${requestScope["microtaskId"]}> <input type="hidden"
+					name="timeStamp" value=${requestScope["timeStamp"]}>
+					<input type="hidden"
+					name="sessionId" value=${requestScope["sesionId"]}> 
+					
+				<center>
+					<INPUT TYPE="submit" name="reasonButton" id="reasonButton"
+						VALUE="Submit">
+				</center>
+				<br>
+			</form>
+
+		</div>
+	</div>
+
+	<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
 	<div id="failurePrompt">
 		<div id="internalText">
 			Thanks for using <b>Crowd Debug!</b> and for helping us debug
@@ -238,7 +330,7 @@
 
 				<!-- Hidden fields -->
 				<input type="hidden"
-					name="workerId" value=${requestScope["workerId"]}> 
+					name="workerId" id="workerId" value=${requestScope["workerId"]}> 
 				<input type="hidden" name="microtaskId"
 					value=${requestScope["microtaskId"]}> <input type="hidden"
 					name="timeStamp" value=${requestScope["timeStamp"]}>
@@ -251,7 +343,7 @@
 				<center>				<br>
 				<INPUT TYPE="button" name="answerButton" id="answerButton" VALUE="Submit"
 					onclick="submitAnswer(event)">
-					<input type="submit"  value="Quit" onclick='javascript: form.action="quit";'>
+					<input type="button"  value="Quit" onclick='showQuitDialog()'>
 				</center>
 										
 				<br><br>
