@@ -9,3 +9,7 @@
 .settings/org.eclipse.wst.common.project.facet.core.xml
 .settings/org.eclipse.wst.jsdt.ui.superType.container
 WebContent/WEB-INF/classes/logback.xml
+src/edu/uci/ics/sdcl/firefly/util/PropertyManager.java
+src/edu/uci/ics/sdcl/firefly/report/AnalysisPath.java
+WebContent/firefly.properties
+WebContent/WEB-INF/classes/logback.xml

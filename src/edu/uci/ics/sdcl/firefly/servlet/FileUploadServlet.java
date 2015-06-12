@@ -314,14 +314,9 @@ public class FileUploadServlet extends HttpServlet {
 		manager.cleanUpRepositories();
 	}
 	
-	private String bulkUpload(){
-	
-		Logger logger = LoggerFactory.getLogger(FileUploadServlet.class);
-		PropertyManager manager = PropertyManager.initializeSingleton();
-		String path = manager.fileUploadSourcePath;
-		System.out.println("path: "+path);
-		
-		String[] fileList = {"1buggy_ApacheCamel.txt", "2SelectTranslator_buggy.java", "3buggy_PatchSetContentRemoteFactory_buggy.txt", "6ReviewScopeNode_buggy.java", 
+	/**
+	 * Older bug reports (experiment-1)
+	 * 	String[] fileList = {"1buggy_ApacheCamel.txt", "2SelectTranslator_buggy.java", "3buggy_PatchSetContentRemoteFactory_buggy.txt", "6ReviewScopeNode_buggy.java", 
 				"7buggy_ReviewTaskMapper_buggy.txt", "8buggy_AbstractReviewSection_buggy.txt", "9buggy_Hystrix_buggy.txt",
 				"10HashPropertyBuilder_buggy.java", "11ByteArrayBuffer_buggy.java","13buggy_VectorClock_buggy.txt"};
 		
@@ -334,15 +329,58 @@ public class FileUploadServlet extends HttpServlet {
 				"Probing algorithm spinning indefinitely trying to find a hole in a byte sequence.",
 				"NegativeArraySizeException for data larger than 2GB / 3." , 
 				"java.lang.IllegalArgumentException: Version -532 is not in the range (1, 32767) in ClockEntry constructor."};
+	 * 
+	 */
+	
+	
+	
+	/**
+	 * Loads files in bulk. The files must be in the local folder (typically C:/firefly/samples/bul 
+	 * @return
+	 */
+	private String bulkUpload(){
+	
+		Logger logger = LoggerFactory.getLogger(FileUploadServlet.class);
+		PropertyManager manager = PropertyManager.initializeSingleton();
+		String path = manager.fileUploadSourcePath;
+		System.out.println("path: "+path);
+		
+		String[] fileList = {"8_DateTimeZone.java", "24_GrayPaintScale.java", "6_CharSequenceTranslator.java", "7_TimePeriodValues.java",
+				"51_CodeConsumer.java","35_ArrayUtils.java","54_LocaleUtils.java","33_ClassUtils.java" };
+		
+		String [] methodList = { "forOffsetHoursMinutes","getPaint","translate", "updateBounds",
+				"addNumber","add","toLocale","toClass"};
+		
+		String [] failureList = { "java.lang.IllegalArgumentException: Minutes out of range: -15",
+				"java.lang.IllegalArgumentException: Color parameter outside of expected range: Red Green Blue",
+				"java.lang.StringIndexOutOfBoundsException: String index out of range: 2",
+				"junit.framework.AssertionFailedError: expected:<1> but was:<3>",
+				"junit.framework.ComparisonFailure: expected:<var x=[-0.]0> but was:<var x=[]0>",
+				"java.lang.ClassCastException: [Ljava.lang.Object; cannot be cast to [Ljava.lang.String;",
+				" java.lang.IllegalArgumentException: Invalid locale format: fr__POSIX",
+				"java.lang.NullPointerException"
+				};
+		
+		String[] testList = {"assertEquals(DateTimeZone.forID(\"-02:15\"), DateTimeZone.forOffsetHoursMinutes(-2, -15));",
+				"GrayPaintScale gps = new GrayPaintScale(); c = (Color) gps.getPaint(-0.5);	assertTrue(c.equals(Color.black));",
+				"assertEquals(\"\uD83D\uDE30\", StringEscapeUtils.escapeCsv(\"\uD83D\uDE30\"));",
+				"TimePeriodValues s = new TimePeriodValues(\"Test\");	s.add(new SimpleTimePeriod(0L, 50L), 3.0);	assertEquals(1, s.getMaxMiddleIndex());",
+				" assertPrint(\"var x = -0.0;\", \"var x=-0.0\");",
+				"String[] sa = ArrayUtils.add(stringArray, aString); fail(\"Should have caused IllegalArgumentException\");",
+				"assertValidToLocale(\"fr__POSIX\", \"fr\", \"\", \"POSIX\");",
+				"assertTrue(Arrays.equals(new Class[] { String.class, null, Double.class },ClassUtils.toClass(new Object[] { \"Test\", null, 99d })));"
+		};
+		
 		String message="";
 		for(int i=0; i<fileList.length; i++){
 			String fileName = fileList[i];
 			String methodName = methodList[i];
 			String failureDescription = failureList[i];
+			String testDescription = testList[i];
 			
 			String fileContent = SourceFileReader.readFileToString(path+fileName);
 			
-			String result = generateMicrotasks(fileName, fileContent, methodName,null, failureDescription, "");
+			String result = generateMicrotasks(fileName, fileContent, methodName,null, failureDescription, testDescription);
 			logger.info("Event =UPLOAD; File="+ fileName+ "; MethodName="+ methodName+ "; Microtasks="+result);
 			message = message + methodName+ ", " ;
 		}

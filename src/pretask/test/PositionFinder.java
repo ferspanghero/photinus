@@ -18,6 +18,6 @@ public class PositionFinder {
 
 	public static void main(String[] args){
 		String[] NameArray = {"Hola", "Kumusta", "Hello", "Ciao"};
-		findPosition(NameArray, "Ciao");
+		findPosition(NameArray, "Hola");
 	}
 }
