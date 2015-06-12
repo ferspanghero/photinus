@@ -55,9 +55,10 @@ public class MyVisitor extends ASTVisitor {
 	private CodeSnippetFactory snippetFactory;       //Factory that keeps track of the fileName and fileContent being parsed
 
 	private int numberOfMethodInvocations;
+	private int constructorMethodArgument = 0;
 	private int nestedMethodExpressionStart = 0;
 	private int nestedMethodExpressionEnd = 0;
-	private List<MethodInvocation> callees = new ArrayList<MethodInvocation>(); // holds the nested methods of a node
+	private List<MyMethodCall> callees = new ArrayList<MyMethodCall>(); // holds the nested methods of a node
 	private boolean invertNestedMethodStack = false; // some nested methods are inverted in the stack, this helps get a default arrange of the stack
 	/* NESTED METHODS EXAMPLES
 	fig1.getDiameter().intValue(); This situation must be covered by one single question about getDiameter, intValue
@@ -235,6 +236,11 @@ public class MyVisitor extends ASTVisitor {
 			if(node.arguments().size()==0) //Discard constructors that take no parameters.
 				return true;
 			else{
+				List parameters = node.arguments();
+				for (Object object : parameters) {
+					if(object instanceof MethodInvocation)
+						constructorMethodArgument++;
+				}
 				Integer numberOfArguments = node.arguments().size();
 				//System.out.println("Class instantiation..."+node.getExpression()+" type:"+node.getType());
 				String name = node.getType().toString();
@@ -248,8 +254,10 @@ public class MyVisitor extends ASTVisitor {
 				MyMethodCall methodCall = new MyMethodCall(name, expression, arguments,numberOfArguments, 
 						this.elementStartingLine, this.elementStartingColumn,
 						this.elementEndingLine, this.elementEndingColumn);
-
-				this.newMethod.addElement(methodCall);
+				if(constructorMethodArgument > 0)
+					this.callees.add(methodCall);
+				else
+					this.newMethod.addElement(methodCall);
 			}
 
 		return true;
@@ -596,22 +604,39 @@ public class MyVisitor extends ASTVisitor {
 	
 	private boolean verifyNestedMethod(MethodInvocation node)
 	{
-		if(node.getParent().getNodeType() == ASTNode.EXPRESSION_STATEMENT || 
+		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
+		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+
+		String name = node.getName().toString();
+		String expression = node.getExpression()==null ? "" : node.getExpression().toString(); 
+		String arguments = node.arguments()==null ? "" : node.arguments().toString();
+		Integer numberOfArguments = node.arguments()==null ? 0 : node.arguments().size();
+
+		String line = this.snippetFactory.getFileContentPerLine()[this.elementStartingLine-1];
+		this.elementStartingColumn = line.indexOf(node.getName().toString()); 
+		this.elementEndingColumn = this.elementStartingColumn+ node.getName().toString().length();
+		this.elementEndingLine = this.elementStartingLine;
+
+		MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, numberOfArguments,
+				this.elementStartingLine, this.elementStartingColumn,
+				this.elementEndingLine, this.elementEndingColumn);
+		if(node.getParent().getNodeType() == ASTNode.CLASS_INSTANCE_CREATION)
+		{
+			this.constructorMethodArgument--;
+			this.callees.add(methodCall);
+		}
+		else if(node.getParent().getNodeType() == ASTNode.EXPRESSION_STATEMENT || 
 				node.getParent().getNodeType() == ASTNode.ASSIGNMENT ||
 				node.getParent().getNodeType() == ASTNode.INFIX_EXPRESSION ||
-				node.getParent().getNodeType() == ASTNode.VARIABLE_DECLARATION_FRAGMENT ||
-				node.getParent().getNodeType() == ASTNode.CLASS_INSTANCE_CREATION) //ClassInstanceCreation
+				node.getParent().getNodeType() == ASTNode.VARIABLE_DECLARATION_FRAGMENT)
 		{
-			flushCallees();
 			ASTNode statement = node.getParent();
 			this.nestedMethodExpressionStart = statement.getStartPosition();
 			this.nestedMethodExpressionEnd = this.nestedMethodExpressionStart + statement.getLength();
-			this.callees.add(node);
+			this.callees.add(methodCall);
 		}
 		else if((node.getStartPosition() <= this.nestedMethodExpressionEnd) && (node.getStartPosition() >= this.nestedMethodExpressionStart))
-		{
-			this.callees.add(node);
-		}
+			this.callees.add(methodCall);
 		else
 			return false;
 		return true;
@@ -619,7 +644,8 @@ public class MyVisitor extends ASTVisitor {
 	
 	public void endVisit(MethodInvocation node)
 	{
-		flushCallees();
+		if(this.constructorMethodArgument == 0)
+			flushCallees();
 	}
 
 	private boolean isInvalidClassInstantiation(ClassInstanceCreation node){
@@ -658,31 +684,20 @@ public class MyVisitor extends ASTVisitor {
 		{
 			if(callees.size() != 0)
 			{
-				MyMethodCall methodCall = null;
-				MethodInvocation caller = callees.get(0);
-				callees.remove(caller);
-				int elementStartingLine = cu.getLineNumber(caller.getStartPosition());
-				int elementStartingColumn = cu.getColumnNumber(caller.getStartPosition());
-				String line = this.snippetFactory.getFileContentPerLine()[ elementStartingLine-1];
-				elementStartingColumn = line.indexOf(caller.getName().toString()); 
-				int elementEndingColumn = elementStartingColumn+ caller.getName().toString().length();
-				int elementEndingLine = elementStartingLine;
-				methodCall = new MyMethodCall(caller.getName().toString(), caller.getExpression()==null ? "" : caller.getExpression().toString(),
-						caller.arguments()==null ? "" : caller.arguments().toString(), caller.arguments()==null ? 0 : caller.arguments().size(),
-								elementStartingLine, elementStartingColumn,
-								elementEndingLine, elementEndingColumn);
+				MyMethodCall methodCaller = callees.get(0);
+				callees.remove(methodCaller);
 				if(this.invertNestedMethodStack)
 				{
 					Collections.reverse(callees);
 					this.invertNestedMethodStack = false;
 				}
 				List<String> aux = new ArrayList<String>();
-				for (MethodInvocation methodInvocation : callees) {
+				for (MyMethodCall methodInvocation : callees) {
 					aux.add(methodInvocation.getName().toString());
 				}
-				methodCall.setNestedMethods(aux);
-				this.newMethod.addElement(methodCall);
-				callees = new ArrayList<MethodInvocation>();
+				methodCaller.setNestedMethods(aux);
+				this.newMethod.addElement(methodCaller);
+				callees = new ArrayList<MyMethodCall>();
 			}
 		}
 	}
