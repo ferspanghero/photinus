@@ -625,10 +625,11 @@ public class MyVisitor extends ASTVisitor {
 			this.constructorMethodArgument--;
 			this.callees.add(methodCall);
 		}
-		else if(node.getParent().getNodeType() == ASTNode.EXPRESSION_STATEMENT || 
+		else if( (node.getParent().getNodeType() == ASTNode.EXPRESSION_STATEMENT || 
 				node.getParent().getNodeType() == ASTNode.ASSIGNMENT ||
 				node.getParent().getNodeType() == ASTNode.INFIX_EXPRESSION ||
 				node.getParent().getNodeType() == ASTNode.VARIABLE_DECLARATION_FRAGMENT)
+				&& ((this.nestedMethodExpressionStart == 0) && (this.nestedMethodExpressionEnd == 0)))
 		{
 			ASTNode statement = node.getParent();
 			this.nestedMethodExpressionStart = statement.getStartPosition();
@@ -645,7 +646,11 @@ public class MyVisitor extends ASTVisitor {
 	public void endVisit(MethodInvocation node)
 	{
 		if(this.constructorMethodArgument == 0)
+		{
 			flushCallees();
+			this.nestedMethodExpressionStart = 0;
+			this.nestedMethodExpressionEnd = 0;
+		}
 	}
 
 	private boolean isInvalidClassInstantiation(ClassInstanceCreation node){
