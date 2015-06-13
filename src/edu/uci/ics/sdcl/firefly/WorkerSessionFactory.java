@@ -113,6 +113,43 @@ public class WorkerSessionFactory {
 		return this.fileMethodMap;
 	}
 
+	
+	/**
+	 * Produces the next list of microtasks for that same bug report
+	 */
+	public Vector<Microtask> nextMicrotaskList(int numberOfTasks, String fileKey){
+		
+		int firstAvailable=0;
+		
+		Vector<Microtask> resultList = new Vector<Microtask>();
+		//Get the number of microtasks for that file
+		
+		//Get the step = absolute (size /microtaskPerSession);
+		int pos=0;
+	//	availablePositionsStack= microtaskListPositions.clone();
+		//composeSession{
+		/*for(int i=0; i++; i<roundUp(size/microtaskPerSession)))//Compose all different sessions for this 
+			
+			pos=availablePositionsStack.pop(); //get the top one
+			
+			for(int j=0; j++; j<microtaskPerSession){ //Compose one session with N microtasks			
+				int	next = pos;
+			    availableList[next]=false;//Make the microtask not available anymore
+				microtask = microtaskList[next];
+				session.add(microtask);
+				pos = next + step;
+				while( pos<microtaskList.size() && available[pos]==false)//find the next available microtask
+					pos++;
+				if(pos>=microtaskList.size())
+					pos = pos - microtaskList.size();
+			}
+		
+		}
+		
+		*/
+		return resultList;
+	}
+	
 	/**
 	 * Produces the next list of microtasks. The list produced is removed from the original set.
 	 * 
