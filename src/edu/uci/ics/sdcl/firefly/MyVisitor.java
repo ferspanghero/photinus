@@ -655,11 +655,7 @@ public class MyVisitor extends ASTVisitor {
 			this.constructorMethodArgument--;
 			this.callees.add(methodCall);
 		}
-		else if( (node.getParent().getNodeType() == ASTNode.EXPRESSION_STATEMENT || 
-				node.getParent().getNodeType() == ASTNode.ASSIGNMENT ||
-				node.getParent().getNodeType() == ASTNode.INFIX_EXPRESSION ||
-				node.getParent().getNodeType() == ASTNode.VARIABLE_DECLARATION_FRAGMENT ||
-				node.getParent().getNodeType() == ASTNode.CONDITIONAL_EXPRESSION)
+		else if( node.getParent().getNodeType() != ASTNode.METHOD_INVOCATION
 				&& ((this.nestedMethodExpressionStart == 0) && (this.nestedMethodExpressionEnd == 0)))
 		{
 			ASTNode statement = node.getParent();
