@@ -152,7 +152,9 @@ public class QuestionFactory {
 						questionPrompt = new String(templateForQuestion);
 						questionPrompt = this.setUpQuestionPrompt(questionPrompt, element);
 						question = new Microtask(CodeElement.SWITCH_CONDITIONAL, codeSnippet, element, 
-								questionPrompt, this.startingLine, this.startingColumn, this.endingLine,this.endingColumn, microtaskId, bugReport, testCase);
+								questionPrompt, element.getElementStartingLine(), element.getElementStartingColumn()
+								, element.getBodyEndingLine(),element.getBodyEndingColumn()
+								, microtaskId, bugReport, testCase);
 
 						this.microtaskMap.put(question.getID(),question);
 						microtaskId++;
