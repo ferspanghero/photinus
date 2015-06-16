@@ -591,7 +591,7 @@ public class MyVisitor extends ASTVisitor {
 					: cu.getColumnNumber(node.getStartPosition());
 			this.elementEndingLine = this.elementStartingLine;
 			this.elementEndingColumn = (node instanceof VariableDeclarationFragment)
-					? this.elementStartingColumn + node.getParent().getLength()
+					? cu.getColumnNumber(node.getStartPosition()) + node.getName().getLength()
 					: this.elementStartingColumn + node.getLength();
 
 			MyVariable element = new MyVariable(node.getName().getFullyQualifiedName(), 
