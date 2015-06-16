@@ -640,16 +640,14 @@ public class MyVisitor extends ASTVisitor {
 	{
 		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
 		this.elementStartingColumn = cu.getColumnNumber(node.getStartPosition());
+		this.elementEndingColumn = this.elementStartingColumn+ node.getName().toString().length();
+		this.elementEndingLine = this.elementStartingLine;
 
 		String name = node.getName().toString();
 		String expression = node.getExpression()==null ? "" : node.getExpression().toString(); 
 		String arguments = node.arguments()==null ? "" : node.arguments().toString();
 		Integer numberOfArguments = node.arguments()==null ? 0 : node.arguments().size();
-
-		String line = this.snippetFactory.getFileContentPerLine()[this.elementStartingLine-1];
-		this.elementStartingColumn = line.indexOf(node.getName().toString()); 
-		this.elementEndingColumn = this.elementStartingColumn+ node.getName().toString().length();
-		this.elementEndingLine = this.elementStartingLine;
+ 
 
 		MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, numberOfArguments,
 				this.elementStartingLine, this.elementStartingColumn,
@@ -657,6 +655,11 @@ public class MyVisitor extends ASTVisitor {
 		if(node.getParent().getNodeType() == ASTNode.CLASS_INSTANCE_CREATION)
 		{
 			this.constructorMethodArgument--;
+			ASTNode statement = node.getParent();
+			this.nestedMethodExpressionStart = statement.getStartPosition();
+			this.nestedMethodExpressionEnd = this.nestedMethodExpressionStart + statement.getLength();
+			methodCall.setElementEndingLine(cu.getLineNumber(this.nestedMethodExpressionEnd));
+			methodCall.setElementEndingColumn(methodCall.getElementStartingColumn() + statement.getLength());
 			this.callees.add(methodCall);
 		}
 		else if( node.getParent().getNodeType() != ASTNode.METHOD_INVOCATION
@@ -665,10 +668,20 @@ public class MyVisitor extends ASTVisitor {
 			ASTNode statement = node.getParent();
 			this.nestedMethodExpressionStart = statement.getStartPosition();
 			this.nestedMethodExpressionEnd = this.nestedMethodExpressionStart + statement.getLength();
+			methodCall.setElementEndingLine(cu.getLineNumber(this.nestedMethodExpressionEnd));
+			methodCall.setElementEndingColumn(methodCall.getElementStartingColumn() + statement.getLength());
 			this.callees.add(methodCall);
 		}
 		else if((node.getStartPosition() <= this.nestedMethodExpressionEnd) && (node.getStartPosition() >= this.nestedMethodExpressionStart))
+		{
 			this.callees.add(methodCall);
+			MyMethodCall caller = callees.get(0);
+			if(cu.getColumnNumber(node.getStartPosition()) < caller.getElementStartingColumn()
+				&& (cu.getLineNumber(node.getStartPosition()) == caller.getElementStartingLine()))
+			{
+				callees.get(0).setElementStartingColumn(cu.getColumnNumber(node.getStartPosition()));
+			}
+		}
 		else
 			return false;
 		return true;

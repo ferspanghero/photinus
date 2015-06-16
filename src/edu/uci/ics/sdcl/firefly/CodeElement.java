@@ -113,4 +113,18 @@ public class CodeElement implements Serializable {
 	public void setBodyEndingColumn(Integer bodyEndingColumn) {
 		this.bodyEndingColumn = bodyEndingColumn;
 	}
+	public void setElementStartingLine(Integer elementStartingLine) {
+		this.elementStartingLine = elementStartingLine;
+	}
+	public void setElementStartingColumn(Integer elementStartingColumn) {
+		this.elementStartingColumn = elementStartingColumn;
+	}
+	public void setElementEndingLine(Integer elementEndingLine) {
+		this.elementEndingLine = elementEndingLine;
+	}
+	public void setElementEndingColumn(Integer elementEndingColumn) {
+		this.elementEndingColumn = elementEndingColumn;
+	}
+	
+	
 }
