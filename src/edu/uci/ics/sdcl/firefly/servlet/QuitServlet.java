@@ -20,7 +20,7 @@ public class QuitServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private String ErrorPage = "/ErrorPage.jsp";
-	private String ThanksPage = "/Thanks.jsp";
+	private String ThanksPage = "/ThanksQuit.jsp";
 	private StorageStrategy storage ;
 	private String workerId;
 	private String answer;
