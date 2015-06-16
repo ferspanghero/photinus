@@ -32,7 +32,7 @@ public class SkillTestServlet extends HttpServlet {
 
 	private String SorryPage = "/SorryPage.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
-	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
+	private String SurveyPage = "/Survey.jsp";
 
 	private Worker worker;
 	private StorageStrategy storage;
@@ -54,7 +54,7 @@ public class SkillTestServlet extends HttpServlet {
 		request.setAttribute("timeStamp",TimeStampUtil.getTimeStampMillisec() );
 		//First check if the worker hasn't already taken the test
 		this.storage =   StorageStrategy.initializeSingleton();;
-		this.worker = storage.readExistingWorker(workerId);
+		Worker worker = storage.readExistingWorker(workerId);
 		if(worker==null){
 			showErrorPage(request,response, "Execution ID does not exist in database.");
 		}
@@ -158,7 +158,7 @@ public class SkillTestServlet extends HttpServlet {
 
 			//Load the new Microtask data into the Request
 			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
-			request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
+			request.getRequestDispatcher(SurveyPage).forward(request, response);
 		}
 	}
 

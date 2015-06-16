@@ -8,14 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
 
 /**
  * Servlet implementation class SurveyServlet
  */
 public class SurveyServlet extends HttpServlet {
-    //public static String question[] = {"Gender", "Age", "Country", "Years progr.", "Difficulty", "Feedback"};   
-    public static String question[] = {"Difficulty", "Feedback"};   
+    public static String question[] = {"Gender", "Age", "Country", "Years progr."};   
     public SurveyServlet() {
         super();
     }
@@ -23,21 +23,23 @@ public class SurveyServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
 		Worker subject = storage.readExistingWorker(request.getParameter("workerId"));
+		WorkerSession  session = storage.readNewSession(request.getParameter("workerId"));
 		if (null != subject){
-//			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
-//			subject.addSurveyAnswer(question[1], request.getParameter("age"));
-//			subject.addSurveyAnswer(question[2], request.getParameter("country"));
-//			subject.addSurveyAnswer(question[3], request.getParameter("experience"));
-			subject.addSurveyAnswer(question[0], request.getParameter("difficulty"));
-			subject.addSurveyAnswer(question[1], request.getParameter("feedback"));
+			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
+			subject.addSurveyAnswer(question[1], request.getParameter("age"));
+			subject.addSurveyAnswer(question[2], request.getParameter("country"));
+			subject.addSurveyAnswer(question[3], request.getParameter("experience"));
+			//subject.addSurveyAnswer(question[0], request.getParameter("difficulty"));
+			//subject.addSurveyAnswer(question[1], request.getParameter("feedback"));
 			
 			//Store result
 			storage.insertSurvey(subject);
-			
 			//Displays the Thanks message		
 			request.setAttribute("key", subject.getSessionId());
-			System.out.println("Session ID = " + request.getParameter("key"));
-			request.getRequestDispatcher("/Thanks.jsp").forward(request, response);
+			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
+			request.getRequestDispatcher("/QuestionMicrotask.jsp").forward(request, response);
+			//request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
+			//request.getRequestDispatcher("/QuestionMicrotask.jsp").forward(request, response);
 		} else{
 			request.setAttribute("executionId", request.getParameter("workerId"));
 			request.setAttribute("error", "@SurveyServlet - object 'subject' is null");
