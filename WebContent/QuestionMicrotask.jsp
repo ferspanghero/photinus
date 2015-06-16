@@ -142,10 +142,14 @@
 				autoOpen : false,
 				modal : true,
 				bgiframe : true,
-				width : 485,
+				width : 370,
+				height: 160,
 				resizable : false,
 				closeOnEscape : false,
-				title : "How difficult was this question for you to answer?"
+				title : "How was this task for you?",
+				open: function (event, ui) {
+				    $('#survey').css('overflow', 'hidden');
+				}
 			});
 			$("#survey").dialog('open');
 		}

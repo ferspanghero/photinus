@@ -1,3 +1,18 @@
+
+<style>
+label {
+	padding-right: 138px;
+}
+
+span {
+	padding-right: 8px;
+	padding-left: 8px;
+}
+
+.box {
+	width: 450px;
+}
+</style>
 <script type="text/javascript">
 
 
@@ -43,30 +58,22 @@ function submitSurveyAnswer() {
 
 <body>
 <!-- Dialog Content -->
-	<div id="survey">
-		<div id="content">
-
 			<form name="surveyForm" method="get" action="survey">
-			<center>
 				<table>
 					<tr>
-					<td><center>Very difficult</center></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><center>Not difficult</center></td>
+						<td><label>Very
+							difficult</label> <label>Not
+							difficult</label></td>
 					</tr>
-					
-					<tr>
-					<td><a><center><input type="radio" name="difficulty" value="5" />5</center></a></td>
-					<td><a><center><input type="radio" name="difficulty" value="4" />4</center></a></td>
-					<td><a><center> <input type="radio" name="difficulty" value="3" />3</center></a></td>
-					<td><a><center><input type="radio" name="difficulty" value="2" />2</center></a></td>
-					<td><a><center><input type="radio" name="difficulty" value="1" />1</center></a></td>
+					<tr align="center">
+						<td><span><input type="radio" name="difficulty"
+							value="5" />5</span><span><input type="radio" name="difficulty" value="4" />4</span>
+							<span><input type="radio" name="difficulty" value="3" />3</span><span><input
+							type="radio" name="difficulty" value="2" />2</span><span><input type="radio"
+							name="difficulty" value="1" />1</span></td>
 					</tr>
-					</table> 
-			</center>
-			
+				</table>
+
 				<!-- Hidden fields -->
 				<input type="hidden" name="sessionId"
 					value=${requestScope["sessionId"]}> <input type="hidden"
@@ -79,8 +86,6 @@ function submitSurveyAnswer() {
 					onclick="submitSurveyAnswer(event)">
 				</center>
 			</form>
-		</div>
 		<br>
-	</div>
 </body>
 	

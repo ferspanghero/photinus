@@ -36,6 +36,11 @@ background-color: #FFFFFF;
 			<div id=key>${requestScope["key"]} </div>
 			<form name="thanksForm">
 				<input type="hidden" name="sessionId" value=${requestScope["key"]} >
+				
+								<br> Please provide any additional feedback: <br>
+				&nbsp;&nbsp;
+				<textarea name="feedback" id="feedback" rows="6" cols="45"></textarea>
+				<br>
 			</form>
 		<br>
 		<br>

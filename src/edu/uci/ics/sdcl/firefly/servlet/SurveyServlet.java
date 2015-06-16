@@ -23,8 +23,8 @@ public class SurveyServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
 		Worker subject = storage.readExistingWorker(request.getParameter("workerId"));
-		WorkerSession  session = storage.readNewSession(request.getParameter("workerId"));
 		if (null != subject){
+			WorkerSession  session = storage.readNewSession(subject.getWorkerId(), subject.getCurrentFileName());
 			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
 			subject.addSurveyAnswer(question[1], request.getParameter("age"));
 			subject.addSurveyAnswer(question[2], request.getParameter("country"));

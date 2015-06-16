@@ -155,10 +155,7 @@
 					name="country" id="country" size="25" /><br>
 				<br> How many years of programming experience do you have?</b> <input
 					type=text name="experience" id="experience" size="2" /><br>
-<!-- 				<br> Please provide any additional feedback: <br> -->
-<!-- 				&nbsp;&nbsp; -->
-<!-- 				<textarea name="feedback" id="feedback" rows="6" cols="45"></textarea> -->
-<!-- 				<br> -->
+
 
 				<!-- Hidden fields -->
 				<input type="hidden" name="sessionId"
