@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.Stack;
 
@@ -33,8 +34,9 @@ public class WorkerSessionStorage {
 	private static String fileNameNew = "sessions_new.ser";
 	private static String fileNameClosed = "sessions_closed.ser";
 
-	private Hashtable<String, WorkerSession> activeSessionTable;
-
+	/** Indexed by Session ID */
+	private  Hashtable<String, WorkerSession> activeSessionTable;
+	
 	private String path;
 
 	private static WorkerSessionStorage storage=null;
@@ -84,12 +86,13 @@ public class WorkerSessionStorage {
 			//Initialize the NEW sessions FILE
 			file = new File(persistentFileNameNew);
 
-			Stack<WorkerSession> stack = new Stack<WorkerSession>();
+			/* Indexed by File name and the stack of sessions for each file */ 
+			Hashtable<String, Stack<WorkerSession>> mapStack = new Hashtable<String, Stack<WorkerSession>>();
 
 			objOutputStream = new ObjectOutputStream( 
 					new FileOutputStream(file));
 
-			objOutputStream.writeObject( stack );
+			objOutputStream.writeObject( mapStack );
 			objOutputStream.close();
 
 			//Initialize the CLOSED sessions FILE
@@ -103,8 +106,8 @@ public class WorkerSessionStorage {
 			objOutputStream.writeObject( list );
 			objOutputStream.close();
 
-			//Initialize the ACTIVE sessions TABLE
-			activeSessionTable = new   Hashtable<String, WorkerSession>();
+			//Initialize the ACTIVE sessions TABLE --- KEPT IN MEMORY
+			activeSessionTable = new    Hashtable<String, WorkerSession>();
 
 		}
 		catch(IOException exception){
@@ -126,16 +129,16 @@ public class WorkerSessionStorage {
 	 * @param type specify if this is a stack of copies or a stack of original, because they are stored separately
 	 * @return true is operation was successful, otherwise, false.
 	 */
-	public synchronized boolean writeNewWorkerSessionStack(Stack<WorkerSession> newStack){
+	public synchronized boolean writeNewWorkerSessionMap(Hashtable<String, Stack<WorkerSession>> mapStack){
 		try{
-			if(newStack==null){
+			if(mapStack==null){
 				logger.error("EVENT%ERROR% Avoided trying to write nullpointer in Worker repository.");
 				return false;
 			}
 			else{
 				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 						new FileOutputStream(new File(persistentFileNameNew)));
-				objOutputStream.writeObject( newStack );
+				objOutputStream.writeObject( mapStack );
 				objOutputStream.close();
 				return true;
 			}
@@ -154,32 +157,47 @@ public class WorkerSessionStorage {
 	 * Obtains a WorkerSession from the stack of new WorkerSessions or the copies stack. Prioritizes the 
 	 * the stack with new original WorkerSessions. Only when this last one is empty, then reads from the 
 	 * copies stack. After that the method moves the retrieved WorkerSession to the list of active ones.
-	 * 
+	 * @param fileName the file name from which the session is to be retrieved
 	 * @return a workerSession from the stack new WorkerSessions. If the stack is empty returns null.
 	 */
-	public synchronized WorkerSession readNewWorkerSession(){
+	public synchronized WorkerSession readNewWorkerSession(String fileName){
 
-		Stack<WorkerSession> stack = retrieveNewSessionStorage();
-		if(stack.isEmpty())
+		Hashtable<String, Stack<WorkerSession>> mapStack = retrieveNewSessionStorage();
+		if(mapStack==null || mapStack.isEmpty())
 			return null;
 		else{
-			WorkerSession session = stack.pop(); 
-			if(writeNewWorkerSessionStack(stack)) //Save the updated stack
-				return session;
-			else
+			Stack<WorkerSession> stack = mapStack.get(fileName);
+			if(stack==null || stack.isEmpty())
 				return null;
+			else{
+				WorkerSession session = stack.pop();
+				mapStack.put(fileName, stack);
+				if(writeNewWorkerSessionMap(mapStack)) //Save the updated stack
+					return session;
+				else
+					return null;
+			}
 		}
 	}
 
+	
+	private int countSessionsInMap(Hashtable<String,Stack<WorkerSession>> sessionsMap){
+		int counter=0;
+		Iterator<String> iter = sessionsMap.keySet().iterator();
+		while(iter.hasNext()){
+			String fileName = iter.next();
+			Stack<WorkerSession> sessionStack = sessionsMap.get(fileName);
+			counter = counter + sessionStack.size();
+		}
+		return counter;
+	}
+	
 	/**
 	 * @return the size of the stack of new WorkerSessions
 	 */
 	public synchronized int getNumberOfNewWorkerSessions(){
-		Stack<WorkerSession> stack = retrieveNewSessionStorage();
-		if(stack!=null && !stack.isEmpty())
-			return stack.size();
-		else
-			return 0;
+		Hashtable<String, Stack<WorkerSession>> sessionsMap = retrieveNewSessionStorage();
+		return countSessionsInMap(sessionsMap);
 	}
 
 
@@ -196,8 +214,8 @@ public class WorkerSessionStorage {
 				activeSessionTable.remove(session.getId()); //removes from active map
 				return (addClosedWorkerSession(session)); //moves to closed list
 			}
-			else{//Session still have uncompleted microtasks
-				activeSessionTable.put(session.getId(),session);
+			else{//Session still have uncompleted microtasks				
+				activeSessionTable.put(session.getId(), session);
 				return true;
 			}
 		}
@@ -239,8 +257,9 @@ public class WorkerSessionStorage {
 	 */
 	public synchronized WorkerSession readActiveWorkerSessionByID(String sessionId){
 
-		if(activeSessionTable!=null && activeSessionTable.containsKey(sessionId))
+		if(activeSessionTable!=null && activeSessionTable.containsKey(sessionId)){
 			return activeSessionTable.get(sessionId);
+		}
 		else
 			return null;
 	}
@@ -301,7 +320,7 @@ public class WorkerSessionStorage {
 	//------------------------------------------------------------------------------------------------------------------------
 	// Retrieve the storages
 
-	public synchronized Stack<WorkerSession> retrieveNewSessionStorage(){
+	public synchronized Hashtable<String, Stack<WorkerSession>> retrieveNewSessionStorage(){
 		try{
 
 			File file = new File(persistentFileNameNew); 
@@ -309,10 +328,10 @@ public class WorkerSessionStorage {
 			ObjectInputStream objInputStream = new ObjectInputStream( 
 					new FileInputStream(file));
 
-			Stack<WorkerSession> stack  = (Stack<WorkerSession> ) objInputStream.readObject();
+			Hashtable<String,Stack<WorkerSession>> map  = (Hashtable<String,Stack<WorkerSession>> ) objInputStream.readObject();
 			objInputStream.close();
 
-			return stack;
+			return map;
 		}
 		catch(IOException exception){
 			logger.error(exception.toString());

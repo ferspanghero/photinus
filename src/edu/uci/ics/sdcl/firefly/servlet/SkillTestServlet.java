@@ -34,7 +34,7 @@ public class SkillTestServlet extends HttpServlet {
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
 
-	private String workerId;
+	private Worker worker;
 	private StorageStrategy storage;
 
 	/**
@@ -49,13 +49,12 @@ public class SkillTestServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		this.workerId = request.getParameter("workerId");
-
-		request.setAttribute("workerId", this.workerId);
+		String workerId = request.getParameter("workerId");
+		request.setAttribute("workerId", workerId);
 		request.setAttribute("timeStamp",TimeStampUtil.getTimeStampMillisec() );
 		//First check if the worker hasn't already taken the test
 		this.storage =   StorageStrategy.initializeSingleton();;
-		Worker worker = storage.readExistingWorker(this.workerId);
+		this.worker = storage.readExistingWorker(workerId);
 		if(worker==null){
 			showErrorPage(request,response, "Execution ID does not exist in database.");
 		}
@@ -148,8 +147,7 @@ public class SkillTestServlet extends HttpServlet {
 
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		StorageStrategy storage = StorageStrategy.initializeSingleton();
-		WorkerSession  session = storage.readNewSession(this.workerId);
+		WorkerSession  session = this.storage.readNewSession(this.worker.getWorkerId(), this.worker.getCurrentFileName());
 		//System.out.println("loadFirstMicrotask, session= "+session);
 		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
@@ -166,7 +164,7 @@ public class SkillTestServlet extends HttpServlet {
 
 	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("error", message);
-		request.setAttribute("executionId", this.workerId);
+		request.setAttribute("executionId", this.worker.getWorkerId());
 		request.getRequestDispatcher(ErrorPage).include(request, response);
 	}
 

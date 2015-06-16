@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Vector;
 
 public class Worker implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -16,8 +17,9 @@ public class Worker implements Serializable{
 	private Integer grade;
 	private String skillTestDuration;
 	private String sessionId; //Stores the single working session session allowed per worker
+	private String currentFileName; //File name that the worker is requesting to work on.  
 
-	public Worker(String workerId, String consentDateStr) {
+	public Worker(String workerId, String consentDateStr, String currentFileName) {
 		this.workerId = workerId;
 		this.consentDate = consentDateStr;
 		this.surveyAnswersMap =  new Hashtable<String,String>();
@@ -27,7 +29,7 @@ public class Worker implements Serializable{
 		this.rubricMap = new Hashtable<String,String>();
 		this.skillTestAnswerMap = new Hashtable<String,String>();
 		this.gradeMap = new Hashtable<String, Boolean>();
-		
+		this.currentFileName = currentFileName;
 	}
 
 	public String getWorkerId() {
@@ -42,6 +44,15 @@ public class Worker implements Serializable{
 		this.consentDate = consentDate;
 	}	
 
+	public String getCurrentFileName() {
+		return currentFileName;
+	}
+
+	public void setCurrentFileName(String currentFileName) {
+		this.currentFileName = currentFileName;
+	}
+	
+	
 	public void addSurveyAnswer(String question, String answer){
 		this.surveyAnswersMap.put(question, answer);
 	}
@@ -132,5 +143,6 @@ public class Worker implements Serializable{
 		else 
 			return true;
 	}
+
 
 }

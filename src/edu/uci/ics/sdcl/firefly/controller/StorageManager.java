@@ -1,12 +1,9 @@
 package edu.uci.ics.sdcl.firefly.controller;
 
-import java.util.Date;
-
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
-import edu.uci.ics.sdcl.firefly.servlet.SkillTestServlet;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
@@ -61,8 +58,8 @@ public class StorageManager extends StorageStrategy{
 	 * @param hitIT is used to associate the WorkerSession with the Mechanical Turk HIT
 	 * @return a new session, if there aren't new sessions available return null
 	 */
-	public synchronized WorkerSession readNewSession(String workerId){
-		WorkerSession session = this.sessionStorage.readNewWorkerSession();
+	public synchronized WorkerSession readNewSession(String workerId,String fileName){
+		WorkerSession session = this.sessionStorage.readNewWorkerSession(fileName);
 		if(session!=null){
 			session.setWorkerId(workerId);
 			this.sessionStorage.updateActiveWorkerSession(session);
@@ -110,8 +107,8 @@ public class StorageManager extends StorageStrategy{
 		return workerStorage.insertSkillTest(worker);
 	}
 	
-	public synchronized Worker insertConsent(String consentDateStr){
-		return this.workerStorage.generateNewWorker(consentDateStr);
+	public synchronized Worker insertConsent(String consentDateStr, String fileName){
+		return this.workerStorage.generateNewWorker(consentDateStr, fileName);
 	}
 	
 	public synchronized boolean insertSurvey(Worker worker){

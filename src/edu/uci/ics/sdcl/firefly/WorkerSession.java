@@ -30,6 +30,8 @@ public class WorkerSession implements Serializable{
 	/** Associates a session with an anonymous user */
 	private String workerId;
 
+	private String fileName;
+
 	//private static Logger logger;
 	
 	/** 
@@ -48,6 +50,25 @@ public class WorkerSession implements Serializable{
 			this.currentIndex = -1;
 	}
 
+	/** 
+	 * Constructor for the session which all microtasks are from the same file.
+	 * Initializes the array and the counter to the first position in the array 
+	 * @param id
+	 * @param originalId 
+	 * @param fileName file name to which all microtasks are related. 
+	 * @param microtaskList
+	 */
+	public WorkerSession(String id, String fileName, Vector<Microtask> microtaskList){
+		//logger = LoggerFactory.getLogger(WorkerSession.class);
+		this.id = id;
+		this.fileName = fileName;
+		this.microtaskList = microtaskList;
+		if(this.microtaskList!=null && this.microtaskList.size()>0)
+			this.currentIndex = 0; //points to the first element
+		else
+			this.currentIndex = -1;
+	}
+	
 	public WorkerSession getLightVersion(){
 		Vector<Microtask> simpleList = new Vector<Microtask>();
 		for(Microtask task: this.microtaskList){
@@ -154,6 +175,10 @@ public class WorkerSession implements Serializable{
 
 	public void setMicrotaskList(Vector<Microtask> list) {
 		this.microtaskList = list;	
+	}
+
+	public String getFileName() {
+		return this.getFileName();//Assume that all microtasks are from the same file.
 	}
 	
 }

@@ -23,7 +23,6 @@ import edu.uci.ics.sdcl.firefly.SourceFileReader;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.WorkerSessionFactory;
-import edu.uci.ics.sdcl.firefly.controller.LiteContainerManager;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.report.ReportGenerator;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
@@ -150,7 +149,7 @@ public class FileUploadServlet extends HttpServlet {
 				
 				//Store the workerId Researcher
 				WorkerStorage workerStorage =  WorkerStorage.initializeSingleton();;
-				Worker worker = new Worker(workerId,TimeStampUtil.getTimeStampMillisec());
+				Worker worker = new Worker(workerId,TimeStampUtil.getTimeStampMillisec(),"default");
 				workerStorage.insertConsent(worker);
 				
 				// generating microtasks individualized or in bulk
@@ -257,6 +256,18 @@ public class FileUploadServlet extends HttpServlet {
 		return results;
 	}
 	
+	private int countSessionsInMap(Hashtable<String, Stack<WorkerSession>> newSessionsMap){
+		int counter=0;
+		Iterator<String> iter = newSessionsMap.keySet().iterator();
+		while(iter.hasNext()){
+			String fileName = iter.next();
+			System.out.println("fileName: "+fileName);
+			Stack<WorkerSession> sessionStack = newSessionsMap.get(fileName);
+			counter = counter + sessionStack.size();
+		}
+		return counter;
+	}
+	
 
 	private String generateWorkerSessions(){
 
@@ -267,12 +278,15 @@ public class FileUploadServlet extends HttpServlet {
 		//Generate the stack of New and Duplicated WorkerSession		
 		WorkerSessionFactory sessionFactory = new WorkerSessionFactory(manager.microtasksPerSession);
 
-		Stack<WorkerSession> originalStack = sessionFactory.generateSessions(manager.answersPerMicrotask); 
+		
+		Hashtable<String,Stack<WorkerSession>> newSessionsMap = sessionFactory.generateSessions(manager.answersPerMicrotask); 
 				
 		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
-		storage.writeNewWorkerSessionStack(originalStack);
+	
 
-		int totalSessions = originalStack.size();
+		storage.writeNewWorkerSessionMap(newSessionsMap);
+
+		int totalSessions = countSessionsInMap(newSessionsMap);
 		int existingSessions = storage.getNumberOfNewWorkerSessions(); 
 	
 		results = "<b>Sessions generated: </b>" +totalSessions+"<br>"+ 
@@ -293,12 +307,14 @@ public class FileUploadServlet extends HttpServlet {
 		
 		//Generate the stack of New and Duplicated WorkerSession
 		WorkerSessionFactory sessionFactory = new WorkerSessionFactory(20);
-		Stack<WorkerSession> originalStack = sessionFactory.generateSingleSession();
+		Hashtable<String, Stack<WorkerSession>> newSessionsMap = sessionFactory.generateSingleSession();
 				
 		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
-		storage.writeNewWorkerSessionStack(originalStack);
+	
+
+		storage.writeNewWorkerSessionMap(newSessionsMap);
 		
-		int totalSessions = originalStack.size(); 
+		int totalSessions = countSessionsInMap(newSessionsMap);
 		int existingSessions = storage.getNumberOfNewWorkerSessions(); 
 	
 		results = results + "Sessions generated: " +totalSessions+"<br>"+ 

@@ -136,7 +136,7 @@ public class WorkerStorage {
 	/**
 	 * @return a worker identifier that does not exist in the storage yet.
 	 */
-	public synchronized Worker generateNewWorker(String consentDateStr) {
+	public synchronized Worker generateNewWorker(String consentDateStr, String fileName) {
 		if(workerTable==null)
 			workerTable = this.retrieveIndex();
 		Integer keyInt = new Integer(workerTable.size()); 
@@ -145,7 +145,7 @@ public class WorkerStorage {
 			keyInt++;
 			key = keyInt.toString();
 		}
-		Worker worker = new Worker(key, consentDateStr);
+		Worker worker = new Worker(key, consentDateStr, fileName);
 		this.insertConsent(worker);
 		return worker;
 	}

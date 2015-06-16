@@ -31,8 +31,21 @@ public abstract class StorageStrategy {
 	
 	//Methods are in order of standard execution by workers performing tasks
 	public abstract void cleanUpRepositories();
-	public abstract Worker insertConsent(String consentDateStr);
-	public abstract WorkerSession readNewSession(String workerId);
+	/**
+	 * 
+	 * @param consentDateStr the date when the worker gave the consent for the current task
+	 * @param fileName the file that will be investigated by the worker
+	 * @return
+	 */
+	public abstract Worker insertConsent(String consentDateStr, String fileName);
+	
+	/** 
+	 * 
+	 * @param workerId
+	 * @param fileName the name of the file related to the bug
+	 * @return
+	 */
+	public abstract WorkerSession readNewSession(String workerId, String fileName);
 	public abstract String getSessionIdForWorker(String workerId);
 	public abstract boolean areThereMicrotasksAvailable();
 	public abstract boolean updateMicrotaskAnswer(String sessionId, Integer microtaskId, Answer answer);

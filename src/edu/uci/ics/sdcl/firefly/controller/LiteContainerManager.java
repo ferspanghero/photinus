@@ -23,7 +23,7 @@ public class LiteContainerManager extends StorageStrategy{
 	private Vector<WorkerSession> closedSessionVector;
 
 	/** List of available sessions */
-	private Stack<WorkerSession> newSessionStack;
+	private Hashtable<String,Stack<WorkerSession>> newSessionTable;
 
 	/** Keeps track of Workers*/
 	private Hashtable<String, Worker> workerTable;
@@ -52,7 +52,7 @@ public class LiteContainerManager extends StorageStrategy{
 	private LiteContainerManager(){
 		//Initialize Sessions
 		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
-		newSessionStack = storage.retrieveNewSessionStorage();
+		newSessionTable = storage.retrieveNewSessionStorage();
 		activeSessionTable = new Hashtable<String, WorkerSession>();
 		closedSessionVector = new Vector<WorkerSession>();
 
@@ -74,27 +74,30 @@ public class LiteContainerManager extends StorageStrategy{
 
 	/** 
 	 * @param workerId is used to associate the WorkerSession with a unique anonymous worker
-	 * @param hitIT is used to associate the WorkerSession with the Mechanical Turk HIT
+	 * @param filename the name of the file with the possible bug.
 	 * @return a new session, if there aren't new sessions available return null
 	 */
-	public synchronized WorkerSession readNewSession(String workerId){	
+	public synchronized WorkerSession readNewSession(String workerId, String fileName){	
 		WorkerSession session;
-		if(!newSessionStack.isEmpty()){
-			session = this.newSessionStack.pop();
-			session.setWorkerId(workerId);
-			Worker worker = this.workerTable.get(workerId);
-			sessionLogger.info("EVENT%OPEN SESSION% workerId%"+ workerId+"% sessionId%"+ session.getId());
-			worker.setSessionId(session.getId());
-			this.workerTable.put(workerId, worker);
-			this.activeSessionTable.put(session.getId(), session); 
-			return session;
-		}
-		else
+		if(newSessionTable!=null && !newSessionTable.isEmpty()){
+			Stack<WorkerSession> stack = newSessionTable.get(fileName);
+			if(stack!=null && !stack.isEmpty()){
+				session = stack.pop();
+				session.setWorkerId(workerId);
+				Worker worker = this.workerTable.get(workerId);
+				sessionLogger.info("EVENT%OPEN SESSION% workerId%"+ workerId+"% sessionId%"+ session.getId()+"% fileName%"+worker.getCurrentFileName());
+				worker.setSessionId(session.getId());
+				this.workerTable.put(workerId, worker);
+				this.activeSessionTable.put(session.getId(), session); 
+				return session;
+			}else
+				return null;
+		}else
 			return null;
 	}
 
 	public synchronized boolean areThereMicrotasksAvailable(){
-		return !newSessionStack.isEmpty();
+		return !newSessionTable.isEmpty();
 	}
 
 
@@ -110,17 +113,19 @@ public class LiteContainerManager extends StorageStrategy{
 
 			Microtask microtask = session.getPreviousMicrotask();
 			
+			Worker worker = workerTable.get(answer.getWorkerId());
+			
 			String explanation = answer.getExplanation().replaceAll("[\n]"," ").replaceAll("[\r]"," ");
 			
 			sessionLogger.info("EVENT%MICROTASK% workerId%"+ answer.getWorkerId()+"% sessionId%"+ sessionId+
 					"% microtaskId%"+microtaskId+"% fileName%"+microtask.getFileName()+
 					"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()+
 					"% confidenceLevel%"+answer.getConfidenceOption()+
-					"% duration%"+answer.getElapsedTime()+"% explanation%"+explanation);
-
+					"% duration%"+answer.getElapsedTime()+"% explanation%"+explanation+"% fileName%"+worker.getCurrentFileName());
+			
 			if(session.isClosed()){//Move session to closed //EVENT
 				this.closedSessionVector.add(session);
-				sessionLogger.info("EVENT%CLOSE SESSION% workerId%"+ session.getWorkerId()+"% sessionId%"+ session.getId());
+				sessionLogger.info("EVENT%CLOSE SESSION% workerId%"+ session.getWorkerId()+"% sessionId%"+ session.getId()+"% fileName%"+worker.getCurrentFileName());
 				this.activeSessionTable.remove(session.getId());
 			}
 			return true;	
@@ -169,9 +174,9 @@ public class LiteContainerManager extends StorageStrategy{
 		}
 	}
 
-	public synchronized Worker insertConsent(String consentDateStr) {
-		Worker worker = new Worker(new Integer(this.workerTable.size()).toString(),consentDateStr);
-			consentLogger.info("EVENT%CONSENT% workerId%"+worker.getWorkerId()+ "% consentDate%" + worker.getConsentDate().toString());	
+	public synchronized Worker insertConsent(String consentDateStr, String fileName) {
+		Worker worker = new Worker(new Integer(this.workerTable.size()).toString(),consentDateStr, fileName);
+			consentLogger.info("EVENT%CONSENT% workerId%"+worker.getWorkerId()+ "% consentDate%" + worker.getConsentDate().toString()+"% fileName%"+worker.getCurrentFileName());	
 			this.workerTable.put(worker.getWorkerId(), worker);
 			return worker;
 	}
@@ -179,7 +184,7 @@ public class LiteContainerManager extends StorageStrategy{
 	public synchronized boolean insertSurvey(Worker worker) {
 		if(worker!=null){
 			consentLogger.info("EVENT%SURVEY% workerId%"+worker.getWorkerId()+ "% sessionId%"+worker.getSessionId()+
-					"% "+worker.getSurveyAnswersToString());
+					"% "+worker.getSurveyAnswersToString()+"% fileName%"+worker.getCurrentFileName());
 			return true;
 		}
 		else{

@@ -31,28 +31,97 @@
   <script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
   <script	src="jquery/quitDialog.js"></script>
 	<script>
+
+	function checkQuitAnswer() {
+
+		var radios = document.getElementsByName("reason");
+		
+		var option = -1;
+		
+		var i = 0;
+
+		for (i = 0; i < radios.length; i++) {
+			if (radios[i].checked) {
+				option = i;
+				break;
+			}
+		}
+		
+		if (option == -1) {
+			alert("Please select an answer.");
+			return -1;
+		}
+	}
+
+	var quitFormAlreadyPosted = false;
+    
+	
+		function submitQuitAnswer() {
+			//first thing is to check whether the form was already submitted
+			if (quitFormAlreadyPosted) {
+				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
+			} else {
+				//ok, form was not submitted yet
+				var checked = checkQuitAnswer();
+				if (checked != -1) {
+					//$("#quit").on( "dialogclose", function() { 
+					var form = document.forms["reasonForm"];
+					form.action = "quit";
+					form.submit();
+					$("#quit").dialog("close");
+					var workerId = document.getElementById("workerId").value;
+					quitFormAlreadyPosted = true;
+				} else {
+					//nothing to do.
+				}
+			}
+		}
+		
+		function showQuitDialog() {
+			//load dialog - popup
+			$("#quit").dialog({
+				autoOpen : false,
+				modal : true,
+				bgiframe : true,
+				width : 485,
+				resizable : false,
+				closeOnEscape : false,
+				title : "Why did you decide to quit ?"
+			});
+			$("#quit").dialog('open');
+		}
+
 			
 		var formAlreadyPosted = false;
 
+	
+	
+	
 		function proceed() {
+
+			var loc = window.location.toString();
+			var consented = document.getElementById('consentBox').checked;
 
 			//first thing is to check whether the form was already submitted
 			if (formAlreadyPosted) {
 				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
+			} else if (loc.split('?').length < 2) {
+				alert("The URL used is not valid. The file name is missing. Please obtain a valid URL.");
+			} else if (consented) {//ok, form was not submitted yet	
+				formAlreadyPosted = true;
+				var subAction = document.getElementById("subAction");
+				subAction.value = "loadQuestions";
+
+				var consentForm = document.forms["consentForm"];
+				consentForm.action = "ConsentServlet";
+
+				var fileNameInput = document.getElementById("fileName");
+				fileNameInput.value = loc.split('?')[1];
+
+				consentForm.submit();
 			} else {
-				//ok, form was not submitted yet
-				var consented = document.getElementById('consentBox').checked;
-				if (consented) {
-					formAlreadyPosted = true;
-					var subAction = document.getElementById("subAction");
-					subAction.value = "loadQuestions";
-					var consentForm = document.forms["consentForm"];
-					consentForm.action = "ConsentServlet";
-					consentForm.submit();
-				} else {
-					formAlreadyPosted = false;
-					alert("You have to agree with the terms before proceeding");
-				}
+				formAlreadyPosted = false;
+				alert("You have to agree with the terms before proceeding");
 			}
 		}
 
@@ -149,6 +218,7 @@
 			<form name="consentForm" action="ConsentServlet" method="get">
 				<input type="hidden" id="subAction" name="subAction" value="loadConsentForm"> 
 				<input type="hidden" id="workerId" name="workerId" value="consentForm">	
+				<input type="hidden" id="fileName" name="fileName">	
 					<input type="checkbox" name="consentBox" id="consentBox"><i>By checking this box I hereby state
 					that I have read, understood and agreed with the terms above.</i> <br>
 					

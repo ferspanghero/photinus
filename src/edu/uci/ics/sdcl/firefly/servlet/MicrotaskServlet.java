@@ -28,7 +28,7 @@ public class MicrotaskServlet extends HttpServlet {
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
 	private StorageStrategy storage ;
-	private String workerId;
+	private Worker worker;
 
 	private MicrotaskContextFactory workerSessionSelector;
 
@@ -51,15 +51,16 @@ public class MicrotaskServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//System.out.println("In MicrotaskServlet ");
-		this.workerId = request.getParameter("workerId");
-
+		String workerId = request.getParameter("workerId");
+	
 		//Restore data for next Request
-		request.setAttribute("workerId",this.workerId);
+		request.setAttribute("workerId",workerId);
 
 		//String subAction = request.getParameter("subAction");
 
 		storage = StorageStrategy.initializeSingleton();
 		String sessionId = storage.getSessionIdForWorker(workerId);
+		this.worker = storage.readExistingWorker(workerId);
 		//System.out.println("In MicrotaskServlet: "+sessionId);
 		if(sessionId == null)
 			loadFirstMicrotask(request, response);
@@ -70,7 +71,7 @@ public class MicrotaskServlet extends HttpServlet {
 
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		WorkerSession  session = storage.readNewSession(this.workerId);
+		WorkerSession  session = storage.readNewSession(this.worker.getWorkerId(),this.worker.getCurrentFileName());
 
 		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
@@ -91,8 +92,8 @@ public class MicrotaskServlet extends HttpServlet {
 		int answer = new Integer(request.getParameter("answer")).intValue();
 		int confidenceAnswer = new Integer(request.getParameter("confidence")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
-		Worker subject = storage.readExistingWorker(this.workerId);
-		String sessionId = storage.getSessionIdForWorker(this.workerId); //request.getParameter("sessionId");
+		Worker subject =this.worker;
+		String sessionId = storage.getSessionIdForWorker(this.worker.getWorkerId()); //request.getParameter("sessionId");
 		String explanation = request.getParameter("explanation");
 		String timeStamp = request.getParameter("timeStamp");
 		String elapsedTime = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
@@ -101,7 +102,7 @@ public class MicrotaskServlet extends HttpServlet {
 		//Save answers from the previous microtask
 		
 		boolean success = storage.updateMicrotaskAnswer(sessionId, new Integer(microtaskId),
-				new Answer(Answer.mapOptionToString(answer), Answer.mapConfidenceToString(confidenceAnswer),explanation, this.workerId, elapsedTime, timeStamp));
+				new Answer(Answer.mapOptionToString(answer), Answer.mapConfidenceToString(confidenceAnswer),explanation, this.worker.getWorkerId(), elapsedTime, timeStamp));
 
 		if(!success){
 			this.showErrorPage(request, response, "Your answer could not be stored. In case you have used the back button, "
@@ -130,7 +131,7 @@ public class MicrotaskServlet extends HttpServlet {
 
 	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("error", message);
-		request.setAttribute("executionId", this.workerId);
+		request.setAttribute("executionId", this.worker.getWorkerId());
 		request.getRequestDispatcher(ErrorPage).include(request, response);
 	}
 
