@@ -32,6 +32,7 @@ public class ConsentServlet extends HttpServlet {
 
 	private String SkillTestPage = "/SkillTest.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
+	
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -46,7 +47,8 @@ public class ConsentServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String subAction = request.getParameter("subAction");
-
+		String fileName = request.getParameter("fileName");
+		System.out.println("in ConsentServlet, fileName requested: "+fileName);
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
 		
 		if(subAction.compareTo("loadQuestions")==0){
@@ -55,7 +57,7 @@ public class ConsentServlet extends HttpServlet {
 			}
 			else{
 				String consentDateStr= TimeStampUtil.getTimeStampMillisec();
-				Worker worker = storage.insertConsent(consentDateStr);
+				Worker worker = storage.insertConsent(consentDateStr,fileName);
 				// now passing parameters to the next page
 				request.setAttribute("workerId", worker.getWorkerId().toString());
 				request.setAttribute("subAction", "gradeAnswers");
