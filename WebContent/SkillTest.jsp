@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="jquery/jquery-ui-1.10.4.custom.min.css">
   <script src="jquery/jquery-1.10.2.js"></script>
   <script src="jquery/jquery-ui-1.10.4.custom.min.js"></script>
+  <script	src="jquery/quitDialog.js"></script>
   <script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
 
 <style type="text/css" media="screen">
@@ -43,66 +44,7 @@
 
 <body>
 	<script>
-	function showQuitDialog() {
-		//load dialog - popup
-		$("#quit").dialog({
-			autoOpen : false,
-			modal : true,
-			bgiframe : true,
-			width : 485,
-			resizable : false,
-			closeOnEscape : false,
-			title : "Why did you decide to quit ?"
-		});
-		$("#quit").dialog('open');
-	}
-	function checkQuitAnswer() {
-
-		var radios = document.getElementsByName("reason");
-		
-		var option = -1;
-		
-		var i = 0;
-
-		for (i = 0; i < radios.length; i++) {
-			if (radios[i].checked) {
-				option = i;
-				break;
-			}
-		}
-		
-		if (option == -1) {
-			alert("Please select an answer.");
-			return -1;
-		}
-	}
-
-	var quitFormAlreadyPosted = false;
-
-
-		function submitQuitAnswer() {
-			//first thing is to check whether the form was already submitted
-			if (quitFormAlreadyPosted) {
-				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
-			} else {
-				//ok, form was not submitted yet
-				var checked = checkQuitAnswer();
-				if (checked != -1) {
-					//$("#quit").on( "dialogclose", function() { 
-					var form = document.forms["reasonForm"];
-					form.action = "quit";
-					form.submit();
-					$("#quit").dialog("close");
-					var workerId = document.getElementById("workerId").value;
-					quitFormAlreadyPosted = true;
-				} else {
-					//nothing to do.
-				}
-			}
-		}
-
-	
-		function isEmpty(value) {
+	function isEmpty(value) {
 			return (value.length === 0 || !value.trim());
 		}
 
