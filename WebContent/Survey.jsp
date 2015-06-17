@@ -137,8 +137,9 @@
 	<div id="container">
 		<br>
 		<div id="content">
-			<b>Congratulations, you passed the test!<br>
-			 Before continuing to the actual tasks, please let us know a little bit more about you.</b>
+			<b>Your final task is to answer the following survey. After that
+				the HIT will be considered completed.</b>
+
 
 			<form name="surveyForm" method="get" action="survey">
  

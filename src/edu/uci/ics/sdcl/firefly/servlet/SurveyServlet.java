@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
-import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
  * Servlet implementation class SurveyServlet
@@ -23,13 +22,9 @@ public class SurveyServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
-
-		String workerId = request.getParameter("workerId");
-		Worker subject = storage.readExistingWorker(workerId);
-		
-		if (subject!=null){
-			WorkerSession  session = storage.readNewSession(workerId,subject.getCurrentFileName());
-			subject = storage.readExistingWorker(workerId);//Ugly, but needed now so the worker comes with the actual session ID.
+		Worker subject = storage.readExistingWorker(request.getParameter("workerId"));
+		if (null != subject){
+			WorkerSession  session = storage.readNewSession(subject.getWorkerId(), subject.getCurrentFileName());
 			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
 			subject.addSurveyAnswer(question[1], request.getParameter("age"));
 			subject.addSurveyAnswer(question[2], request.getParameter("country"));
@@ -39,9 +34,8 @@ public class SurveyServlet extends HttpServlet {
 			
 			//Store result
 			storage.insertSurvey(subject);
-			request.setAttribute("workerId",subject.getWorkerId());
-			request.setAttribute("sessionId",subject.getSessionId());
-			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
+			//Displays the Thanks message		
+			request.setAttribute("key", subject.getSessionId());
 			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
 			request.getRequestDispatcher("/QuestionMicrotask.jsp").forward(request, response);
 			//request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
