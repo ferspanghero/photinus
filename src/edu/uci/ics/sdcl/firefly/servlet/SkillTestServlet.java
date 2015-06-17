@@ -54,8 +54,8 @@ public class SkillTestServlet extends HttpServlet {
 		request.setAttribute("timeStamp",TimeStampUtil.getTimeStampMillisec() );
 		//First check if the worker hasn't already taken the test
 		this.storage =   StorageStrategy.initializeSingleton();;
-		Worker worker = storage.readExistingWorker(workerId);
-		if(worker==null){
+		this.worker = storage.readExistingWorker(workerId);
+		if(this.worker==null){
 			showErrorPage(request,response, "Execution ID does not exist in database.");
 		}
 		else if(worker.hasTakenTest()){
@@ -63,7 +63,7 @@ public class SkillTestServlet extends HttpServlet {
 			request.getRequestDispatcher(SorryPage).include(request, response);
 		}
 		else{
-			int grade = this.processAnswers(request,worker);
+			int grade = this.processAnswers(request);
 			if (grade>=2){
 				loadFirstMicrotask(request,response);
 			}
@@ -81,7 +81,7 @@ public class SkillTestServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
 
 
-	private int processAnswers(HttpServletRequest request, Worker worker){
+	private int processAnswers(HttpServletRequest request){
 		//Initialize rubric map
 		rubricMap.put(QUESTION1,"c");
 		rubricMap.put(QUESTION2,"a");
@@ -89,7 +89,7 @@ public class SkillTestServlet extends HttpServlet {
 		rubricMap.put(QUESTION4,"b");
 
 		//Retrieve time taken to answer
-		String timeStamp = worker.getConsentDate();
+		String timeStamp = this.worker.getConsentDate();
 		String duration = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
 
 		//Retrieve answers
@@ -108,7 +108,7 @@ public class SkillTestServlet extends HttpServlet {
 
 		worker.setSkillAnswers(rubricMap,gradeMap,answerMap,grade, duration);
 
-		storage.insertSkillTest(worker);
+		storage.insertSkillTest(this.worker);
 
 		return grade;
 	}
@@ -153,6 +153,7 @@ public class SkillTestServlet extends HttpServlet {
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
 			showErrorPage(request, response,"@ SkillTestServlet - no microtask available");
 		else{
+			
 			//Restore data for next Request
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 

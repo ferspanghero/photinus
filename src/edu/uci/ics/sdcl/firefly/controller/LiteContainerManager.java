@@ -85,7 +85,9 @@ public class LiteContainerManager extends StorageStrategy{
 				session = stack.pop();
 				session.setWorkerId(workerId);
 				Worker worker = this.workerTable.get(workerId);
-				sessionLogger.info("EVENT%OPEN SESSION% workerId%"+ workerId+"% sessionId%"+ session.getId()+"% fileName%"+worker.getCurrentFileName());
+				sessionLogger.info("EVENT%OPEN SESSION% workerId%"+ workerId
+						+"% sessionId%"+ session.getId()
+						+"% fileName%"+fileName);
 				worker.setSessionId(session.getId());
 				this.workerTable.put(workerId, worker);
 				this.activeSessionTable.put(session.getId(), session); 
@@ -148,7 +150,9 @@ public class LiteContainerManager extends StorageStrategy{
 					+"% test3%"+worker.getGradeMap().get(SkillTestServlet.QUESTION3)
 					+"% test4%"+worker.getGradeMap().get(SkillTestServlet.QUESTION4)
 					+"% grade%"+worker.getGrade()
-					+"% testDuration%"+worker.getSkillTestDuration());
+					+"% testDuration%"+worker.getSkillTestDuration()
+					+ "% fileName%"+worker.getCurrentFileName());
+			
 			this.workerTable.put(worker.getWorkerId(), worker);
 			return true;
 		}
@@ -160,8 +164,10 @@ public class LiteContainerManager extends StorageStrategy{
 	
 	public synchronized boolean insertQuitReason(Worker worker, String answer){
 		if(worker != null){
-			consentLogger.info("EVENT%EXITREASON% workerId%"+worker.getWorkerId()
-					+"% sessionID%"+worker.getSessionId()+"% answer%"+answer);
+			consentLogger.info("EVENT%EXIT_REASON% workerId%"+worker.getWorkerId()
+					+"% sessionID%"+worker.getSessionId()
+					+"% answer%"+answer
+					+ "% fileName%"+worker.getCurrentFileName());
 			this.workerTable.put(worker.getWorkerId(), worker);
 			return true;
 		}else{
@@ -176,15 +182,19 @@ public class LiteContainerManager extends StorageStrategy{
 
 	public synchronized Worker insertConsent(String consentDateStr, String fileName) {
 		Worker worker = new Worker(new Integer(this.workerTable.size()).toString(),consentDateStr, fileName);
-			consentLogger.info("EVENT%CONSENT% workerId%"+worker.getWorkerId()+ "% consentDate%" + worker.getConsentDate().toString()+"% fileName%"+worker.getCurrentFileName());	
+			consentLogger.info("EVENT%CONSENT% workerId%"+worker.getWorkerId()
+					+"% consentDate%" + worker.getConsentDate().toString()
+					+"% fileName%"+worker.getCurrentFileName());	
 			this.workerTable.put(worker.getWorkerId(), worker);
 			return worker;
 	}
 
 	public synchronized boolean insertSurvey(Worker worker) {
 		if(worker!=null){
-			consentLogger.info("EVENT%SURVEY% workerId%"+worker.getWorkerId()+ "% sessionId%"+worker.getSessionId()+
-					"% "+worker.getSurveyAnswersToString()+"% fileName%"+worker.getCurrentFileName());
+			consentLogger.info("EVENT%SURVEY% workerId%"+worker.getWorkerId()
+					+ "% sessionId%"+worker.getSessionId()
+					+ "% "+worker.getSurveyAnswersToString()
+					+ "% fileName%"+worker.getCurrentFileName());
 			return true;
 		}
 		else{
