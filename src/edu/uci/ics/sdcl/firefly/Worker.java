@@ -143,6 +143,14 @@ public class Worker implements Serializable{
 		else 
 			return true;
 	}
+	
+	public boolean hasPassedTest()
+	{
+		boolean status = false;
+		if (grade>=2)
+			status =true;
+		return status;
+	}
 
 
 }

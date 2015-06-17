@@ -54,8 +54,10 @@ public class ConsentServlet extends HttpServlet {
 					worker = storage.readExistingWorker(workerCookie.getValue());
 					if(worker == null)
 						newWorker(request, response, worker, fileName);
-					else
+					else if(worker.hasPassedTest())
 						loadFirstMicrotask(request, response, worker);
+					else
+						existingWorker(request, response, worker);
 				}
 				else
 					newWorker(request, response, worker, fileName);
@@ -121,6 +123,16 @@ public class ConsentServlet extends HttpServlet {
 	{
 		String consentDateStr= TimeStampUtil.getTimeStampMillisec();
 		worker = storage.insertConsent(consentDateStr,fileName);
+		skillQualificationExam(request, response, worker);
+	}
+	
+	private void existingWorker(HttpServletRequest request, HttpServletResponse response, Worker worker) throws ServletException, IOException
+	{
+		skillQualificationExam(request, response, worker);
+	}
+	
+	private void skillQualificationExam(HttpServletRequest request, HttpServletResponse response, Worker worker) throws ServletException, IOException
+	{
 		// now passing parameters to the next page
 		request.setAttribute("workerId", worker.getWorkerId().toString());
 		request.setAttribute("subAction", "gradeAnswers");
@@ -128,5 +140,4 @@ public class ConsentServlet extends HttpServlet {
 		request = this.loadQuestions(request, response);
 		request.getRequestDispatcher(SkillTestPage).forward(request, response);
 	}
-
 }
