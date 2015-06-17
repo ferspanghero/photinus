@@ -59,8 +59,9 @@ public class MicrotaskServlet extends HttpServlet {
 		//String subAction = request.getParameter("subAction");
 
 		storage = StorageStrategy.initializeSingleton();
-		String sessionId = storage.getSessionIdForWorker(workerId);
 		this.worker = storage.readExistingWorker(workerId);
+		String sessionId = this.worker.getSessionId();
+		request.setAttribute("sessionId", sessionId);
 		//System.out.println("In MicrotaskServlet: "+sessionId);
 		if(sessionId == null)
 			loadFirstMicrotask(request, response);
@@ -92,8 +93,6 @@ public class MicrotaskServlet extends HttpServlet {
 		int answer = new Integer(request.getParameter("answer")).intValue();
 		int confidenceAnswer = new Integer(request.getParameter("confidence")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
-		Worker subject =this.worker;
-		String sessionId = storage.getSessionIdForWorker(this.worker.getWorkerId()); //request.getParameter("sessionId");
 		String explanation = request.getParameter("explanation");
 		String timeStamp = request.getParameter("timeStamp");
 		String elapsedTime = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
@@ -101,7 +100,7 @@ public class MicrotaskServlet extends HttpServlet {
 
 		//Save answers from the previous microtask
 		
-		boolean success = storage.updateMicrotaskAnswer(sessionId, new Integer(microtaskId),
+		boolean success = storage.updateMicrotaskAnswer(this.worker.getSessionId(), new Integer(microtaskId),
 				new Answer(Answer.mapOptionToString(answer), Answer.mapConfidenceToString(confidenceAnswer),explanation, this.worker.getWorkerId(), elapsedTime, timeStamp));
 
 		if(!success){
@@ -113,12 +112,12 @@ public class MicrotaskServlet extends HttpServlet {
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 
 			//Continue working on existing session
-			Microtask microtask = storage.getNextMicrotask(sessionId);	
+			Microtask microtask = storage.getNextMicrotask(this.worker.getSessionId());	
 
 			//Decide where to send to send the worker
 			if(microtask==null){
 				//No more microtasks, move to the Survey page
-				request.setAttribute("key", subject.getSessionId());
+				request.setAttribute("key", this.worker.getSessionId());
 				request.getRequestDispatcher(ThanksPage).include(request, response);
 			}
 			else{
