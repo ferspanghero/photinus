@@ -25,7 +25,7 @@ public class QuitServlet extends HttpServlet {
 	private String workerId;
 	private String answer;
 	
-	public static final String HARD="THE TASK IS TOO HARD";
+	public static final String DIFFICULT="THE TASK IS TOO DIFFICULT";
 	public static final String BORING="THE TASK IS TOO BORING";
 	public static final String LONG="THE TASK IS TOO LONG";
 	public static final String OTHER="OTHER";
@@ -81,8 +81,8 @@ public class QuitServlet extends HttpServlet {
 	}
 	
 	protected String mapAnswerValue(String answer){
-		if(answer == "hard"){
-			return HARD;
+		if(answer == "difficult"){
+			return DIFFICULT;
 		}else if(answer=="boring"){
 			return BORING;
 		}else if(answer=="long"){

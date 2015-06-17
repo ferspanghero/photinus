@@ -85,9 +85,16 @@
   <script src="jquery/jquery-ui-1.10.4.custom.min.js"></script>
   <script src="jquery/quitDialog.js"></script>
   <script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
-<body>
+  
+<body onload="splitReplaceTestDescription();">
   
 	<script type="text/javascript">
+
+  function onloadTest(){
+		var description = "mymethod();hermethod();car();"
+	alert("description:"+description);
+  }			
+  
 	function checkAnswer() {
 
 			var radios = document.getElementsByName("answer");
@@ -174,6 +181,27 @@
 				}
 			}
 		}
+		
+		
+		
+		function splitReplaceTestDescription(){
+			var description = ${requestScope["testCase"]};
+			alert("description:"+description);
+			var arr = description.split(';');
+			var htmlContent = '';
+			if(arr.length>1){
+				for(var i=0; i<arr.length-1; i++) {
+					var value = arr[i];
+					htmlContent = htmlContent + '<pre><code>'+ value + ';<pre><code><br>';	
+				}
+			}
+			else{
+				htmlContent=arr[0];
+			}
+			alert("htmlContent:"+ htmlContent);
+			document.getElementById('testFailure').innerHTML=htmlContent;
+		}
+		
 	</script>
 
 	<!-- Hidden fields -->
@@ -201,8 +229,8 @@
 	<div style="display: none;" id="quit">
 		<div id="internalText">
 			<form name="reasonForm" method="get" onsubmit="submitQuitAnswer()">
-				<input type="radio" name="reason" value="hard" />The task is too
-				hard &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
+				<input type="radio" name="reason" value="difficult" />The task is too
+				difficult &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
 					type="radio" name="reason" value="boring" />The task is too boring
 				&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
 					type="radio" name="reason" value="long" />The task is too long
@@ -232,10 +260,13 @@
 	<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
 	<div id="failurePrompt">
 		<div id="internalText">
+		
 			Thanks for using <b>Crowd Debug!</b> and for helping us debug
 			software from all over the world. 
 			<br><b> We are executing the following test:</b>
-				<pre><code>${requestScope["testCase"]}</code></pre>			
+			<div id="testFailure"> </div>
+
+			
 			<br><b> But we are receiving the following failure:</b>
 			   <pre><code>${requestScope["bugReport"]}</code></pre>
 		</div>

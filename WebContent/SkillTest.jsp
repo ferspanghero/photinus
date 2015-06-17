@@ -116,8 +116,8 @@
 <div style="display: none;" id="quit">
 		<div id="internalText">
 			<form name="reasonForm" method="get" onsubmit="submitQuitAnswer()">
-				<input type="radio" name="reason" value="hard" />The task is too
-				hard &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
+				<input type="radio" name="reason" value="difficult" />The task is too
+				difficult &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
 					type="radio" name="reason" value="boring" />The task is too boring
 				&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
 					type="radio" name="reason" value="long" />The task is too long
