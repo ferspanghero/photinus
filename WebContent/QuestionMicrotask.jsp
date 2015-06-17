@@ -40,7 +40,7 @@
 	max-width: 800px;
 	background-color: #B4CDCD;
 	margin: 0 auto;
-	text-align: justify;
+	text-align: none
 	text-justify: distribute-all-lines;
 }
 
@@ -76,6 +76,21 @@
   visibility: hidden;
 }
 
+table{ table-layout:fixed; word-break: break-all; }
+table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
+
+ul{ list-style-type: none;}
+
+.sectionTitle {
+	padding-right: 8px;
+	padding-left: 8px;
+}
+
+.sectionContent{
+	padding-right: 40px;
+	padding-left: 40px;
+}
+
 </style>
 
 </head>
@@ -86,14 +101,9 @@
   <script src="jquery/quitDialog.js"></script>
   <script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
   
-<body onload="splitReplaceTestDescription();">
+<body onload="splitReplaceTestDescription()">
   
 	<script type="text/javascript">
-
-  function onloadTest(){
-		var description = "mymethod();hermethod();car();"
-	alert("description:"+description);
-  }			
   
 	function checkAnswer() {
 
@@ -185,7 +195,7 @@
 		
 		
 		function splitReplaceTestDescription(){
-			var description = ${requestScope["testCase"]};
+		var description = ${requestScope["testCase"]}
 			alert("description:"+description);
 			var arr = description.split(';');
 			var htmlContent = '';
@@ -259,52 +269,76 @@
 
 	<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
 	<div id="failurePrompt">
-		<div id="internalText">
 		
-			Thanks for using <b>Crowd Debug!</b> and for helping us debug
-			software from all over the world. 
-			<br><b> We are executing the following test:</b>
-			<div id="testFailure"> </div>
-
-			
-			<br><b> But we are receiving the following failure:</b>
-			   <pre><code>${requestScope["bugReport"]}</code></pre>
-		</div>
+		
+			<span class="sectionTitle">Thanks for using <b>Crowd Debug!</b> and for helping us debug
+			software from all over the world.</span><br>
+			<div id="internalText">
+			<table class="fixed" CELLPADDING="4px" >
+				<col width="210px">
+				<tr>
+					<td><b>We ran the following <u>test</u>:</b></td>
+					<td><code> ${requestScope["testCase"]}</code>	<div id="testFailure"> </div></td>
+				</tr>
+				<tr>
+					<td><b> But we received this <u>failure:</u></b></td>
+					<td><code>${requestScope["bugReport"]}</code></td>
+				</tr>
+			</table>
+	
 	</div>
 
 
+	
 	<div id="questionPrompt">
-		<div id="internalText">
-			<b><br> ${requestScope["question"]}</b>
-		</div>
-	</div>
-
-
-	<div id="thumbs">
-		<div id="internalText">
+	<br>
+			<span class="sectionTitle"><b>${requestScope["question"]}</b></span>
 			<form name="answerForm" method="get">
+	
+	<span class="sectionContent">
+	
+			<table cellspacing='0' cellpadding='0' style="padding-left:50px;">	
+				<col width="225px" />
+				<col width="200px" />
+				<col width="225px" />
+			<tr>
+			<td><label><input type="radio" name="answer" value="1" />Yes, there is an issue </label></td>
+			<td><label><input type="radio" name="answer" value="2" />I don't know</label></td>
+			<td><label><input type="radio" name="answer" value="3" />No, there is not an issue</label></td>
+			<td>
+			<tr>
+			</table>
+			
+		<br>
+	
+			<table cellspacing='0' cellpadding='0' style="padding-left:50px;">
+   				<col width="300px" />
+    			<col width="70px" />
+    			<col width="70px" />
+    			<col width="70px" />
+    			<col width="70px" />
+    			<col width="70px" />
+    			<tr>
+						<td><b>How confident are you with your answer?</b></td>
+						<td align="center">Very</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td align="center">Not</td>
+				</tr>
+				<tr>
+					<td></td>
 
-				<center>
-					<br> <a>
-					<input type="radio" name="answer" value="1" />Yes, there is an issue</a> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
-					<input type="radio" name="answer" value="2" />I don't know</a> &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <a>
-					<input type="radio" name="answer" value="3" />No, there is not an issue</a> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <a>
-				</center>
-				<br>
-				<label>
-					<b>How confident are you with your answer?</b>
-				</label>
-				<br>
-				<center>
-					<br>
-					<input type="radio" name="confidence" value="1" />Very confident &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
-					<input type="radio" name="confidence" value="2" />Confident &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
-					<input type="radio" name="confidence" value="3" />Somewhat confident &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
-					<input type="radio" name="confidence" value="2" />Unsure &nbsp;	&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
-					<input type="radio" name="confidence" value="3" />Not at all &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
-				</center>
-
-
+					<td align="center"><label><input type="radio" name="confidence"value="5" />5</label></td>
+					<td align="center"><label><input type="radio" name="confidence" value="4" />4</label></td>
+					<td align="center"><label><input type="radio" name="confidence" value="3" />3</label></td>
+					<td align="center"><label><input type="radio" name="confidence" value="2" />2</label></td>
+					<td align="center"><label><input type="radio"	name="confidence" value="1" />1</label></td>
+							
+				</tr>
+			</table>
+			
+			
 				<!-- Hidden fields -->
 				<input type="hidden"
 					name="workerId" id="workerId" value=${requestScope["workerId"]}> 
@@ -313,22 +347,36 @@
 					name="timeStamp" value=${requestScope["timeStamp"]}>
 					<input type="hidden"
 					name="sessionId" value=${requestScope["sesionId"]}> 
-				<center>
-					<br>Please provide an explanation for your answer: <br>
-					<textarea name="explanation" id="explanation" rows="3" cols="82"></textarea>
-				</center>
-				<center>				<br>
-				<INPUT TYPE="button" name="answerButton" id="answerButton" VALUE="Submit"
-					onclick="submitAnswer(event)">
-					<input type="button"  value="Quit" onclick='showQuitDialog()'>
-				</center>
-										
-				<br><br>
-			</form>
+				
 			
-		</div>
-	</div>
+			<table cellspacing='0' cellpadding='0' style="padding-left:50px;">
+				<col width="650px" />
+			<tr>
+				<td align="left"><b>Please provide an explanation:</b></td>
+			</tr>
+			<tr>
+				<td align="center"><textarea name="explanation" id="explanation" rows="3" cols="78"></textarea></td>
+			</tr>
+			</table>
+	<br>
+			<table cellspacing='0' cellpadding='0' style="padding-left:50px;">
+				<col width="325px" />
+				<col width="325px" />
+				<tr>
+					<td align="left"><input type="button"  value="Quit" onclick='showQuitDialog()'></td>
+					<td align="right"><input TYPE="button" name="answerButton" id="answerButton" VALUE="Submit" onclick="submitAnswer(event)"></td>
+				</tr>
+			</table>				
+			<br>
+			</form>	
 
+</span>
+
+
+	</div>
+	
+	
+   
 	<div id="questionCode">
 		<div id="internalText">
 
