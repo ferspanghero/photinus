@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
 import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
@@ -38,9 +39,10 @@ public class ServerLoadTest implements Runnable{
 	private static int threadId=-1;
 	private int defaultId;
 	private int myThread;
-	private static String localPath = "http://localhost:8080/firefly/";
+	private static String localPath = "http://localhost:8080/Photinus/";
 	private static String serverPath = "http://dellserver.ics.uci.edu:8080/crowd-debug/";
 	private static String path;
+	private static String filename = "variableTest.java";
 
 	private HtmlPage nextPage;
 
@@ -51,8 +53,8 @@ public class ServerLoadTest implements Runnable{
 
 	public ServerLoadTest(int myThread){
 		loggerInfo = LoggerFactory.getLogger("info");
-		loggerInfo = LoggerFactory.getLogger("consent");
-		loggerInfo = LoggerFactory.getLogger("session");
+		loggerConsent = LoggerFactory.getLogger("consent");
+		loggerSession = LoggerFactory.getLogger("session");
 		this.myThread = myThread;
 		this.defaultId = this.myThread+50; //in case there is no workerID returned
 		this.webClient = new WebClient();
@@ -67,8 +69,8 @@ public class ServerLoadTest implements Runnable{
 
 	public static void main(String args[]){
 		try{
-			path = serverPath;
-			int maxThreads =250;
+			path = localPath;
+			int maxThreads =0;
 			while(threadId<maxThreads){
 				threadId++;
 				//	System.out.println("Thread ="+threadId);
@@ -84,15 +86,20 @@ public class ServerLoadTest implements Runnable{
 	public void run(){
 
 		try{
+			CookieManager manager = new CookieManager();
+			manager.clearCookies();
 			if(runConsent())
 				if(runSkillTest()){
-					boolean success=true;
-					int i=0;
-					while(success && i<10){
-						success = runMicrotask();
-						i++;
+					if(runSurvey())
+					{
+						boolean success=true;
+						int i=0;
+						while(success && i<10){
+							success = runMicrotask();
+							i++;
+						}
+						loggerSession.info("Thread ="+this.myThread+"; answered="+new Integer(i).toString()+" times.");
 					}
-					loggerSession.info("Thread ="+this.myThread+"; answered="+new Integer(i).toString()+" times.");
 				}
 
 			/*runConsent();
@@ -110,7 +117,7 @@ public class ServerLoadTest implements Runnable{
 
 	//@Test
 	public boolean runConsent()throws Exception {
-		final HtmlPage page = this.webClient.getPage(path+"ConsentForm.jsp");
+		final HtmlPage page = this.webClient.getPage(path+"ConsentForm.jsp"+"?"+filename);
 
 		final HtmlForm form = page.getFormByName("consentForm");
 		final HtmlButtonInput button = form.getInputByName("yesButton");
@@ -192,12 +199,11 @@ public class ServerLoadTest implements Runnable{
 				loggerConsent.info("Test=SUCCESS; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText());
 				return true;
 			}
-
-
 	}
 
 	@Test
 	public boolean runMicrotask() throws Exception {
+		System.out.println(nextPage.getTitleText());
 		//final HtmlPage page = this.webClient.getPage(path+"QuestionMicrotask.jsp");
 		final HtmlForm answerForm = nextPage.getFormByName("answerForm");
 
@@ -209,12 +215,12 @@ public class ServerLoadTest implements Runnable{
 
 		final HtmlInput radio = answerForm.getInputByName("answer");
 		radio.click();
-		radio.setValueAttribute("5"); //Means a "No"
+		radio.setValueAttribute("5"); //Means a "Not at all"
 
-		final HtmlSubmitInput button = answerForm.getInputByName("submit");
+		final HtmlSubmitInput button = answerForm.getInputByName("answerButton");
 		//System.out.println("Microtask clicked, workerId= "+ this.workerId);
 		this.nextPage= button.click();
-
+		System.out.println(nextPage.getTitleText());
 
 		if(nextPage.getTitleText().matches("Error Page")){
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
@@ -258,10 +264,6 @@ public class ServerLoadTest implements Runnable{
 		final HtmlInput country = surveyForm.getInputByName("country");
 		country.setValueAttribute("1");
 
-		final HtmlInput radiodifficulty = surveyForm.getInputByName("difficulty");
-		radiodifficulty.click();
-		radiodifficulty.setValueAttribute("7");
-
 		final HtmlInput experience = surveyForm.getInputByName("experience");
 		experience.setValueAttribute("5");
 
@@ -283,9 +285,9 @@ public class ServerLoadTest implements Runnable{
 				return false;
 			}
 			else{
-				final HtmlForm thanksForm = nextPage.getFormByName("thanksForm");
-				final HtmlInput sessionId = thanksForm.getInputByName("sessionId");
-				loggerConsent.info("Session=CLOSED; workerId= "+ this.workerId+"; sessionId="+sessionId.getValueAttribute());
+				final HtmlForm reasonForm = nextPage.getFormByName("reasonForm");
+				final HtmlInput sessionId = reasonForm.getInputByName("sessionId");
+				loggerConsent.info("Session=OPENED; workerId= "+ this.workerId+"; sessionId="+sessionId.getValueAttribute());
 				return true;
 			}
 
