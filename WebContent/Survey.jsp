@@ -137,7 +137,7 @@
 	<div id="container">
 		<br>
 		<div id="content">
-			<b>Congratulations, you passed the test!<br>
+			<b>Congratulations, you passed the test!<br><br>
 			 Before continuing to the actual tasks, please let us know a little bit more about you.</b>
 
 
@@ -169,7 +169,7 @@
 				
 				<input type="button"  value="Quit" onclick='showQuitDialog()'>
 					&nbsp;&nbsp;
-				 <INPUT TYPE="button" VALUE="Submit Answer"
+				 <INPUT TYPE="button" VALUE="Submit answer"
 					onclick="submitAnswer(event)">
 
 			</form>
