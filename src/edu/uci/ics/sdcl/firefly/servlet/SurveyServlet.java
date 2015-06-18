@@ -16,7 +16,7 @@ import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
  * Servlet implementation class SurveyServlet
  */
 public class SurveyServlet extends HttpServlet {
-    public static String question[] = {"Gender", "Age", "Country", "Years progr."};   
+    public static String question[] = {"Gender", "Age", "Country", "Years progr.", "Difficulty"};   
     public SurveyServlet() {
         super();
     }
@@ -27,14 +27,12 @@ public class SurveyServlet extends HttpServlet {
 		Worker subject = storage.readExistingWorker(workerId);
 		if (null != subject){
 			WorkerSession  session = storage.readNewSession(subject.getWorkerId(), subject.getCurrentFileName());
-			subject = storage.readExistingWorker(workerId);//Ugly, but needed now so the worker comes with the actual session ID.			
+			subject = storage.readExistingWorker(workerId);//Ugly, but needed now so the worker comes with the actual session ID.
 			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
 			subject.addSurveyAnswer(question[1], request.getParameter("age"));
 			subject.addSurveyAnswer(question[2], request.getParameter("country"));
 			subject.addSurveyAnswer(question[3], request.getParameter("experience"));
-			//subject.addSurveyAnswer(question[0], request.getParameter("difficulty"));
-			//subject.addSurveyAnswer(question[1], request.getParameter("feedback"));
-			
+
 			//Store result
 			storage.insertSurvey(subject);
 			request.setAttribute("workerId",subject.getWorkerId());

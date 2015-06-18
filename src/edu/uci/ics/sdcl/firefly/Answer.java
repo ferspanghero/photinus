@@ -24,16 +24,18 @@ public class Answer implements Serializable{
 	private String workerId;
 	private String elapsedTime;
 	private String timeStamp;
+	private int difficulty;
 	
 	
 	public Answer(String option, String confidenceOption, String explanation, String workerId, 
-			String elapsedTime, String timeStamp){
+			String elapsedTime, String timeStamp, int difficulty){
 		this.option = option;
 		this.confidenceOption = confidenceOption;
 		this.explanation = explanation;
 		this.workerId = workerId;
 		this.elapsedTime = elapsedTime;
 		this.timeStamp = timeStamp;
+		this.difficulty = difficulty;
 	}
 
 	public String getOption() {
@@ -58,6 +60,10 @@ public class Answer implements Serializable{
 
 	public String getTimeStamp() {
 		return timeStamp;
+	}
+	
+	public int getDifficulty(){
+		return difficulty;
 	}
 
 	public static String mapOptionToString(int number){

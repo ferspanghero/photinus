@@ -24,7 +24,7 @@ public class MicrotaskServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private String SurveyPage = "/Survey.jsp";
-	private String ThanksPage = "/Thanks.jsp";
+	private String FeedbackPage = "/Feedback.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
 	private StorageStrategy storage ;
@@ -95,13 +95,14 @@ public class MicrotaskServlet extends HttpServlet {
 		String microtaskId = request.getParameter("microtaskId");
 		String explanation = request.getParameter("explanation");
 		String timeStamp = request.getParameter("timeStamp");
+		int difficulty = new Integer(request.getParameter("difficulty")).intValue();
 		String elapsedTime = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
 
 
 		//Save answers from the previous microtask
 		
 		boolean success = storage.updateMicrotaskAnswer(this.worker.getSessionId(), new Integer(microtaskId),
-				new Answer(Answer.mapOptionToString(answer), Answer.mapConfidenceToString(confidenceAnswer),explanation, this.worker.getWorkerId(), elapsedTime, timeStamp));
+				new Answer(Answer.mapOptionToString(answer), Answer.mapConfidenceToString(confidenceAnswer),explanation, this.worker.getWorkerId(), elapsedTime, timeStamp, difficulty));
 
 		if(!success){
 			this.showErrorPage(request, response, "Your answer could not be stored. In case you have used the back button, "
@@ -118,7 +119,7 @@ public class MicrotaskServlet extends HttpServlet {
 			if(microtask==null){
 				//No more microtasks, move to the Survey page
 				request.setAttribute("key", this.worker.getSessionId());
-				request.getRequestDispatcher(ThanksPage).include(request, response);
+				request.getRequestDispatcher(FeedbackPage).include(request, response);
 			}
 			else{
 				//Displays a new microtask

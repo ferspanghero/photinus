@@ -16,7 +16,7 @@ span {
 <script type="text/javascript">
 
 
-function checkAnswers() {
+function checkDifficultyAnswers() {
 
 	var difficulty = document.getElementsByName("difficulty");
 	var difficultyOption = -1;
@@ -34,18 +34,18 @@ function checkAnswers() {
 	return 1;
 }
 
-var surveyFormAlreadyPosted = false;
+var difficultyFormAlreadyPosted = false;
 
-function submitSurveyAnswer() {
+function submitDifficulty() {
 	//first thing is to check whether the form was already submitted
-	if (surveyFormAlreadyPosted) {
+	if (difficultyFormAlreadyPosted) {
 		alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
 	} else {
-		var checked = checkAnswers();
+		var checked = checkDifficultyAnswers();
 		if (checked != -1) {
-			surveyFormAlreadyPosted = true;
-			var form = document.forms["surveyForm"];
-			form.action = "survey";
+			difficultyFormAlreadyPosted = true;
+			var form = document.forms["difficultyForm"];
+			var dif = $("input[name=difficulty]:checked").val();
 			form.submit();
 			$("#survey").dialog('close');
 		} else {
@@ -58,34 +58,7 @@ function submitSurveyAnswer() {
 
 <body>
 <!-- Dialog Content -->
-			<form name="surveyForm" method="get" action="survey">
-				<table>
-					<tr>
-						<td><label>Very
-							difficult</label> <label>Not
-							difficult</label></td>
-					</tr>
-					<tr align="center">
-						<td><span><input type="radio" name="difficulty"
-							value="5" />5</span><span><input type="radio" name="difficulty" value="4" />4</span>
-							<span><input type="radio" name="difficulty" value="3" />3</span><span><input
-							type="radio" name="difficulty" value="2" />2</span><span><input type="radio"
-							name="difficulty" value="1" />1</span></td>
-					</tr>
-				</table>
 
-				<!-- Hidden fields -->
-				<input type="hidden" name="sessionId"
-					value=${requestScope["sessionId"]}> <input type="hidden"
-					name="workerId" value=${requestScope["workerId"]}> <input
-					type="hidden" name="hitId" value=${requestScope["hitId"]}>
-
-				<br>
-				<center>
-				 <INPUT TYPE="button" VALUE="Submit answer"
-					onclick="submitSurveyAnswer(event)">
-				</center>
-			</form>
 		<br>
 </body>
 	

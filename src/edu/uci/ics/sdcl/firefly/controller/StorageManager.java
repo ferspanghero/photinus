@@ -126,4 +126,10 @@ public class StorageManager extends StorageStrategy{
 		return false;
 	}
 	
+	@Override
+	public boolean insertFeedback(String feedback){
+		return false;
+		
+	}
+	
 }

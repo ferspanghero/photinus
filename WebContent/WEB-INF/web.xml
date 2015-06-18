@@ -79,4 +79,13 @@
 		<servlet-name>QuitServlet</servlet-name>
 		<url-pattern>/quit</url-pattern>
 	</servlet-mapping>
+		<servlet>
+		<display-name>FeedbackServlet</display-name>
+		<servlet-name>FeedbackServlet</servlet-name>
+		<servlet-class>edu.uci.ics.sdcl.firefly.servlet.FeedbackServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FeedbackServlet</servlet-name>
+		<url-pattern>/feedback</url-pattern>
+	</servlet-mapping>
 </web-app>

@@ -40,7 +40,7 @@
 	max-width: 800px;
 	background-color: #B4CDCD;
 	margin: 0 auto;
-	text-align: none
+	text-align: justify;
 	text-justify: distribute-all-lines;
 }
 
@@ -91,6 +91,10 @@ ul{ list-style-type: none;}
 	padding-left: 40px;
 }
 
+.box {
+	width: 450px;
+}
+
 </style>
 
 </head>
@@ -104,6 +108,49 @@ ul{ list-style-type: none;}
 <body onload="splitReplaceTestDescription()">
   
 	<script type="text/javascript">
+	
+	function checkDifficultyAnswers() {
+
+		var difficulty = document.getElementsByName("difficulty");
+		var difficultyOption = -1;
+		for (i = 0; i < difficulty.length; i++) {
+			if (difficulty[i].checked) {
+				difficultyOption = i;
+				break;
+			}
+		}
+		if (difficultyOption == -1) {
+			alert("Please select a level of difficulty.");
+			return -1;
+		}
+
+		return 1;
+	}
+
+	var difficultyFormAlreadyPosted = false;
+
+	function submitDifficulty() {
+		//first thing is to check whether the form was already submitted
+		if (difficultyFormAlreadyPosted) {
+			alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
+		} else {
+			var checked = checkDifficultyAnswers();
+			if (checked != -1) {
+				difficultyFormAlreadyPosted = true;
+				var form = document.forms["difficultyForm"];
+				var dif = $("input[name=difficulty]:checked").val();
+				form.submit();
+				$("#difficulty").dialog('close');
+			} else {
+				//nothing to do.
+			}
+		}
+	}
+
+  function onloadTest(){
+		var description = "mymethod();hermethod();car();"
+	alert("description:"+description);
+  }			
   
 	function checkAnswer() {
 
@@ -152,15 +199,14 @@ ul{ list-style-type: none;}
 			}
 		}
 
-		var formAlreadyPosted = false;
 		function showDifficultDialog() {
 			//load dialog - popup
-			$("#survey").load("difficultyDialog.jsp").dialog({
+			$("#difficulty").dialog({
 				autoOpen : false,
 				modal : true,
 				bgiframe : true,
-				width : 370,
-				height: 160,
+				width : 'auto',
+				height: 'auto',
 				resizable : false,
 				closeOnEscape : false,
 				title : "How was this task for you?",
@@ -168,9 +214,10 @@ ul{ list-style-type: none;}
 				    $('#survey').css('overflow', 'hidden');
 				}
 			});
-			$("#survey").dialog('open');
+			$("#difficulty").dialog('open');
 		}
-
+		
+		var formAlreadyPosted = false;
 		function submitAnswer() {
 			//first thing is to check whether the form was already submitted
 			if (formAlreadyPosted) {
@@ -183,7 +230,9 @@ ul{ list-style-type: none;}
 					var form = document.forms["answerForm"];
 					form.action = 'microtask';
 					showDifficultDialog();
-					$("#survey").on("dialogclose", function() {
+					$("#difficulty").on("dialogclose", function() {
+						var dif = document.getElementById("hiddenDifficulty");
+						dif.value = $("input[name=difficulty]:checked").val();
 						form.submit();
 					});
 				} else {
@@ -195,20 +244,20 @@ ul{ list-style-type: none;}
 		
 		
 		function splitReplaceTestDescription(){
-		var description = ${requestScope["testCase"]}
-			alert("description:"+description);
+			var description = '${requestScope["testCase"]}'; 
+			//alert("description:"+description);
 			var arr = description.split(';');
 			var htmlContent = '';
 			if(arr.length>1){
 				for(var i=0; i<arr.length-1; i++) {
 					var value = arr[i];
-					htmlContent = htmlContent + '<pre><code>'+ value + ';<pre><code><br>';	
+					htmlContent = htmlContent + '<code>'+ value + ';<code><br>';	
 				}
 			}
 			else{
 				htmlContent=arr[0];
 			}
-			alert("htmlContent:"+ htmlContent);
+			//alert("htmlContent:"+ htmlContent);
 			document.getElementById('testFailure').innerHTML=htmlContent;
 		}
 		
@@ -235,7 +284,37 @@ ul{ list-style-type: none;}
 	<input type="hidden" id="calleeLOCS"
 		value=${requestScope["calleeLOCS"]}>
 		
-	<div style="display: none;" id="survey"></div>
+	<div style="display: none;" id="difficulty">
+			<form name="difficultyForm" method="get">
+			<table cellspacing='0' cellpadding='0'>
+   				<col width="70px" />
+    			<col width="70px" />
+    			<col width="70px" />
+    			<col width="70px" />
+    			<col width="70px" />
+    			<col width="70px" />
+    			<tr>
+						<td width="20%" align="center">Very difficult</td>
+<td></td>
+<td></td>
+<td></td>
+						<td width="20%" align="center">Not difficult</td>
+				</tr>
+				<tr>
+					<td align="center"><label><input type="radio" name="difficulty" value="5" />5</label></td>
+					<td align="center"><label><input type="radio" name="difficulty" value="4" />4</label></td>
+					<td align="center"><label><input type="radio" name="difficulty" value="3" />3</label></td>
+					<td align="center"><label><input type="radio" name="difficulty" value="2" />2</label></td>
+					<td align="center"><label><input type="radio" name="difficulty" value="1" />1</label></td>	
+				</tr>
+			</table>
+				<br>
+				<center>
+				 <INPUT TYPE="button" VALUE="Submit"
+					onclick="submitDifficulty()">
+				</center>
+			</form>
+	</div>
 	<div style="display: none;" id="quit">
 		<div id="internalText">
 			<form name="reasonForm" method="get" onsubmit="submitQuitAnswer()">
@@ -278,7 +357,7 @@ ul{ list-style-type: none;}
 				<col width="210px">
 				<tr>
 					<td><b>We ran the following <u>test</u>:</b></td>
-					<td><code> ${requestScope["testCase"]}</code>	<div id="testFailure"> </div></td>
+					<td><div id="testFailure"> </div></td>
 				</tr>
 				<tr>
 					<td><b> But we received this <u>failure:</u></b></td>
@@ -340,6 +419,7 @@ ul{ list-style-type: none;}
 			
 			
 				<!-- Hidden fields -->
+				<input type="hidden" id="hiddenDifficulty" name="difficulty" value="">
 				<input type="hidden"
 					name="workerId" id="workerId" value=${requestScope["workerId"]}> 
 				<input type="hidden" name="microtaskId"
@@ -364,7 +444,7 @@ ul{ list-style-type: none;}
 				<col width="325px" />
 				<tr>
 					<td align="left"><input type="button"  value="Quit" onclick='showQuitDialog()'></td>
-					<td align="right"><input TYPE="button" name="answerButton" id="answerButton" VALUE="Submit" onclick="submitAnswer(event)"></td>
+					<td align="right"><input TYPE="button" name="answerButton" id="answerButton" VALUE="Submit" onclick="submitAnswer()"></td>
 				</tr>
 			</table>				
 			<br>
