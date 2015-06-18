@@ -312,7 +312,7 @@ ul{ list-style-type: none;}
 	</div>
 	<div style="display: none;" id="quit">
 		<div id="internalText">
-			<form name="reasonForm" method="get" onsubmit="submitQuitAnswer()">
+			<form name="reasonForm" method="get">
 				<input type="radio" name="reason" value="difficult" />The task is too
 				difficult &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
 					type="radio" name="reason" value="boring" />The task is too boring
@@ -332,7 +332,7 @@ ul{ list-style-type: none;}
 					name="sessionId" value=${requestScope["sesionId"]}> 
 					
 				<center>
-					<INPUT TYPE="submit" name="reasonButton" id="reasonButton"
+					<INPUT TYPE="button" name="reasonButton" id="reasonButton" onclick="submitQuitAnswer()"
 						VALUE="Submit">
 					<INPUT TYPE="button" VALUE="Cancel"
 					onclick="quitDialog()">

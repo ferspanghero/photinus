@@ -9,13 +9,13 @@ function checkQuitAnswer() {
 	for (i = 0; i < radios.length; i++) {
 		if (radios[i].checked) {
 			option = i;
-			break;
+			return true;
 		}
 	}
 
 	if (option == -1) {
 		alert("Please select an answer.");
-		return -1;
+		return false;
 	}
 }
 
@@ -27,8 +27,7 @@ function submitQuitAnswer() {
 		alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
 	} else {
 		//ok, form was not submitted yet
-		var checked = checkQuitAnswer();
-		if (checked != -1) {
+		if (checkQuitAnswer()) {
 			//$("#quit").on( "dialogclose", function() { 
 			var form = document.forms["reasonForm"];
 			form.action = "quit";
@@ -39,7 +38,8 @@ function submitQuitAnswer() {
 		    });
 
 		} else {
-			//nothing to do.
+			$("#quit").dialog("close");
+			$("#quit").dialog("open");
 		}
 	}
 }
