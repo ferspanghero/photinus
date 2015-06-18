@@ -21,6 +21,10 @@
 	margin-left: 10px;
 	margin-right: 15px;
 }
+
+.ui-dialog-titlebar-close {
+  visibility: hidden;
+}
 </style>
 
 </head>
@@ -223,7 +227,7 @@
 					that I have read, understood and agreed with the terms above.</i> <br>
 					
 					<br> 
-					<input type="button" style="float: left;" value="No, thanks" onclick='showQuitDialog()'>
+					<input type="button" style="float: left;" value="No, thanks" onclick='quitConfirm()'>
 					<input type="button" name="yesButton" id="yesButton" 
 					value="Yes, I want to participate" style="float: right;"
 					onclick="proceed()"> 
@@ -250,6 +254,8 @@
 				<center>
 					<INPUT TYPE="submit" name="reasonButton" id="reasonButton"
 						VALUE="Submit">
+					<INPUT TYPE="button" VALUE="Cancel"
+					onclick="quitDialog()">
 				</center>
 				<br>
 			</form>

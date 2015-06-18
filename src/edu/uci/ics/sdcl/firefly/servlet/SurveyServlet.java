@@ -16,7 +16,7 @@ import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
  * Servlet implementation class SurveyServlet
  */
 public class SurveyServlet extends HttpServlet {
-    public static String question[] = {"Gender", "Age", "Country", "Years progr.", "Difficulty"};   
+    public static String question[] = {"Gender", "Age", "Country", "Experience"};   
     public SurveyServlet() {
         super();
     }

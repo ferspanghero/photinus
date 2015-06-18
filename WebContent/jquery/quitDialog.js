@@ -33,8 +33,11 @@ function submitQuitAnswer() {
 			var form = document.forms["reasonForm"];
 			form.action = "quit";
 			form.submit();
-			$("#quit").dialog("close");
-			quitFormAlreadyPosted = true;
+			$('#reasonForm').submit( function() {
+				$("#quit").dialog("close");
+				quitFormAlreadyPosted = true;
+		    });
+
 		} else {
 			//nothing to do.
 		}
@@ -53,4 +56,18 @@ function showQuitDialog() {
 		title : "Why did you decide to quit ?"
 	});
 	$("#quit").dialog('open');
+}
+
+function quitDialog(){
+	$("#quit").dialog("close");
+}
+
+function quitConfirm() {
+    var x;
+    if (confirm("Do you really want to quit") == true) {
+        showQuitDialog();
+    } else {
+        //nothing
+    }
+    //document.getElementById("demo").innerHTML = x;
 }

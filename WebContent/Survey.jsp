@@ -20,6 +20,10 @@
 	margin-left: 100px;
 	margin-right: 100px;
 }
+
+.ui-dialog-titlebar-close {
+  visibility: hidden;
+}
 </style>
 
 </head>
@@ -126,6 +130,8 @@
 				<center>
 					<INPUT TYPE="submit" name="reasonButton" id="reasonButton"
 						VALUE="Submit">
+											<INPUT TYPE="button" VALUE="Cancel"
+					onclick="quitDialog()">
 				</center>
 				<br>
 			</form>
@@ -166,7 +172,7 @@
 
 				<br>
 				
-				<input type="button"  value="Quit" onclick='showQuitDialog()'>
+				<input type="button"  value="Quit" onclick='quitConfirm()'>
 					&nbsp;&nbsp;
 				 <INPUT TYPE="button" VALUE="Submit answer"
 					onclick="submitAnswer(event)">

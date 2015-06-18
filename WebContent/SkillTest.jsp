@@ -38,6 +38,8 @@
 	width: 580px;
 	}
 	
+.ui-dialog-titlebar-close {
+  visibility: hidden;
 }
 </style>
 </head>
@@ -137,6 +139,8 @@
 				<center>
 					<INPUT TYPE="submit" name="reasonButton" id="reasonButton"
 						VALUE="Submit">
+											<INPUT TYPE="button" VALUE="Cancel"
+					onclick="quitDialog()">
 				</center>
 				<br>
 			</form>
@@ -217,7 +221,7 @@
 			<input type="radio" name="QUESTION4" value="d">1<br>
 			<br>
 	
-					<input type="button"  value="Quit" onclick='showQuitDialog()'>
+					<input type="button"  value="Quit" onclick='quitConfirm()'>
 			<INPUT TYPE="button" name="answerButton" VALUE="Submit answers" onclick="submitAnswers(event)">
 
 		</form>

@@ -334,6 +334,8 @@ ul{ list-style-type: none;}
 				<center>
 					<INPUT TYPE="submit" name="reasonButton" id="reasonButton"
 						VALUE="Submit">
+					<INPUT TYPE="button" VALUE="Cancel"
+					onclick="quitDialog()">
 				</center>
 				<br>
 			</form>
@@ -442,7 +444,7 @@ ul{ list-style-type: none;}
 				<col width="310px" />
 				<col width="310px" />
 				<tr>
-					<td align="left"><input type="button"  value="Quit" onclick='showQuitDialog()'></td>
+					<td align="left"><input type="button"  value="Quit" onclick='quitConfirm()'></td>
 					<td align="right"><input TYPE="button" name="answerButton" id="answerButton" VALUE="Submit" onclick="submitAnswer()"></td>
 				</tr>
 			</table>				
