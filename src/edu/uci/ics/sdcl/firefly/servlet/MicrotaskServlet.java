@@ -102,7 +102,7 @@ public class MicrotaskServlet extends HttpServlet {
 		//Save answers from the previous microtask
 		
 		boolean success = storage.updateMicrotaskAnswer(this.worker.getSessionId(), new Integer(microtaskId),
-				new Answer(Answer.mapOptionToString(answer), Answer.mapConfidenceToString(confidenceAnswer),explanation, this.worker.getWorkerId(), elapsedTime, timeStamp, difficulty));
+				new Answer(Answer.mapOptionToString(answer), confidenceAnswer,explanation, this.worker.getWorkerId(), elapsedTime, timeStamp, difficulty));
 
 		if(!success){
 			this.showErrorPage(request, response, "Your answer could not be stored. In case you have used the back button, "

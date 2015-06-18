@@ -19,7 +19,7 @@ public class Answer implements Serializable{
 	public static final String NOT_AT_ALL = "NOT AT ALL";
 
 	private String option;
-	private String confidenceOption;
+	private int confidenceOption;
 	private String explanation;
 	private String workerId;
 	private String elapsedTime;
@@ -27,7 +27,7 @@ public class Answer implements Serializable{
 	private int difficulty;
 	
 	
-	public Answer(String option, String confidenceOption, String explanation, String workerId, 
+	public Answer(String option, int confidenceOption, String explanation, String workerId, 
 			String elapsedTime, String timeStamp, int difficulty){
 		this.option = option;
 		this.confidenceOption = confidenceOption;
@@ -42,7 +42,7 @@ public class Answer implements Serializable{
 		return option;
 	}
 	
-	public String getConfidenceOption(){
+	public int getConfidenceOption(){
 		return confidenceOption;
 	}
 	
@@ -82,29 +82,6 @@ public class Answer implements Serializable{
 		case Answer.NO: return 3; 		
 		default: return 0;
 		}
-	}
-	
-	public static String mapConfidenceToString(int number){
-		switch(number){
-		case 1: return Answer.VERY_CONFIDENT; 
-		case 2: return Answer.CONFIDENT; 
-		case 3: return Answer.SOMEWHAT_CONFIDENT;
-		case 4: return Answer.UNSURE; 
-		case 5: return Answer.NOT_AT_ALL; 
-		default: return null;
-		}
-	}
-
-	public static int mapConfidenceNumber(String option){
-		switch(option){
-		case Answer.VERY_CONFIDENT: return 1; 
-		case Answer.CONFIDENT: return 2; 
-		case Answer.SOMEWHAT_CONFIDENT: return 3;
-		case Answer.UNSURE: return 4; 
-		case Answer.NOT_AT_ALL: return 1; 
-		default: return 0;
-		}
-	}
-	
+	}	
 	
 }
