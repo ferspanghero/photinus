@@ -123,7 +123,7 @@ public class LiteContainerManager extends StorageStrategy{
 					"% microtaskId%"+microtaskId+"% fileName%"+microtask.getFileName()+
 					"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()+
 					"% confidenceLevel%"+answer.getConfidenceOption()+
-					"% duration%"+answer.getElapsedTime()+"% explanation%"+explanation+"% fileName%"+worker.getCurrentFileName()+ "% difficulty"+answer.getDifficulty());
+					"% duration%"+answer.getElapsedTime()+"% explanation%"+explanation+"% fileName%"+worker.getCurrentFileName()+ "% difficulty%"+answer.getDifficulty());
 			
 			if(session.isClosed()){//Move session to closed //EVENT
 				this.closedSessionVector.add(session);
