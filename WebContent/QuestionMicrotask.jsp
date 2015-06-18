@@ -343,9 +343,10 @@ ul{ list-style-type: none;}
 
 	<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
 	<div id="failurePrompt">
+	<div id="internalText">
 		
 		<br>
-			<span class="sectionTitle"> Thank you for using <b>CrowdDebug</b> and helping us localize faults in software from all over the world.  Please take a look at the code below, the following problem, and answer the questions.
+			<span class="sectionTitle"> Thank you for using <b>CrowdDebug</b> and for helping us localize faults in software from all over the world.  Please take a look at the code below, the following problem, and answer the questions.
 </span><br><br>
 			<div id="internalText">
 			<table class="fixed" CELLPADDING="4px" style="padding-left:35px;" >
@@ -362,15 +363,17 @@ ul{ list-style-type: none;}
 			</table>
 	<br>
 	</div>
+	</div>
 
 
 	
 	<div id="questionPrompt">
+	<div id="internalText">
 	<br>
 			<span class="sectionTitle"><b>${requestScope["question"]}</b></span>
 			<form name="answerForm" method="get">
 	
-			<table cellspacing='0' cellpadding='0' style="padding-left:35px;">	
+			<table cellspacing='0' cellpadding='0' style="padding-left:40px;">	
 				<col width="225px" />
 				<col width="200px" />
 				<col width="225px" />
@@ -446,7 +449,7 @@ ul{ list-style-type: none;}
 
 </span>
 
-
+</div>
 	</div>
 	
 	
