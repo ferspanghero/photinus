@@ -31,8 +31,8 @@
 }
 
 #internalText {
-	margin-left: 10px;
-	margin-right: 10px;
+	margin-left: 12px;
+	margin-right: 12px;
 	text-justify: distribute-all-lines;
 }
 
@@ -82,8 +82,8 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 ul{ list-style-type: none;}
 
 .sectionTitle {
-	padding-right: 12px;
-	padding-left: 12px;
+	padding-right: 0px;
+	padding-left: 0px;
 }
 
 .box {
@@ -344,13 +344,15 @@ ul{ list-style-type: none;}
 	<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
 	<div id="failurePrompt">
 	<div id="internalText">
+	
 		
 		<br>
-			<span class="sectionTitle"> Thank you for using <b>CrowdDebug</b> and for helping us localize faults in software from all over the world.  Please take a look at the code below, the following problem, and answer the questions.
-</span><br><br>
+			<span class="sectionTitle"> Thank you for using CrowdDebug and for helping us localize faults in software from all over the world.</span><br>  
+			<span class="sectionTitle"> Please take a look at the code below, the following problem, and answer the questions.</span><br><br>
 			<div id="internalText">
-			<table class="fixed" CELLPADDING="4px" style="padding-left:25px;" >
+			<table class="fixed" CELLPADDING="4px" align="center"  style="word-wrap: break-word;">
 				<col width="210px">
+				<col width="410px">
 				<tr>
 					<td><b>We ran the following <u>test</u>:</b></td>
 					<td><div id="testFailure"> </div></td>
@@ -362,6 +364,7 @@ ul{ list-style-type: none;}
 				</tr>
 			</table>
 	<br>
+	
 	</div>
 	</div>
 
@@ -373,22 +376,21 @@ ul{ list-style-type: none;}
 			<span class="sectionTitle"><b>${requestScope["question"]}</b></span>
 			<form name="answerForm" method="get">
 	
-			<table cellspacing='0' cellpadding='0' style="padding-left:30px;">	
-				<col width="225px" />
-				<col width="200px" />
-				<col width="225px" />
+			<table cellspacing='0' cellpadding='0'  align="center"> 	 	
+				<col width="250px" />
+				<col width="150px" />
+				<col width="220px" />
 			<tr>
-			<td><label><input type="radio" name="answer" value="1" />Yes, there is an issue </label></td>
+			<td style="text-align: left"><label><input type="radio" name="answer" value="1" />Yes, there is an issue </label></td>
 			<td><label><input type="radio" name="answer" value="2" />I don't know</label></td>
-			<td><label><input type="radio" name="answer" value="3" />No, there is not an issue</label></td>
-			<td>
-			<tr>
+			<td style="text-align: right"><label><input type="radio" name="answer" value="3" />No, there is not an issue</label></td>
+		</tr>
 			</table>
 			
 		<br>
 	
-			<table cellspacing='0' cellpadding='0' style="padding-left:30px;">
-   				<col width="300px" />
+			<table cellspacing='0' cellpadding='0' align="center"> 	
+   				<col width="270px" />
     			<col width="70px" />
     			<col width="70px" />
     			<col width="70px" />
@@ -396,20 +398,20 @@ ul{ list-style-type: none;}
     			<col width="70px" />
     			<tr>
 						<td><b>How confident you are in your answer?</b></td>
-						<td align="center">Very</td>
+						<td style="text-align: right">Very</td>
 						<td></td>
 						<td></td>
 						<td></td>
-						<td align="center">Not</td>
+						<td style="text-align: right">Not</td>
 				</tr>
 				<tr>
 					<td></td>
 
-					<td align="center"><label><input type="radio" name="confidence"value="5" />5</label></td>
-					<td align="center"><label><input type="radio" name="confidence" value="4" />4</label></td>
-					<td align="center"><label><input type="radio" name="confidence" value="3" />3</label></td>
-					<td align="center"><label><input type="radio" name="confidence" value="2" />2</label></td>
-					<td align="center"><label><input type="radio"	name="confidence" value="1" />1</label></td>
+					<td style="text-align: right"><label><input type="radio" name="confidence"value="5" />5</label></td>
+					<td style="text-align: right"><label><input type="radio" name="confidence" value="4" />4</label></td>
+					<td style="text-align: right"><label><input type="radio" name="confidence" value="3" />3</label></td>
+					<td style="text-align: right"><label><input type="radio" name="confidence" value="2" />2</label></td>
+					<td style="text-align: right"><label><input type="radio"	name="confidence" value="1" />1</label></td>
 							
 				</tr>
 			</table>
@@ -426,19 +428,19 @@ ul{ list-style-type: none;}
 					name="sessionId" value=${requestScope["sesionId"]}> 
 				
 			
-			<table cellspacing='0' cellpadding='0' style="padding-left:30px;">
-				<col width="650px" />
+			<table cellspacing='0' cellpadding='0'  align="center"> 	
+				<col width="620px" />
 			<tr>
 				<td align="left"><b>Please provide an explanation:</b></td>
 			</tr>
 			<tr>
-				<td align="center"><textarea name="explanation" id="explanation" rows="3" cols="78"></textarea></td>
+				<td align="center"><textarea name="explanation" id="explanation" rows="4" cols="77" style="margin: 0px; width: 614px; height: 45px;"></textarea></td>
 			</tr>
 			</table>
 	<br>
-			<table cellspacing='0' cellpadding='0' style="padding-left:30px;">
-				<col width="325px" />
-				<col width="325px" />
+			<table cellspacing='0' cellpadding='0'  align="center"> 		
+				<col width="310px" />
+				<col width="310px" />
 				<tr>
 					<td align="left"><input type="button"  value="Quit" onclick='showQuitDialog()'></td>
 					<td align="right"><input TYPE="button" name="answerButton" id="answerButton" VALUE="Submit" onclick="submitAnswer()"></td>
