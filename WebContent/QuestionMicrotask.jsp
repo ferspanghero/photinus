@@ -82,13 +82,8 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 ul{ list-style-type: none;}
 
 .sectionTitle {
-	padding-right: 8px;
-	padding-left: 8px;
-}
-
-.sectionContent{
-	padding-right: 40px;
-	padding-left: 40px;
+	padding-right: 18px;
+	padding-left: 18px;
 }
 
 .box {
@@ -353,7 +348,7 @@ ul{ list-style-type: none;}
 			<span class="sectionTitle"> Thank you for using <b>CrowdDebug</b> and helping us localize faults in software from all over the world.  Please take a look at the code below, the following problem, and answer the questions.
 </span><br><br>
 			<div id="internalText">
-			<table class="fixed" CELLPADDING="4px" >
+			<table class="fixed" CELLPADDING="4px" style="padding-left:35px;" >
 				<col width="210px">
 				<tr>
 					<td><b>We ran the following <u>test</u>:</b></td>
@@ -365,7 +360,7 @@ ul{ list-style-type: none;}
 					<td><code>${requestScope["bugReport"]}</code></td>
 				</tr>
 			</table>
-	
+	<br>
 	</div>
 
 
@@ -375,9 +370,7 @@ ul{ list-style-type: none;}
 			<span class="sectionTitle"><b>${requestScope["question"]}</b></span>
 			<form name="answerForm" method="get">
 	
-	<span class="sectionContent">
-	
-			<table cellspacing='0' cellpadding='0' style="padding-left:50px;">	
+			<table cellspacing='0' cellpadding='0' style="padding-left:35px;">	
 				<col width="225px" />
 				<col width="200px" />
 				<col width="225px" />
