@@ -167,7 +167,7 @@
 					least 18 years of age or older and are fluent in English.</li>
 				<br>
 				<li>The research procedures involve using an online software
-					development tool and will last approximately from 5 to 45 minutes.</li>
+					development tool and will last approximately from 5 to 15 minutes.</li>
 				<br>
 				<li>There are no risks/discomforts associated with the study.
 					No personal information will be collected.</li>
@@ -210,7 +210,7 @@
 					discontinue your involvement at any time without penalty. You are
 					free to withdraw from this study at any time. If you decide to
 					withdraw from this study you should notify the research team
-					immediately by clicking on the "No thanks" button below.</li>
+					immediately by clicking on the "No, thanks" button below.</li>
 			</ul>
 
 			<br>

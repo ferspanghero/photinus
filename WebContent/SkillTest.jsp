@@ -146,7 +146,7 @@
 	
 <div id="container"><br>
 	<div id="content">
-		<b>Thank you for interest in participating in the study. We need to evaluate your 
+		<b>Thank you for your interest in participating in the study. We need to evaluate your 
 		programming skills before we allow you to continue. Please answer the following questions. </b>
 	
 	
