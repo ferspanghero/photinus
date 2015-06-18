@@ -112,7 +112,8 @@ public class ConsentServlet extends HttpServlet {
 		else{
 			//Restore data for next Request
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-
+			request.setAttribute("workerId", worker.getWorkerId());
+			
 			//Load the new Microtask data into the Request
 			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
 			request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
@@ -134,7 +135,7 @@ public class ConsentServlet extends HttpServlet {
 	private void skillQualificationExam(HttpServletRequest request, HttpServletResponse response, Worker worker) throws ServletException, IOException
 	{
 		// now passing parameters to the next page
-		request.setAttribute("workerId", worker.getWorkerId().toString());
+		request.setAttribute("workerId", worker.getWorkerId());
 		request.setAttribute("subAction", "gradeAnswers");
 		response.addCookie(new Cookie("w", worker.getWorkerId()));
 		request = this.loadQuestions(request, response);
