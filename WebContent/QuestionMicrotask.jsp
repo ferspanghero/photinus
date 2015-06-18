@@ -32,7 +32,7 @@
 
 #internalText {
 	margin-left: 10px;
-	margin-right: 15px;
+	margin-right: 10px;
 	text-justify: distribute-all-lines;
 }
 
@@ -82,8 +82,8 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 ul{ list-style-type: none;}
 
 .sectionTitle {
-	padding-right: 18px;
-	padding-left: 18px;
+	padding-right: 12px;
+	padding-left: 12px;
 }
 
 .box {
@@ -349,7 +349,7 @@ ul{ list-style-type: none;}
 			<span class="sectionTitle"> Thank you for using <b>CrowdDebug</b> and for helping us localize faults in software from all over the world.  Please take a look at the code below, the following problem, and answer the questions.
 </span><br><br>
 			<div id="internalText">
-			<table class="fixed" CELLPADDING="4px" style="padding-left:35px;" >
+			<table class="fixed" CELLPADDING="4px" style="padding-left:25px;" >
 				<col width="210px">
 				<tr>
 					<td><b>We ran the following <u>test</u>:</b></td>
@@ -373,7 +373,7 @@ ul{ list-style-type: none;}
 			<span class="sectionTitle"><b>${requestScope["question"]}</b></span>
 			<form name="answerForm" method="get">
 	
-			<table cellspacing='0' cellpadding='0' style="padding-left:40px;">	
+			<table cellspacing='0' cellpadding='0' style="padding-left:30px;">	
 				<col width="225px" />
 				<col width="200px" />
 				<col width="225px" />
@@ -387,7 +387,7 @@ ul{ list-style-type: none;}
 			
 		<br>
 	
-			<table cellspacing='0' cellpadding='0' style="padding-left:50px;">
+			<table cellspacing='0' cellpadding='0' style="padding-left:30px;">
    				<col width="300px" />
     			<col width="70px" />
     			<col width="70px" />
@@ -426,7 +426,7 @@ ul{ list-style-type: none;}
 					name="sessionId" value=${requestScope["sesionId"]}> 
 				
 			
-			<table cellspacing='0' cellpadding='0' style="padding-left:50px;">
+			<table cellspacing='0' cellpadding='0' style="padding-left:30px;">
 				<col width="650px" />
 			<tr>
 				<td align="left"><b>Please provide an explanation:</b></td>
@@ -436,7 +436,7 @@ ul{ list-style-type: none;}
 			</tr>
 			</table>
 	<br>
-			<table cellspacing='0' cellpadding='0' style="padding-left:50px;">
+			<table cellspacing='0' cellpadding='0' style="padding-left:30px;">
 				<col width="325px" />
 				<col width="325px" />
 				<tr>
