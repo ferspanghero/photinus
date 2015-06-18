@@ -349,9 +349,9 @@ ul{ list-style-type: none;}
 	<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
 	<div id="failurePrompt">
 		
-		
-			<span class="sectionTitle">Thanks for using <b>Crowd Debug!</b> and for helping us debug
-			software from all over the world.</span><br>
+		<br>
+			<span class="sectionTitle"> Thank you for using <b>CrowdDebug</b> and helping us localize faults in software from all over the world.  Please take a look at the code below, the following problem, and answer the questions.
+</span><br><br>
 			<div id="internalText">
 			<table class="fixed" CELLPADDING="4px" >
 				<col width="210px">
@@ -359,6 +359,7 @@ ul{ list-style-type: none;}
 					<td><b>We ran the following <u>test</u>:</b></td>
 					<td><div id="testFailure"> </div></td>
 				</tr>
+				<tr height="20px"></tr>
 				<tr>
 					<td><b> But we received this <u>failure:</u></b></td>
 					<td><code>${requestScope["bugReport"]}</code></td>
@@ -398,7 +399,7 @@ ul{ list-style-type: none;}
     			<col width="70px" />
     			<col width="70px" />
     			<tr>
-						<td><b>How confident are you with your answer?</b></td>
+						<td><b>How confident you are in your answer?</b></td>
 						<td align="center">Very</td>
 						<td></td>
 						<td></td>
@@ -459,7 +460,7 @@ ul{ list-style-type: none;}
    
 	<div id="questionCode">
 		<div id="internalText">
-
+		<br>
 		<b>The source code:</b> 
 		<div id="mainEditor"><xmp>${requestScope["source"]}</xmp></div>
 		
