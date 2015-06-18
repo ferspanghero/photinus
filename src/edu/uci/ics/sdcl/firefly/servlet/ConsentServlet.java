@@ -55,7 +55,7 @@ public class ConsentServlet extends HttpServlet {
 					if(worker == null)
 						newWorker(request, response, worker, fileName);
 					else if(worker.hasPassedTest())
-						loadFirstMicrotask(request, response, worker);
+						loadFirstMicrotask(request, response, worker, fileName);
 					else
 						existingWorker(request, response, worker);
 				}
@@ -102,9 +102,9 @@ public class ConsentServlet extends HttpServlet {
 		return result;
 	}
 	
-	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response, Worker worker) throws ServletException, IOException {
+	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response, Worker worker, String fileName) throws ServletException, IOException {
 		storage = StorageStrategy.initializeSingleton();
-		WorkerSession  session = storage.readNewSession(worker.getWorkerId(), worker.getCurrentFileName());
+		WorkerSession  session = storage.readNewSession(worker.getWorkerId(), fileName);
 		//System.out.println("loadFirstMicrotask, session= "+session);
 		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
