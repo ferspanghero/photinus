@@ -79,11 +79,10 @@
 table{ table-layout:fixed; word-break: break-all; }
 table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 
-ul{ list-style-type: none;}
-
 .sectionTitle {
 	padding-right: 0px;
 	padding-left: 0px;
+	font-weight: bold;
 }
 
 .box {
@@ -200,11 +199,11 @@ ul{ list-style-type: none;}
 				autoOpen : false,
 				modal : true,
 				bgiframe : true,
-				width : 'auto',
-				height: 'auto',
+				width : 340,
+				height: 160,
 				resizable : false,
 				closeOnEscape : false,
-				title : "How was this task for you?",
+				title : "How difficult was this task for you?",
 				open: function (event, ui) {
 				    $('#survey').css('overflow', 'hidden');
 				}
@@ -280,20 +279,21 @@ ul{ list-style-type: none;}
 		value=${requestScope["calleeLOCS"]}>
 		
 	<div style="display: none;" id="difficulty">
+	<center>
 			<form name="difficultyForm" method="get">
-			<table cellspacing='0' cellpadding='0'>
-   				<col width="70px" />
-    			<col width="70px" />
-    			<col width="70px" />
-    			<col width="70px" />
-    			<col width="70px" />
-    			<col width="70px" />
+			<table cellspacing='0' cellpadding='0' style="word-wrap:break-word"> 	
+   				<col width="80px" />
+    			<col width="80px" />
+    			<col width="80px" />
+    			<col width="80px" />
+    			<col width="80px" />
+    			<col width="80px" />
     			<tr>
-						<td width="20%" align="center">Very difficult</td>
-<td></td>
-<td></td>
-<td></td>
-						<td width="20%" align="center">Not difficult</td>
+						<td align="center">Very</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td align="center">Not</td>
 				</tr>
 				<tr>
 					<td align="center"><label><input type="radio" name="difficulty" value="5" />5</label></td>
@@ -304,10 +304,9 @@ ul{ list-style-type: none;}
 				</tr>
 			</table>
 				<br>
-				<center>
-				 <INPUT TYPE="button" VALUE="Submit"
+				 <INPUT TYPE="button" VALUE="Submit" ID="difficultyButton" 
 					onclick="submitDifficulty()">
-				</center>
+					</center>
 			</form>
 	</div>
 	<div style="display: none;" id="quit">
@@ -349,8 +348,7 @@ ul{ list-style-type: none;}
 	
 		
 		<br>
-			<span class="sectionTitle"> Thank you for using CrowdDebug and for helping us localize faults in software from all over the world.</span><br>  
-			<span class="sectionTitle"> Please take a look at the code below, the following problem, and answer the questions.</span><br><br>
+			<span class="sectionTitle"><b>Please take a look at the code below, the following problem, and answer the questions.</span></b><br><br>
 			<div id="internalText">
 			<table class="fixed" CELLPADDING="4px" align="center"  style="word-wrap: break-word;">
 				<col width="210px">

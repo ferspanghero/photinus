@@ -143,8 +143,9 @@
 	<div id="container">
 		<br>
 		<div id="content">
-			<b>Congratulations, you passed the test!<br><br>
-			 Before continuing to the actual tasks, please let us know a little bit more about you.</b>
+			<b>Thank you for your interest in CrowdDebug and for helping us localize faults in software from all over the world.<br><br>
+			
+			Please let us know a little bit more about you. This will help us to design future tasks.</b>
 
 
 
