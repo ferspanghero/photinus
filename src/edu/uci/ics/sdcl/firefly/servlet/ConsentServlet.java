@@ -75,12 +75,16 @@ public class ConsentServlet extends HttpServlet {
 	{
 		String authCookie = "w";
 		Cookie result = null;
-		for(Cookie c : request.getCookies())
+		Cookie[] cookies = request.getCookies();
+		if(cookies != null)
 		{
-			if(authCookie.equals(c.getName()))
+			for(Cookie c : cookies)
 			{
-				result = c;
-				break;
+				if(authCookie.equals(c.getName()))
+				{
+					result = c;
+					break;
+				}
 			}
 		}
 		return result;
