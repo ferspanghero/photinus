@@ -20,7 +20,8 @@ public class SurveyServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static String question[] = {"Gender", "Age", "Country", "Experience"};   
+	public static String question[] = {"Gender", "Age", "Country", "Experience", "Language", "YearsProgramming", "Learned"};   
+	
     private final String SkillTestPage = "/SkillTest.jsp";
     
     public SurveyServlet() {
@@ -36,7 +37,10 @@ public class SurveyServlet extends HttpServlet {
 			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
 			subject.addSurveyAnswer(question[1], request.getParameter("age"));
 			subject.addSurveyAnswer(question[2], request.getParameter("country"));
-			subject.addSurveyAnswer(question[3], request.getParameter("experience"));
+			subject.addSurveyAnswer(question[3], mapExperience(request.getParameter("experience"),request.getParameter("otherexperience")));
+			subject.addSurveyAnswer(question[4], request.getParameter("language"));
+			subject.addSurveyAnswer(question[5], request.getParameter("years"));
+			subject.addSurveyAnswer(question[6], request.getParameter("hlearned"));
 
 			//Store result
 			storage.insertSurvey(subject);
@@ -56,6 +60,20 @@ public class SurveyServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+	}
+	
+	protected String mapExperience(String level, String other){
+		if(level.equals("1")){
+			return "Professional_Developer";
+		}else if(level.equals("2")){
+			return "Graduate_Student";
+		}else if(level.equals("3")){
+			return "Undergraduate_Student";
+		}else if(level.equals("4")){
+			return "Hobbyist";
+		}else{
+			return "Other "+other;
+		}
 	}
 	
 	private HttpServletRequest loadQuestions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -73,14 +73,36 @@
 				alert("Please enter your country of residence.");
 				return -1;
 			}
+			
+			var exp = document.getElementsByName("experience");
+			var expOption = -1;
+			var i = 0;
 
-			var experienceField = document.getElementById("experience");
-			experienceField.value = experienceField.value.trim();
-			if (!experienceField.value) {
-				alert("Please enter your years of programming experience.");
+			for (i = 0; i < exp.length; i++) {
+				if (exp[i].checked) {
+					expOption = i;
+					break;
+				}
+			}
+			if (expOption === -1) {
+				alert("Please select a level of experience .");
 				return -1;
-			} else if (isNaN(experienceField.value)) {
-				alert("Years of experience must be a number.");
+			}
+			
+			var languageField = document.getElementById("language");
+			languageField.value = languageField.value.trim();
+			if (!languageField.value) {
+				alert("Please enter a programming language.");
+				return -1;
+			}
+			
+			var yearsField = document.getElementById("years");
+			yearsField.value = yearsField.value.trim();
+			if (!yearsField.value) {
+				alert("Please enter your years of experience.");
+				return -1;
+			} else if (isNaN(yearsField.value)) {
+				alert("Years of experience must be number.");
 				return -1;
 			}
 
@@ -93,8 +115,7 @@
 			if (formAlreadyPosted) {
 				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
 			} else {
-				var checked = checkAnswers();
-				if (checked != -1) {
+				if ((checkAnswers()!=-1) && getCheckBoxValues()) {
 					formAlreadyPosted = true;
 					var form = document.forms["surveyForm"];
 					form.action = "survey";
@@ -103,6 +124,34 @@
 					//nothing to do.
 				}
 			}
+		}
+		
+		function getCheckBoxValues(){
+			var chkArray = [];
+			
+			/* look for all checkboes that have a parent id called 'checkboxlist' attached to it and check if it was checked */
+			$("#learnedDiv input:checked").each(function() {
+				chkArray.push($(this).val());
+			});
+			
+			chkArray.push(document.getElementById("otherlearned").value);
+			
+			/* we join the array separated by the comma */
+			var selected;
+			selected = chkArray.toString();
+			
+			/* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
+			console.log(chkArray.length<1);
+			if(chkArray.length <= 1){
+				console.log("ïn");
+				alert("Please at least one of the checkbox");
+				return false;
+			}
+			
+			document.getElementById("hlearned").value = ''+selected;
+			var values = document.getElementById("hlearned").value;
+			return true;
+			
 		}
 	</script>
 
@@ -162,9 +211,27 @@
 					size="2" /><br>
 				<br> What is your country of residence?</b> <input type=text
 					name="country" id="country" size="25" /><br>
-				<br> How many years of programming experience do you have?</b> <input
-					type=text name="experience" id="experience" size="2" /><br>
-
+				<br> What is your leve of experience?</b><br>	
+				<input type="radio" name="experience" value="1">Professional developer<br>
+				<input type="radio" name="experience" value="2">Graduate student<br>
+				<input type="radio" name="experience" value="3">Undergraduate student<br>
+				<input type="radio" name="experience" value="4">Hobbyist<br>
+				<input type="radio" name="experience" value="5">Other <input type="text" name="otherexperience" size="15">
+				<br>
+				<br>Which programming language do you use most at present?
+				<input type="text" id="language" name="language" size="25"><br>
+				<br>How many years have you been programming?
+				<input type="text" id="years" name="years" size="2"><br>
+				<div id="learnedDiv">			
+   				<br>Where did you learn to code (mark all that apply)<br>
+   				<input type="hidden" id="hlearned" name="hlearned" value="">
+   				<input type="checkbox" name="learned" value="High School"> High School<br>
+   				<input type="checkbox" name="learned" value="University"> College/University<br>
+   				<input type="checkbox" name="learned" value="Web"> In the web<br>
+   				<input type="checkbox" name="learned" value="Other"> Other 
+   				<input type="text" id="otherlearned"name="otherlearned">
+   				</div>
+   				<br><br>
 
 				<!-- Hidden fields -->
 				<input type="hidden" name="sessionId"
