@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
@@ -24,6 +25,7 @@ public class ConsentServlet extends HttpServlet {
 	private String ErrorPage = "/ErrorPage.jsp";
 	private final String SurveyPage = "/Survey.jsp";
 	private final String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
+	private final String SorryPage = "/SorryPage.jsp";
 	private StorageStrategy storage;
 
 	/**
@@ -40,10 +42,8 @@ public class ConsentServlet extends HttpServlet {
 
 		String subAction = request.getParameter("subAction");
 		String fileName = request.getParameter("fileName");
-		System.out.println("in ConsentServlet, fileName requested: "+fileName);
 		storage = StorageStrategy.initializeSingleton();
-		
-		if(subAction.compareTo("loadQuestions")==0){
+		if(subAction != null && subAction.compareTo("loadQuestions")==0){
 			if(!storage.areThereMicrotasksAvailable()){
 				this.showErrorPage(request, response, "Dear contributor, no more tasks are available. Please wait for the next batch of HITs");
 			}
@@ -93,7 +93,6 @@ public class ConsentServlet extends HttpServlet {
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response, Worker worker, String fileName, String page) throws ServletException, IOException {
 		storage = StorageStrategy.initializeSingleton();
 		WorkerSession  session = storage.readNewSession(worker.getWorkerId(), fileName);
-		//System.out.println("loadFirstMicrotask, session= "+session);
 		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
 			showErrorPage(request, response,"@ SkillTestServlet - no microtask available");
@@ -120,7 +119,10 @@ public class ConsentServlet extends HttpServlet {
 	
 	private void existingWorker(HttpServletRequest request, HttpServletResponse response, Worker worker, String fileName) throws ServletException, IOException
 	{
-		questionPage(request, response, worker, fileName);
+		if(worker.hasPassedTest())
+			questionPage(request, response, worker, fileName);
+		else
+			sorryPage(request, response);
 	}
 	
 	private void surveyPage(HttpServletRequest request, HttpServletResponse response, Worker worker, String fileName) throws ServletException, IOException
@@ -137,5 +139,11 @@ public class ConsentServlet extends HttpServlet {
 		request.setAttribute("error", message);
 		request.setAttribute("executionId", "before consent");
 		request.getRequestDispatcher(ErrorPage).forward(request, response);
+	}
+	
+	private void sorryPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		request.setAttribute("message", "Dear worker, you didn't get the minimal qualifying grade to perform the task.");
+		request.getRequestDispatcher(SorryPage).include(request, response);
 	}
 }

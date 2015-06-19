@@ -32,8 +32,7 @@ public class SurveyServlet extends HttpServlet {
 		String workerId = request.getParameter("workerId");
 		Worker subject = storage.readExistingWorker(workerId);
 		if (null != subject){
-			WorkerSession  session = storage.readNewSession(subject.getWorkerId(), subject.getCurrentFileName());
-			subject = storage.readExistingWorker(workerId);//Ugly, but needed now so the worker comes with the actual session ID.
+			WorkerSession  session = storage.readActiveSessionById(subject.getSessionId());
 			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
 			subject.addSurveyAnswer(question[1], request.getParameter("age"));
 			subject.addSurveyAnswer(question[2], request.getParameter("country"));

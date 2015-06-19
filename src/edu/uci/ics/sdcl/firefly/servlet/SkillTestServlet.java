@@ -147,7 +147,7 @@ public class SkillTestServlet extends HttpServlet {
 
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		WorkerSession  session = this.storage.readNewSession(this.worker.getWorkerId(), this.worker.getCurrentFileName());
+		WorkerSession  session = this.storage.readActiveSessionById(this.worker.getSessionId());
 		//System.out.println("loadFirstMicrotask, session= "+session);
 		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.

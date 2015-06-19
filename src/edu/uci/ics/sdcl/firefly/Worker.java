@@ -1,10 +1,9 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Vector;
+
 
 public class Worker implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -17,7 +16,8 @@ public class Worker implements Serializable{
 	private Integer grade;
 	private String skillTestDuration;
 	private String sessionId; //Stores the single working session session allowed per worker
-	private String currentFileName; //File name that the worker is requesting to work on.  
+	private String currentFileName; //File name that the worker is requesting to work on. 
+	private Hashtable<String, Integer> fileHistory = new Hashtable<String, Integer>();
 
 	public Worker(String workerId, String consentDateStr, String currentFileName) {
 		this.workerId = workerId;
@@ -151,6 +151,26 @@ public class Worker implements Serializable{
 			status =true;
 		return status;
 	}
-
+	
+	private void addFileHistory(String file)
+	{
+		Integer usedTimes = this.fileHistory.get(currentFileName);
+		if(usedTimes == null)
+			this.fileHistory.put(file, 1);
+		else
+			this.fileHistory.put(file, usedTimes +1);
+	}
+	
+	public boolean isAllowedFile(String file)
+	{
+		boolean status = false;
+		Integer usedTimes = this.fileHistory.get(file);
+		if(usedTimes == null)
+		{
+			addFileHistory(file);
+			status = true;
+		}
+		return status;
+	}
 
 }

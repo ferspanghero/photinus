@@ -79,23 +79,25 @@ public class LiteContainerManager extends StorageStrategy{
 	 */
 	public synchronized WorkerSession readNewSession(String workerId, String fileName){	
 		WorkerSession session;
-		if(newSessionTable!=null && !newSessionTable.isEmpty()){
-			Stack<WorkerSession> stack = newSessionTable.get(fileName);
-			if(stack!=null && !stack.isEmpty()){
-				session = stack.pop();
-				session.setWorkerId(workerId);
-				Worker worker = this.workerTable.get(workerId);
-				sessionLogger.info("EVENT%OPEN SESSION% workerId%"+ workerId
-						+"% sessionId%"+ session.getId()
-						+"% fileName%"+fileName);
-				worker.setSessionId(session.getId());
-				this.workerTable.put(workerId, worker);
-				this.activeSessionTable.put(session.getId(), session); 
-				return session;
-			}else
-				return null;
-		}else
-			return null;
+		Worker worker = this.workerTable.get(workerId);
+		if(worker.isAllowedFile(fileName))
+		{
+			if(newSessionTable!=null && !newSessionTable.isEmpty()){
+				Stack<WorkerSession> stack = newSessionTable.get(fileName);
+				if(stack!=null && !stack.isEmpty()){
+					session = stack.pop();
+					session.setWorkerId(workerId);
+					sessionLogger.info("EVENT%OPEN SESSION% workerId%"+ workerId
+							+"% sessionId%"+ session.getId()
+							+"% fileName%"+fileName);
+					worker.setSessionId(session.getId());
+					this.workerTable.put(workerId, worker);
+					this.activeSessionTable.put(session.getId(), session); 
+					return session;
+				}
+			}
+		}
+		return null;
 	}
 
 	public synchronized boolean areThereMicrotasksAvailable(){
@@ -216,5 +218,10 @@ public class LiteContainerManager extends StorageStrategy{
 	public boolean insertFeedback(String feedback) {
 		consentLogger.info("EVENT%FEEDBACK% " + feedback);
 		return true;
+	}
+	
+	public synchronized WorkerSession readActiveSessionById(String sessionId)
+	{
+		return this.activeSessionTable.get(sessionId);
 	}
 }

@@ -55,5 +55,6 @@ public abstract class StorageStrategy {
 	public abstract Worker readExistingWorker(String workerId);
 	public abstract boolean insertSurvey(Worker worker);
 	public abstract boolean insertFeedback(String feedback);
+	public abstract WorkerSession readActiveSessionById(String sessionId);
 
 	}

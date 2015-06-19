@@ -131,5 +131,11 @@ public class StorageManager extends StorageStrategy{
 		return false;
 		
 	}
+
+	@Override
+	public WorkerSession readActiveSessionById(String sessionId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
