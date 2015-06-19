@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
-import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
@@ -20,8 +19,10 @@ import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
  */
 public class ConsentServlet extends HttpServlet {
 
-	private String SkillTestPage = "/SkillTest.jsp";
+	private static final long serialVersionUID = 1L;
+	
 	private String ErrorPage = "/ErrorPage.jsp";
+	private final String SurveyPage = "/Survey.jsp";
 	private final String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
 	private StorageStrategy storage;
 
@@ -54,38 +55,21 @@ public class ConsentServlet extends HttpServlet {
 					worker = storage.readExistingWorker(workerCookie.getValue());
 					if(worker == null)
 						newWorker(request, response, worker, fileName);
-					else if(worker.hasPassedTest())
-						loadFirstMicrotask(request, response, worker, fileName);
 					else
-						existingWorker(request, response, worker);
+						existingWorker(request, response, worker, fileName);
 				}
 				else
 					newWorker(request, response, worker, fileName);
 			}
 		}
-		else{
+		else
 			this.showErrorPage(request, response, "action not recognized: "+ subAction);
-		}	
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
-
-	private HttpServletRequest loadQuestions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		SkillTestSource source = new SkillTestSource();
-		request.setAttribute("editor1", source.getSourceOne());
-		//request.setAttribute("editor2", source.getSourceTwo());
-		request.setAttribute("subAction", "gradeAnswers");
-		return request;
-	}
-	
-	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
-		request.setAttribute("error", message);
-		request.setAttribute("executionId", "before consent");
-		request.getRequestDispatcher(ErrorPage).forward(request, response);
-	}
 	
 	private Cookie validateWorker(HttpServletRequest request)
 	{
@@ -102,7 +86,7 @@ public class ConsentServlet extends HttpServlet {
 		return result;
 	}
 	
-	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response, Worker worker, String fileName) throws ServletException, IOException {
+	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response, Worker worker, String fileName, String page) throws ServletException, IOException {
 		storage = StorageStrategy.initializeSingleton();
 		WorkerSession  session = storage.readNewSession(worker.getWorkerId(), fileName);
 		//System.out.println("loadFirstMicrotask, session= "+session);
@@ -110,13 +94,16 @@ public class ConsentServlet extends HttpServlet {
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
 			showErrorPage(request, response,"@ SkillTestServlet - no microtask available");
 		else{
+			// Sets the workerID cookie
+			response.addCookie(new Cookie("w", worker.getWorkerId()));
 			//Restore data for next Request
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 			request.setAttribute("workerId", worker.getWorkerId());
+			request.setAttribute("sessionId", session.getId());
 			
 			//Load the new Microtask data into the Request
 			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
-			request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
+			request.getRequestDispatcher(page).forward(request, response);
 		}
 	}
 	
@@ -124,21 +111,27 @@ public class ConsentServlet extends HttpServlet {
 	{
 		String consentDateStr= TimeStampUtil.getTimeStampMillisec();
 		worker = storage.insertConsent(consentDateStr,fileName);
-		skillQualificationExam(request, response, worker);
+		surveyPage(request, response, worker, fileName);
 	}
 	
-	private void existingWorker(HttpServletRequest request, HttpServletResponse response, Worker worker) throws ServletException, IOException
+	private void existingWorker(HttpServletRequest request, HttpServletResponse response, Worker worker, String fileName) throws ServletException, IOException
 	{
-		skillQualificationExam(request, response, worker);
+		questionPage(request, response, worker, fileName);
 	}
 	
-	private void skillQualificationExam(HttpServletRequest request, HttpServletResponse response, Worker worker) throws ServletException, IOException
+	private void surveyPage(HttpServletRequest request, HttpServletResponse response, Worker worker, String fileName) throws ServletException, IOException
 	{
-		// now passing parameters to the next page
-		request.setAttribute("workerId", worker.getWorkerId());
-		request.setAttribute("subAction", "gradeAnswers");
-		response.addCookie(new Cookie("w", worker.getWorkerId()));
-		request = this.loadQuestions(request, response);
-		request.getRequestDispatcher(SkillTestPage).forward(request, response);
+		loadFirstMicrotask(request, response, worker, fileName, SurveyPage);
+	}
+	
+	private void questionPage(HttpServletRequest request, HttpServletResponse response, Worker worker, String fileName) throws ServletException, IOException
+	{
+		loadFirstMicrotask(request, response, worker, fileName, QuestionMicrotaskPage);
+	}
+	
+	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
+		request.setAttribute("error", message);
+		request.setAttribute("executionId", "before consent");
+		request.getRequestDispatcher(ErrorPage).forward(request, response);
 	}
 }

@@ -32,7 +32,7 @@ public class SkillTestServlet extends HttpServlet {
 
 	private String SorryPage = "/SorryPage.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
-	private String SurveyPage = "/Survey.jsp";
+	private final String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
 
 	private Worker worker;
 	private StorageStrategy storage;
@@ -159,7 +159,7 @@ public class SkillTestServlet extends HttpServlet {
 
 			//Load the new Microtask data into the Request
 			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
-			request.getRequestDispatcher(SurveyPage).forward(request, response);
+			request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
 		}
 	}
 

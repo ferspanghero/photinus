@@ -10,13 +10,19 @@ import javax.servlet.http.HttpServletResponse;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
+import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
  * Servlet implementation class SurveyServlet
  */
 public class SurveyServlet extends HttpServlet {
-    public static String question[] = {"Gender", "Age", "Country", "Experience"};   
+
+	private static final long serialVersionUID = 1L;
+	
+	public static String question[] = {"Gender", "Age", "Country", "Experience"};   
+    private final String SkillTestPage = "/SkillTest.jsp";
+    
     public SurveyServlet() {
         super();
     }
@@ -38,10 +44,9 @@ public class SurveyServlet extends HttpServlet {
 			request.setAttribute("workerId",subject.getWorkerId());
 			request.setAttribute("sessionId",subject.getSessionId());
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
+			request = loadQuestions(request, response);
 			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
-			request.getRequestDispatcher("/QuestionMicrotask.jsp").forward(request, response);
-			//request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
-			//request.getRequestDispatcher("/QuestionMicrotask.jsp").forward(request, response);
+			request.getRequestDispatcher(SkillTestPage).forward(request, response);
 		} else{
 			request.setAttribute("executionId", request.getParameter("workerId"));
 			request.setAttribute("error", "@SurveyServlet - object 'subject' is null");
@@ -52,6 +57,14 @@ public class SurveyServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+	}
+	
+	private HttpServletRequest loadQuestions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		SkillTestSource source = new SkillTestSource();
+		request.setAttribute("editor1", source.getSourceOne());
+		//request.setAttribute("editor2", source.getSourceTwo());
+		request.setAttribute("subAction", "gradeAnswers");
+		return request;
 	}
 
 }
