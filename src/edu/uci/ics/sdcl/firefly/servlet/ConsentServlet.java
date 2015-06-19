@@ -95,7 +95,7 @@ public class ConsentServlet extends HttpServlet {
 		WorkerSession  session = storage.readNewSession(worker.getWorkerId(), fileName);
 		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
-			showErrorPage(request, response,"@ SkillTestServlet - no microtask available");
+			showErrorPage(request, response,"@ConsentServlet - no microtask available");
 		else{
 			// Sets the workerID cookie
 			response.addCookie(new Cookie("w", worker.getWorkerId()));
