@@ -3,11 +3,6 @@ package edu.uci.ics.sdcl.firefly;
 import java.io.Serializable;
 import java.util.Vector;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
-
 /**
  * Represents a working session, which is a set of microtasks performed by a single worker
  * 

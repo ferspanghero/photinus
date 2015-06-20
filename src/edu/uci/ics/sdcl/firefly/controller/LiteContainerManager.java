@@ -13,6 +13,7 @@ import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.servlet.SkillTestServlet;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
+import edu.uci.ics.sdcl.firefly.util.RandomKeyGenerator;
 
 public class LiteContainerManager extends StorageStrategy{
 
@@ -34,6 +35,8 @@ public class LiteContainerManager extends StorageStrategy{
 	/** Logger for sessions and microtasks  */
 	private Logger sessionLogger;
 
+	/** Random workerID generator */
+	private static final RandomKeyGenerator keyGenerator = new RandomKeyGenerator();
 
 	private static LiteContainerManager container;
 
@@ -183,7 +186,7 @@ public class LiteContainerManager extends StorageStrategy{
 	}
 
 	public synchronized Worker insertConsent(String consentDateStr, String fileName) {
-		Worker worker = new Worker(new Integer(this.workerTable.size()).toString(),consentDateStr, fileName);
+		Worker worker = new Worker(keyGenerator.generate(),consentDateStr, fileName);
 			consentLogger.info("EVENT%CONSENT% workerId%"+worker.getWorkerId()
 					+"% consentDate%" + worker.getConsentDate().toString()
 					+"% fileName%"+worker.getCurrentFileName());	

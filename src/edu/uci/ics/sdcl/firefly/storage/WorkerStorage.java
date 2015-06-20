@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.servlet.SkillTestServlet;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
+import edu.uci.ics.sdcl.firefly.util.RandomKeyGenerator;
 
 public class WorkerStorage {
 	private String persistentFileName = "worker.ser";
@@ -21,6 +22,9 @@ public class WorkerStorage {
 	private static WorkerStorage storage;
 	private static Logger logger;
 	private static Hashtable<String, Worker> workerTable;
+	
+	/** Random workerID generator */
+	private static final RandomKeyGenerator keyGenerator = new RandomKeyGenerator();
 	
 	public synchronized static WorkerStorage initializeSingleton(){
 		if(storage == null)
@@ -140,7 +144,7 @@ public class WorkerStorage {
 		if(workerTable==null)
 			workerTable = this.retrieveIndex();
 		Integer keyInt = new Integer(workerTable.size()); 
-		String key = keyInt.toString();
+		String key = keyGenerator.generate();
 		while(workerTable.containsKey(key)){//Avoid to use an already existing Worker ID
 			keyInt++;
 			key = keyInt.toString();
