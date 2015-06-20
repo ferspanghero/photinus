@@ -132,7 +132,8 @@
 			/* look for all checkboes that have a parent id called 'checkboxlist' attached to it and check if it was checked */
 			$("#learnedDiv input:checked").each(function() {
 				if($(this).val()=="Other"){
-					chkArray.push("Other_"+document.getElementById("otherlearned").value);
+					//
+					chkArray.push("Other "+document.getElementById("otherlearned").value);
 				}else{
 					chkArray.push($(this).val());
 				}
@@ -145,14 +146,15 @@
 			selected = chkArray.toString();
 			
 			/* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
-			console.log(chkArray.length<1);
-			if(chkArray.length <= 1){
+			//console.log(chkArray.length<1);
+			if(chkArray.length < 1){
 				alert("Please select at least one of the checkbox");
 				return false;
 			}
 			
 			document.getElementById("hlearned").value = ''+selected;
-			//var values = document.getElementById("hlearned").value;
+			var values = document.getElementById("hlearned").value;
+			//alert("values: "+ values);
 			return true;
 			
 		}
