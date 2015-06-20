@@ -17,8 +17,8 @@
 #content {
 	background-color: #D1EEEE;
 	text-align: justify;
-	margin-left: 100px;
-	margin-right: 100px;
+	margin-left: 80px;
+	margin-right: 80px;
 }
 
 .ui-dialog-titlebar-close {
@@ -143,13 +143,12 @@
 			/* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
 			console.log(chkArray.length<1);
 			if(chkArray.length <= 1){
-				console.log("ïn");
-				alert("Please at least one of the checkbox");
+				alert("Please select at least one of the checkbox");
 				return false;
 			}
 			
 			document.getElementById("hlearned").value = ''+selected;
-			var values = document.getElementById("hlearned").value;
+			//var values = document.getElementById("hlearned").value;
 			return true;
 			
 		}
@@ -201,7 +200,31 @@
 
 			<form name="surveyForm" method="get" action="survey">
  
-				<br> What is your gender?<br> &nbsp;&nbsp;<input
+				 <!--  EXPERIENCE QUESTIONS -->
+		
+				<br> I am currently a:</b><br>	
+				<input type="radio" name="experience" value="1">Professional developer<br>
+				<input type="radio" name="experience" value="2">Graduate student<br>
+				<input type="radio" name="experience" value="3">Undergraduate student<br>
+				<input type="radio" name="experience" value="4">Hobbyist<br>
+				<input type="radio" name="experience" value="5">Other <input type="text" name="otherexperience" size="15">
+				<br>
+				<br>Which programming language(s) do you use most at present?
+				<input type="text" id="language" name="language" size="25"><br>
+				<br>How many years have you been programming?
+				<input type="text" id="years" name="years" size="2"><br>
+				<div id="learnedDiv">			
+   				<br>Where did you learn to code (mark all that apply)?<br>
+   				<input type="hidden" id="hlearned" name="hlearned" value="">
+   				<input type="checkbox" name="learned" value="High School" /> High school<br>
+   				<input type="checkbox" name="learned" value="University"/> College/University<br>
+   				<input type="checkbox" name="learned" value="Web" /> In the web<br>
+   				<input type="checkbox" name="learned" value="Other" /> Other 
+   				<input type="text" id="otherlearned"name="otherlearned" />
+   				
+   				<!--  DEMOGRAPHIC QUESTIONS  -->
+   				
+   					<br><br> What is your gender?<br> &nbsp;&nbsp;<input
 					type="radio" name="gender" value="Female">Female<br>
 				&nbsp;&nbsp;<input type="radio" name="gender" value="Male">Male<br>
 				&nbsp;&nbsp;<input type="radio" name="gender" value="Other">Other<br>
@@ -211,25 +234,7 @@
 					size="2" /><br>
 				<br> What is your country of residence?</b> <input type=text
 					name="country" id="country" size="25" /><br>
-				<br> I am currently a:</b><br>	
-				<input type="radio" name="experience" value="1">Professional developer<br>
-				<input type="radio" name="experience" value="2">Graduate student<br>
-				<input type="radio" name="experience" value="3">Undergraduate student<br>
-				<input type="radio" name="experience" value="4">Hobbyist<br>
-				<input type="radio" name="experience" value="5">Other <input type="text" name="otherexperience" size="15">
-				<br>
-				<br>Which programming language do you use most at present?
-				<input type="text" id="language" name="language" size="25"><br>
-				<br>How many years have you been programming?
-				<input type="text" id="years" name="years" size="2"><br>
-				<div id="learnedDiv">			
-   				<br>Where did you learn to code (mark all that apply)?<br>
-   				<input type="hidden" id="hlearned" name="hlearned" value="">
-   				<input type="checkbox" name="learned" value="High School"> High school<br>
-   				<input type="checkbox" name="learned" value="University"> College/University<br>
-   				<input type="checkbox" name="learned" value="Web"> In the web<br>
-   				<input type="checkbox" name="learned" value="Other"> Other 
-   				<input type="text" id="otherlearned"name="otherlearned">
+   				
    				</div>
    				<br><br>
 
@@ -240,11 +245,8 @@
 
 				<br>
 				
-				<input type="button"  value="Quit" onclick='quitConfirm()'>
-					&nbsp;&nbsp;
-				 <INPUT TYPE="button" VALUE="Submit answer"
-					onclick="submitAnswer(event)">
-
+				<center> <INPUT TYPE="button" VALUE="Submit answer" onclick="submitAnswer(event)">
+				</center>
 			</form>
 		</div>
 		<br>
