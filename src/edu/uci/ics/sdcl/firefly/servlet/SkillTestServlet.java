@@ -59,8 +59,11 @@ public class SkillTestServlet extends HttpServlet {
 			showErrorPage(request,response, "Execution ID does not exist in database.");
 		}
 		else if(worker.hasTakenTest()){
-			request.setAttribute("message", "Dear worker, you don't qualify to perform the task, because our system indicates that you have already taken this test. Please wait for the next round of experiments.");
-			request.getRequestDispatcher(SorryPage).include(request, response);
+			sorryPage(request, response, 
+					"Dear participant, you have already taken this task,"
+					+ " please obtain the link for a new task and try again."
+					+ " Thank you. In case you have doubts, please send an email"
+					+ " to adrianoc@uci.edu.");
 		}
 		else{
 			int grade = this.processAnswers(request);
@@ -167,6 +170,12 @@ public class SkillTestServlet extends HttpServlet {
 		request.setAttribute("error", message);
 		request.setAttribute("executionId", this.worker.getWorkerId());
 		request.getRequestDispatcher(ErrorPage).include(request, response);
+	}
+	
+	private void sorryPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException
+	{
+		request.setAttribute("message", message);
+		request.getRequestDispatcher(SorryPage).include(request, response);
 	}
 
 }

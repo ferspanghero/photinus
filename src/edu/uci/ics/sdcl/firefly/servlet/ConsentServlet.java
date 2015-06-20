@@ -95,7 +95,11 @@ public class ConsentServlet extends HttpServlet {
 		WorkerSession  session = storage.readNewSession(worker.getWorkerId(), fileName);
 		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
-			showErrorPage(request, response,"@ConsentServlet - no microtask available");
+			sorryPage(request, response, 
+					"Dear participant, you have already taken this task,"
+					+ " please obtain the link for a new task and try again."
+					+ " Thank you. In case you have doubts, please send an email"
+					+ " to adrianoc@uci.edu.");
 		else{
 			// Sets the workerID cookie
 			response.addCookie(new Cookie("w", worker.getWorkerId()));
@@ -122,7 +126,7 @@ public class ConsentServlet extends HttpServlet {
 		if(worker.hasPassedTest())
 			questionPage(request, response, worker, fileName);
 		else
-			sorryPage(request, response);
+			sorryPage(request, response, "Dear worker, you didn't get the minimal qualifying grade to perform the task." );
 	}
 	
 	private void surveyPage(HttpServletRequest request, HttpServletResponse response, Worker worker, String fileName) throws ServletException, IOException
@@ -141,9 +145,9 @@ public class ConsentServlet extends HttpServlet {
 		request.getRequestDispatcher(ErrorPage).forward(request, response);
 	}
 	
-	private void sorryPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	private void sorryPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException
 	{
-		request.setAttribute("message", "Dear worker, you didn't get the minimal qualifying grade to perform the task.");
+		request.setAttribute("message", message);
 		request.getRequestDispatcher(SorryPage).include(request, response);
 	}
 }
