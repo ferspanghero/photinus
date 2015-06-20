@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="jquery/jquery-ui-1.10.4.custom.min.css">
 <style type="text/css" media="screen">
 #container {
-	max-width: 700px;
+	max-width: 800px;
 	background-color: #D1EEEE;
 	text-align: justify;
 	margin: 0 auto;
@@ -211,7 +211,7 @@
 					size="2" /><br>
 				<br> What is your country of residence?</b> <input type=text
 					name="country" id="country" size="25" /><br>
-				<br> What is your leve of experience?</b><br>	
+				<br> I am currently a:</b><br>	
 				<input type="radio" name="experience" value="1">Professional developer<br>
 				<input type="radio" name="experience" value="2">Graduate student<br>
 				<input type="radio" name="experience" value="3">Undergraduate student<br>
@@ -223,9 +223,9 @@
 				<br>How many years have you been programming?
 				<input type="text" id="years" name="years" size="2"><br>
 				<div id="learnedDiv">			
-   				<br>Where did you learn to code (mark all that apply)<br>
+   				<br>Where did you learn to code (mark all that apply)?<br>
    				<input type="hidden" id="hlearned" name="hlearned" value="">
-   				<input type="checkbox" name="learned" value="High School"> High School<br>
+   				<input type="checkbox" name="learned" value="High School"> High school<br>
    				<input type="checkbox" name="learned" value="University"> College/University<br>
    				<input type="checkbox" name="learned" value="Web"> In the web<br>
    				<input type="checkbox" name="learned" value="Other"> Other 
