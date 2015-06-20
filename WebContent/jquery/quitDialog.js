@@ -64,7 +64,7 @@ function quitDialog(){
 
 function quitConfirm() {
     var x;
-    if (confirm("Do you really want to quit") == true) {
+    if (confirm("Do you really want to quit?") == true) {
         showQuitDialog();
     } else {
         //nothing

@@ -33,13 +33,13 @@ background-color: #FFFFFF;
 		<div id="content">
 			<form name="feedback" action="feedback" method="get">
 				<center>
-					Please provide any additional feedback:<br><br>
+					<b>Great! Almost done! Could you please give us some additional feedback?</b><br><br>
 					<textarea name="feedback" id="feedback" rows="6" cols="45"></textarea>
 					<input type="hidden"
 					name="key" id="key" value=${requestScope["key"]}> 
 					<input type="hidden"
 					name="workerId" id="workerId" value=${requestScope["workerId"]}> 
-					<br>
+					<br><br>
 					<input type="submit" value="Submit">
 					<br><br>
 			</form>
