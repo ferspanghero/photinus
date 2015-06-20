@@ -23,7 +23,7 @@ function checkDifficultyAnswers() {
 
 function onload(){
 	var diffForm = document.forms["difficultyForm"];
-	diffForm.getElementById("difficultyButton").focus;
+	diffForm.getElementById("difficultyButton");
 }
 
 

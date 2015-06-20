@@ -53,7 +53,11 @@ function showQuitDialog() {
 		width : 485,
 		resizable : false,
 		closeOnEscape : false,
-		title : "Why did you decide to quit ?"
+		title : "Why did you decide to quit ?",
+		open: function ()
+        {
+        $(this).find('select, input, textarea').first().blur();
+        }
 	});
 	$("#quit").dialog('open');
 }

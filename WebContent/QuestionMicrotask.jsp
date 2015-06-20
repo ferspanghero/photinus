@@ -206,6 +206,7 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 				title : "How difficult was this task for you?",
 				open: function (event, ui) {
 				    $('#survey').css('overflow', 'hidden');
+				    $(this).find('select, input, textarea').first().blur();
 				}
 			});
 			$("#difficulty").dialog('open');
