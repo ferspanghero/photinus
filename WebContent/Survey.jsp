@@ -131,10 +131,14 @@
 			
 			/* look for all checkboes that have a parent id called 'checkboxlist' attached to it and check if it was checked */
 			$("#learnedDiv input:checked").each(function() {
-				chkArray.push($(this).val());
+				if($(this).val()=="Other"){
+					chkArray.push("Other_"+document.getElementById("otherlearned").value);
+				}else{
+					chkArray.push($(this).val());
+				}
 			});
 			
-			chkArray.push(document.getElementById("otherlearned").value);
+			//chkArray.push(document.getElementById("otherlearned").value);
 			
 			/* we join the array separated by the comma */
 			var selected;
@@ -220,8 +224,8 @@
    				<input type="checkbox" name="learned" value="University"/> College/University<br>
    				<input type="checkbox" name="learned" value="Web" /> In the web<br>
    				<input type="checkbox" name="learned" value="Other" /> Other 
-   				<input type="text" id="otherlearned"name="otherlearned" />
-   				
+   				<input type="text" id="otherlearned" name="otherlearned" />
+   				</div>
    				<!--  DEMOGRAPHIC QUESTIONS  -->
    				
    					<br><br> What is your gender?<br> &nbsp;&nbsp;<input
@@ -235,7 +239,7 @@
 				<br> What is your country of residence?</b> <input type=text
 					name="country" id="country" size="25" /><br>
    				
-   				</div>
+
    				<br><br>
 
 				<!-- Hidden fields -->
