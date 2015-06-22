@@ -2,6 +2,8 @@ package test;
 
 
 
+import java.io.IOException;
+
 import net.sourceforge.jwebunit.junit.WebTester;
 import net.sourceforge.jwebunit.util.TestingEngineRegistry;
 
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -21,6 +24,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLDivElement;
 
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
@@ -35,14 +40,14 @@ public class ServerLoadTest implements Runnable{
 
 	//Used for HTMLUnit
 	private WebClient webClient;
-	private int workerId=0;
+	private String workerId="0";
 	private static int threadId=-1;
 	private int defaultId;
 	private int myThread;
 	private static String localPath = "http://localhost:8080/Photinus/";
 	private static String serverPath = "http://dellserver.ics.uci.edu:8080/crowd-debug/";
 	private static String path;
-	private static String filename = "variableTest.java";
+	private static String filename = "7_TimePeriodValues";
 
 	private HtmlPage nextPage;
 
@@ -89,8 +94,8 @@ public class ServerLoadTest implements Runnable{
 			CookieManager manager = new CookieManager();
 			manager.clearCookies();
 			if(runConsent())
-				if(runSkillTest()){
-					if(runSurvey())
+				if(runSurvey()){
+					if(runSkillTest())
 					{
 						boolean success=true;
 						int i=0;
@@ -99,6 +104,8 @@ public class ServerLoadTest implements Runnable{
 							i++;
 						}
 						loggerSession.info("Thread ="+this.myThread+"; answered="+new Integer(i).toString()+" times.");
+						if(success)
+							runFeedback();
 					}
 				}
 
@@ -117,7 +124,9 @@ public class ServerLoadTest implements Runnable{
 
 	//@Test
 	public boolean runConsent()throws Exception {
+		
 		final HtmlPage page = this.webClient.getPage(path+"ConsentForm.jsp"+"?"+filename);
+		System.out.println("STARTED : "+page.getTitleText());
 
 		final HtmlForm form = page.getFormByName("consentForm");
 		final HtmlButtonInput button = form.getInputByName("yesButton");
@@ -135,17 +144,17 @@ public class ServerLoadTest implements Runnable{
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
-			this.workerId = this.defaultId;
+			this.workerId = Integer.toString(this.defaultId);
 			loggerConsent.info("Consent=FAILED; threadId= "+ this.myThread+ "; Page="+ nextPage.getTitleText() + "; message="+message);
 			return false;
 		}
-		else{
+		else{// The survey page shows up
 			//obtain the workerId
-			final HtmlForm testForm = nextPage.getFormByName("testForm");
-			final HtmlHiddenInput workerIdInput = testForm.getInputByName("workerId");
-			this.workerId = new Integer(workerIdInput.getValueAttribute()).intValue();
+			System.out.println("ENDED : "+nextPage.getTitleText());
+			final HtmlForm surveyForm = nextPage.getFormByName("surveyForm");
+			final HtmlHiddenInput workerIdInput = surveyForm.getInputByName("workerId");
+			this.workerId = workerIdInput.getValueAttribute();
 			loggerConsent.info("Consent=SUCCESS; workerId= "+ this.workerId+ "; Page="+ nextPage.getTitleText());
-			//System.out.println("worker Id set correctly="+this.workerId);
 			return true;
 		}
 	}
@@ -153,7 +162,7 @@ public class ServerLoadTest implements Runnable{
 
 	public boolean runSkillTest() throws Exception	{
 		//final HtmlPage page = this.webClient.getPage(path+"SkillTest.jsp");
-
+		System.out.println("STARTED : "+nextPage.getTitleText());
 		final HtmlForm form = this.nextPage.getFormByName("testForm");
 
 		final HtmlInput radio1 = form.getInputByName("QUESTION1");
@@ -171,7 +180,7 @@ public class ServerLoadTest implements Runnable{
 
 		form.setActionAttribute("skillTest");
 		HtmlHiddenInput input1 = form.getInputByName("workerId");
-		input1.setValueAttribute(new Integer(this.workerId).toString());
+		input1.setValueAttribute(this.workerId);
 		HtmlHiddenInput input2 = form.getInputByName("timeStamp");
 		input2.setValueAttribute(TimeStampUtil.getTimeStampMillisec());
 		HtmlHiddenInput input3 = form.getInputByName("subAction");
@@ -195,7 +204,8 @@ public class ServerLoadTest implements Runnable{
 				loggerConsent.info("Tests=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 				return false;
 			}
-			else{
+			else{// The question page shows up
+				System.out.println("ENDED : "+nextPage.getTitleText());
 				loggerConsent.info("Test=SUCCESS; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText());
 				return true;
 			}
@@ -203,7 +213,7 @@ public class ServerLoadTest implements Runnable{
 
 	@Test
 	public boolean runMicrotask() throws Exception {
-		System.out.println(nextPage.getTitleText());
+		System.out.println("STARTED : "+nextPage.getTitleText());
 		//final HtmlPage page = this.webClient.getPage(path+"QuestionMicrotask.jsp");
 		final HtmlForm answerForm = nextPage.getFormByName("answerForm");
 
@@ -213,15 +223,38 @@ public class ServerLoadTest implements Runnable{
 		//	HtmlHiddenInput input2 =answerForm.getInputByName("timeStamp");
 		//input2.setValueAttribute(TimeStampUtil.getTimeStampMillisec());
 
-		final HtmlInput radio = answerForm.getInputByName("answer");
-		radio.click();
-		radio.setValueAttribute("5"); //Means a "Not at all"
+		// Answer radio field
+		final HtmlInput radioAnswer = answerForm.getInputByName("answer");
+		radioAnswer.click();
+		radioAnswer.setValueAttribute("3"); //Means a "Not at all"
 
-		final HtmlSubmitInput button = answerForm.getInputByName("answerButton");
-		//System.out.println("Microtask clicked, workerId= "+ this.workerId);
-		this.nextPage= button.click();
-		System.out.println(nextPage.getTitleText());
-
+		// Confidence radio field
+		final HtmlInput radioConfidence = answerForm.getInputByName("confidence");
+		radioConfidence.click();
+		radioConfidence.setValueAttribute("5");
+		
+		// Explanation textarea
+		final HtmlTextArea textAreaExplanation = answerForm.getTextAreaByName("explanation");
+		textAreaExplanation.click();
+		textAreaExplanation.setNodeValue("My explanation");
+		
+		// Form submit button
+		final HtmlButtonInput button = answerForm.getInputByName("answerButton");
+		button.click();
+		
+		// Difficulty form
+		final HtmlForm difficultyForm = nextPage.getFormByName("difficultyForm");
+		
+		// Difficulty radio
+		final HtmlInput radioDifficulty = difficultyForm.getInputByName("difficulty");
+		radioDifficulty.click();
+		radioDifficulty.setValueAttribute("3");
+		
+		// Difficulty submit button
+		final HtmlButtonInput submitButton = difficultyForm.getInputByName("difficultySubmit");
+		nextPage = submitButton.click();
+		
+		System.out.println("ENDED : "+nextPage.getTitleText());
 		if(nextPage.getTitleText().matches("Error Page")){
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
@@ -237,11 +270,11 @@ public class ServerLoadTest implements Runnable{
 				return false;
 			}
 			else
-				if(nextPage.getTitleText().matches("Survey Page")){
-					loggerConsent.info("Survey Page");
-					return runSurvey();
+				if(nextPage.getTitleText().matches("Feedback Page")){ // The feedback page shows up
+					loggerConsent.info("Feedback Page");
+					return true;
 				}
-				else{
+				else{ // There are more question so continue on the MicroTaskPage
 					final HtmlForm microtaskForm = nextPage.getFormByName("answerForm");
 					final HtmlInput microtaskId = microtaskForm.getInputByName("microtaskId");
 					loggerSession.info("Microtask=SUCCESS; workerId= "+ this.workerId+"; microtaskId="+microtaskId.getValueAttribute()+ "; Page="+nextPage.getTitleText());
@@ -251,25 +284,47 @@ public class ServerLoadTest implements Runnable{
 
 	@Test
 	public boolean runSurvey() throws Exception {
+		System.out.println("STARTED : "+nextPage.getTitleText());
 		//final HtmlPage page = this.webClient.getPage(path+"QuestionMicrotask.jsp");
 		final HtmlForm surveyForm = nextPage.getFormByName("surveyForm");
 
+		// Experience Radio
+		final HtmlInput radioExperience = surveyForm.getInputByName("experience");
+		radioExperience.click();
+		radioExperience.setValueAttribute("Undergraduate student");
+		
+		// Programming language field
+		final HtmlInput textFieldLanguage = surveyForm.getInputByName("language");
+		textFieldLanguage.click();
+		textFieldLanguage.setValueAttribute("Java");
+		
+		// Programming language field
+		final HtmlInput textFieldYears = surveyForm.getInputByName("years");
+		textFieldYears.click();
+		textFieldYears.setValueAttribute("2");
+		
+		// Learned checkbox
+		final HtmlInput checkboxLearned = surveyForm.getInputByName("learned");
+		checkboxLearned.click();
+		checkboxLearned.setValueAttribute("University");
+		
+		// Gender radio
 		final HtmlInput radioGender = surveyForm.getInputByName("gender");
 		radioGender.click();
 		radioGender.setValueAttribute("Female");
 
+		// Age text field
 		final HtmlInput age = surveyForm.getInputByName("age");
 		age.setValueAttribute("1");
 
+		// Country of residence text field
 		final HtmlInput country = surveyForm.getInputByName("country");
 		country.setValueAttribute("1");
 
-		final HtmlInput experience = surveyForm.getInputByName("experience");
-		experience.setValueAttribute("5");
-
-		final HtmlSubmitInput button = surveyForm.getInputByName("submit");
+		// Submit form
+		final HtmlSubmitInput button = surveyForm.getInputByName("surveySubmit");
 		this.nextPage= button.click();
-
+		System.out.println("ENDED : "+nextPage.getTitleText());
 		if(nextPage.getTitleText().matches("Error Page")){
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
@@ -284,14 +339,45 @@ public class ServerLoadTest implements Runnable{
 				loggerConsent.info("Survey=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 				return false;
 			}
-			else{
-				final HtmlForm reasonForm = nextPage.getFormByName("reasonForm");
-				final HtmlInput sessionId = reasonForm.getInputByName("sessionId");
-				loggerConsent.info("Session=OPENED; workerId= "+ this.workerId+"; sessionId="+sessionId.getValueAttribute());
+			else{ // It comes to Skill Test page
+				loggerConsent.info("Session=OPENED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText());
 				return true;
 			}
 
 
+	}
+	
+	public boolean runFeedback() throws IOException
+	{
+		System.out.println("STARTED : "+nextPage.getTitleText());
+		// Feedback form
+		final HtmlForm feedBackForm = nextPage.getFormByName("feedback");
+		
+		// Feedback text area
+		final HtmlTextArea textAreaFeedback = feedBackForm.getTextAreaByName("feedback");
+		textAreaFeedback.click();
+		textAreaFeedback.setNodeValue("No feedback at all");
+		
+		//Feedback submit button
+		final HtmlInput submitButton = feedBackForm.getInputByName("feedbackSubmit");
+		nextPage = submitButton.click();
+		System.out.println("ENDED : "+nextPage.getTitleText());
+		if(nextPage.getTitleText().matches("Error Page")){
+			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
+			final HtmlInput messageInput = messageForm.getInputByName("message");
+			String message = messageInput.getValueAttribute();
+			loggerConsent.info("Survey=FAIILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+			return false;
+		}
+		else
+		{ // Thanks page shows up
+			final HtmlForm reasonForm = nextPage.getFormByName("thanksForm");
+			final HtmlInput sessionId = reasonForm.getInputByName("sessionId");
+			final DomElement divKey = nextPage.getElementById("key");
+			loggerConsent.info("Session=CLOSED; workerId= "+ this.workerId+"; sessionId="+sessionId.getValueAttribute() + "; MechanicalTurk=" +divKey.getNodeValue());
+			return true;
+		}
+		
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -324,7 +410,7 @@ public class ServerLoadTest implements Runnable{
 		loggerInfo.debug("Before assert Title");
 		webTester.assertTitleEquals("Java Skill Test");
 		webTester.beginAt("SkillTest.jsp");
-		workerId++;
+//		workerId++;
 		webTester.setHiddenField("workerId", new Integer(workerId).toString());
 		webTester.assertRadioOptionPresent("QUESTION1", "1");
 

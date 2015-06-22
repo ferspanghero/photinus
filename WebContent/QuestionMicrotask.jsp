@@ -305,10 +305,11 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 				</tr>
 			</table>
 				<br>
-				 <INPUT TYPE="button" VALUE="Submit" ID="difficultyButton" 
+				 <INPUT TYPE="button" VALUE="Submit" name="difficultySubmit" ID="difficultyButton" 
 					onclick="submitDifficulty()">
-					</center>
+					
 			</form>
+	</center>
 	</div>
 	<div style="display: none;" id="quit">
 		<div id="internalText">
@@ -344,12 +345,12 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 	</div>
 
 	<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
-	<div id="failurePrompt">
+	<div id="failurePrompt"></div>
 	<div id="internalText">
 	
 		
 		<br>
-			<span class="sectionTitle"><b>Please take a look at the code below, the following problem, and answer the questions.</span></b><br><br>
+			<span class="sectionTitle"><b>Please take a look at the code below, the following problem, and answer the questions.</b></span><br><br>
 			<div id="internalText">
 			<table class="fixed" CELLPADDING="4px" align="center"  style="word-wrap: break-word;">
 				<col width="210px">
@@ -449,8 +450,6 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 			</table>				
 			<br>
 			</form>	
-
-</span>
 
 </div>
 	</div>
