@@ -59,5 +59,6 @@ public abstract class StorageStrategy {
 	public abstract boolean insertSurvey(Worker worker);
 	public abstract boolean insertFeedback(String feedback, String workerId, String fileName);
 	public abstract WorkerSession readActiveSessionById(String sessionId);
+	
 
 	}

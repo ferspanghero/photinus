@@ -28,6 +28,9 @@ public class LiteContainerManager extends StorageStrategy{
 
 	/** Keeps track of Workers*/
 	private Hashtable<String, Worker> workerTable;
+	
+	/** Keeps track of Session Microtasks already written */
+	private Hashtable<String, Hashtable<Integer, Integer>> sessionMicrotaskTable;
 
 	/** Logger for register consent, skilltest, and survey */
 	private Logger consentLogger;
@@ -58,7 +61,7 @@ public class LiteContainerManager extends StorageStrategy{
 		newSessionTable = storage.retrieveNewSessionStorage();
 		activeSessionTable = new Hashtable<String, WorkerSession>();
 		closedSessionVector = new Vector<WorkerSession>();
-
+		sessionMicrotaskTable = new Hashtable<String, Hashtable<Integer, Integer>>();
 		//Initialize Worker table
 		workerTable = new Hashtable<String, Worker>();
 
@@ -110,7 +113,8 @@ public class LiteContainerManager extends StorageStrategy{
 	/**
 	 * @return true if all three operations succeeded, false if any of them failed.
 	 */
-	public synchronized boolean updateMicrotaskAnswer(String sessionId, Integer microtaskId, Answer answer){
+	public synchronized boolean updateMicrotaskAnswer(String sessionId, Integer microtaskId, Answer answer)
+	{
 		//set answer to the microtask in the WorkerSession 
 		WorkerSession session = this.activeSessionTable.get(sessionId);
 
@@ -118,22 +122,23 @@ public class LiteContainerManager extends StorageStrategy{
 			session.insertMicrotaskAnswer(microtaskId,answer); 
 
 			Microtask microtask = session.getPreviousMicrotask();
-			
+
 			Worker worker = workerTable.get(answer.getWorkerId());
-			
+
 			String explanation = answer.getExplanation().replaceAll("[\n]"," ").replaceAll("[\r]"," ");
-			
-			sessionLogger.info("EVENT%MICROTASK% workerId%"+ answer.getWorkerId()+"% fileName%"+microtask.getFileName()
-					+"% sessionId%"+ sessionId+"% microtaskId%"+microtaskId
-					+"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()
-					+"% confidenceLevel%"+answer.getConfidenceOption()
-					+"% duration%"+answer.getElapsedTime()+ "% difficulty%"+answer.getDifficulty()
-					+"% explanation%"+explanation);
-			
-			if(session.isClosed()){//Move session to closed //EVENT
-				this.closedSessionVector.add(session);
-				sessionLogger.info("EVENT%CLOSE SESSION% workerId%"+ session.getWorkerId()+"% sessionId%"+ session.getId()+"% fileName%"+worker.getCurrentFileName());
-				this.activeSessionTable.remove(session.getId());
+			if(updateSessionMicrotaskTable(sessionId,microtaskId)){
+				sessionLogger.info("EVENT%MICROTASK% workerId%"+ answer.getWorkerId()+"% fileName%"+microtask.getFileName()
+						+"% sessionId%"+ sessionId+"% microtaskId%"+microtaskId
+						+"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()
+						+"% confidenceLevel%"+answer.getConfidenceOption()
+						+"% duration%"+answer.getElapsedTime()+ "% difficulty%"+answer.getDifficulty()
+						+"% explanation%"+explanation);
+
+				if(session.isClosed()){//Move session to closed //EVENT
+					this.closedSessionVector.add(session);
+					sessionLogger.info("EVENT%CLOSE SESSION% workerId%"+ session.getWorkerId()+"% sessionId%"+ session.getId()+"% fileName%"+worker.getCurrentFileName());
+					this.activeSessionTable.remove(session.getId());
+				}
 			}
 			return true;	
 		} 
@@ -141,13 +146,32 @@ public class LiteContainerManager extends StorageStrategy{
 			return false;
 	}
 
+	private boolean updateSessionMicrotaskTable(String sessionId, Integer microtaskId){
+		Hashtable<Integer, Integer> microtaskMap = this.sessionMicrotaskTable.get(sessionId);
+		if(microtaskMap==null){
+			microtaskMap = new Hashtable<Integer, Integer>();
+			microtaskMap.put(microtaskId,microtaskId);
+			this.sessionMicrotaskTable.put(sessionId, microtaskMap);
+			return true;
+		}
+		else
+			if(!microtaskMap.containsKey(microtaskId)){
+				microtaskMap.put(microtaskId,microtaskId);
+				this.sessionMicrotaskTable.put(sessionId, microtaskMap);
+				return true;
+			}
+		else 
+			return false;
+	}
+	
 	public synchronized String getSessionIdForWorker(String workerId) {
 		String test= workerTable.get(workerId).getSessionId();
 		return test;
 	}
 
 
-	public synchronized boolean insertSkillTest(Worker worker) {
+	public synchronized boolean insertSkillTest(Worker worker) 
+	{
 		if(worker!=null){
 			consentLogger.info("EVENT%SKILLTEST% workerId%"+worker.getWorkerId()
 					+ "% fileName%"+worker.getCurrentFileName()
@@ -168,7 +192,8 @@ public class LiteContainerManager extends StorageStrategy{
 		}
 	}
 	
-	public synchronized boolean insertQuitReason(Worker worker, String answer){
+	public synchronized boolean insertQuitReason(Worker worker, String answer)
+	{
 		if(worker != null){
 			consentLogger.info("EVENT%QUIT% workerId%"+worker.getWorkerId()
 					+ "% fileName%"+worker.getCurrentFileName()
@@ -191,7 +216,8 @@ public class LiteContainerManager extends StorageStrategy{
 		return worker;
 	}
 	
-	public synchronized boolean insertConsent(Worker worker, String consentDateStr, String fileName) {
+	public synchronized boolean insertConsent(Worker worker, String consentDateStr, String fileName) 
+	{
 		if(worker!=null){
 			consentLogger.info("EVENT%CONSENT% workerId%"+worker.getWorkerId()
 					+"% fileName%"+worker.getCurrentFileName()
@@ -205,7 +231,8 @@ public class LiteContainerManager extends StorageStrategy{
 		}
 	}
 
-	public synchronized boolean insertSurvey(Worker worker) {
+	public synchronized boolean insertSurvey(Worker worker) 
+	{
 		if(worker!=null){
 			consentLogger.info("EVENT%SURVEY% workerId%"+worker.getWorkerId()
 					+ "% fileName%"+worker.getCurrentFileName()
@@ -222,12 +249,12 @@ public class LiteContainerManager extends StorageStrategy{
 		return this.workerTable.get(workerId);
 	}
 
-	public boolean insertFeedback(String feedback, String workerId, String fileName) {
+	public synchronized boolean insertFeedback(String feedback, String workerId, String fileName) {
 		consentLogger.info("EVENT%FEEDBACK% %workerID%"+workerId+"% fileName%"+fileName+" %feedback%" +feedback );
 		return true;
 	}
 	
-	public synchronized WorkerSession readActiveSessionById(String sessionId)
+	public synchronized  WorkerSession readActiveSessionById(String sessionId)
 	{
 		return this.activeSessionTable.get(sessionId);
 	}

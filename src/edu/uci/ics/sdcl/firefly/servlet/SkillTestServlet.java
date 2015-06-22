@@ -50,29 +50,31 @@ public class SkillTestServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String workerId = request.getParameter("workerId");
-		request.setAttribute("workerId", workerId);
-		request.setAttribute("timeStamp",TimeStampUtil.getTimeStampMillisec() );
-		//First check if the worker hasn't already taken the test
-		this.storage =   StorageStrategy.initializeSingleton();;
-		this.worker = storage.readExistingWorker(workerId);
-		if(this.worker==null){
-			showErrorPage(request,response, "Execution ID does not exist in database.");
-		}
-		else if(worker.hasTakenTest()){//worker has taken the test for this file
-			sorryPage(request, response, 
-					"Dear participant, you have already taken this task,"
-					+ " please obtain the link for a new task and try again."
-					+ " Thank you. In case you have doubts, please send an email"
-					+ " to adrianoc@uci.edu.");
-		}
-		else{
-			int grade = this.processAnswers(request);
-			if (grade>=2){
-				loadFirstMicrotask(request,response);
+		if(workerId!=null){
+			request.setAttribute("workerId", workerId);
+			request.setAttribute("timeStamp",TimeStampUtil.getTimeStampMillisec() );
+			//First check if the worker hasn't already taken the test
+			this.storage =   StorageStrategy.initializeSingleton();;
+			this.worker = storage.readExistingWorker(workerId);
+			if(this.worker==null){
+				showErrorPage(request,response, "Execution ID does not exist in database.");
 			}
-			else{ 
-				request.setAttribute("message", "Dear worker, you didn't get the minimal qualifying grade to perform the task.");
-				request.getRequestDispatcher(SorryPage).include(request, response);
+			else if(worker.hasTakenTest()){//worker has taken the test for this file
+				sorryPage(request, response, 
+						"Dear participant, you have already taken this task,"
+								+ " please obtain the link for a new task and try again."
+								+ " Thank you. In case you have doubts, please send an email"
+								+ " to adrianoc@uci.edu.");
+			}
+			else{
+				int grade = this.processAnswers(request);
+				if (grade>=2){
+					loadFirstMicrotask(request,response);
+				}
+				else{ 
+					request.setAttribute("message", "Dear worker, you didn't get the minimal qualifying grade to perform the task.");
+					request.getRequestDispatcher(SorryPage).include(request, response);
+				}
 			}
 		}
 	}

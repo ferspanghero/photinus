@@ -48,21 +48,23 @@ public class MicrotaskServlet extends HttpServlet {
 	 * 	Collects and persist the answer. Also marks the microtask as already answered
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//System.out.println("In MicrotaskServlet ");
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
 		String workerId = request.getParameter("workerId");
-	
-		//Restore data for next Request
-		request.setAttribute("workerId",workerId);
+		if(workerId!=null){//Discard request silently. This is necessary for spurious requests from IE
+			storage = StorageStrategy.initializeSingleton();
+			this.worker = storage.readExistingWorker(workerId);
+			String microtaskId = request.getParameter("microtaskId");
 
-		//String subAction = request.getParameter("subAction");
-
-		storage = StorageStrategy.initializeSingleton();
-		this.worker = storage.readExistingWorker(workerId);
-		String sessionId = this.worker.getSessionId();
-		request.setAttribute("sessionId", sessionId);
-		//System.out.println("In MicrotaskServlet: "+sessionId);
-		loadNextMicrotask(request, response);
+			if(this.worker!=null && microtaskId!=null){//Discard request silently. Necessary for repeated request from Chrome
+				String sessionId = this.worker.getSessionId();
+				//Restore data for next Request
+				request.setAttribute("workerId",workerId);
+				request.setAttribute("sessionId", sessionId);
+				//System.out.println("In MicrotaskServlet: "+sessionId);
+				loadNextMicrotask(request, response);
+			}
+		}
 	}
 
 	private void loadNextMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
