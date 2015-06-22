@@ -130,12 +130,9 @@
 				<!-- Hidden fields -->
 				<input type="hidden"
 					name="workerId" id="workerId" value=${requestScope["workerId"]}> 
-				<input type="hidden" name="microtaskId"
-					value=${requestScope["microtaskId"]}> <input type="hidden"
+				 <input type="hidden"
 					name="timeStamp" value=${requestScope["timeStamp"]}>
-					<input type="hidden"
-					name="sessionId" value=${requestScope["sesionId"]}> 
-					
+							
 				<center>
 					<INPUT TYPE="button" name="reasonButton" id="reasonButton" onclick="submitQuitAnswer()"
 						VALUE="Submit">

@@ -138,23 +138,18 @@
 					chkArray.push($(this).val());
 				}
 			});
-			
-			//chkArray.push(document.getElementById("otherlearned").value);
-			
+						
 			/* we join the array separated by the comma */
 			var selected;
 			selected = chkArray.toString();
 			
 			/* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
-			//console.log(chkArray.length<1);
 			if(chkArray.length < 1){
 				alert("Please select at least one of the checkbox");
 				return false;
 			}
 			
 			document.getElementById("hlearned").value = ''+selected;
-			var values = document.getElementById("hlearned").value;
-			//alert("values: "+ values);
 			return true;
 			
 		}
@@ -245,8 +240,7 @@
    				<br><br>
 
 				<!-- Hidden fields -->
-				<input type="hidden" name="sessionId"
-					value=${requestScope["sessionId"]}> <input type="hidden"
+			    <input type="hidden"
 					name="workerId" value=${requestScope["workerId"]}> 
 
 				<br>
