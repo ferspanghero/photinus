@@ -89,7 +89,7 @@ public class QuitServlet extends HttpServlet {
 		}else if(answer.equals("long")){
 			return LONG;
 		}else{
-			return OTHER+"_"+otherOption;
+			return OTHER+" "+otherOption;
 		}
 	}
 	

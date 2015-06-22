@@ -57,7 +57,7 @@ public abstract class StorageStrategy {
 	public abstract boolean insertQuitReason(Worker worker, String answer);
 	public abstract Worker readExistingWorker(String workerId);
 	public abstract boolean insertSurvey(Worker worker);
-	public abstract boolean insertFeedback(String feedback, String workerId, String fileName);
+	public abstract boolean insertFeedback(String feedback, Worker workerId);
 	public abstract WorkerSession readActiveSessionById(String sessionId);
 	
 

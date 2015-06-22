@@ -19,7 +19,6 @@ import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
 public class FeedbackServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private String ErrorPage = "/ErrorPage.jsp";
 	private String ThanksPage = "/Thanks.jsp";
 	private StorageStrategy storage ;
 
@@ -54,7 +53,7 @@ public class FeedbackServlet extends HttpServlet {
 
 			storage = StorageStrategy.initializeSingleton();
 			Worker worker = storage.readExistingWorker(workerId);
-			storage.insertFeedback(feedback, workerId, worker.getCurrentFileName());
+			storage.insertFeedback(feedback, worker);
 			request.getRequestDispatcher(ThanksPage).include(request, response);
 		}
 		

@@ -32,6 +32,10 @@ public class LiteContainerManager extends StorageStrategy{
 	/** Keeps track of Session Microtasks already written */
 	private Hashtable<String, Hashtable<Integer, Integer>> sessionMicrotaskTable;
 
+	/** Keeps track of Worker Consents, Surveys, and Feedback 
+	 * Indexed by workerId and sessionId and has one of the labels "CONSENT", "SURVEY", "FEEDBACK"*/
+	private Hashtable<String, Hashtable<String,String>> consentSurveyTestFeedbackTable;
+		
 	/** Logger for register consent, skilltest, and survey */
 	private Logger consentLogger;
 
@@ -62,6 +66,8 @@ public class LiteContainerManager extends StorageStrategy{
 		activeSessionTable = new Hashtable<String, WorkerSession>();
 		closedSessionVector = new Vector<WorkerSession>();
 		sessionMicrotaskTable = new Hashtable<String, Hashtable<Integer, Integer>>();
+		consentSurveyTestFeedbackTable = new Hashtable<String, Hashtable<String,String>>();
+		
 		//Initialize Worker table
 		workerTable = new Hashtable<String, Worker>();
 
@@ -131,7 +137,8 @@ public class LiteContainerManager extends StorageStrategy{
 						+"% sessionId%"+ sessionId+"% microtaskId%"+microtaskId
 						+"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()
 						+"% confidenceLevel%"+answer.getConfidenceOption()
-						+"% duration%"+answer.getElapsedTime()+ "% difficulty%"+answer.getDifficulty()
+						+ "% difficulty%"+answer.getDifficulty()
+						+"% duration%"+answer.getElapsedTime()
 						+"% explanation%"+explanation);
 
 				if(session.isClosed()){//Move session to closed //EVENT
@@ -146,7 +153,7 @@ public class LiteContainerManager extends StorageStrategy{
 			return false;
 	}
 
-	private boolean updateSessionMicrotaskTable(String sessionId, Integer microtaskId){
+	private synchronized boolean updateSessionMicrotaskTable(String sessionId, Integer microtaskId){
 		Hashtable<Integer, Integer> microtaskMap = this.sessionMicrotaskTable.get(sessionId);
 		if(microtaskMap==null){
 			microtaskMap = new Hashtable<Integer, Integer>();
@@ -164,6 +171,34 @@ public class LiteContainerManager extends StorageStrategy{
 			return false;
 	}
 	
+	private synchronized boolean updateConsentSurveyTestFeedbackTable(String workerId, String fileName, String label){
+		Hashtable<String, String> fileNameMap = this.consentSurveyTestFeedbackTable.get(workerId);
+		if(fileNameMap==null){
+			fileNameMap = new Hashtable<String, String>();
+			fileNameMap.put(fileName,label);
+			this.consentSurveyTestFeedbackTable.put(workerId, fileNameMap);
+			return true;
+		}
+		else
+			if(!fileNameMap.containsKey(fileName)){
+				fileNameMap.put(fileName,label);
+				this.consentSurveyTestFeedbackTable.put(workerId, fileNameMap);
+				return true;
+			}
+		else {
+			String writtenLabel = fileNameMap.get(fileName);
+			if(label.compareTo(writtenLabel)!=0){
+				fileNameMap.put(fileName, label);
+				this.consentSurveyTestFeedbackTable.put(workerId, fileNameMap);
+				return true;
+			}
+			else
+				return false;
+		}
+		
+	}
+	
+	
 	public synchronized String getSessionIdForWorker(String workerId) {
 		String test= workerTable.get(workerId).getSessionId();
 		return test;
@@ -173,7 +208,8 @@ public class LiteContainerManager extends StorageStrategy{
 	public synchronized boolean insertSkillTest(Worker worker) 
 	{
 		if(worker!=null){
-			consentLogger.info("EVENT%SKILLTEST% workerId%"+worker.getWorkerId()
+			if(updateConsentSurveyTestFeedbackTable(worker.getWorkerId(),worker.getCurrentFileName(),"SKILLTEST")){
+				consentLogger.info("EVENT%SKILLTEST% workerId%"+worker.getWorkerId()
 					+ "% fileName%"+worker.getCurrentFileName()
 					+"% test1%"+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
 					+"% test2%"+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
@@ -182,9 +218,9 @@ public class LiteContainerManager extends StorageStrategy{
 					+"% grade%"+worker.getGrade()
 					+"% testDuration%"+worker.getSkillTestDuration()
 					);
-			
-			this.workerTable.put(worker.getWorkerId(), worker);
-			return true;
+			}
+				this.workerTable.put(worker.getWorkerId(), worker);
+				return true;
 		}
 		else{
 			consentLogger.error("EVENT%ERROR% could not store worker SKILL TEST.");
@@ -195,10 +231,12 @@ public class LiteContainerManager extends StorageStrategy{
 	public synchronized boolean insertQuitReason(Worker worker, String answer)
 	{
 		if(worker != null){
-			consentLogger.info("EVENT%QUIT% workerId%"+worker.getWorkerId()
-					+ "% fileName%"+worker.getCurrentFileName()
-					+"% answer%"+answer);
-			this.workerTable.put(worker.getWorkerId(), worker);
+			if(updateConsentSurveyTestFeedbackTable(worker.getWorkerId(),worker.getCurrentFileName(),"QUIT")){
+				consentLogger.info("EVENT%QUIT% workerId%"+worker.getWorkerId()
+						+ "% fileName%"+worker.getCurrentFileName()
+						+"% answer%"+answer);
+				this.workerTable.put(worker.getWorkerId(), worker);
+			}
 			return true;
 		}else{
 			if(answer=="consentForm"){
@@ -219,10 +257,11 @@ public class LiteContainerManager extends StorageStrategy{
 	public synchronized boolean insertConsent(Worker worker, String consentDateStr, String fileName) 
 	{
 		if(worker!=null){
+			if(updateConsentSurveyTestFeedbackTable(worker.getWorkerId(),worker.getCurrentFileName(),"CONSENT")){
 			consentLogger.info("EVENT%CONSENT% workerId%"+worker.getWorkerId()
 					+"% fileName%"+worker.getCurrentFileName()
 					+"% consentDate%" + worker.getConsentDate().toString());	
-			
+			}			
 			return true;
 		}
 		else{
@@ -234,9 +273,11 @@ public class LiteContainerManager extends StorageStrategy{
 	public synchronized boolean insertSurvey(Worker worker) 
 	{
 		if(worker!=null){
-			consentLogger.info("EVENT%SURVEY% workerId%"+worker.getWorkerId()
+			if(updateConsentSurveyTestFeedbackTable(worker.getWorkerId(),worker.getCurrentFileName(),"SURVEY")){
+				consentLogger.info("EVENT%SURVEY% workerId%"+worker.getWorkerId()
 					+ "% fileName%"+worker.getCurrentFileName()
 					+ "% "+worker.getSurveyAnswersToString());
+			}
 			return true;
 		}
 		else{
@@ -249,8 +290,10 @@ public class LiteContainerManager extends StorageStrategy{
 		return this.workerTable.get(workerId);
 	}
 
-	public synchronized boolean insertFeedback(String feedback, String workerId, String fileName) {
-		consentLogger.info("EVENT%FEEDBACK% %workerID%"+workerId+"% fileName%"+fileName+" %feedback%" +feedback );
+	public synchronized boolean insertFeedback(String feedback, Worker worker) {
+		if(worker!=null && updateConsentSurveyTestFeedbackTable(worker.getWorkerId(),worker.getCurrentFileName(),"FEEDBACK")){
+			consentLogger.info("EVENT%FEEDBACK% %workerID%"+worker.getWorkerId()+"% fileName%"+worker.getCurrentFileName()+" %feedback%" +feedback );
+		}
 		return true;
 	}
 	
