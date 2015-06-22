@@ -181,7 +181,7 @@
 
 
 
-			<form name="surveyForm" method="get" action="survey">
+			<form name="surveyForm" method="get" action="survey" onsubmit="submitAnswer(event)">
  
 				 <!--  EXPERIENCE QUESTIONS -->
 		
@@ -227,7 +227,7 @@
 
 				<br>
 				
-				<center> <INPUT TYPE="button" VALUE="Submit answer" onclick="submitAnswer(event)">
+				<center> <INPUT TYPE="submit" name="surveySubmit" VALUE="Submit answer">
 				</center>
 			</form>
 		</div>

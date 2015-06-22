@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Thanks Page</title>
+<title>Feedback Page</title>
 
 <style type="text/css" media="screen">
 #container  {
@@ -40,7 +40,7 @@ background-color: #FFFFFF;
 					<input type="hidden"
 					name="workerId" id="workerId" value=${requestScope["workerId"]}> 
 					<br><br>
-					<input type="submit" value="Submit">
+					<input type="submit" name="feedbackSubmit" value="Submit">
 					<br><br>
 			</form>
 			</center>
