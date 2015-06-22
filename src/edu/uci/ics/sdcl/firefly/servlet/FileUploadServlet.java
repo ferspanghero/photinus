@@ -28,6 +28,7 @@ import edu.uci.ics.sdcl.firefly.report.ReportGenerator;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
+import edu.uci.ics.sdcl.firefly.util.PathUtil;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
@@ -175,6 +176,8 @@ public class FileUploadServlet extends HttpServlet {
 
 
 	private String generateMicrotasks(String fileName, String fileContent, String methodName, String numberOfParameters, String bugReport, String testCase){
+		
+		String keyFileName = PathUtil.removePath(fileName, true); //This variable is used as key in the CodeSnippets, Microtasks, and Sessions.
 		//calls CodeSnippetFactory
 		CodeSnippetFactory codeSnippetFactory = new CodeSnippetFactory(fileName,fileContent);
 		Vector<CodeSnippet> snippetList = codeSnippetFactory.generateSnippetsForFile();
@@ -227,11 +230,11 @@ public class FileUploadServlet extends HttpServlet {
 			microtaskMap = contextFactory.generateMicrotaskContext(microtaskMap);
 			
 			if (microtaskMap!= null && microtaskMap.size() > 0){
-				FileDebugSession fileDebuggingSession = new FileDebugSession(fileName, fileContent, microtaskMap);
+				FileDebugSession fileDebuggingSession = new FileDebugSession(keyFileName, fileContent, microtaskMap);
 				int generatedMicrotasks = microtaskMap.size();
 				
 				//Persist data
-				storage.insert(fileName, fileDebuggingSession); //append to existing fileDebugSessions
+				storage.insert(keyFileName, fileDebuggingSession); //append to existing fileDebugSessions
 
 				int generatedCodeSnippets = snippetList.size();
 				int numberOfMicrotasks = storage.getNumberOfMicrotask();
@@ -240,7 +243,7 @@ public class FileUploadServlet extends HttpServlet {
 						"Total Microtasks available now: "+ numberOfMicrotasks + "<br>";
 				
 				Logger logger = LoggerFactory.getLogger(FileUploadServlet.class);
-				logger.info("EVENT =FileUpload; File="+ fileName+"; CodeSnippets="+generatedCodeSnippets+"; Microtasks="+generatedMicrotasks);
+				logger.info("EVENT =FileUpload; FileName="+ keyFileName+"; CodeSnippets="+generatedCodeSnippets+"; Microtasks="+generatedMicrotasks);
 				
 				System.out.println("Results: "+results);
 			}
@@ -351,7 +354,7 @@ public class FileUploadServlet extends HttpServlet {
 	
 	
 	/**
-	 * Loads files in bulk. The files must be in the local folder (typically C:/firefly/samples/bul 
+	 * Loads files in bulk. The files must be in the local folder (typically ./samples/bulkLoadPhotinus) 
 	 * @return
 	 */
 	private String bulkUpload(){
@@ -362,29 +365,29 @@ public class FileUploadServlet extends HttpServlet {
 		System.out.println("path: "+path);
 		
 		String[] fileList = {"8_DateTimeZone.java", "24_GrayPaintScale.java", "6_CharSequenceTranslator.java", "7_TimePeriodValues.java",
-				"51_CodeConsumer.java","35_ArrayUtils.java","54_LocaleUtils.java","33_ClassUtils.java" };
+				"35_ArrayUtils.java","51_CodeConsumer.java","33_ClassUtils.java","54_LocaleUtils.java" };
 		
 		String [] methodList = { "forOffsetHoursMinutes","getPaint","translate", "updateBounds",
-				"addNumber","add","toLocale","toClass"};
+				"add","addNumber","toClass","toLocale"};
 		
 		String [] failureList = { "java.lang.IllegalArgumentException: Minutes out of range: -15",
 				"java.lang.IllegalArgumentException: Color parameter outside of expected range: Red Green Blue",
 				"java.lang.StringIndexOutOfBoundsException: String index out of range: 2",
 				"junit.framework.AssertionFailedError: expected:&lt;1&gt; but was:&lt;3&gt;",
-				"junit.framework.ComparisonFailure: expected:&lt;var x=[-0.]0&gt; but was:&lt;var x=[]0&gt;",
 				"java.lang.ClassCastException: [Ljava.lang.Object; cannot be cast to [Ljava.lang.String;",
-				" java.lang.IllegalArgumentException: Invalid locale format: fr__POSIX",
-				"java.lang.NullPointerException"
+				"junit.framework.ComparisonFailure: expected:&lt;var x=[-0.]0&gt; but was:&lt;var x=[]0&gt;",
+				"java.lang.NullPointerException", 
+				" java.lang.IllegalArgumentException: Invalid locale format: fr__POSIX"
 				};
 		
 		String[] testList = {"assertEquals(DateTimeZone.forID(\"-02:15\"), DateTimeZone.forOffsetHoursMinutes(-2, -15));",
 				"GrayPaintScale gps = new GrayPaintScale(); c = (Color) gps.getPaint(-0.5);	assertTrue(c.equals(Color.black));",
 				"assertEquals(\"\uD83D\uDE30\", StringEscapeUtils.escapeCsv(\"\uD83D\uDE30\"));",
-				"TimePeriodValues s = new TimePeriodValues(\"Test\");	s.add(new SimpleTimePeriod(0L, 50L), 3.0);	assertEquals(1, s.getMaxMiddleIndex());",
-				" assertPrint(\"var x = -0.0;\", \"var x=-0.0\");",
+				"TimePeriodValues s = new TimePeriodValues(\"Test\");	s.add(new SimpleTimePeriod(0L, 50L), 3.0);	assertEquals(1, s.getMaxMiddleIndex());",			
 				"String[] sa = ArrayUtils.add(stringArray, aString); fail(\"Should have caused IllegalArgumentException\");",
-				"assertValidToLocale(\"fr__POSIX\", \"fr\", \"\", \"POSIX\");",
-				"assertTrue(Arrays.equals(new Class[] { String.class, null, Double.class },ClassUtils.toClass(new Object[] { \"Test\", null, 99d })));"
+				"assertPrint(\"var x = -0.0;\", \"var x=-0.0\");",
+				"assertTrue(Arrays.equals(new Class[] { String.class, null, Double.class },ClassUtils.toClass(new Object[] { \"Test\", null, 99d })));",
+				"assertValidToLocale(\"fr__POSIX\", \"fr\", \"\", \"POSIX\");"
 		};
 		
 		String message="";

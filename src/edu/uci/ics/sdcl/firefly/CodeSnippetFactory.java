@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import edu.uci.ics.sdcl.firefly.util.PathUtil;
+
 public class CodeSnippetFactory { 
 	private String fileContent;
 	private String fileName;
@@ -37,7 +39,7 @@ public class CodeSnippetFactory {
 		this.setCallers(this.codeSnippetList);
 		this.setMethodTexts(this.codeSnippetList);
 		for (CodeSnippet codeSnippet : this.codeSnippetList) {
-			codeSnippet.setFileName(fileName);
+			codeSnippet.setFileName(PathUtil.removePath(fileName, true));
 		}
 		return this.codeSnippetList;
 	}

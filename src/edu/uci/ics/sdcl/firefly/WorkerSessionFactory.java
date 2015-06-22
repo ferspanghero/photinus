@@ -12,6 +12,7 @@ import test.RoundRobinTest.Session;
 import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
+import edu.uci.ics.sdcl.firefly.util.PathUtil;
 import edu.uci.ics.sdcl.firefly.util.RandomKeyGenerator;
 
 
@@ -72,7 +73,10 @@ public class WorkerSessionFactory{
 			 Stack<WorkerSession> fileWorkerSessionStack = this.composeSessions(microtaskList,fileName);
 	
 			 //duplicate sessions
-			 fileWorkerSessionStack = this.duplicateSessions(fileWorkerSessionStack, answersPerMicrotask-1);
+			 if(answersPerMicrotask>1){
+				 fileWorkerSessionStack = this.duplicateSessions(fileWorkerSessionStack, answersPerMicrotask);
+			 }
+			// System.out.println("Number of sessions available: "+fileWorkerSessionStack.size()+ ", answers per microtask:"+answersPerMicrotask );
 			 this.workerSessionMap.put(fileName, fileWorkerSessionStack);	
 		}
 		
@@ -95,8 +99,8 @@ public class WorkerSessionFactory{
 			//Generate the duplicated WorkerSessions
 			for(int i=0;i<originalStack.size();i++){
 				WorkerSession originalSession = originalStack.elementAt(i);
-				this.sessionId = this.keyGenerator.generate();
-				WorkerSession duplicateSession =  new WorkerSession(this.sessionId, originalSession.getMicrotaskList());
+				String sessionId = this.keyGenerator.generate();
+				WorkerSession duplicateSession =  new WorkerSession(sessionId, originalSession.getMicrotaskList());
 				duplicateStack.push(duplicateSession);
 			}
 		}
@@ -215,6 +219,7 @@ public class WorkerSessionFactory{
 			Iterator<String> sessionIterator = sessionSet.iterator();
 			while(sessionIterator.hasNext()){
 				String fileName = (String) sessionIterator.next();
+				System.out.println("in WorkerSessionFactory, filename="+fileName);
 				FileDebugSession map = this.microtaskStorage.read(fileName);
 
 				if(fileMethodMap.get(fileName)==null){
