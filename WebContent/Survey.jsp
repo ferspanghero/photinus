@@ -84,6 +84,13 @@
 					break;
 				}
 			}
+			
+			if (expOption===4){//if user selected other
+				if(document.getElementById("otherexperience").value==""){
+					alert("Please fill the experience field!")
+					return -1;
+				}
+			}
 			if (expOption === -1) {
 				alert("Please select a level of experience .");
 				return -1;
@@ -132,8 +139,14 @@
 			/* look for all checkboes that have a parent id called 'checkboxlist' attached to it and check if it was checked */
 			$("#learnedDiv input:checked").each(function() {
 				if($(this).val()=="Other"){
-					//
-					chkArray.push("Other "+document.getElementById("otherlearned").value);
+					chkArray.push("Other");
+					if(document.getElementById("otherlearned").value == ""){
+						//alert("Please fill all the fields!");
+						return false;
+					}else{
+						var index = chkArray.indexOf("Other");
+						chkArray[index]="Other "+document.getElementById("otherlearned").value;
+					}
 				}else{
 					chkArray.push($(this).val());
 				}
@@ -142,7 +155,10 @@
 			/* we join the array separated by the comma */
 			var selected;
 			selected = chkArray.toString();
-			
+			if(selected == "Other"){
+				alert("Please fill where did you learn how to code!");
+				return false;
+			}
 			/* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
 			if(chkArray.length < 1){
 				alert("Please select at least one of the checkbox");
@@ -174,7 +190,7 @@
 				<input type="radio" name="experience" value="2">Graduate student<br>
 				<input type="radio" name="experience" value="3">Undergraduate student<br>
 				<input type="radio" name="experience" value="4">Hobbyist<br>
-				<input type="radio" name="experience" value="5">Other <input type="text" name="otherexperience" size="15">
+				<input type="radio" name="experience" value="5">Other <input type="text" id="otherexperience" name="otherexperience" size="15">
 				<br>
 				<br>Which programming language(s) do you use most at present?
 				<input type="text" id="language" name="language" size="25"><br>
