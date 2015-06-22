@@ -24,6 +24,7 @@ import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.WorkerSessionFactory;
 import edu.uci.ics.sdcl.firefly.controller.StorageManager;
+import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
 import edu.uci.ics.sdcl.firefly.report.ReportGenerator;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
@@ -329,8 +330,13 @@ public class FileUploadServlet extends HttpServlet {
 	}
 	
 	private void delete(){
+		//Clean up persistent files
 		StorageManager manager = new StorageManager();
 		manager.cleanUpRepositories();
+		
+		//Clean up memory
+		StorageStrategy storage = StorageStrategy.initializeSingleton();
+		storage.cleanUpRepositories();
 	}
 	
 	/**

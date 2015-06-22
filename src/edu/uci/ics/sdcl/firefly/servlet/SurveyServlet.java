@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;
+
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
@@ -31,28 +33,29 @@ public class SurveyServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
 		String workerId = request.getParameter("workerId");
-		Worker subject = storage.readExistingWorker(workerId);
-		if (null != subject){
-			WorkerSession  session = storage.readActiveSessionById(subject.getSessionId());
-			subject.addSurveyAnswer(question[0], request.getParameter("gender"));
-			subject.addSurveyAnswer(question[1], request.getParameter("age"));
-			subject.addSurveyAnswer(question[2], request.getParameter("country"));
-			subject.addSurveyAnswer(question[3], mapExperience(request.getParameter("experience"),request.getParameter("otherexperience")));
-			subject.addSurveyAnswer(question[4], request.getParameter("language"));
-			subject.addSurveyAnswer(question[5], request.getParameter("years"));
-			subject.addSurveyAnswer(question[6], request.getParameter("hlearned"));
+		Worker worker = storage.readExistingWorker(workerId);
+		if (null != worker){
+			//WorkerSession  session = storage.readActiveSessionById(worker.getSessionId());
+			worker.addSurveyAnswer(question[0], request.getParameter("gender"));
+			worker.addSurveyAnswer(question[1], request.getParameter("age"));
+			worker.addSurveyAnswer(question[2], request.getParameter("country"));
+			worker.addSurveyAnswer(question[3], mapExperience(request.getParameter("experience"),request.getParameter("otherexperience")));
+			worker.addSurveyAnswer(question[4], request.getParameter("language"));
+			worker.addSurveyAnswer(question[5], request.getParameter("years"));
+			worker.addSurveyAnswer(question[6], request.getParameter("hlearned"));
 
 			//Store result
-			storage.insertSurvey(subject);
-			request.setAttribute("workerId",subject.getWorkerId());
-			request.setAttribute("sessionId",subject.getSessionId());
+			storage.insertSurvey(worker);
+			request.setAttribute("workerId",worker.getWorkerId());
+			//request.setAttribute("sessionId",worker.getSessionId());
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 			request = loadQuestions(request, response);
-			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
+			//request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
 			request.getRequestDispatcher(SkillTestPage).forward(request, response);
-		} else{
+		}
+		else{
 			request.setAttribute("executionId", request.getParameter("workerId"));
-			request.setAttribute("error", "@SurveyServlet - object 'subject' is null");
+			request.setAttribute("error", "@SurveyServlet - object 'worker' is null");
 			//Displays the error page
 			request.getRequestDispatcher("/ErrorPage.jsp").forward(request, response);
 		}	

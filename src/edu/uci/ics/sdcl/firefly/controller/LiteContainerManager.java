@@ -80,27 +80,26 @@ public class LiteContainerManager extends StorageStrategy{
 	 * @param filename the name of the file with the possible bug.
 	 * @return a new session, if there aren't new sessions available return null
 	 */
-	public synchronized WorkerSession readNewSession(String workerId, String fileName){	
-		WorkerSession session;
+	public synchronized WorkerSession readNewSession(String workerId, String fileName)	
+	{
 		Worker worker = this.workerTable.get(workerId);
-		if(worker.isAllowedFile(fileName))
-		{
-			if(newSessionTable!=null && !newSessionTable.isEmpty()){
-				Stack<WorkerSession> stack = newSessionTable.get(fileName);
-				if(stack!=null && !stack.isEmpty()){
-					session = stack.pop();
-					session.setWorkerId(workerId);
-					sessionLogger.info("EVENT%OPEN SESSION% workerId%"+ workerId
-							+"% sessionId%"+ session.getId()
-							+"% fileName%"+fileName);
-					worker.setSessionId(session.getId());
-					this.workerTable.put(workerId, worker);
-					this.activeSessionTable.put(session.getId(), session); 
-					return session;
-				}
+		if(newSessionTable!=null && !newSessionTable.isEmpty()){
+			Stack<WorkerSession> stack = newSessionTable.get(fileName);
+			if(stack!=null && !stack.isEmpty()){
+				WorkerSession  session = stack.pop();
+				newSessionTable.put(fileName, stack);
+				session.setWorkerId(workerId);
+				sessionLogger.info("EVENT%OPEN SESSION% workerId%"+ workerId
+						+"% sessionId%"+ session.getId()
+						+"% fileName%"+fileName);
+				worker.setSessionId(session.getId());
+				this.activeSessionTable.put(session.getId(), session); 
+				return session;
 			}
+			else return null;
 		}
-		return null;
+		else
+			return null;
 	}
 
 	public synchronized boolean areThereMicrotasksAvailable(){
@@ -124,11 +123,12 @@ public class LiteContainerManager extends StorageStrategy{
 			
 			String explanation = answer.getExplanation().replaceAll("[\n]"," ").replaceAll("[\r]"," ");
 			
-			sessionLogger.info("EVENT%MICROTASK% workerId%"+ answer.getWorkerId()+"% sessionId%"+ sessionId+
-					"% microtaskId%"+microtaskId+"% fileName%"+microtask.getFileName()+
-					"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()+
-					"% confidenceLevel%"+answer.getConfidenceOption()+
-					"% duration%"+answer.getElapsedTime()+"% explanation%"+explanation+"% fileName%"+worker.getCurrentFileName()+ "% difficulty%"+answer.getDifficulty());
+			sessionLogger.info("EVENT%MICROTASK% workerId%"+ answer.getWorkerId()+"% fileName%"+microtask.getFileName()
+					+"% sessionId%"+ sessionId+"% microtaskId%"+microtaskId
+					+"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()
+					+"% confidenceLevel%"+answer.getConfidenceOption()
+					+"% duration%"+answer.getElapsedTime()+ "% difficulty%"+answer.getDifficulty()
+					+"% explanation%"+explanation);
 			
 			if(session.isClosed()){//Move session to closed //EVENT
 				this.closedSessionVector.add(session);
@@ -150,13 +150,14 @@ public class LiteContainerManager extends StorageStrategy{
 	public synchronized boolean insertSkillTest(Worker worker) {
 		if(worker!=null){
 			consentLogger.info("EVENT%SKILLTEST% workerId%"+worker.getWorkerId()
+					+ "% fileName%"+worker.getCurrentFileName()
 					+"% test1%"+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
 					+"% test2%"+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
 					+"% test3%"+worker.getGradeMap().get(SkillTestServlet.QUESTION3)
 					+"% test4%"+worker.getGradeMap().get(SkillTestServlet.QUESTION4)
 					+"% grade%"+worker.getGrade()
 					+"% testDuration%"+worker.getSkillTestDuration()
-					+ "% fileName%"+worker.getCurrentFileName());
+					);
 			
 			this.workerTable.put(worker.getWorkerId(), worker);
 			return true;
@@ -169,10 +170,9 @@ public class LiteContainerManager extends StorageStrategy{
 	
 	public synchronized boolean insertQuitReason(Worker worker, String answer){
 		if(worker != null){
-			consentLogger.info("EVENT%EXIT_REASON% workerId%"+worker.getWorkerId()
-					+"% sessionID%"+worker.getSessionId()
-					+"% answer%"+answer
-					+ "% fileName%"+worker.getCurrentFileName());
+			consentLogger.info("EVENT%QUIT% workerId%"+worker.getWorkerId()
+					+ "% fileName%"+worker.getCurrentFileName()
+					+"% answer%"+answer);
 			this.workerTable.put(worker.getWorkerId(), worker);
 			return true;
 		}else{
@@ -184,22 +184,19 @@ public class LiteContainerManager extends StorageStrategy{
 			return false;
 		}
 	}
-
-	public synchronized Worker insertConsent(String consentDateStr, String fileName) {
+	
+	public synchronized Worker insertNewWorker(String consentDateStr, String fileName){
 		Worker worker = new Worker(keyGenerator.generate(),consentDateStr, fileName);
-			consentLogger.info("EVENT%CONSENT% workerId%"+worker.getWorkerId()
-					+"% consentDate%" + worker.getConsentDate().toString()
-					+"% fileName%"+worker.getCurrentFileName());	
-			this.workerTable.put(worker.getWorkerId(), worker);
-			return worker;
+		this.workerTable.put(worker.getWorkerId(), worker);
+		return worker;
 	}
-
-	public synchronized boolean insertSurvey(Worker worker) {
+	
+	public synchronized boolean insertConsent(Worker worker, String consentDateStr, String fileName) {
 		if(worker!=null){
-			consentLogger.info("EVENT%SURVEY% workerId%"+worker.getWorkerId()
-					+ "% sessionId%"+worker.getSessionId()
-					+ "% "+worker.getSurveyAnswersToString()
-					+ "% fileName%"+worker.getCurrentFileName());
+			consentLogger.info("EVENT%CONSENT% workerId%"+worker.getWorkerId()
+					+"% fileName%"+worker.getCurrentFileName()
+					+"% consentDate%" + worker.getConsentDate().toString());	
+			
 			return true;
 		}
 		else{
@@ -207,19 +204,26 @@ public class LiteContainerManager extends StorageStrategy{
 			return false;
 		}
 	}
-	
-	public synchronized boolean insertFeedback(Worker worker){
-		return false;
-		
+
+	public synchronized boolean insertSurvey(Worker worker) {
+		if(worker!=null){
+			consentLogger.info("EVENT%SURVEY% workerId%"+worker.getWorkerId()
+					+ "% fileName%"+worker.getCurrentFileName()
+					+ "% "+worker.getSurveyAnswersToString());
+			return true;
+		}
+		else{
+			consentLogger.error("EVENT%ERROR% could not store worker SURVEY.");
+			return false;
+		}
 	}
 
 	public synchronized Worker readExistingWorker(String workerId) {
 		return this.workerTable.get(workerId);
 	}
 
-	@Override
-	public boolean insertFeedback(String feedback, String workerId) {
-		consentLogger.info("EVENT%FEEDBACK% " + feedback+ " %workerID%"+workerId);
+	public boolean insertFeedback(String feedback, String workerId, String fileName) {
+		consentLogger.info("EVENT%FEEDBACK% %workerID%"+workerId+"% fileName%"+fileName+" %feedback%" +feedback );
 		return true;
 	}
 	

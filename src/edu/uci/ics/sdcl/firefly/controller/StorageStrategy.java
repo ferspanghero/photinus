@@ -31,13 +31,16 @@ public abstract class StorageStrategy {
 	
 	//Methods are in order of standard execution by workers performing tasks
 	public abstract void cleanUpRepositories();
+	
+	public abstract Worker insertNewWorker(String consentDateStr, String fileName);
+	
 	/**
 	 * 
 	 * @param consentDateStr the date when the worker gave the consent for the current task
 	 * @param fileName the file that will be investigated by the worker
 	 * @return
 	 */
-	public abstract Worker insertConsent(String consentDateStr, String fileName);
+	public abstract boolean insertConsent(Worker worker , String consentDateStr, String fileName);
 	
 	/** 
 	 * 
@@ -54,7 +57,7 @@ public abstract class StorageStrategy {
 	public abstract boolean insertQuitReason(Worker worker, String answer);
 	public abstract Worker readExistingWorker(String workerId);
 	public abstract boolean insertSurvey(Worker worker);
-	public abstract boolean insertFeedback(String feedback, String workerId);
+	public abstract boolean insertFeedback(String feedback, String workerId, String fileName);
 	public abstract WorkerSession readActiveSessionById(String sessionId);
 
 	}

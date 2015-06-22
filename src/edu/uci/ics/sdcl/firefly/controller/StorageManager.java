@@ -127,7 +127,7 @@ public class StorageManager extends StorageStrategy{
 	}
 	
 	@Override
-	public boolean insertFeedback(String feedback, String workerId){
+	public boolean insertFeedback(String feedback, String workerId, String fileName){
 		return false;
 		
 	}
@@ -136,6 +136,19 @@ public class StorageManager extends StorageStrategy{
 	public WorkerSession readActiveSessionById(String sessionId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Worker insertNewWorker(String consentDateStr, String fileName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean insertConsent(Worker worker, String consentDateStr,
+			String fileName) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

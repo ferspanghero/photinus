@@ -58,7 +58,7 @@ public class SkillTestServlet extends HttpServlet {
 		if(this.worker==null){
 			showErrorPage(request,response, "Execution ID does not exist in database.");
 		}
-		else if(worker.hasTakenTest()){
+		else if(worker.hasTakenTest()){//worker has taken the test for this file
 			sorryPage(request, response, 
 					"Dear participant, you have already taken this task,"
 					+ " please obtain the link for a new task and try again."
@@ -150,14 +150,14 @@ public class SkillTestServlet extends HttpServlet {
 
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		WorkerSession  session = this.storage.readActiveSessionById(this.worker.getSessionId());
-		//System.out.println("loadFirstMicrotask, session= "+session);
+		String fileName = worker.getCurrentFileName();
+		WorkerSession  session = storage.readNewSession( worker.getWorkerId(), fileName);
 		if(session==null || session.isClosed())
 			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
 			showErrorPage(request, response,"@ SkillTestServlet - no microtask available");
 		else{
-			
 			//Restore data for next Request
+			request.setAttribute("fileName", fileName);
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 
 			//Load the new Microtask data into the Request

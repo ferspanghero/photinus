@@ -100,6 +100,7 @@ public class WorkerSessionFactory{
 			for(int i=0;i<originalStack.size();i++){
 				WorkerSession originalSession = originalStack.elementAt(i);
 				String sessionId = this.keyGenerator.generate();
+				System.out.println("duplicated sessionId ="+sessionId);
 				WorkerSession duplicateSession =  new WorkerSession(sessionId, originalSession.getMicrotaskList());
 				duplicateStack.push(duplicateSession);
 			}

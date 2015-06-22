@@ -23,7 +23,6 @@ import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 public class MicrotaskServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private String SurveyPage = "/Survey.jsp";
 	private String FeedbackPage = "/Feedback.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
@@ -63,30 +62,8 @@ public class MicrotaskServlet extends HttpServlet {
 		String sessionId = this.worker.getSessionId();
 		request.setAttribute("sessionId", sessionId);
 		//System.out.println("In MicrotaskServlet: "+sessionId);
-		if(sessionId == null)
-			loadFirstMicrotask(request, response);
-		else
-			loadNextMicrotask(request, response);
+		loadNextMicrotask(request, response);
 	}
-
-
-	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		WorkerSession  session = storage.readActiveSessionById(this.worker.getSessionId());
-
-		if(session==null || session.isClosed())
-			//Means that it is the first worker session. There should be at least one microtask. If not it is an Error.
-			showErrorPage(request, response,"@ MicrotaskServlet - no microtask available");
-		else{
-			//Restore data for next Request
-			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-
-			//load the new Microtask data into the Request
-			request = MicrotaskServlet.generateRequest(request, session.getCurrentMicrotask());
-			request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
-		}
-	}
-
 
 	private void loadNextMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		

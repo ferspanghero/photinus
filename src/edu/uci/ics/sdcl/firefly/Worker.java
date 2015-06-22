@@ -18,6 +18,7 @@ public class Worker implements Serializable{
 	private String sessionId; //Stores the single working session session allowed per worker
 	private String currentFileName; //File name that the worker is requesting to work on. 
 	private Hashtable<String, Integer> fileHistory = new Hashtable<String, Integer>();
+	private Boolean answeredSurvey;
 
 	public Worker(String workerId, String consentDateStr, String currentFileName) {
 		this.workerId = workerId;
@@ -30,8 +31,13 @@ public class Worker implements Serializable{
 		this.skillTestAnswerMap = new Hashtable<String,String>();
 		this.gradeMap = new Hashtable<String, Boolean>();
 		this.currentFileName = currentFileName;
+		this.answeredSurvey = false;
 	}
 
+	public Boolean hasAnsweredSurvey(){
+		return this.answeredSurvey;
+	}
+	
 	public String getWorkerId() {
 		return workerId;
 	}
@@ -55,6 +61,7 @@ public class Worker implements Serializable{
 	
 	public void addSurveyAnswer(String question, String answer){
 		this.surveyAnswersMap.put(question, answer);
+		this.answeredSurvey = true;
 	}
 
 	public String getSurveyAnswer(String question){
@@ -133,11 +140,12 @@ public class Worker implements Serializable{
 				content = content.replaceAll("[\n]"," ").replaceAll("[\r]"," ");
 				value = value+key+"%"+content+"% ";	
 			}
+			value = value.substring(0, value.lastIndexOf("% ")-1);
 			return value;
 		}
 	}
 
-	public boolean hasTakenTest() {
+	public boolean hasTakenTest() {	
 		if(this.grade==null || this.grade<0)
 			return false;
 		else 
@@ -146,15 +154,16 @@ public class Worker implements Serializable{
 	
 	public boolean hasPassedTest()
 	{
-		boolean status = false;
-		if (grade>=2)
-			status =true;
-		return status;
+		if (this.grade>=2)
+			return true;
+		else 
+			return false;
 	}
 	
-	private void addFileHistory(String file)
+	public void addFileHistory(String file)
 	{
-		Integer usedTimes = this.fileHistory.get(currentFileName);
+		this.setCurrentFileName(file);
+		Integer usedTimes = this.fileHistory.get(file);
 		if(usedTimes == null)
 			this.fileHistory.put(file, 1);
 		else
@@ -163,14 +172,11 @@ public class Worker implements Serializable{
 	
 	public boolean isAllowedFile(String file)
 	{
-		boolean status = false;
 		Integer usedTimes = this.fileHistory.get(file);
 		if(usedTimes == null)
-		{
-			addFileHistory(file);
-			status = true;
-		}
-		return status;
+			return true;
+		else 
+			return false;
 	}
 
 }

@@ -22,8 +22,6 @@ public class FeedbackServlet extends HttpServlet {
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String ThanksPage = "/Thanks.jsp";
 	private StorageStrategy storage ;
-	private String workerId;
-	private String feedback;
 
 	private MicrotaskContextFactory workerSessionSelector;
 
@@ -46,23 +44,21 @@ public class FeedbackServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(request.getParameter("feedback")!=null){
-			this.feedback = request.getParameter("feedback");
-			request.setAttribute("feedback", this.feedback); 
+
+			
+			String feedback = request.getParameter("feedback");
+			request.setAttribute("feedback", feedback); 
 			//Restore data for next Request
 			request.setAttribute("key",request.getParameter("key"));
-			this.workerId = request.getParameter("workerId");
+			String workerId = request.getParameter("workerId");
+
 			storage = StorageStrategy.initializeSingleton();
-			storage.insertFeedback(this.feedback, this.workerId);
+			Worker worker = storage.readExistingWorker(workerId);
+			storage.insertFeedback(feedback, workerId, worker.getCurrentFileName());
 			request.getRequestDispatcher(ThanksPage).include(request, response);
 		}
 		
 
-	}
-
-	private void showErrorPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
-		request.setAttribute("error", message);
-		request.setAttribute("executionId", this.workerId);
-		request.getRequestDispatcher(ErrorPage).include(request, response);
 	}
 
 }
