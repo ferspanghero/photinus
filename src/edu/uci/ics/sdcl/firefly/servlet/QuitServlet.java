@@ -59,7 +59,7 @@ public class QuitServlet extends HttpServlet {
 		}else if(request.getParameter("reason")!=null){
 			request.setAttribute("workerId", request.getParameter("workerId")); 
 			this.workerId = request.getParameter("workerId");
-			this.answer = mapAnswerValue(request.getParameter("reason"));
+			this.answer = mapAnswerValue(request.getParameter("reason"),request.getParameter("otherReason"));
 			//Restore data for next Request
 			request.setAttribute("workerId",this.workerId);
 
@@ -80,12 +80,26 @@ public class QuitServlet extends HttpServlet {
 		request.getRequestDispatcher(ErrorPage).include(request, response);
 	}
 	
-	protected String mapAnswerValue(String answer){
-		if(answer == "difficult"){
+	protected String mapAnswerValue(String answer, String otherOption){
+		answer = answer.toLowerCase();
+		if(answer.equals("difficult")){
 			return DIFFICULT;
-		}else if(answer=="boring"){
+		}else if(answer.equals("boring")){
 			return BORING;
-		}else if(answer=="long"){
+		}else if(answer.equals("long")){
+			return LONG;
+		}else{
+			return OTHER+"_"+otherOption;
+		}
+	}
+	
+	protected String mapAnswerValue(String answer){
+		answer = answer.toLowerCase();
+		if(answer.equals("difficult")){
+			return DIFFICULT;
+		}else if(answer.equals("boring")){
+			return BORING;
+		}else if(answer.equals("long")){
 			return LONG;
 		}else{
 			return OTHER;

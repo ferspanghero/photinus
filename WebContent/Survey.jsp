@@ -153,41 +153,7 @@
 			return true;
 			
 		}
-	</script>
-
-<div style="display: none;" id="quit">
-		<div id="internalText">
-			<form name="reasonForm" method="get">
-				<input type="radio" name="reason" value="difficult" />The task is too
-				difficult &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
-					type="radio" name="reason" value="boring" />The task is too boring
-				&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
-					type="radio" name="reason" value="long" />The task is too long
-				&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <br> <input
-					type="radio" name="reason" value="other" />Other&nbsp; &nbsp;
-				&nbsp; &nbsp;&nbsp; &nbsp;
-				
-				<!-- Hidden fields -->
-				<input type="hidden"
-					name="workerId" id="workerId" value=${requestScope["workerId"]}> 
-				<input type="hidden" name="microtaskId"
-					value=${requestScope["microtaskId"]}> <input type="hidden"
-					name="timeStamp" value=${requestScope["timeStamp"]}>
-					<input type="hidden"
-					name="sessionId" value=${requestScope["sesionId"]}> 
-					
-				<center>
-					<INPUT TYPE="button" name="reasonButton" id="reasonButton" onclick="submitQuitAnswer()"
-						VALUE="Submit">
-											<INPUT TYPE="button" VALUE="Cancel"
-					onclick="quitDialog()">
-				</center>
-				<br>
-			</form>
-
-		</div>
-	</div>
-	
+	</script>	
 
 	<div id="container">
 		<br>

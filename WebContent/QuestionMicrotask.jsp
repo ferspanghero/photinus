@@ -319,8 +319,8 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 				&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; <br> <input
 					type="radio" name="reason" value="long" />The task is too long
 				&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <br> <input
-					type="radio" name="reason" value="other" />Other&nbsp; &nbsp;
-				&nbsp; &nbsp;&nbsp; &nbsp;
+					type="radio" name="reason" value="other" />Other&nbsp; 
+					<input type="text" id="otherReason" name="otherReason" /><br><br>
 				
 				<!-- Hidden fields -->
 				<input type="hidden"

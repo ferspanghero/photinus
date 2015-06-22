@@ -9,14 +9,22 @@ function checkQuitAnswer() {
 	for (i = 0; i < radios.length; i++) {
 		if (radios[i].checked) {
 			option = i;
-			return true;
+			break
 		}
+	}
+	
+	if (option === 3){
+		var other = document.getElementById("otherReason").value;
+		if(other==""){
+			alert("Please fill all the fields");
+			return false;
+		}return true;
 	}
 
 	if (option == -1) {
 		alert("Please select an answer.");
 		return false;
-	}
+	}return true;
 }
 
 var quitFormAlreadyPosted = false;
