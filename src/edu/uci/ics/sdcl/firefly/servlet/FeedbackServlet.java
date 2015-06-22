@@ -50,9 +50,9 @@ public class FeedbackServlet extends HttpServlet {
 			request.setAttribute("feedback", this.feedback); 
 			//Restore data for next Request
 			request.setAttribute("key",request.getParameter("key"));
-
+			this.workerId = request.getParameter("workerId");
 			storage = StorageStrategy.initializeSingleton();
-			storage.insertFeedback(this.feedback);
+			storage.insertFeedback(this.feedback, this.workerId);
 			request.getRequestDispatcher(ThanksPage).include(request, response);
 		}
 		

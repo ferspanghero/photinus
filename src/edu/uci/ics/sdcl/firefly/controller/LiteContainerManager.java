@@ -218,8 +218,8 @@ public class LiteContainerManager extends StorageStrategy{
 	}
 
 	@Override
-	public boolean insertFeedback(String feedback) {
-		consentLogger.info("EVENT%FEEDBACK% " + feedback);
+	public boolean insertFeedback(String feedback, String workerId) {
+		consentLogger.info("EVENT%FEEDBACK% " + feedback+ " %workerID%"+workerId);
 		return true;
 	}
 	

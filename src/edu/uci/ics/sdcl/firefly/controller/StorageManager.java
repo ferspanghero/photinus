@@ -127,7 +127,7 @@ public class StorageManager extends StorageStrategy{
 	}
 	
 	@Override
-	public boolean insertFeedback(String feedback){
+	public boolean insertFeedback(String feedback, String workerId){
 		return false;
 		
 	}
