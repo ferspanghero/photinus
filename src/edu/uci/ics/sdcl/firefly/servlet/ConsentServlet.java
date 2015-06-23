@@ -47,32 +47,27 @@ public class ConsentServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String subAction = request.getParameter("subAction");
 		this.fileName = request.getParameter("fileName");
 		
 		storage = StorageStrategy.initializeSingleton();
-		if(subAction != null && subAction.compareTo("loadQuestions")==0){
-			this.consentDateStr= TimeStampUtil.getTimeStampMillisec();	
-			if(!storage.areThereMicrotasksAvailable()){
-				this.showErrorPage(request, response, "Dear contributor, no more tasks are available. Please wait for the next batch of HITs");
-			}
-			else{
-				Worker worker = null;
-				Cookie workerCookie = validateWorker(request);
-				if(workerCookie != null)
-				{
-					worker = storage.readExistingWorker(workerCookie.getValue());
-					if(worker == null)
-						serveNewWorker(request, response);
-					else
-						serveExistingWorker(request, response, worker);
-				}
-				else
-					serveNewWorker(request, response);
-			}
+		this.consentDateStr= TimeStampUtil.getTimeStampMillisec();	
+		if(!storage.areThereMicrotasksAvailable()){
+			this.showErrorPage(request, response, "Dear contributor, no more tasks are available. Please wait for the next batch of HITs");
 		}
-		else
-			this.showErrorPage(request, response, "action not recognized: "+ subAction);
+		else{
+			Worker worker = null;
+			Cookie workerCookie = validateWorker(request);
+			if(workerCookie != null)
+			{
+				worker = storage.readExistingWorker(workerCookie.getValue());
+				if(worker == null)
+					serveNewWorker(request, response);
+				else
+					serveExistingWorker(request, response, worker);
+			}
+			else
+				serveNewWorker(request, response);
+		}
 	}
 
 	/**
