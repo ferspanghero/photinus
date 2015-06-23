@@ -124,8 +124,20 @@ public class WorkerSession implements Serializable{
 		return this.currentIndex;
 	}
 	
+	/** 
+	 * 
+	 * @return the position for the current microtask in the list. Starting at 1; 
+	 */
+	public Integer getCurrentIndexPlus(){
+		return this.currentIndex + 1; 
+	}
+	
 	public Vector<Microtask> getMicrotaskList() {
 		return this.microtaskList;
+	}
+	
+	public Integer getMicrotaskListSize(){
+		return this.microtaskList.size();
 	}
 	
 	/**

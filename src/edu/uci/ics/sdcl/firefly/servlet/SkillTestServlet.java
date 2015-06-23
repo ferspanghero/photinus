@@ -163,7 +163,7 @@ public class SkillTestServlet extends HttpServlet {
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 
 			//Load the new Microtask data into the Request
-			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
+			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()), session);
 			request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
 		}
 	}

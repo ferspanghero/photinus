@@ -89,6 +89,23 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 	width: 450px;
 }
 
+#progressbar {
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    vertical-align: middle;
+    line-height: 35px;
+}
+
+#label {
+    float: left;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    vertical-align: middle;
+}
+
+
 </style>
 
 </head>
@@ -256,9 +273,18 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 			document.getElementById('testFailure').innerHTML=htmlContent;
 		}
 		
+		$( document ).ready(function() {
+			$('#progressbar').height(10);
+		    $( "#progressbar" ).progressbar({
+		    	max: parseInt(document.getElementById('totalTasks').value),
+		    	value: parseInt(document.getElementById('currentTask').value)
+		    });
+	 	});
 	</script>
 
 	<!-- Hidden fields -->
+	<input type="hidden" id="totalTasks" value=${requestScope["totalTasks"]}>
+	<input type="hidden" id="currentTask" value=${requestScope["currentTask"]}>
 	<input type="hidden" id="startLine" value=${requestScope["startLine"]}>
 	<input type="hidden" id="startColumn"
 		value=${requestScope["startColumn"]}>
@@ -345,12 +371,13 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 	</div>
 
 	<!-- src=" http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" https://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js-->
-	<div id="failurePrompt"></div>
+	<div id="failurePrompt">
 	<div id="internalText">
-	
-		
+	<br>
+	<div id="progressbar"><div id="label">Progress</div></div>
 		<br>
-			<span class="sectionTitle"><b>Please take a look at the code below, the following problem, and answer the questions.</b></span><br><br>
+			<input type="button"  value="Quit" onclick='quitConfirm()' style="float:right">
+			<span class="sectionTitle"><b>Please take a look at the following problem, the code below it, and answer the questions.</span></b><br><br>
 			<div id="internalText">
 			<table class="fixed" CELLPADDING="4px" align="center"  style="word-wrap: break-word;">
 				<col width="210px">
@@ -379,12 +406,12 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 			<form name="answerForm" method="get">
 	
 			<table cellspacing='0' cellpadding='0'  align="center"> 	 	
-				<col width="250px" />
-				<col width="150px" />
+				<col width="220px" />
+				<col width="220px" />
 				<col width="220px" />
 			<tr>
-			<td style="text-align: left"><label><input type="radio" name="answer" value="1" />Yes, there is an issue </label></td>
-			<td><label><input type="radio" name="answer" value="2" />I don't know</label></td>
+			<td style="text-align: left"><label><input type="radio" name="answer" value="2" />I don't know</label></td>
+			<td><label><input type="radio" name="answer" value="1" />Yes, there is an issue </label></td>
 			<td style="text-align: right"><label><input type="radio" name="answer" value="3" />No, there is not an issue</label></td>
 		</tr>
 			</table>
@@ -444,8 +471,7 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 				<col width="310px" />
 				<col width="310px" />
 				<tr>
-					<td align="left"><input type="button"  value="Quit" onclick='quitConfirm()'></td>
-					<td align="right"><input TYPE="button" name="answerButton" id="answerButton" VALUE="Submit" onclick="submitAnswer()"></td>
+					<td align="center"><input TYPE="button" name="answerButton" id="answerButton" VALUE="Submit" onclick="submitAnswer()"></td>
 				</tr>
 			</table>				
 			<br>

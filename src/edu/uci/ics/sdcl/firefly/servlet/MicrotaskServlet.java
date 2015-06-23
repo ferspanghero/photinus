@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jdt.core.dom.ThisExpression;
+
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.MicrotaskContextFactory;
@@ -55,7 +57,6 @@ public class MicrotaskServlet extends HttpServlet {
 			storage = StorageStrategy.initializeSingleton();
 			this.worker = storage.readExistingWorker(workerId);
 			String microtaskId = request.getParameter("microtaskId");
-
 			if(this.worker!=null && microtaskId!=null){//Discard request silently. Necessary for repeated request from Chrome
 				String sessionId = this.worker.getSessionId();
 				//Restore data for next Request
@@ -102,7 +103,8 @@ public class MicrotaskServlet extends HttpServlet {
 			}
 			else{
 				//Displays a new microtask
-				request = MicrotaskServlet.generateRequest(request, microtask);
+				WorkerSession session = storage.readActiveSessionById(this.worker.getSessionId());
+				request = MicrotaskServlet.generateRequest(request, microtask, session);
 				request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
 			}
 		}
@@ -122,17 +124,20 @@ public class MicrotaskServlet extends HttpServlet {
 	 * @param task
 	 * @return the new request with data to be displayed on the web page
 	 */
-	public static HttpServletRequest generateRequest(HttpServletRequest request, Microtask task){
+	public static HttpServletRequest generateRequest(HttpServletRequest request, Microtask task, WorkerSession session){
 
 		//System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
 		//	System.out.println("Retrieved microtask bug report:" + task.getFailureDescription() +  " from fileName: "+task.getCodeSnippet().getFileName());
-
+		
 		request.setAttribute("microtaskId", task.getID());  
-	
 		request.setAttribute("bugReport", task.getFailureDescription());
 		request.setAttribute("testCase", task.getTestCase());
 		request.setAttribute("question", task.getQuestion());
+		int current = session.getCurrentIndexPlus();
+		int total = session.getMicrotaskListSize();
 		
+		request.setAttribute("currentTask", session.getCurrentIndexPlus());
+		request.setAttribute("totalTasks", session.getMicrotaskListSize());
 		//set source code of codeSnippet - First ACE Editor
 		request.setAttribute("source", task.getCodeSnippet().getCodeSnippetFromFileContent()); 	
 		request.setAttribute("sourceLOCS", task.getCodeSnippet().getLOCS());
