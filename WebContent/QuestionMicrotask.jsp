@@ -73,11 +73,19 @@
 }
 
 .ui-dialog-titlebar-close {
-  visibility: hidden;
+	visibility: hidden;
 }
 
-table{ table-layout:fixed; word-break: break-all; }
-table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
+table {
+	table-layout: fixed;
+	word-break: break-all;
+}
+
+table td {
+	border: 0px solid;
+	border-color: #C0C0C0;
+	overflow: hidden;
+}
 
 .sectionTitle {
 	padding-right: 0px;
@@ -89,23 +97,27 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 	width: 450px;
 }
 
+div.inner {
+	display: inline-block;
+	padding-top: 4px;
+	width: 100%;
+	height: 30px;
+}
+
 #progressbar {
-    text-align: center;
-    overflow: hidden;
-    position: relative;
-    vertical-align: middle;
-    line-height: 35px;
+	text-align: center;
+	overflow: hidden;
+	position: relative;
+	vertical-align: middle;
+	height: 15px;
 }
 
 #label {
-    float: left;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    vertical-align: middle;
+	font-size:11px;
+  margin: auto;
+  position: absolute;
+  top: 1px; left: 0; bottom: 0; right: 0;
 }
-
-
 </style>
 
 </head>
@@ -272,9 +284,8 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 			//alert("htmlContent:"+ htmlContent);
 			document.getElementById('testFailure').innerHTML=htmlContent;
 		}
-		
+
 		$( document ).ready(function() {
-			$('#progressbar').height(10);
 		    $( "#progressbar" ).progressbar({
 		    	max: parseInt(document.getElementById('totalTasks').value),
 		    	value: parseInt(document.getElementById('currentTask').value)
@@ -373,7 +384,8 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 	<div id="failurePrompt">
 	<div id="internalText">
 	<br>
-	<div id="progressbar"><div id="label">Progress</div></div>
+
+	<div id="progressbar"><div id="label">${requestScope["currentTask"]} / ${requestScope["totalTasks"]}</div></div>
 		<br>
 			<input type="button"  value="Quit" onclick='quitConfirm()' style="float:right">
 			<span class="sectionTitle"><b>Please take a look at the following problem, the code below it, and answer the questions.</span></b><br><br>
