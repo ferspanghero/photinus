@@ -33,6 +33,7 @@ public class SkillTestServlet extends HttpServlet {
 	private String SorryPage = "/SorryPage.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
 	private final String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
+	private final String MicrotaskTestPage = "/MicrotaskLoadTest.jsp";
 
 	private Worker worker;
 	private StorageStrategy storage;
@@ -151,7 +152,7 @@ public class SkillTestServlet extends HttpServlet {
 
 
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		Boolean isTest = Boolean.valueOf(request.getParameter("isTest"));
 		String fileName = worker.getCurrentFileName();
 		WorkerSession  session = storage.readNewSession( worker.getWorkerId(), fileName);
 		if(session==null || session.isClosed())
@@ -164,7 +165,10 @@ public class SkillTestServlet extends HttpServlet {
 
 			//Load the new Microtask data into the Request
 			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()), session);
-			request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
+			if(isTest)
+				request.getRequestDispatcher(MicrotaskTestPage).forward(request, response);
+			else
+				request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
 		}
 	}
 

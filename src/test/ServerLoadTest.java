@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
+import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
@@ -75,7 +76,7 @@ public class ServerLoadTest implements Runnable{
 	public static void main(String args[]){
 		try{
 			path = localPath;
-			int maxThreads =0;
+			int maxThreads =1;
 			while(threadId<maxThreads){
 				threadId++;
 				//	System.out.println("Thread ="+threadId);
@@ -99,7 +100,7 @@ public class ServerLoadTest implements Runnable{
 					{
 						boolean success=true;
 						int i=0;
-						while(success && i<10){
+						while(success && i<1){
 							success = runMicrotask();
 							i++;
 						}
@@ -108,11 +109,6 @@ public class ServerLoadTest implements Runnable{
 							runFeedback();
 					}
 				}
-
-			/*runConsent();
-			runSkillTest();
-			runMicrotask();
-			 */
 		}
 		catch(Exception e){
 			loggerInfo.error(e.toString());
@@ -135,7 +131,6 @@ public class ServerLoadTest implements Runnable{
 		// Change the value of the text field
 		checkBox.click();
 
-		//System.out.println("Consent clicked, thread="+ threadId);
 		// Now submit the form by clicking the button and get back the second page.
 		this.nextPage = button.click();
 
@@ -185,7 +180,10 @@ public class ServerLoadTest implements Runnable{
 		input2.setValueAttribute(TimeStampUtil.getTimeStampMillisec());
 		HtmlHiddenInput input3 = form.getInputByName("subAction");
 		input3.setValueAttribute("gradeAnswers");
-
+		
+		HtmlInput isTest = form.getInputByName("isTest");
+		isTest.setValueAttribute("true");
+		
 		final HtmlInput button = form.getInputByName("answerButton");
 		//System.out.println("Test clicked, workerId= "+ this.workerId);
 		this.nextPage= button.click();
@@ -217,12 +215,6 @@ public class ServerLoadTest implements Runnable{
 		//final HtmlPage page = this.webClient.getPage(path+"QuestionMicrotask.jsp");
 		final HtmlForm answerForm = nextPage.getFormByName("answerForm");
 
-		//answerForm.setActionAttribute("microtask");
-		//	HtmlHiddenInput input1 = answerForm.getInputByName("workerId");
-		//input1.setValueAttribute("workerId");
-		//	HtmlHiddenInput input2 =answerForm.getInputByName("timeStamp");
-		//input2.setValueAttribute(TimeStampUtil.getTimeStampMillisec());
-
 		// Answer radio field
 		final HtmlInput radioAnswer = answerForm.getInputByName("answer");
 		radioAnswer.click();
@@ -237,24 +229,18 @@ public class ServerLoadTest implements Runnable{
 		final HtmlTextArea textAreaExplanation = answerForm.getTextAreaByName("explanation");
 		textAreaExplanation.click();
 		textAreaExplanation.setNodeValue("My explanation");
-		
-		// Form submit button
-		final HtmlButtonInput button = answerForm.getInputByName("answerButton");
-		button.click();
-		
-		// Difficulty form
-		final HtmlForm difficultyForm = nextPage.getFormByName("difficultyForm");
-		
+
 		// Difficulty radio
-		final HtmlInput radioDifficulty = difficultyForm.getInputByName("difficulty");
+		final HtmlInput radioDifficulty = answerForm.getInputByName("difficulty");
 		radioDifficulty.click();
 		radioDifficulty.setValueAttribute("3");
 		
-		// Difficulty submit button
-		final HtmlButtonInput submitButton = difficultyForm.getInputByName("difficultySubmit");
-		nextPage = submitButton.click();
+		// Form submit button
+		final HtmlSubmitInput button = answerForm.getInputByName("answerButton");
+		nextPage = button.click();
 		
 		System.out.println("ENDED : "+nextPage.getTitleText());
+		
 		if(nextPage.getTitleText().matches("Error Page")){
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
@@ -274,7 +260,7 @@ public class ServerLoadTest implements Runnable{
 					loggerConsent.info("Feedback Page");
 					return true;
 				}
-				else{ // There are more question so continue on the MicroTaskPage
+				else{ // There are more questions so continue on the MicroTaskPage
 					final HtmlForm microtaskForm = nextPage.getFormByName("answerForm");
 					final HtmlInput microtaskId = microtaskForm.getInputByName("microtaskId");
 					loggerSession.info("Microtask=SUCCESS; workerId= "+ this.workerId+"; microtaskId="+microtaskId.getValueAttribute()+ "; Page="+nextPage.getTitleText());
@@ -324,7 +310,9 @@ public class ServerLoadTest implements Runnable{
 		// Submit form
 		final HtmlSubmitInput button = surveyForm.getInputByName("surveySubmit");
 		this.nextPage= button.click();
+		
 		System.out.println("ENDED : "+nextPage.getTitleText());
+		
 		if(nextPage.getTitleText().matches("Error Page")){
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
@@ -361,7 +349,9 @@ public class ServerLoadTest implements Runnable{
 		//Feedback submit button
 		final HtmlInput submitButton = feedBackForm.getInputByName("feedbackSubmit");
 		nextPage = submitButton.click();
+		
 		System.out.println("ENDED : "+nextPage.getTitleText());
+		
 		if(nextPage.getTitleText().matches("Error Page")){
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");

@@ -327,7 +327,9 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 					<td align="center"><label><input type="radio" name="difficulty" value="4" />4</label></td>
 					<td align="center"><label><input type="radio" name="difficulty" value="3" />3</label></td>
 					<td align="center"><label><input type="radio" name="difficulty" value="2" />2</label></td>
-					<td align="center"><label><input type="radio" name="difficulty" value="1" />1</label></td>	
+					<td align="center"><label><input type="radio" name="difficulty" value="1" />1</label></td>
+					<td align="center"><label><input type="hidden"
+					name="workerId" id="workerId" value=${requestScope["workerId"]}> </label></td>
 				</tr>
 			</table>
 				<br>

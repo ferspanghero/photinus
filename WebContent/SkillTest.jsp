@@ -155,7 +155,8 @@
 		<form name="testForm" method="get" action="skillTest">
 			<input type="hidden" name="workerId" value=${requestScope["workerId"]}> 
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
-			<input type="hidden" id="timeStamp" name="timeStamp" value=${requestScope["timeStamp"]}> 
+			<input type="hidden" id="timeStamp" name="timeStamp" value=${requestScope["timeStamp"]}>
+			<input type="hidden" id="isTest" name="isTest" value="false">
 			<br> The source code below is used for all the questions below.<br>
 			<div id="editor1"><xmp>${requestScope["editor1"]}</xmp></div>
 
