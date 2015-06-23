@@ -30,7 +30,7 @@ public class LiteContainerManager extends StorageStrategy{
 	private Hashtable<String, Worker> workerTable;
 	
 	/** Keeps track of Session Microtasks already written */
-	private Hashtable<String, Hashtable<Integer, Integer>> sessionMicrotaskTable;
+	private Hashtable<String,Hashtable<String, Hashtable<Integer, Integer>>> sessionMicrotaskTable;
 
 	/** Keeps track of Worker Consents, Surveys, and Feedback 
 	 * Indexed by workerId and sessionId and has one of the labels "CONSENT", "SURVEY", "FEEDBACK"*/
@@ -65,7 +65,7 @@ public class LiteContainerManager extends StorageStrategy{
 		newSessionTable = storage.retrieveNewSessionStorage();
 		activeSessionTable = new Hashtable<String, WorkerSession>();
 		closedSessionVector = new Vector<WorkerSession>();
-		sessionMicrotaskTable = new Hashtable<String, Hashtable<Integer, Integer>>();
+		sessionMicrotaskTable = new Hashtable<String, Hashtable<String,Hashtable<Integer, Integer>>>();
 		consentSurveyTestFeedbackTable = new Hashtable<String, Hashtable<String,String>>();
 		
 		//Initialize Worker table
@@ -110,6 +110,19 @@ public class LiteContainerManager extends StorageStrategy{
 		else
 			return null;
 	}
+	
+
+	private synchronized void restoreSession(String sessionId){
+		WorkerSession session = this.activeSessionTable.get(sessionId);
+		String fileName = session.getFileName();
+		session.reset();
+		Stack<WorkerSession> stack = newSessionTable.get(fileName);
+		if(stack==null){
+			stack = new Stack<WorkerSession>();
+		}
+		stack.push(session);
+		newSessionTable.put(fileName, stack);		
+	}
 
 	public synchronized boolean areThereMicrotasksAvailable(){
 		return !newSessionTable.isEmpty();
@@ -132,7 +145,7 @@ public class LiteContainerManager extends StorageStrategy{
 			Worker worker = workerTable.get(answer.getWorkerId());
 
 			String explanation = answer.getExplanation().replaceAll("[\n]"," ").replaceAll("[\r]"," ");
-			if(updateSessionMicrotaskTable(sessionId,microtaskId)){
+			if(updateSessionMicrotaskTable(worker.getWorkerId(),sessionId,microtaskId)){
 				sessionLogger.info("EVENT%MICROTASK% workerId%"+ answer.getWorkerId()+"% fileName%"+microtask.getFileName()
 						+"% sessionId%"+ sessionId+"% microtaskId%"+microtaskId
 						+"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()
@@ -153,22 +166,36 @@ public class LiteContainerManager extends StorageStrategy{
 			return false;
 	}
 
-	private synchronized boolean updateSessionMicrotaskTable(String sessionId, Integer microtaskId){
-		Hashtable<Integer, Integer> microtaskMap = this.sessionMicrotaskTable.get(sessionId);
-		if(microtaskMap==null){
+	private synchronized boolean updateSessionMicrotaskTable(String workerId, String sessionId, Integer microtaskId){
+		Hashtable<String,Hashtable<Integer, Integer>> sessionMap = sessionMicrotaskTable.get(workerId);
+		Hashtable<Integer, Integer> microtaskMap;
+		if(sessionMap==null){
+			sessionMap = new Hashtable<String,Hashtable<Integer, Integer>>();
 			microtaskMap = new Hashtable<Integer, Integer>();
 			microtaskMap.put(microtaskId,microtaskId);
-			this.sessionMicrotaskTable.put(sessionId, microtaskMap);
+			sessionMap.put(workerId, microtaskMap);
+			this.sessionMicrotaskTable.put(sessionId, sessionMap);
 			return true;
 		}
-		else
-			if(!microtaskMap.containsKey(microtaskId)){
+		else{
+			microtaskMap = sessionMap.get(sessionId);
+			if(microtaskMap==null){
+				microtaskMap = new Hashtable<Integer, Integer>();
 				microtaskMap.put(microtaskId,microtaskId);
-				this.sessionMicrotaskTable.put(sessionId, microtaskMap);
+				sessionMap.put(sessionId, microtaskMap);
+				this.sessionMicrotaskTable.put(workerId, sessionMap);
 				return true;
 			}
-		else 
-			return false;
+			else
+				if(!microtaskMap.containsKey(microtaskId)){
+					microtaskMap.put(microtaskId,microtaskId);
+					sessionMap.put(sessionId, microtaskMap);
+					this.sessionMicrotaskTable.put(workerId, sessionMap);
+					return true;
+				}
+				else 
+					return false;
+		}
 	}
 	
 	private synchronized boolean updateConsentSurveyTestFeedbackTable(String workerId, String fileName, String label){
@@ -236,6 +263,9 @@ public class LiteContainerManager extends StorageStrategy{
 						+ "% fileName%"+worker.getCurrentFileName()
 						+"% answer%"+answer);
 				this.workerTable.put(worker.getWorkerId(), worker);
+				
+				//Put the session back to the pile so another worker can take it.
+				restoreSession(worker.getSessionId());
 			}
 			return true;
 		}else{
@@ -247,6 +277,7 @@ public class LiteContainerManager extends StorageStrategy{
 			return false;
 		}
 	}
+	
 	
 	public synchronized Worker insertNewWorker(String consentDateStr, String fileName){
 		Worker worker = new Worker(keyGenerator.generate(),consentDateStr, fileName);

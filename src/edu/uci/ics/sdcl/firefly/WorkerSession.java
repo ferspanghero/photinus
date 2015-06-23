@@ -98,6 +98,14 @@ public class WorkerSession implements Serializable{
 			return false;
 	}
 	
+	/** Sets the currentIndex to zero
+	 * This is necessary to make the session available to a new worker.
+	 * This happens when the current worker quits in the middle of the session.
+	 */
+	public void reset(){
+		this.currentIndex = 0;
+	}
+	
 	public String getId(){
 		return this.id;
 	}
@@ -185,7 +193,7 @@ public class WorkerSession implements Serializable{
 	}
 
 	public String getFileName() {
-		return this.getFileName();//Assume that all microtasks are from the same file.
+		return this.fileName;//Assume that all microtasks are from the same file.
 	}
 	
 }

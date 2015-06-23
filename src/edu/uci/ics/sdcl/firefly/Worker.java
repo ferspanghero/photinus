@@ -140,7 +140,7 @@ public class Worker implements Serializable{
 				content = content.replaceAll("[\n]"," ").replaceAll("[\r]"," ");
 				value = value+key+"%"+content+"% ";	
 			}
-			value = value.substring(0, value.lastIndexOf("% ")-1);
+			value = value.substring(0, value.lastIndexOf("% "));
 			return value;
 		}
 	}

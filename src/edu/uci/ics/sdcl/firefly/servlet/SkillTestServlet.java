@@ -153,6 +153,7 @@ public class SkillTestServlet extends HttpServlet {
 
 	private void loadFirstMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Boolean isTest = Boolean.valueOf(request.getParameter("isTest"));
+		System.out.println("isTest: "+isTest);
 		String fileName = worker.getCurrentFileName();
 		WorkerSession  session = storage.readNewSession( worker.getWorkerId(), fileName);
 		if(session==null || session.isClosed())
@@ -164,7 +165,12 @@ public class SkillTestServlet extends HttpServlet {
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 
 			//Load the new Microtask data into the Request
-			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()), session);
+	
+			//Data for the Progress bar
+			request.setAttribute("currentTask", session.getCurrentIndexPlus());
+			request.setAttribute("totalTasks", session.getMicrotaskListSize());
+
+			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
 			if(isTest)
 				request.getRequestDispatcher(MicrotaskTestPage).forward(request, response);
 			else

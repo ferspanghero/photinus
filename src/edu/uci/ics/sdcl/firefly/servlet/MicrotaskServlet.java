@@ -104,7 +104,11 @@ public class MicrotaskServlet extends HttpServlet {
 			else{
 				//Displays a new microtask
 				WorkerSession session = storage.readActiveSessionById(this.worker.getSessionId());
-				request = MicrotaskServlet.generateRequest(request, microtask, session);
+			
+				//Data for the Progress bar
+				request.setAttribute("currentTask", session.getCurrentIndexPlus());
+				request.setAttribute("totalTasks", session.getMicrotaskListSize());
+				request = MicrotaskServlet.generateRequest(request, microtask);
 				request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
 			}
 		}
@@ -124,7 +128,7 @@ public class MicrotaskServlet extends HttpServlet {
 	 * @param task
 	 * @return the new request with data to be displayed on the web page
 	 */
-	public static HttpServletRequest generateRequest(HttpServletRequest request, Microtask task, WorkerSession session){
+	public static HttpServletRequest generateRequest(HttpServletRequest request, Microtask task){
 
 		//System.out.println("Retrieved microtask id:"+task.getID()+" answers: "+task.getAnswerList().toString());
 		//	System.out.println("Retrieved microtask bug report:" + task.getFailureDescription() +  " from fileName: "+task.getCodeSnippet().getFileName());
@@ -133,11 +137,7 @@ public class MicrotaskServlet extends HttpServlet {
 		request.setAttribute("bugReport", task.getFailureDescription());
 		request.setAttribute("testCase", task.getTestCase());
 		request.setAttribute("question", task.getQuestion());
-		int current = session.getCurrentIndexPlus();
-		int total = session.getMicrotaskListSize();
-		
-		request.setAttribute("currentTask", session.getCurrentIndexPlus());
-		request.setAttribute("totalTasks", session.getMicrotaskListSize());
+	
 		//set source code of codeSnippet - First ACE Editor
 		request.setAttribute("source", task.getCodeSnippet().getCodeSnippetFromFileContent()); 	
 		request.setAttribute("sourceLOCS", task.getCodeSnippet().getLOCS());

@@ -328,8 +328,6 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 					<td align="center"><label><input type="radio" name="difficulty" value="3" />3</label></td>
 					<td align="center"><label><input type="radio" name="difficulty" value="2" />2</label></td>
 					<td align="center"><label><input type="radio" name="difficulty" value="1" />1</label></td>
-					<td align="center"><label><input type="hidden"
-					name="workerId" id="workerId" value=${requestScope["workerId"]}> </label></td>
 				</tr>
 			</table>
 				<br>
@@ -357,8 +355,7 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 				<input type="hidden" name="microtaskId"
 					value=${requestScope["microtaskId"]}> <input type="hidden"
 					name="timeStamp" value=${requestScope["timeStamp"]}>
-					<input type="hidden"
-					name="sessionId" value=${requestScope["sesionId"]}> 
+					
 					
 				<center>
 					<INPUT TYPE="button" name="reasonButton" id="reasonButton" onclick="submitQuitAnswer()"
@@ -455,8 +452,6 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 				<input type="hidden" name="microtaskId"
 					value=${requestScope["microtaskId"]}> <input type="hidden"
 					name="timeStamp" value=${requestScope["timeStamp"]}>
-					<input type="hidden"
-					name="sessionId" value=${requestScope["sesionId"]}> 
 				
 			
 			<table cellspacing='0' cellpadding='0'  align="center"> 	

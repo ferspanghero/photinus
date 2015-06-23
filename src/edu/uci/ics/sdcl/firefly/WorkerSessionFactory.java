@@ -74,7 +74,7 @@ public class WorkerSessionFactory{
 	
 			 //duplicate sessions
 			 if(answersPerMicrotask>1){
-				 fileWorkerSessionStack = this.duplicateSessions(fileWorkerSessionStack, answersPerMicrotask);
+				 fileWorkerSessionStack = this.duplicateSessions(fileWorkerSessionStack, answersPerMicrotask, fileName);
 			 }
 			// System.out.println("Number of sessions available: "+fileWorkerSessionStack.size()+ ", answers per microtask:"+answersPerMicrotask );
 			 this.workerSessionMap.put(fileName, fileWorkerSessionStack);	
@@ -90,7 +90,7 @@ public class WorkerSessionFactory{
 	 * @return the stack with duplicated sessions
 	 * 
 	 */
-	private Stack<WorkerSession> duplicateSessions(Stack<WorkerSession> originalStack, int copies){
+	private Stack<WorkerSession> duplicateSessions(Stack<WorkerSession> originalStack, int copies, String fileName){
 
 		Stack<WorkerSession> duplicateStack = new Stack<WorkerSession>();
 
@@ -101,7 +101,7 @@ public class WorkerSessionFactory{
 				WorkerSession originalSession = originalStack.elementAt(i);
 				String sessionId = this.keyGenerator.generate();
 				System.out.println("duplicated sessionId ="+sessionId);
-				WorkerSession duplicateSession =  new WorkerSession(sessionId, originalSession.getMicrotaskList());
+				WorkerSession duplicateSession =  new WorkerSession(sessionId, fileName, originalSession.getMicrotaskList());
 				duplicateStack.push(duplicateSession);
 			}
 		}
