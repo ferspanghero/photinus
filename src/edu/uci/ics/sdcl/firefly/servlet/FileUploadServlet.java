@@ -27,6 +27,7 @@ import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
 import edu.uci.ics.sdcl.firefly.report.ReportGenerator;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
+import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 import edu.uci.ics.sdcl.firefly.util.PathUtil;
@@ -334,9 +335,9 @@ public class FileUploadServlet extends HttpServlet {
 		StorageManager manager = new StorageManager();
 		manager.cleanUpRepositories();
 		
-		//Clean up memory
+		/*//Clean up memory
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
-		storage.cleanUpRepositories();
+		storage.cleanUpRepositories();*/
 	}
 	
 	/**
@@ -397,6 +398,7 @@ public class FileUploadServlet extends HttpServlet {
 		};
 		
 		String message="";
+		SkillTestSource skillQuestions = new SkillTestSource();
 		for(int i=0; i<fileList.length; i++){
 			String fileName = fileList[i];
 			String methodName = methodList[i];
@@ -406,6 +408,7 @@ public class FileUploadServlet extends HttpServlet {
 			String fileContent = SourceFileReader.readFileToString(path+fileName);
 			
 			String result = generateMicrotasks(fileName, fileContent, methodName,null, failureDescription, testDescription);
+			skillQuestions.bindSkillTest(fileName);
 			logger.info("Event =UPLOAD; File="+ fileName+ "; MethodName="+ methodName+ "; Microtasks="+result);
 			message = message + methodName+ ", " ;
 		}

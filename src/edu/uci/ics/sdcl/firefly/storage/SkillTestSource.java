@@ -1,13 +1,26 @@
 package edu.uci.ics.sdcl.firefly.storage;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+
 public class SkillTestSource {
 
 	private StringBuffer sourceOne;
 	private StringBuffer sourceTwo;
-
+	
+	// Provides the exams
+	private static List<StringBuffer> skillTests = new ArrayList<StringBuffer>();
+	
+	//Holds the relationship between files and skillTests
+	private static Hashtable<String, StringBuffer> skillFileTable = new Hashtable<String, StringBuffer>();
+	
 	public SkillTestSource(){
-		this.sourceOne = createSourceOne();
-		this.sourceTwo = createSourceTwo();
+		if(skillTests.size() == 0)
+		{
+			skillTests.add(createSourceOne());
+			skillTests.add(createSourceTwo());
+		}
 	}
 
 
@@ -102,7 +115,33 @@ public class SkillTestSource {
 		return this.sourceTwo;
 	}
 
-
+	/**
+	 * Binds a file with a skill test.
+	 * @param fileName: The desired file to be binded
+	 */
+	public void bindSkillTest(String fileName)
+	{
+		if(skillFileTable.get(fileName) == null)
+		{
+			int extensionIndex = fileName.indexOf('.');
+			if(extensionIndex != 1)
+				fileName = (String) fileName.subSequence(0, extensionIndex); // Avoid file extension
+			
+			int index = (skillFileTable.size() % skillTests.size()); // A circular queue
+			skillFileTable.put(fileName, skillTests.get( index ));
+		}
+	}
+	
+	/**
+	 * Gets the skill test related to a file
+	 * 
+	 * @param fileName: File name without the extension
+	 * @return: A StringBuffer containing the skill test or null if no skill is related to the file
+	 */
+	public StringBuffer getSource(String fileName)
+	{
+		return skillFileTable.get(fileName);
+	}
 
 
 

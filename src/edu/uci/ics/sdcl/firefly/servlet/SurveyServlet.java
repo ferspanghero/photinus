@@ -7,10 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;
-
 import edu.uci.ics.sdcl.firefly.Worker;
-import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
 import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
@@ -49,9 +46,16 @@ public class SurveyServlet extends HttpServlet {
 			request.setAttribute("workerId",worker.getWorkerId());
 			//request.setAttribute("sessionId",worker.getSessionId());
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-			request = loadQuestions(request, response);
-			//request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
-			request.getRequestDispatcher(SkillTestPage).forward(request, response);
+			request = loadQuestions(request, response, worker.getCurrentFileName());
+			if(request.getAttribute("editor1").equals(""))
+			{
+				request.setAttribute("executionId", request.getParameter("workerId"));
+				request.setAttribute("error", "@SurveyServlet - Invalid file name. The requested file was not found.");
+				//Displays the error page
+				request.getRequestDispatcher("/ErrorPage.jsp").forward(request, response);
+			}
+			else
+				request.getRequestDispatcher(SkillTestPage).forward(request, response);
 		}
 		else{
 			request.setAttribute("executionId", request.getParameter("workerId"));
@@ -79,9 +83,10 @@ public class SurveyServlet extends HttpServlet {
 		}
 	}
 	
-	private HttpServletRequest loadQuestions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private HttpServletRequest loadQuestions(HttpServletRequest request, HttpServletResponse response, String fileName) throws ServletException, IOException {
 		SkillTestSource source = new SkillTestSource();
-		request.setAttribute("editor1", source.getSourceOne());
+		StringBuffer skillTest = source.getSource(fileName);
+		request.setAttribute("editor1", (skillTest != null) ? skillTest : "");
 		request.setAttribute("subAction", "gradeAnswers");
 		return request;
 	}
