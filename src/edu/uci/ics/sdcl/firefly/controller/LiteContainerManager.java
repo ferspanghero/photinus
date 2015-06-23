@@ -56,7 +56,6 @@ public class LiteContainerManager extends StorageStrategy{
 	public void cleanUpRepositories(){
 		StorageManager storageManager = new StorageManager();
 		storageManager.cleanUpRepositories();
-		container = new LiteContainerManager();		
 	}
 
 	private LiteContainerManager(){

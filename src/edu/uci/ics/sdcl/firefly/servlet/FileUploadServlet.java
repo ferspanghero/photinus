@@ -330,14 +330,10 @@ public class FileUploadServlet extends HttpServlet {
 		return results;		
 	}
 	
-	private void delete(){
-		//Clean up persistent files
-		StorageManager manager = new StorageManager();
-		manager.cleanUpRepositories();
-		
-		/*//Clean up memory
+	private void delete(){		
+		//Clean up memory
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
-		storage.cleanUpRepositories();*/
+		storage.cleanUpRepositories();
 	}
 	
 	/**
