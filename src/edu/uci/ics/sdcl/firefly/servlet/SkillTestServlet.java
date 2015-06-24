@@ -69,7 +69,8 @@ public class SkillTestServlet extends HttpServlet {
 			}
 			else{
 				int grade = this.processAnswers(request);
-				if (grade>=2){
+				worker.setGrade(grade);
+				if (worker.hasPassedTest()){
 					loadFirstMicrotask(request,response);
 				}
 				else{ 
