@@ -124,7 +124,7 @@ public class SkillTestSource {
 		if(skillFileTable.get(fileName) == null)
 		{
 			int extensionIndex = fileName.indexOf('.');
-			if(extensionIndex != 1)
+			if(extensionIndex != -1)
 				fileName = (String) fileName.subSequence(0, extensionIndex); // Avoid file extension
 			
 			int index = (skillFileTable.size() % skillTests.size()); // A circular queue

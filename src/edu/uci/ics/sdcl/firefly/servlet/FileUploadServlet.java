@@ -394,7 +394,6 @@ public class FileUploadServlet extends HttpServlet {
 		};
 		
 		String message="";
-		SkillTestSource skillQuestions = new SkillTestSource();
 		for(int i=0; i<fileList.length; i++){
 			String fileName = fileList[i];
 			String methodName = methodList[i];
@@ -404,7 +403,6 @@ public class FileUploadServlet extends HttpServlet {
 			String fileContent = SourceFileReader.readFileToString(path+fileName);
 			
 			String result = generateMicrotasks(fileName, fileContent, methodName,null, failureDescription, testDescription);
-			skillQuestions.bindSkillTest(fileName);
 			logger.info("Event =UPLOAD; File="+ fileName+ "; MethodName="+ methodName+ "; Microtasks="+result);
 			message = message + methodName+ ", " ;
 		}

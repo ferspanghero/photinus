@@ -12,6 +12,7 @@ import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.servlet.SkillTestServlet;
+import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.util.RandomKeyGenerator;
 
@@ -79,6 +80,13 @@ public class LiteContainerManager extends StorageStrategy{
 		//Initialize Loggers
 		consentLogger = LoggerFactory.getLogger("consent");
 		sessionLogger = LoggerFactory.getLogger("session");
+		
+		//Bind files with skill tests
+		SkillTestSource skillTests = new SkillTestSource();
+		for (String fileName : newSessionTable.keySet()) {
+			skillTests.bindSkillTest(fileName);
+		}
+//		skillTests.bindSkillTest();
 	}
 
 	public synchronized  Microtask getNextMicrotask(String sessionId){
