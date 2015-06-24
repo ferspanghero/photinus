@@ -418,12 +418,12 @@ div.inner {
 	
 			<table cellspacing='0' cellpadding='0'  align="center"> 	 	
 				<col width="220px" />
-				<col width="220px" />
-				<col width="220px" />
+				<col width="240px" />
+				<col width="180px" />
 			<tr>
 			<td style="text-align: left"><label><input type="radio" name="answer" value="2" />I don't know</label></td>
 			<td><label><input type="radio" name="answer" value="1" />Yes, there is an issue </label></td>
-			<td style="text-align: right"><label><input type="radio" name="answer" value="3" />No, there is not an issue</label></td>
+			<td><label><input type="radio" name="answer" value="3" />No, there is not an issue</label></td>
 		</tr>
 			</table>
 			
