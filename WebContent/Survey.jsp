@@ -42,38 +42,6 @@
 		}
 		function checkAnswers() {
 
-			var gender = document.getElementsByName("gender");
-			var genderOption = -1;
-			var i = 0;
-
-			for (i = 0; i < gender.length; i++) {
-				if (gender[i].checked) {
-					genderOption = i;
-					break;
-				}
-			}
-			if (genderOption === -1) {
-				alert("Please select a gender option.");
-				return -1;
-			}
-
-			var ageField = document.getElementById("age");
-			ageField.value = ageField.value.trim();
-			if (!ageField.value) {
-				alert("Please enter your age.");
-				return -1;
-			} else if (isNaN(ageField.value)) {
-				alert("Age must be number.");
-				return -1;
-			}
-
-			var countryField = document.getElementById("country");
-			countryField.value = countryField.value.trim();
-			if (!countryField.value) {
-				alert("Please enter your country of residence.");
-				return -1;
-			}
-			
 			var exp = document.getElementsByName("experience");
 			var expOption = -1;
 			var i = 0;
@@ -88,31 +56,64 @@
 			if (expOption===4){//if user selected other
 				if(document.getElementById("otherexperience").value==""){
 					alert("Please fill the experience field!")
-					return -1;
+					return false;
 				}
 			}
 			if (expOption === -1) {
 				alert("Please select a level of experience .");
-				return -1;
+				return false;
 			}
 			
 			var languageField = document.getElementById("language");
 			languageField.value = languageField.value.trim();
 			if (!languageField.value) {
 				alert("Please enter a programming language.");
-				return -1;
+				return false;
 			}
 			
 			var yearsField = document.getElementById("years");
 			yearsField.value = yearsField.value.trim();
 			if (!yearsField.value) {
 				alert("Please enter your years of experience.");
-				return -1;
+				return false;
 			} else if (isNaN(yearsField.value)) {
 				alert("Years of experience must be number.");
-				return -1;
+				return false;
+			}
+			
+			var gender = document.getElementsByName("gender");
+			var genderOption = -1;
+			var i = 0;
+
+			for (i = 0; i < gender.length; i++) {
+				if (gender[i].checked) {
+					genderOption = i;
+					break;
+				}
+			}
+			
+			if (genderOption === -1) {
+				alert("Please select a gender option.");
+				return false;
 			}
 
+			var ageField = document.getElementById("age");
+			ageField.value = ageField.value.trim();
+			if (!ageField.value) {
+				alert("Please enter your age.");
+				return false;
+			} else if (isNaN(ageField.value)) {
+				alert("Age must be number.");
+				return false;
+			}
+
+			var countryField = document.getElementById("country");
+			countryField.value = countryField.value.trim();
+			if (!countryField.value) {
+				alert("Please enter your country of residence.");
+				return false;
+			}
+			return true;
 		}
 
 		var formAlreadyPosted = false;
@@ -122,12 +123,14 @@
 			if (formAlreadyPosted) {
 				alert("Please wait. If it is taking more time than expected, please send an email to the requester.");
 			} else {
-				if ((checkAnswers()!=-1) && getCheckBoxValues()) {
+				if (checkAnswers() && getCheckBoxValues()) {
 					formAlreadyPosted = true;
-					var form = document.forms["surveyForm"];
-					form.action = "survey";
-					form.submit();
+					return true;
+					//var form = document.forms["surveyForm"];
+					//form.action = "survey";
+					//form.submit();
 				} else {
+					return false;
 					//nothing to do.
 				}
 			}
@@ -181,7 +184,7 @@
 
 
 
-			<form name="surveyForm" method="get" action="survey" onsubmit="submitAnswer(event)">
+			<form name="surveyForm" method="get" action="survey" onsubmit="return submitAnswer();">
  
 				 <!--  EXPERIENCE QUESTIONS -->
 		
