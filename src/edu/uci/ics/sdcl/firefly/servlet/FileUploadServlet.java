@@ -70,7 +70,7 @@ public class FileUploadServlet extends HttpServlet {
 					request.setAttribute("reports_message", "<b>Repositories Deleted!</b>");
 					request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 				}
-				if(subAction.compareTo("generateReports")==0){
+				else if(subAction.compareTo("generateReports")==0){
 					ReportGenerator generator = new ReportGenerator();
 					generator.runReports();
 					request.setAttribute("reports_message", "Reports Generated!");
@@ -288,9 +288,8 @@ public class FileUploadServlet extends HttpServlet {
 				
 		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
 	
-
 		storage.writeNewWorkerSessionMap(newSessionsMap);
-
+		
 		int totalSessions = countSessionsInMap(newSessionsMap);
 		int existingSessions = storage.getNumberOfNewWorkerSessions(); 
 	
@@ -334,6 +333,7 @@ public class FileUploadServlet extends HttpServlet {
 		//Clean up memory
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
 		storage.cleanUpRepositories();
+		storage.killSingleton();
 	}
 	
 	/**

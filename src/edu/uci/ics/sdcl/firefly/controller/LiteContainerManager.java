@@ -52,6 +52,12 @@ public class LiteContainerManager extends StorageStrategy{
 			container = new LiteContainerManager();
 		return container;
 	}
+	
+	public void killSingleton()
+	{
+		
+		container = null;
+	}
 
 	public void cleanUpRepositories(){
 		StorageManager storageManager = new StorageManager();

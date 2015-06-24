@@ -29,6 +29,12 @@ public abstract class StorageStrategy {
 		return concreteStrategy;
 	}
 	
+	public void killSingleton()
+	{
+		concreteStrategy.killSingleton();
+		concreteStrategy = null;
+	}
+	
 	//Methods are in order of standard execution by workers performing tasks
 	public abstract void cleanUpRepositories();
 	
