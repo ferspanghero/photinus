@@ -10,14 +10,16 @@ public class PropertyManager {
 
 	private String fileName="WebContent/firefly.properties";
 
-	private String devPropertyPath= "C:/Users/igMoreira/Documents/GitHub/photinus/";
+	private String devPropertyPath= "C:/workspace/photinus/";
 
 	public String serverPropertyPath ="/var/lib/tomcat7/webapps/";   
 	
-	public String fileUploadFolder = "samples/bulkLoad/";
+	public String fileUploadFolder = "samples/bulkLoadPhotinus/";
+	
+	public String skillTestUploadFolder = "C:/workspace/photinus/samples/bulkSkillTests/";
 	
 	public String fileUploadSourcePath;
-	
+		
 	public String serializationPath;
 
 	public String reportPath;

@@ -1,14 +1,20 @@
 package edu.uci.ics.sdcl.firefly.storage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Scanner;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
+
+import java.lang.StringBuffer;
 
 public class SkillTestSource {
-
-	private StringBuffer sourceOne;
-	private StringBuffer sourceTwo;
 	
+	PropertyManager manager = PropertyManager.initializeSingleton();
+	private String testsPath = manager.skillTestUploadFolder;
+
 	// Provides the exams
 	private static List<StringBuffer> skillTests = new ArrayList<StringBuffer>();
 	
@@ -18,9 +24,17 @@ public class SkillTestSource {
 	public SkillTestSource(){
 		if(skillTests.size() == 0)
 		{
-			skillTests.add(createSourceOne());
-			skillTests.add(createSourceTwo());
+			addSourcesToSkillTest(skillTests);
 		}
+	}
+
+
+	private void addSourcesToSkillTest(List<StringBuffer> skillTests) {
+		skillTests.add(createSourceOne());
+		skillTests.add(createSourceTwo());
+		skillTests.add(createSourceThree());
+		skillTests.add(createSourceFour());
+		skillTests.add(createSourceFive());
 	}
 
 
@@ -106,13 +120,35 @@ public class SkillTestSource {
 
 		return buffer;
 	}
-
-	public StringBuffer getSourceOne(){
-		return this.sourceOne;
+	
+	private StringBuffer createSourceThree(){
+		StringBuffer buff = new StringBuffer();
+		populateBuffer(buff,"FindTop.java");
+		return buff;
 	}
-
-	public StringBuffer getSourceTwo(){
-		return this.sourceTwo;
+	
+	private StringBuffer createSourceFour(){
+		StringBuffer buff = new StringBuffer();
+		populateBuffer(buff,"PositionFinder.java");
+		return buff;
+	}
+	
+	private StringBuffer createSourceFive(){
+		StringBuffer buff = new StringBuffer();
+		populateBuffer(buff,"WordFinder.java");
+		return buff;
+	}
+	
+	
+	private void populateBuffer(StringBuffer buff, String fileName){
+		try {
+			Scanner scanner = new Scanner(new File(testsPath+"\\"+fileName));
+			String content = scanner.useDelimiter("\\Z").next();
+			buff.append(content);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch bloc
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -128,6 +164,7 @@ public class SkillTestSource {
 				fileName = (String) fileName.subSequence(0, extensionIndex); // Avoid file extension
 			
 			int index = (skillFileTable.size() % skillTests.size()); // A circular queue
+			System.out.println(fileName + "--" + index);
 			skillFileTable.put(fileName, skillTests.get( index ));
 		}
 	}
@@ -142,7 +179,4 @@ public class SkillTestSource {
 	{
 		return skillFileTable.get(fileName);
 	}
-
-
-
 }
