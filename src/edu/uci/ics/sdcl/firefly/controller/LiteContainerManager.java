@@ -194,8 +194,8 @@ public class LiteContainerManager extends StorageStrategy{
 			sessionMap = new Hashtable<String,Hashtable<Integer, Integer>>();
 			microtaskMap = new Hashtable<Integer, Integer>();
 			microtaskMap.put(microtaskId,microtaskId);
-			sessionMap.put(workerId, microtaskMap);
-			this.sessionMicrotaskTable.put(sessionId, sessionMap);
+			sessionMap.put(sessionId, microtaskMap);
+			this.sessionMicrotaskTable.put(workerId, sessionMap);
 			return true;
 		}
 		else{
