@@ -608,6 +608,7 @@ div.inner {
 										"ace/mode/java");
 								editorCaller.setBehavioursEnabled(false);
 								editorCaller.setOption("maxLines", Infinity);
+								editorCaller.setOption("minLines", parseInt(sourceLinespan)+3);
 								editorCaller.setOption("highlightActiveLine",
 										false); // disable highligthing on the active line
 								editorCaller.setShowPrintMargin(false); // disable printing margin
@@ -648,6 +649,8 @@ div.inner {
 								editorCallee.getSession().setMode(
 										"ace/mode/java");
 								editorCallee.setBehavioursEnabled(false);
+								editorCallee.setOption("maxLines", Infinity);
+								editorCallee.setOption("minLines", parseInt(sourceLinespan)+2);
 								editorCallee.setOption("highlightActiveLine",
 										false); // disable highligthing on the active line
 								editorCallee.setShowPrintMargin(false); // disable printing margin
