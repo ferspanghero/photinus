@@ -54,6 +54,10 @@ public class ConsentServlet extends HttpServlet {
 		if(!storage.areThereMicrotasksAvailable()){
 			this.showErrorPage(request, response, "Dear contributor, no more tasks are available. Please wait for the next batch of HITs");
 		}
+		else if(!storage.isFileAvailable(fileName))
+		{
+			showErrorPage(request, response, "Dear worker the file you are trying to access could not be found in our records.");
+		}
 		else{
 			Worker worker = null;
 			Cookie workerCookie = validateWorker(request);
@@ -109,7 +113,7 @@ public class ConsentServlet extends HttpServlet {
 
 		//Load the new Microtask data into the Request
 		request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
-		request.getRequestDispatcher(page).forward(request, response);			
+		request.getRequestDispatcher(page).forward(request, response);
 	}
 	
 	/** When worker has not taken the test yet, the worker has to first fill in a survey. */

@@ -35,6 +35,11 @@ public abstract class StorageStrategy {
 		concreteStrategy = null;
 	}
 	
+	public boolean isFileAvailable(String fileName)
+	{
+		return concreteStrategy.isFileAvailable(fileName);
+	}
+	
 	//Methods are in order of standard execution by workers performing tasks
 	public abstract void cleanUpRepositories();
 	

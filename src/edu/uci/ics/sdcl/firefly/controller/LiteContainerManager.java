@@ -59,6 +59,14 @@ public class LiteContainerManager extends StorageStrategy{
 		
 		container = null;
 	}
+	
+	public boolean isFileAvailable(String fileName)
+	{
+		if(newSessionTable.get(fileName) != null)
+			return true;
+		else
+			return false;
+	}
 
 	public void cleanUpRepositories(){
 		StorageManager storageManager = new StorageManager();
