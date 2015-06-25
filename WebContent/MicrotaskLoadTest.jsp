@@ -436,6 +436,7 @@ table td{border:0px solid; border-color:#C0C0C0; overflow:hidden; }
 					name="timeStamp" value=${requestScope["timeStamp"]}>
 					<input type="hidden"
 					name="sessionId" value=${requestScope["sesionId"]}> 
+					<input type="hidden" id="isTest" name="isTest" value="false">
 				
 			
 			<table cellspacing='0' cellpadding='0'  align="center"> 	

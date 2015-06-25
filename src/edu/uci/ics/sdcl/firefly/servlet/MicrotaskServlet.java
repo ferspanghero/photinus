@@ -28,6 +28,7 @@ public class MicrotaskServlet extends HttpServlet {
 	private String FeedbackPage = "/Feedback.jsp";
 	private String ErrorPage = "/ErrorPage.jsp";
 	private String QuestionMicrotaskPage = "/QuestionMicrotask.jsp";
+	private final String MicrotaskLoadTestPage = "/MicrotaskLoadTest.jsp";
 	private StorageStrategy storage ;
 	private Worker worker;
 
@@ -69,7 +70,7 @@ public class MicrotaskServlet extends HttpServlet {
 	}
 
 	private void loadNextMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+			
 		int answer = new Integer(request.getParameter("answer")).intValue();
 		int confidenceAnswer = new Integer(request.getParameter("confidence")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
@@ -80,10 +81,12 @@ public class MicrotaskServlet extends HttpServlet {
 
 
 		//Save answers from the previous microtask
-		
-		boolean success = storage.updateMicrotaskAnswer(this.worker.getSessionId(), new Integer(microtaskId),
+		boolean success=false;
+		if(this.worker.getSessionId()!=null && microtaskId!=null){
+			success = storage.updateMicrotaskAnswer(this.worker.getSessionId(), new Integer(microtaskId),
 				new Answer(Answer.mapOptionToString(answer), confidenceAnswer,explanation, this.worker.getWorkerId(), elapsedTime, timeStamp, difficulty));
-
+		}
+		
 		if(!success){
 			this.showErrorPage(request, response, "Your answer could not be stored. In case you have used the back button, "
 					+ "please restart the HIT by going to the following link: http://dellserver.ics.uci.edu:8080/firefly/ConsentForm.jsp");
@@ -109,7 +112,17 @@ public class MicrotaskServlet extends HttpServlet {
 				request.setAttribute("currentTask", session.getCurrentIndexPlus());
 				request.setAttribute("totalTasks", session.getMicrotaskListSize());
 				request = MicrotaskServlet.generateRequest(request, microtask);
-				request.getRequestDispatcher(QuestionMicrotaskPage).include(request, response);
+		
+				//For load test
+				Boolean isTest = Boolean.valueOf(request.getParameter("isTest"));
+				System.out.println("MicrotaskServlet - isTest: "+isTest);
+				
+				if(isTest)
+					request.getRequestDispatcher(MicrotaskLoadTestPage).forward(request, response);
+				else
+					request.getRequestDispatcher(QuestionMicrotaskPage).forward(request, response);
+				
+				
 			}
 		}
 	}

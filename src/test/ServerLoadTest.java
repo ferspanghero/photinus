@@ -1,21 +1,22 @@
 package test;
 
-
-
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import net.sourceforge.jwebunit.junit.WebTester;
-import net.sourceforge.jwebunit.util.TestingEngineRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CookieManager;
+import com.gargoylesoftware.htmlunit.ScriptException;
+import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
-import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
@@ -26,15 +27,16 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
-import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLDivElement;
+import com.gargoylesoftware.htmlunit.javascript.JavaScriptErrorListener;
 
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
-
-
 public class ServerLoadTest implements Runnable{
-	//Used for JWebUnit
-	private static Logger loggerInfo;
+
+	//Number of THREADS
+	private static int maxThreads =150;
+	
+	//private static Logger loggerInfo;
 	private static Logger loggerConsent;
 	private static Logger loggerSession;
 	WebTester webTester;
@@ -42,13 +44,13 @@ public class ServerLoadTest implements Runnable{
 	//Used for HTMLUnit
 	private WebClient webClient;
 	private String workerId="0";
-	private static int threadId=-1;
+	private static int threadId=0;
 	private int defaultId;
 	private int myThread;
-	private static String localPath = "http://localhost:8080/Photinus/";
-	private static String serverPath = "http://dellserver.ics.uci.edu:8080/crowd-debug/";
+	private static String localPath = "http://localhost:8080/photinus/";
+	private static String serverPath = "http://dellserver.ics.uci.edu:8080/photinus/";
 	private static String path;
-	private static String filename = "7_TimePeriodValues";
+	private static String filename = "7_TimePeriodValues";//"8_DateTimeZone";//"6_CharSequenceTranslator";//
 
 	private HtmlPage nextPage;
 
@@ -58,33 +60,61 @@ public class ServerLoadTest implements Runnable{
 	}
 
 	public ServerLoadTest(int myThread){
-		loggerInfo = LoggerFactory.getLogger("info");
+		//loggerInfo = LoggerFactory.getLogger("info");
 		loggerConsent = LoggerFactory.getLogger("consent");
 		loggerSession = LoggerFactory.getLogger("session");
 		this.myThread = myThread;
 		this.defaultId = this.myThread+50; //in case there is no workerID returned
-		this.webClient = new WebClient();
-		WebClientOptions options = webClient.getOptions();
+		this.webClient = new WebClient(BrowserVersion.CHROME);
+		WebClientOptions options = this.webClient.getOptions();
+		//to stop htmlUnit go verbose on console about css/javaScript errors with:
+		this.webClient.setCssErrorHandler(new SilentCssErrorHandler());    
+		this.webClient.setJavaScriptErrorListener(new JavaScriptErrorListener(){
+			@Override
+			public void loadScriptError(HtmlPage arg0, URL arg1, Exception arg2) {}
+			@Override
+			public void malformedScriptURL(HtmlPage arg0, String arg1,MalformedURLException arg2) {}
+			@Override
+			public void scriptException(HtmlPage arg0, ScriptException arg1) {}
+			@Override
+			public void timeoutError(HtmlPage arg0, long arg1, long arg2) {}});
+		
 		options.setThrowExceptionOnFailingStatusCode(false);
 		options.setThrowExceptionOnScriptError(false);
+		
 		options.setTimeout(14000);
-		this.webClient.setJavaScriptTimeout(14000);
 		options.setCssEnabled(false);
+		this.webClient.setJavaScriptTimeout(14000);
 	}
 
 
 	public static void main(String args[]){
 		try{
-			path = localPath;
-			int maxThreads =1;
+			path = serverPath; //localPath;
 			while(threadId<maxThreads){
 				threadId++;
-				//	System.out.println("Thread ="+threadId);
+				System.out.println("Thread ="+threadId);
 				(new Thread(new ServerLoadTest(threadId))).start();
 			}
 		}
 		catch(Exception e){
-			loggerInfo.error("FAILED Thread ="+threadId);
+			System.err.println("FAILED Thread ="+threadId);
+		}
+	}
+	
+	//@Override
+	public void run2(){
+
+		try{
+			CookieManager manager = new CookieManager();
+			manager.clearCookies();
+			System.out.println("Running Consent");
+			runConsent();
+			runSurvey();
+			runMicrotask();
+		}
+		catch(Exception e){
+			System.err.println(e.toString());
 		}
 	}
 
@@ -111,7 +141,7 @@ public class ServerLoadTest implements Runnable{
 				}
 		}
 		catch(Exception e){
-			loggerInfo.error(e.toString());
+			e.printStackTrace();
 		}
 	}
 
@@ -235,6 +265,10 @@ public class ServerLoadTest implements Runnable{
 		radioDifficulty.click();
 		radioDifficulty.setValueAttribute("3");
 		
+		//So it calls the LoadTest version
+		HtmlInput isTest = answerForm.getInputByName("isTest");
+		isTest.setValueAttribute("true");
+		
 		// Form submit button
 		final HtmlSubmitInput button = answerForm.getInputByName("answerButton");
 		nextPage = button.click();
@@ -245,7 +279,7 @@ public class ServerLoadTest implements Runnable{
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
-			loggerSession.info("Microtask=FAIILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
+			loggerSession.info("Microtask=FAILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
 			return false;
 		}else
 			if(nextPage.getTitleText().matches("Sorry Page")){
@@ -277,7 +311,7 @@ public class ServerLoadTest implements Runnable{
 		// Experience Radio
 		final HtmlInput radioExperience = surveyForm.getInputByName("experience");
 		radioExperience.click();
-		radioExperience.setValueAttribute("Undergraduate student");
+		radioExperience.setValueAttribute("Hobbyist");
 		
 		// Programming language field
 		final HtmlInput textFieldLanguage = surveyForm.getInputByName("language");
@@ -301,11 +335,11 @@ public class ServerLoadTest implements Runnable{
 
 		// Age text field
 		final HtmlInput age = surveyForm.getInputByName("age");
-		age.setValueAttribute("1");
+		age.setValueAttribute("21");
 
 		// Country of residence text field
 		final HtmlInput country = surveyForm.getInputByName("country");
-		country.setValueAttribute("1");
+		country.setValueAttribute("USA");
 
 		// Submit form
 		final HtmlSubmitInput button = surveyForm.getInputByName("surveySubmit");
@@ -369,45 +403,5 @@ public class ServerLoadTest implements Runnable{
 		}
 		
 	}
-
-	//----------------------------------------------------------------------------------------------------------
-	//Old JWebUnit stuff
-
-	public void prepare() {
-		webTester = new WebTester();
-		webTester.setBaseUrl("http://localhost:8080/firefly/");
-		webTester.setTestingEngineKey(TestingEngineRegistry.TESTING_ENGINE_HTMLUNIT);    // use WebDriver
-		loggerInfo = LoggerFactory.getLogger(ServerLoadTest.class);
-	}
-
-
-	public void testConsentForm() {
-		//Consent Page
-		loggerInfo.debug("Starting Load Test");
-		System.out.println("Starting Load Test");
-		webTester.setIgnoreFailingStatusCodes(true);
-
-		webTester.beginAt("ConsentForm.jsp");
-		webTester.assertFormElementPresent("consentForm");
-		webTester.assertCheckboxPresent("consentBox");
-		webTester.checkCheckbox("consentBox");
-		loggerInfo.debug("Before click yesButton");
-		webTester.setHiddenField("subAction", "loadQuestions");
-		webTester.submit();//clickButton("yesButton");
-		//webTester.submit();
-
-		//Test Page
-		loggerInfo.debug("Before assert Title");
-		webTester.assertTitleEquals("Java Skill Test");
-		webTester.beginAt("SkillTest.jsp");
-//		workerId++;
-		webTester.setHiddenField("workerId", new Integer(workerId).toString());
-		webTester.assertRadioOptionPresent("QUESTION1", "1");
-
-		webTester.setHiddenField("workerId", new Integer(workerId).toString());
-		loggerInfo.debug("after setHiddenField");
-
-	}
-
 
 }
