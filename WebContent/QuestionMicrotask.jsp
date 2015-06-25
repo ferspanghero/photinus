@@ -525,7 +525,7 @@ div.inner {
 				var divMainEditor = document.getElementById('mainEditor');
 				divMainEditor.style.position = 'relative';
 				var sourceLinespan = document.getElementById("sourceLOCS").value;
-				divMainEditor.style.height = computeHeight(sourceLinespan);
+				//divMainEditor.style.height = computeHeight(sourceLinespan);
 				divMainEditor.style.width = '760px';
 
 				var mainEditor = ace.edit("mainEditor");
@@ -535,7 +535,8 @@ div.inner {
 				mainEditor.setBehavioursEnabled(false);
 				mainEditor.setOption("highlightActiveLine", false); // disable highligthing on the active line
 				mainEditor.setShowPrintMargin(false); // disable printing margin
-
+				mainEditor.setOption("maxLines", Infinity);
+				mainEditor.setOption("minLines", parseInt(sourceLinespan)+3);
 				var startLine = document.getElementById("startLine").value;
 				var startColumn = document.getElementById("startColumn").value;
 				var endLine = document.getElementById("endLine").value;
@@ -595,6 +596,7 @@ div.inner {
 								divCaller.style.position = 'relative';
 								var sourceLinespan = document
 										.getElementById("callerLOCS").value;
+								
 								divCaller.style.height = computeHeight(sourceLinespan);
 								divCaller.style.width = '760px';
 
@@ -605,6 +607,7 @@ div.inner {
 								editorCaller.getSession().setMode(
 										"ace/mode/java");
 								editorCaller.setBehavioursEnabled(false);
+								editorCaller.setOption("maxLines", Infinity);
 								editorCaller.setOption("highlightActiveLine",
 										false); // disable highligthing on the active line
 								editorCaller.setShowPrintMargin(false); // disable printing margin
