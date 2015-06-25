@@ -110,7 +110,10 @@ public class ConsentServlet extends HttpServlet {
 		request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 		request.setAttribute("workerId", worker.getWorkerId());
 		request.setAttribute("sessionId", session.getId());
-
+		//Data for the Progress bar
+		request.setAttribute("currentTask", session.getCurrentIndexPlus());
+		request.setAttribute("totalTasks", session.getMicrotaskListSize());
+		
 		//Load the new Microtask data into the Request
 		request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
 		request.getRequestDispatcher(page).forward(request, response);
