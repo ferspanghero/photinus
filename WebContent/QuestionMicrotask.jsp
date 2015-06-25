@@ -478,7 +478,6 @@ div.inner {
 	<br>
 			<table cellspacing='0' cellpadding='0'  align="center"> 		
 				<col width="310px" />
-				<col width="310px" />
 				<tr>
 					<td align="center"><input TYPE="button" name="answerButton" id="answerButton" VALUE="Submit" onclick="submitAnswer()"></td>
 				</tr>
