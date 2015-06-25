@@ -81,6 +81,8 @@ public class FileUploadServlet extends HttpServlet {
 					request.setAttribute("executionId", "before consent");
 					request.getRequestDispatcher("/ErrorPage.jsp").include(request, response);
 				}
+			StorageStrategy storage = StorageStrategy.initializeSingleton();
+			storage.killSingleton();
 		}	
 	}
 
@@ -333,7 +335,6 @@ public class FileUploadServlet extends HttpServlet {
 		//Clean up memory
 		StorageStrategy storage = StorageStrategy.initializeSingleton();
 		storage.cleanUpRepositories();
-		storage.killSingleton();
 	}
 	
 	/**
