@@ -391,7 +391,7 @@ public class FileUploadServlet extends HttpServlet {
 		String[] testList = {"assertEquals(DateTimeZone.forID(\"-02:15\"), DateTimeZone.forOffsetHoursMinutes(-2, -15));",
 				"GrayPaintScale gps = new GrayPaintScale(); c = (Color) gps.getPaint(-0.5);	assertTrue(c.equals(Color.black));",
 				"assertEquals(\"\uD83D\uDE30\", StringEscapeUtils.escapeCsv(\"\uD83D\uDE30\"));",
-				"TimePeriodValues s = new TimePeriodValues(\"Test\");	s.add(new SimpleTimePeriod(0L, 50L), 3.0);	assertEquals(1, s.getMaxMiddleIndex());",			
+				"TimePeriodValues s = new TimePeriodValues(\"Test\"); s.add(new SimpleTimePeriod(0L, 50L), 3.0); assertEquals(1, s.getMaxMiddleIndex());",			
 				"String[] sa = ArrayUtils.add(stringArray, aString); fail(\"Should have caused IllegalArgumentException\");",
 				"assertPrint(\"var x = -0.0;\", \"var x=-0.0\");",
 				"assertTrue(Arrays.equals(new Class[] { String.class, null, Double.class },ClassUtils.toClass(new Object[] { \"Test\", null, 99d })));",

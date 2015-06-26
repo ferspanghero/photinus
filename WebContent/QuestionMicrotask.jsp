@@ -128,7 +128,7 @@ div.inner {
   <script src="jquery/quitDialog.js"></script>
   <script	src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
   
-<body onload="splitReplaceTestDescription()">
+<body>
   
 	<script type="text/javascript">
 	
@@ -270,12 +270,16 @@ div.inner {
 		function splitReplaceTestDescription(){
 			var description = '${requestScope["testCase"]}'; 
 			//alert("description:"+description);
-			var arr = description.split(';');
+			var arr = description.split('; ');
 			var htmlContent = '';
 			if(arr.length>1){
-				for(var i=0; i<arr.length-1; i++) {
+				for(var i=0; i<arr.length; i++) {
 					var value = arr[i];
-					htmlContent = htmlContent + '<code>'+ value + ';<code><br>';	
+					if(i == arr.length-1){
+						htmlContent = htmlContent + '<code>'+ value + '<code><br>';	
+					}else{
+						htmlContent = htmlContent + '<code>'+ value + ';<code><br>';	
+					}
 				}
 			}
 			else{
@@ -284,8 +288,28 @@ div.inner {
 			//alert("htmlContent:"+ htmlContent);
 			document.getElementById('testFailure').innerHTML=htmlContent;
 		}
+		
+		function splitReplaceReportDescription(){
+			var description = '${requestScope["bugReport"]}'; 
+			//alert("description:"+description);
+			var arr = description.split(': ');
+			var htmlContent = '';
+			if(arr.length>1){
+				for(var i=0; i<arr.length; i++) {
+					var value = arr[i];
+					htmlContent = htmlContent + '<code>'+ value + '<code><br>';	
+				}
+			}
+			else{
+				htmlContent=arr[0];
+			}
+			//alert("htmlContent:"+ htmlContent);
+			document.getElementById('testReport').innerHTML=htmlContent;
+		}
 
 		$( document ).ready(function() {
+			splitReplaceTestDescription();
+			splitReplaceReportDescription();
 		    $( "#progressbar" ).progressbar({
 		    	max: parseInt(document.getElementById('totalTasks').value),
 		    	value: parseInt(document.getElementById('currentTask').value)
@@ -400,7 +424,7 @@ div.inner {
 				<tr height="20px"></tr>
 				<tr>
 					<td><b> But we received this <u>failure:</u></b></td>
-					<td><code>${requestScope["bugReport"]}</code></td>
+					<td><div id="testReport"> </div></td>
 				</tr>
 			</table>
 	<br>
