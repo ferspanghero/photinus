@@ -8,18 +8,20 @@ import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 
 public class PropertyManager {
 
-	private String fileName="WebContent/firefly.properties";
+	private String fileName="firefly.properties";
 
-	private String devPropertyPath= "C:/Users/igMoreira/Documents/GitHub/photinus/";
+	private String devPropertyPath= "C:/Users/adrianoc/Documents/GitHub/photinus/"; 
 
 	public String serverPropertyPath ="/var/lib/tomcat7/webapps/";   
 	
 	public String fileUploadFolder = "samples/bulkLoadPhotinus/";
 	
-	public String skillTestUploadPath = "C:/Users/igMoreira/Documents/GitHub/photinus/samples/bulkSkillTests/";
+	public String skillTestUploadFolder = "/samples/bulkSkillTests/";
 	
 	public String fileUploadSourcePath;
-		
+	
+	public String skillTestUploadPath;	
+	
 	public String serializationPath;
 
 	public String reportPath;
@@ -56,8 +58,9 @@ public class PropertyManager {
 	private void readDevelopmentProperties(){
 		try {
 			Properties properties = new Properties();
-			properties.load(new FileInputStream(this.devPropertyPath+this.fileName));
+			properties.load(new FileInputStream(this.devPropertyPath+"/WebContent/"+this.fileName));
 			this.fileUploadSourcePath = this.devPropertyPath + this.fileUploadFolder;
+			this.skillTestUploadPath = this.devPropertyPath + this.skillTestUploadFolder;
 			this.reportPath = properties.getProperty("development-ReportPath");
 			this.serializationPath = properties.getProperty("development-SerializationPath");
 			this.answersPerMicrotask = new Integer(properties.getProperty("answersPerMicrotask")).intValue();
@@ -73,6 +76,7 @@ public class PropertyManager {
 			Properties properties = new Properties();
 			properties.load(new FileInputStream(this.serverPropertyPath+this.fileName));
 			this.fileUploadSourcePath = this.serverPropertyPath + this.fileUploadFolder;
+			this.skillTestUploadPath = this.serverPropertyPath + this.skillTestUploadFolder;
 			this.reportPath = properties.getProperty("server-SerializationPath");
 			this.serializationPath = properties.getProperty("server-SerializationPath");
 			this.answersPerMicrotask = new Integer(properties.getProperty("answersPerMicrotask")).intValue();
