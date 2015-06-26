@@ -93,18 +93,20 @@ public class WorkerSessionFactory{
 	private Stack<WorkerSession> duplicateSessions(Stack<WorkerSession> originalStack, int copies, String fileName){
 
 		Stack<WorkerSession> duplicateStack = new Stack<WorkerSession>();
-
+		
+		System.out.println("filename:" + fileName + "copies requested: "+copies);
 		// produce # copies of the original sessions
 		for(int j=0;j<copies;j++){
 			//Generate the duplicated WorkerSessions
 			for(int i=0;i<originalStack.size();i++){
 				WorkerSession originalSession = originalStack.elementAt(i);
 				String sessionId = this.keyGenerator.generate();
-				System.out.println("duplicated sessionId ="+sessionId);
+				//System.out.println("duplicated sessionId ="+sessionId);
 				WorkerSession duplicateSession =  new WorkerSession(sessionId, fileName, originalSession.getMicrotaskList());
 				duplicateStack.push(duplicateSession);
 			}
 		}
+		System.out.println("----------- Total sessions:  "+duplicateStack.size());
 		return duplicateStack;	
 	}
 	
@@ -145,12 +147,15 @@ public class WorkerSessionFactory{
 	 * @param numberOfMicrotaksPerSession
 	 * @return
 	 */
-	private int minimalSessionsPerFile(int numberOfQuestionsPerFile, int numberOfMicrotaksPerSession){
-		int sessionsPerFile = numberOfQuestionsPerFile/numberOfMicrotaksPerSession;
-		double remainder = Math.IEEEremainder(numberOfQuestionsPerFile,numberOfMicrotaksPerSession);
-		int remainderInt = new Double(remainder).intValue();
-		sessionsPerFile = sessionsPerFile+Math.abs(remainderInt);
-		return sessionsPerFile;
+	public int minimalSessionsPerFile(int numberOfQuestionsPerFile, int numberOfMicrotaksPerSession){
+		double sessionsPerFileDouble = numberOfQuestionsPerFile/numberOfMicrotaksPerSession;
+		int sessionsPerFileInt = (int) sessionsPerFileDouble; 
+		double remainderDouble = Math.IEEEremainder(numberOfQuestionsPerFile,numberOfMicrotaksPerSession);
+		int remainderInt = new Double(remainderDouble).intValue();
+		System.out.println("sessionsPerFile: " +sessionsPerFileInt+", double remainder: "+remainderDouble);
+		
+		sessionsPerFileInt = sessionsPerFileInt+Math.abs(remainderInt);
+		return sessionsPerFileInt;
 	}
 	
 	/** This is a roundRobin-like algorithm that compose different sessions in order
