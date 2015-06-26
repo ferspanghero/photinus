@@ -31,15 +31,10 @@
 	
 	#sourceCode {
 	position: relative;
-	height: 320px;
+	height: 385px;
 	width: 580px;
 	}
 	
-	#editor2 {
-	position: relative;
-	height: 500px;
-	width: 580px;
-	}
 	
 .ui-dialog-titlebar-close {
   visibility: hidden;

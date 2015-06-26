@@ -1,8 +1,9 @@
 package pretask.test;
 
 public class WordFinder {
+
 	private String sentence;
-	
+
 	public WordFinder(String text){
 		this.sentence = text;
 	}
@@ -16,7 +17,7 @@ public class WordFinder {
 		}
 		return found;
 	}
-	
+
 	public static void main(String[] args) {
 		String mySentence = "cogito ergo sum";
 		WordFinder finder = new WordFinder(mySentence);
