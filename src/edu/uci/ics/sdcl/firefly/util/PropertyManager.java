@@ -29,6 +29,10 @@ public class PropertyManager {
 	public int answersPerMicrotask;
 
 	public int microtasksPerSession;
+	
+	public String fileNameTokenList;
+	
+	public String microtaskTokenList;
 
 	private static PropertyManager manager;
 	
@@ -65,6 +69,8 @@ public class PropertyManager {
 			this.serializationPath = properties.getProperty("development-SerializationPath");
 			this.answersPerMicrotask = new Integer(properties.getProperty("answersPerMicrotask")).intValue();
 			this.microtasksPerSession = new Integer(properties.getProperty("microtasksPerSession")).intValue();
+			this.fileNameTokenList = new String(properties.getProperty("fileNameList"));
+			this.microtaskTokenList = new String(properties.getProperty("microtaskList"));
 		} 
 		catch (IOException e) {
 			System.out.println("Could not load properties. Please be sure that the property file is located at: "+this.devPropertyPath);
@@ -81,6 +87,8 @@ public class PropertyManager {
 			this.serializationPath = properties.getProperty("server-SerializationPath");
 			this.answersPerMicrotask = new Integer(properties.getProperty("answersPerMicrotask")).intValue();
 			this.microtasksPerSession = new Integer(properties.getProperty("microtasksPerSession")).intValue();
+			this.fileNameTokenList = new String(properties.getProperty("fileNameList"));
+			this.microtaskTokenList = new String(properties.getProperty("microtaskList"));
 		} 
 		catch (IOException e) {
 			System.out.println("Could not load properties. Please be sure that the property file is located at: "+this.serverPropertyPath);

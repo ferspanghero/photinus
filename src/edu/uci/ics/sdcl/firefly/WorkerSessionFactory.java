@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import test.RoundRobinTest.Session;
 import edu.uci.ics.sdcl.firefly.controller.MicrotaskSelector;
+import edu.uci.ics.sdcl.firefly.storage.ManualSessionStore;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.util.PathUtil;
@@ -49,7 +50,14 @@ public class WorkerSessionFactory{
 		WorkerSessionStorage.initializeSingleton();
 		this.workerSessionMap = new Hashtable<String, Stack<WorkerSession>>();
 		this.microtaskPerSession = microtaskPerSession;
-		this.buildMethodMap();
+		ManualSessionStore manualSessions = new ManualSessionStore();
+		Hashtable<String, Hashtable<Integer, Integer>> manualSessionMap = manualSessions.generate();
+		
+		if(manualSessionMap.size()>0)
+			this.manualBuildMethodMap(manualSessionMap);
+		else
+			this.buildMethodMap();
+		
 		//this.fillUpFileMethodMap();
 		this.keyGenerator = new RandomKeyGenerator();
 	}
@@ -286,6 +294,66 @@ public class WorkerSessionFactory{
 			}
 		}
 	}
+	
+	
+
+	/** Build a datastructure that indexes filename, methodName and all microtasks for that method name
+	 * 
+	 * @return A map indexed by filename and method name
+	 */
+	private void manualBuildMethodMap(Hashtable<String,Hashtable<Integer,Integer>> manualSessionMap){
+
+		//indexed by fileName and method name and List of microtasks
+		this.fileMethodMap = new Hashtable<String,Hashtable<String,Vector<Microtask>>> ();
+
+
+		Set<String> sessionSet= microtaskStorage.retrieveDebuggingSessionNames();
+		if((sessionSet==null) || (!sessionSet.iterator().hasNext())){
+			//EMPTY!!!
+			System.out.println("DebugSession empty!!");
+		}
+		else{
+			Iterator<String> sessionIterator = sessionSet.iterator();
+			while(sessionIterator.hasNext()){
+				String fileName = (String) sessionIterator.next();
+				Hashtable<Integer,Integer> manualTaskMap = manualSessionMap.get(fileName);
+				if(manualTaskMap!=null){ 
+
+					System.out.println("in WorkerSessionFactory, filename="+fileName);
+					FileDebugSession map = this.microtaskStorage.read(fileName);
+
+					if(fileMethodMap.get(fileName)==null){
+						fileMethodMap.put(fileName, new Hashtable<String,Vector<Microtask>>());
+					}
+					//Iterate over microtasks
+					Hashtable<Integer, Microtask> microtaskMap = map.getMicrotaskMap();
+					Iterator<Integer> microtaskIter = microtaskMap.keySet().iterator();
+					while(microtaskIter.hasNext()){
+						Integer mtaskID = (Integer) microtaskIter.next();
+
+						//Only adds the microtask if it is in the manual list
+						if(manualTaskMap.contains(mtaskID)){
+
+							Microtask mtask = microtaskMap.get(mtaskID);
+							String methodName = mtask.getCodeSnippet().getMethodSignature().getName();
+
+							Hashtable<String,Vector<Microtask>> methodMap = fileMethodMap.get(fileName);
+							Vector<Microtask> methodMicrotaskList = methodMap.get(methodName);
+
+							if(methodMicrotaskList==null){
+								methodMicrotaskList = new Vector<Microtask>();
+							}								
+							methodMicrotaskList.add(mtask);
+							methodMap.put(methodName, methodMicrotaskList);
+							fileMethodMap.put(fileName, methodMap);
+						}
+					}				
+
+				}
+			}
+		}
+	}
+	
 	
 /*
 	
