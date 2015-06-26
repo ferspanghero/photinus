@@ -1,6 +1,9 @@
 package edu.uci.ics.sdcl.firefly.controller;
 
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -25,7 +28,7 @@ public class LiteContainerManager extends StorageStrategy{
 	private Vector<WorkerSession> closedSessionVector;
 
 	/** List of available sessions */
-	private Hashtable<String,Stack<WorkerSession>> newSessionTable;
+	private LinkedHashMap<String,Stack<WorkerSession>> newSessionTable;
 
 	/** Keeps track of Workers*/
 	private Hashtable<String, Worker> workerTable;
@@ -91,9 +94,16 @@ public class LiteContainerManager extends StorageStrategy{
 		
 		//Bind files with skill tests
 		SkillTestStorage skillTests = new SkillTestStorage();
-		for (String fileName : newSessionTable.keySet()) {
-			skillTests.bindSkillTest(fileName);
+		Iterator itr = newSessionTable.entrySet().iterator();
+		while(itr.hasNext())
+		{
+			Entry<String,Stack<WorkerSession>> thisEntry = (Entry) itr.next();
+			String key = thisEntry.getKey();
+			skillTests.bindSkillTest(key);
 		}
+		/*for (String fileName : newSessionTable.keySet()) {
+			skillTests.bindSkillTest(fileName);
+		}*/
 //		skillTests.bindSkillTest();
 	}
 

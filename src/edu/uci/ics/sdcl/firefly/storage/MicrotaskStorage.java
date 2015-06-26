@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class MicrotaskStorage {
 	private String persistentFileName = "microtasks.ser";
 	private static MicrotaskStorage storage;
 	private static Logger logger;
-	private static Hashtable<String,FileDebugSession> debugSessionMap;
+	private static LinkedHashMap<String,FileDebugSession> debugSessionMap;
 
 	public static synchronized MicrotaskStorage initializeSingleton(){
 		if(storage == null){
@@ -56,7 +57,7 @@ public class MicrotaskStorage {
 				// No files has been created yet. 
 
 				// Create a sample object, that contains the default values.
-				debugSessionMap = new Hashtable<String,FileDebugSession>();
+				debugSessionMap = new LinkedHashMap<String,FileDebugSession>();
 
 				ObjectOutputStream objOutputStream = new ObjectOutputStream( 
 						new FileOutputStream(new File(this.persistentFileName)));
@@ -94,7 +95,7 @@ public class MicrotaskStorage {
 	 * @param 
 	 * @return  HashMap<String,FileDebugSession>
 	 */
-	public synchronized Hashtable<String,FileDebugSession> readAllDebugSessions(){
+	public synchronized LinkedHashMap<String,FileDebugSession> readAllDebugSessions(){
 		return debugSessionMap;
 	}
 
@@ -179,7 +180,7 @@ public class MicrotaskStorage {
 
 	/** Delete all data from the Storage */
 	public void cleanUp(){
-		debugSessionMap= new Hashtable<String,FileDebugSession>();
+		debugSessionMap= new LinkedHashMap<String,FileDebugSession>();
 		this.updateIndex(debugSessionMap);
 	}
 
@@ -188,16 +189,16 @@ public class MicrotaskStorage {
 	 * @return the index of microtasks stored in the file
 	 */
 	@SuppressWarnings("unchecked")
-	private synchronized Hashtable<String,FileDebugSession> retrieveIndex(){
+	private synchronized LinkedHashMap<String,FileDebugSession> retrieveIndex(){
 		try{
 
 			ObjectInputStream objInputStream = new ObjectInputStream( 
 					new FileInputStream(new File(this.persistentFileName)));
 
-			debugSessionMap = (Hashtable<String, FileDebugSession>) objInputStream.readObject();
+			debugSessionMap = (LinkedHashMap<String, FileDebugSession>) objInputStream.readObject();
 
 			if(debugSessionMap==null)
-				debugSessionMap = new Hashtable<String, FileDebugSession>();
+				debugSessionMap = new LinkedHashMap<String, FileDebugSession>();
 			
 			objInputStream.close();
 			return debugSessionMap;
@@ -217,7 +218,7 @@ public class MicrotaskStorage {
 	 * @param the index of microtasks stored in the file
 	 * @return true if operation succeeded, otherwise false.
 	 */
-	private synchronized boolean updateIndex(Hashtable<String,FileDebugSession> debugSessionMap){
+	private synchronized boolean updateIndex(LinkedHashMap<String,FileDebugSession> debugSessionMap){
 		try{
 			if(debugSessionMap==null){
 				logger.error("EVENT%ERROR% Trying to write a nullpointer to the microtask repository");

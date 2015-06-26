@@ -263,7 +263,7 @@ public class FileUploadServlet extends HttpServlet {
 		return results;
 	}
 	
-	private int countSessionsInMap(Hashtable<String, Stack<WorkerSession>> newSessionsMap){
+	private int countSessionsInMap(LinkedHashMap<String, Stack<WorkerSession>> newSessionsMap){
 		int counter=0;
 		Iterator<String> iter = newSessionsMap.keySet().iterator();
 		while(iter.hasNext()){
@@ -286,7 +286,7 @@ public class FileUploadServlet extends HttpServlet {
 		WorkerSessionFactory sessionFactory = new WorkerSessionFactory(manager.microtasksPerSession);
 
 		
-		Hashtable<String,Stack<WorkerSession>> newSessionsMap = sessionFactory.generateSessions(manager.answersPerMicrotask); 
+		LinkedHashMap<String,Stack<WorkerSession>> newSessionsMap = sessionFactory.generateSessions(manager.answersPerMicrotask); 
 				
 		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
 	
@@ -313,7 +313,7 @@ public class FileUploadServlet extends HttpServlet {
 		
 		//Generate the stack of New and Duplicated WorkerSession
 		WorkerSessionFactory sessionFactory = new WorkerSessionFactory(20);
-		Hashtable<String, Stack<WorkerSession>> newSessionsMap = sessionFactory.generateSingleSession();
+		LinkedHashMap<String, Stack<WorkerSession>> newSessionsMap = sessionFactory.generateSingleSession();
 				
 		WorkerSessionStorage storage = WorkerSessionStorage.initializeSingleton();
 	

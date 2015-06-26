@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 import java.util.Stack;
 
@@ -129,7 +130,7 @@ public class WorkerSessionStorage {
 	 * @param type specify if this is a stack of copies or a stack of original, because they are stored separately
 	 * @return true is operation was successful, otherwise, false.
 	 */
-	public synchronized boolean writeNewWorkerSessionMap(Hashtable<String, Stack<WorkerSession>> mapStack){
+	public synchronized boolean writeNewWorkerSessionMap(LinkedHashMap<String, Stack<WorkerSession>> mapStack){
 		try{
 			if(mapStack==null){
 				logger.error("EVENT%ERROR% Avoided trying to write nullpointer in Worker repository.");
@@ -162,7 +163,7 @@ public class WorkerSessionStorage {
 	 */
 	public synchronized WorkerSession readNewWorkerSession(String fileName){
 
-		Hashtable<String, Stack<WorkerSession>> mapStack = retrieveNewSessionStorage();
+		LinkedHashMap<String, Stack<WorkerSession>> mapStack = retrieveNewSessionStorage();
 		if(mapStack==null || mapStack.isEmpty())
 			return null;
 		else{
@@ -181,7 +182,7 @@ public class WorkerSessionStorage {
 	}
 
 	
-	private int countSessionsInMap(Hashtable<String,Stack<WorkerSession>> sessionsMap){
+	private int countSessionsInMap(LinkedHashMap<String,Stack<WorkerSession>> sessionsMap){
 		int counter=0;
 		Iterator<String> iter = sessionsMap.keySet().iterator();
 		while(iter.hasNext()){
@@ -196,7 +197,7 @@ public class WorkerSessionStorage {
 	 * @return the size of the stack of new WorkerSessions
 	 */
 	public synchronized int getNumberOfNewWorkerSessions(){
-		Hashtable<String, Stack<WorkerSession>> sessionsMap = retrieveNewSessionStorage();
+		LinkedHashMap<String, Stack<WorkerSession>> sessionsMap = retrieveNewSessionStorage();
 		return countSessionsInMap(sessionsMap);
 	}
 
@@ -320,7 +321,7 @@ public class WorkerSessionStorage {
 	//------------------------------------------------------------------------------------------------------------------------
 	// Retrieve the storages
 
-	public synchronized Hashtable<String, Stack<WorkerSession>> retrieveNewSessionStorage(){
+	public synchronized LinkedHashMap<String, Stack<WorkerSession>> retrieveNewSessionStorage(){
 		try{
 
 			File file = new File(persistentFileNameNew); 
@@ -328,7 +329,7 @@ public class WorkerSessionStorage {
 			ObjectInputStream objInputStream = new ObjectInputStream( 
 					new FileInputStream(file));
 
-			Hashtable<String,Stack<WorkerSession>> map  = (Hashtable<String,Stack<WorkerSession>> ) objInputStream.readObject();
+			LinkedHashMap<String,Stack<WorkerSession>> map  = (LinkedHashMap<String,Stack<WorkerSession>> ) objInputStream.readObject();
 			objInputStream.close();
 
 			return map;
