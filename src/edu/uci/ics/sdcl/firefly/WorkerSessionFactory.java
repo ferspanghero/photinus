@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
@@ -32,13 +31,13 @@ public class WorkerSessionFactory{
 	private RandomKeyGenerator keyGenerator;
 
 	/** The map of all microtasks that will be used to generate WorkerSession objects */
-	private LinkedHashMap<String,Hashtable<String,Vector<Microtask>>> fileMethodMap;
+	private Hashtable<String,Hashtable<String,Vector<Microtask>>> fileMethodMap;
 
 	/** Storage for Microtasks */
 	private MicrotaskStorage microtaskStorage;
 
 	/** The worker session datastructure that will be generated */
-	LinkedHashMap<String, Stack<WorkerSession>> workerSessionMap;
+	Hashtable<String, Stack<WorkerSession>> workerSessionMap;
 
 	/** 
 	 * @param microtaskPerSession the number of microtasks that will be included in each session
@@ -48,7 +47,7 @@ public class WorkerSessionFactory{
 	public WorkerSessionFactory(int microtaskPerSession){
 		this.microtaskStorage =  MicrotaskStorage.initializeSingleton();
 		WorkerSessionStorage.initializeSingleton();
-		this.workerSessionMap = new LinkedHashMap<String, Stack<WorkerSession>>();
+		this.workerSessionMap = new Hashtable<String, Stack<WorkerSession>>();
 		this.microtaskPerSession = microtaskPerSession;
 		this.buildMethodMap();
 		//this.fillUpFileMethodMap();
@@ -60,7 +59,7 @@ public class WorkerSessionFactory{
 	 * @param copies the number of desired copies
 	 * @return the list of worker sessions
 	 */
-	public LinkedHashMap<String, Stack<WorkerSession>> generateSessions(int answersPerMicrotask){
+	public Hashtable<String, Stack<WorkerSession>> generateSessions(int answersPerMicrotask){
 
 		//For each pair (file, method) generate all sessions
 		Iterator<String> fileNameIter = this.fileMethodMap.keySet().iterator();
@@ -111,7 +110,7 @@ public class WorkerSessionFactory{
 	}
 	
 	/** for testing purposes */
-	public LinkedHashMap<String, Hashtable<String, Vector<Microtask>>> getFileMethodMap() {
+	public Hashtable<String, Hashtable<String, Vector<Microtask>>> getFileMethodMap() {
 		return this.fileMethodMap;
 	}
 
@@ -248,7 +247,7 @@ public class WorkerSessionFactory{
 	private void buildMethodMap(){
 
 		//indexed by fileName and method name and List of microtasks
-		this.fileMethodMap = new LinkedHashMap<String,Hashtable<String,Vector<Microtask>>> ();
+		this.fileMethodMap = new Hashtable<String,Hashtable<String,Vector<Microtask>>> ();
 
 
 		Set<String> sessionSet= microtaskStorage.retrieveDebuggingSessionNames();
@@ -367,7 +366,7 @@ public class WorkerSessionFactory{
 	 * 
 	 * @return all sessions from all files
 	 */
-	public LinkedHashMap<String, Stack<WorkerSession>>  generateSingleSession(){
+	public Hashtable<String, Stack<WorkerSession>>  generateSingleSession(){
 
 		//Stack for the single Session
 		Stack<WorkerSession> workerSessionStack = new Stack<WorkerSession>();
@@ -378,7 +377,7 @@ public class WorkerSessionFactory{
 
 		String fileNameSingle = "singleFileName";
 		WorkerSession session = new WorkerSession(this.sessionId, fileNameSingle, mtaskList);
-		LinkedHashMap<String, Stack<WorkerSession>> mapStack = new LinkedHashMap<String, Stack<WorkerSession>>(); 
+		Hashtable<String, Stack<WorkerSession>> mapStack = new Hashtable<String, Stack<WorkerSession>>(); 
 		workerSessionStack.push(session);
 		mapStack.put(fileNameSingle, workerSessionStack);
 
