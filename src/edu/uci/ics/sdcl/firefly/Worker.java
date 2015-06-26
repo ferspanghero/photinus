@@ -154,7 +154,7 @@ public class Worker implements Serializable{
 	
 	public boolean hasPassedTest()
 	{
-		if (this.grade>=2)
+		if (this.grade>=3)
 			return true;
 		else 
 			return false;
