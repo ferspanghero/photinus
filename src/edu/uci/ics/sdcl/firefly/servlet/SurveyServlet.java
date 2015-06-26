@@ -7,9 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.uci.ics.sdcl.firefly.SkillTest;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
-import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
+import edu.uci.ics.sdcl.firefly.storage.SkillTestStorage;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 /**
@@ -47,7 +48,7 @@ public class SurveyServlet extends HttpServlet {
 			//request.setAttribute("sessionId",worker.getSessionId());
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 			request = loadQuestions(request, response, worker.getCurrentFileName());
-			if(request.getAttribute("editor1").equals(""))
+			if(request.getAttribute("sourceCode").equals(""))
 			{
 				request.setAttribute("executionId", request.getParameter("workerId"));
 				request.setAttribute("error", "@SurveyServlet - Invalid file name. The requested file was not found.");
@@ -84,9 +85,18 @@ public class SurveyServlet extends HttpServlet {
 	}
 	
 	private HttpServletRequest loadQuestions(HttpServletRequest request, HttpServletResponse response, String fileName) throws ServletException, IOException {
-		SkillTestSource source = new SkillTestSource();
-		StringBuffer skillTest = source.getSource(fileName);
-		request.setAttribute("editor1", (skillTest != null) ? skillTest : "");
+		SkillTestStorage source = new SkillTestStorage();
+		SkillTest skillTest = source.getSource(fileName);
+		if(skillTest != null)
+		{
+			request.setAttribute("sourceCode", skillTest.getSourceCode());
+			request.setAttribute("questions", skillTest.getQuestions());
+			request.setAttribute("options", skillTest.getOptions());
+		}
+		else
+		{
+			request.setAttribute("sourceCode", "");
+		}
 		request.setAttribute("subAction", "gradeAnswers");
 		return request;
 	}

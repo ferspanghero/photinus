@@ -27,7 +27,7 @@ import edu.uci.ics.sdcl.firefly.controller.StorageManager;
 import edu.uci.ics.sdcl.firefly.controller.StorageStrategy;
 import edu.uci.ics.sdcl.firefly.report.ReportGenerator;
 import edu.uci.ics.sdcl.firefly.storage.MicrotaskStorage;
-import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
+import edu.uci.ics.sdcl.firefly.storage.SkillTestStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerStorage;
 import edu.uci.ics.sdcl.firefly.util.PathUtil;
