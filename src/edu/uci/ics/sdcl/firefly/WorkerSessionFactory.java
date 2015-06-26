@@ -65,21 +65,20 @@ public class WorkerSessionFactory{
 		Iterator<String> fileNameIter = this.fileMethodMap.keySet().iterator();
 		while(fileNameIter.hasNext()){
 			String fileName = fileNameIter.next();
-			System.out.println("fileName in generateSessions:"+fileName);
 			Hashtable<String, Vector<Microtask>> microtaskMap= this.fileMethodMap.get(fileName);
-			 Iterator<String> methodNameIter = microtaskMap.keySet().iterator();
-			 String methodName = methodNameIter.next();
-			 Vector<Microtask> microtaskList = microtaskMap.get(methodName);
-			 Stack<WorkerSession> fileWorkerSessionStack = this.composeSessions(microtaskList,fileName);
-	
-			 //duplicate sessions
-			 if(answersPerMicrotask>1){
-				 fileWorkerSessionStack = this.duplicateSessions(fileWorkerSessionStack, answersPerMicrotask, fileName);
-			 }
+			Iterator<String> methodNameIter = microtaskMap.keySet().iterator();
+			String methodName = methodNameIter.next();
+			Vector<Microtask> microtaskList = microtaskMap.get(methodName);
+			Stack<WorkerSession> fileWorkerSessionStack = this.composeSessions(microtaskList,fileName);
+
+			//duplicate sessions
+			if(answersPerMicrotask>1){
+				fileWorkerSessionStack = this.duplicateSessions(fileWorkerSessionStack, answersPerMicrotask, fileName);
+			}
 			// System.out.println("Number of sessions available: "+fileWorkerSessionStack.size()+ ", answers per microtask:"+answersPerMicrotask );
-			 this.workerSessionMap.put(fileName, fileWorkerSessionStack);	
+			this.workerSessionMap.put(fileName, fileWorkerSessionStack);	
 		}
-		
+
 		return workerSessionMap;
 	}
 	
@@ -106,7 +105,7 @@ public class WorkerSessionFactory{
 				duplicateStack.push(duplicateSession);
 			}
 		}
-		System.out.println("----------- Total sessions:  "+duplicateStack.size());
+		System.out.println("---File name: "+ fileName+", after duplication, total sessions: "+duplicateStack.size());
 		return duplicateStack;	
 	}
 	
@@ -152,13 +151,11 @@ public class WorkerSessionFactory{
 		int sessionsPerFileInt = (int) sessionsPerFileDouble; 
 		double remainderDouble = Math.IEEEremainder(numberOfQuestionsPerFile,numberOfMicrotaksPerSession);
 		int remainderInt = new Double(remainderDouble).intValue();
-		System.out.println("sessionsPerFile: " +sessionsPerFileInt+", double remainder: "+remainderDouble);
-		
 		sessionsPerFileInt = sessionsPerFileInt+Math.abs(remainderInt);
 		return sessionsPerFileInt;
 	}
 	
-	/** This is a roundRobin-like algorithm that compose different sessions in order
+	/** This is a Round-Robin-like algorithm that compose different sessions in order
 	 * that all microtasks are present in at least one session. 
 	 * 
 	 * @param list
@@ -171,11 +168,10 @@ public class WorkerSessionFactory{
 		Stack<Integer> availablePositionsStack = this.initializeIndexStack(list);
 		ArrayList<Boolean> availabilityList = this.initializeAvailabilityList(list.size());
 		
-		//Double sessionPerFile = list.length/this.microtaskPerSession;
-		//sessionPerFile.
-	
 		int sessionsPerFile = this.minimalSessionsPerFile(list.size(), this.microtaskPerSession);
-		System.out.println("list.length: "+list.size()+ ", sessionsPerFile: "+sessionsPerFile);
+		System.out.println("FileName: "+ fileName+", Microtasks: "+list.size());
+		
+		HashMap<Integer, Integer> mtaskMap = new HashMap<Integer, Integer>(); 
 		
 		for(int i=0;i<sessionsPerFile;i++)//Compose all different sessions for one file 
 
@@ -187,7 +183,11 @@ public class WorkerSessionFactory{
 					int	next = pos;
 					availabilityList.set(next,new Boolean(false));//Make the microtask not available anymore
 					Microtask microtask = list.get(next);
-					sessionMicrotaskList.add((microtask));
+					if(!containsMicrotask(sessionMicrotaskList,microtask)){
+						sessionMicrotaskList.add((microtask));
+						mtaskMap.put(microtask.getID(),microtask.getID());
+						System.out.println("--- task: "+microtask.getID());
+					}
 					pos = next + sessionsPerFile;
 					while( pos<list.size() && availabilityList.get(pos).booleanValue()==false)//find the next available microtask
 						pos++;
@@ -198,7 +198,41 @@ public class WorkerSessionFactory{
 				WorkerSession session = new WorkerSession(this.sessionId, fileName, sessionMicrotaskList);
 				sessionStack.push(session);
 			}
+		
+		System.out.println("---IN SESSIONS expected microtasks: "+list.size()+", actual microtasks:" +mtaskMap.size());
+		System.out.println("FileName: "+ fileName+", expectedSessions: "+sessionsPerFile+ ", actualSessions: "+sessionStack.size());
+		
+
+		
 		return sessionStack;
+	}
+	
+	private boolean containsMicrotask(Vector<Microtask> taskList, Microtask microtask){
+		for(Microtask task: taskList){
+			if(task.getID().intValue() == microtask.getID().intValue())
+				return true;
+		}
+		return false;
+	}
+	
+	/** I believe I need to traverse the whole list collecting available items. 
+	 * I believe it will be easier to have them in a stack an just pop them....
+	 * @param pos
+	 * @param list
+	 * @param availabilityList
+	 * @return
+	 */
+	private int findNextAvailableTask(int pos, Vector<Microtask> list, ArrayList<Boolean> availabilityList){
+		
+		for(int count=0;count<list.size();count++){
+			while( pos<list.size() && availabilityList.get(pos).booleanValue()==false)//find the next available microtask
+				pos++;
+			if(pos>=list.size())
+				pos = pos - list.size();
+		}
+		
+		return pos;
+		
 	}
 	
 	//--------------------------------------------------------------------------------------------------------------

@@ -14,3 +14,5 @@ src/edu/uci/ics/sdcl/firefly/report/AnalysisPath.java
 WebContent/firefly.properties
 WebContent/WEB-INF/classes/logback.xml
 /bin/
+src/edu/uci/ics/sdcl/firefly/util/PropertyManager.java
+WebContent/WEB-INF/classes/logback.xml
