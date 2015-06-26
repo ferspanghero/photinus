@@ -96,12 +96,14 @@ public class WorkerStorage {
 	
 	
 	public synchronized boolean insertSkillTest(Worker worker){
-		if(worker!=null && worker.getGrade()!=null && worker.getGrade()>0){		
+		if(worker!=null && worker.getGrade()!=null && worker.getGrade()>0){
+				boolean[] gradeMap = worker.getGradeMap();
 				logger.info("EVENT% SKILLTEST; workerId%"+worker.getWorkerId()+ "% sessionId%"+worker.getSessionId()
-					+"% test1%"+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
-					+"% test2%"+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
-					+"% test3%"+worker.getGradeMap().get(SkillTestServlet.QUESTION3)
-					+"% test4%"+worker.getGradeMap().get(SkillTestServlet.QUESTION4)
+					+"% test1%"+gradeMap[0]
+					+"% test2%"+gradeMap[1]
+					+"% test3%"+gradeMap[2]
+					+"% test4%"+gradeMap[3]
+					+"% test5%"+gradeMap[4]
 					+"% grade%"+worker.getGrade()
 					+"% testDuration%"+worker.getSkillTestDuration());
 				//persist data

@@ -12,7 +12,7 @@ import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.servlet.SkillTestServlet;
-import edu.uci.ics.sdcl.firefly.storage.SkillTestSource;
+import edu.uci.ics.sdcl.firefly.storage.SkillTestStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
 import edu.uci.ics.sdcl.firefly.util.RandomKeyGenerator;
 
@@ -90,7 +90,7 @@ public class LiteContainerManager extends StorageStrategy{
 		sessionLogger = LoggerFactory.getLogger("session");
 		
 		//Bind files with skill tests
-		SkillTestSource skillTests = new SkillTestSource();
+		SkillTestStorage skillTests = new SkillTestStorage();
 		for (String fileName : newSessionTable.keySet()) {
 			skillTests.bindSkillTest(fileName);
 		}
@@ -257,12 +257,14 @@ public class LiteContainerManager extends StorageStrategy{
 	{
 		if(worker!=null){
 			if(updateConsentSurveyTestFeedbackTable(worker.getWorkerId(),worker.getCurrentFileName(),"SKILLTEST")){
+				boolean[] gradeMap = worker.getGradeMap();
 				consentLogger.info("EVENT%SKILLTEST% workerId%"+worker.getWorkerId()
 					+ "% fileName%"+worker.getCurrentFileName()
-					+"% test1%"+worker.getGradeMap().get(SkillTestServlet.QUESTION1)
-					+"% test2%"+worker.getGradeMap().get(SkillTestServlet.QUESTION2)
-					+"% test3%"+worker.getGradeMap().get(SkillTestServlet.QUESTION3)
-					+"% test4%"+worker.getGradeMap().get(SkillTestServlet.QUESTION4)
+					+"% test1%"+gradeMap[0]
+					+"% test2%"+gradeMap[1]
+					+"% test3%"+gradeMap[2]
+					+"% test4%"+gradeMap[3]
+					+"% test5%"+gradeMap[4]
 					+"% grade%"+worker.getGrade()
 					+"% testDuration%"+worker.getSkillTestDuration()
 					);

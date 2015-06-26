@@ -106,11 +106,9 @@ private String fileName = "WorkersReport.xlsx";
 			// iterating over the skill questions
 			int j = 3;
 			if (null != worker.getGradeMap()){
-				Set<Map.Entry<String, Boolean>> setSkillTest = worker.getGradeMap().entrySet();
-				Iterator<Entry<String, Boolean>> iterateSkillTest = setSkillTest.iterator();
-				while(iterateSkillTest.hasNext()){
-					Map.Entry<String, Boolean> mapEntrySkillTest = (Map.Entry<String, Boolean>)iterateSkillTest.next();
-					lineContent[j++] = mapEntrySkillTest.getValue() ? "OK" : "Not";
+				boolean[] setSkillTest = worker.getGradeMap();
+				for (boolean b : setSkillTest) {
+					lineContent[j++] = b ? "OK" : "Not";
 				}
 				// add the duration of the test
 				lineContent[j++] = worker.getSkillTestDuration();

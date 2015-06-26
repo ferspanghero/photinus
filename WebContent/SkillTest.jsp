@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -26,7 +29,7 @@
 		margin-right: 10px;
 	}
 	
-	#editor1 {
+	#sourceCode {
 	position: relative;
 	height: 320px;
 	width: 580px;
@@ -158,11 +161,11 @@
 			<input type="hidden" id="timeStamp" name="timeStamp" value=${requestScope["timeStamp"]}>
 			<input type="hidden" id="isTest" name="isTest" value="false">
 			<br> The source code below is used for all the questions below.<br>
-			<div id="editor1"><xmp>${requestScope["editor1"]}</xmp></div>
+			<div id="sourceCode"><xmp>${requestScope["sourceCode"]}</xmp></div>
 
 				<script>
 					//Editor for Questions 1, 2, and 3
-					var editor1 = ace.edit("editor1");
+					var editor1 = ace.edit("sourceCode");
 					editor1.setReadOnly(true);
 					editor1.setTheme("ace/theme/github");
 					editor1.getSession().setMode("ace/mode/java");
@@ -172,28 +175,19 @@
 				</script>
 			
 			<br>
-			1- What is the output of the code?
-			<br>
-			<input type="radio" name="QUESTION1" value="a">0<br>
-			<input type="radio" name="QUESTION1" value="b">1<br>
-			<input type="radio" name="QUESTION1" value="c">2<br>
-			<input type="radio" name="QUESTION1" value="d">3<br>
-			
-			<br>
-			2- At line 18, what would be the output if instead of "Ciao" we have "Hola"? 
-			<br>
-			<input type="radio" name="QUESTION2" value="a">0<br>
-			<input type="radio" name="QUESTION2" value="b">1<br>
-			<input type="radio" name="QUESTION2" value="c">2<br>
-			<input type="radio" name="QUESTION2" value="d">3<br>
+			<c:forEach items="${requestScope['questions']}" var="question" varStatus="Counter">
+					${Counter.count} - ${question}
+					<br>
+					<c:forEach items="${requestScope.options[Counter.index]}" var="alternative" varStatus="AltCounter">
+						<input type="radio" name="QUESTION${Counter.count}" value="&#${AltCounter.index % 26 + 97};">${alternative}<br>
+					</c:forEach>
+					<%-- <input type="radio" name="QUESTION${Counter.index}" value="a">0<br>
+					<input type="radio" name="QUESTION1" value="b">1<br>
+					<input type="radio" name="QUESTION1" value="c">2<br>
+					<input type="radio" name="QUESTION1" value="d">3<br> --%>
 
-			<br>
-			3- At line 18, what would be the output if instead of "Ciao" we have an empty String (e.g., " ")? 
-			<br>
-			<input type="radio" name="QUESTION3" value="a">0<br>
-			<input type="radio" name="QUESTION3" value="b">1<br>
-			<input type="radio" name="QUESTION3" value="c">2<br>
-			<input type="radio" name="QUESTION3" value="d">3<br>
+					<br>
+			</c:forEach>
 			
 			<!--  <br> The source code below is used in the questions 4 and 5<br>
 			<div id="editor2"><xmp>${requestScope["editor2"]}</xmp></div>
@@ -211,14 +205,7 @@
 
 			<br>
 			-->
-			<br>
-			4-At line 18, what would be the output if instead of "NameArray" we have null? 
-			<br>
-			<input type="radio" name="QUESTION4" value="a">Empty array<br>
-			<input type="radio" name="QUESTION4" value="b">NullPointer Exception<br>
-			<input type="radio" name="QUESTION4" value="c">0<br>
-			<input type="radio" name="QUESTION4" value="d">1<br>
-			<br>
+			
 	
 					<input type="button"  value="Quit" onclick='quitConfirm()'>
 			<INPUT TYPE="button" name="answerButton" VALUE="Submit answers" onclick="submitAnswers(event)">
