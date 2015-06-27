@@ -16,7 +16,7 @@ public class PositionFinder {
 			}
 		}
 		public static void main(String[] args){
-			String[] myArray = {};//{"Hola","Kumusta", "Hello", "Ciao"};
+			String[] myArray = {"Hola","Kumusta", "Hello", "Ciao"};
 			findPosition(myArray, "Ciao");
 		}
 	}
@@ -39,5 +39,5 @@ public class PositionFinder {
 //A: Empty array
 
 //At line 18, if we set myArray to {"Hola", null}, which line of the program will cause a NullPointer exception?
-//19, 20, 6, 10, 11
-//A: 11
+//19, 20, 6, 9, 10
+//A: 9
