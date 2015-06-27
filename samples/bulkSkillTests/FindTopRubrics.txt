@@ -3,11 +3,11 @@ FINDTOP.JAVA ANSWERS
 //O: -1, 0, 2, 4, 8
 //A: 8
 
-//Q: If at line 26 we have "numbers.findHigher(1,1)", what would be output?
+//Q: If at line 21 we have "numbers.findHigher(1,1)", what would be output?
 //O: 10, 5, 2, 4, 8
 //A: 5
 
-//Q: If at line 13 we replace "int i=lowerIndex;" with "int i=0;"  what would be the outcome?
+//Q: If at line 11 we replace "int i=lowerIndex;" with "int i=0;"  what would be the outcome?
 //O: 10, 5, 2, 4, 8
 //A: 10
 
@@ -15,6 +15,6 @@ FINDTOP.JAVA ANSWERS
 //O: 10, 5, 2, 4, 8
 //A: 4
 
-//Q: If at line 26 we have "numbers.findHigher(-1,5)",, what line in the program will cause an ArrayIndexOutOfBounds Exception?
+//Q: If at line 21 we have "numbers.findHigher(-1,5)",, what line in the program will cause an ArrayIndexOutOfBounds Exception?
 //O: 22, 23, 8, 12, 14
 //A: 12
