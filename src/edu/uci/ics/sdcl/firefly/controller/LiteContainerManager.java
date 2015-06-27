@@ -134,15 +134,18 @@ public class LiteContainerManager extends StorageStrategy{
 	
 
 	private synchronized void restoreSession(String sessionId){
-		WorkerSession session = this.activeSessionTable.get(sessionId);
-		String fileName = session.getFileName();
-		session.reset();
-		Stack<WorkerSession> stack = newSessionTable.get(fileName);
-		if(stack==null){
-			stack = new Stack<WorkerSession>();
+		if(sessionId != null)
+		{
+			WorkerSession session = this.activeSessionTable.get(sessionId);
+			String fileName = session.getFileName();
+			session.reset();
+			Stack<WorkerSession> stack = newSessionTable.get(fileName);
+			if(stack==null){
+				stack = new Stack<WorkerSession>();
+			}
+			stack.push(session);
+			newSessionTable.put(fileName, stack);
 		}
-		stack.push(session);
-		newSessionTable.put(fileName, stack);		
 	}
 
 	public synchronized boolean areThereMicrotasksAvailable(){
