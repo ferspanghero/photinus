@@ -17,7 +17,7 @@ public class PositionFinder {
 	}
 
 	public static void main(String[] args){
-		String[] myArray = {};//{"Hola","Kumusta", "Hello", "Ciao"};
+		String[] myArray = {"Hola","Kumusta", "Hello", "Ciao"};
 		findPosition(myArray, "Ciao");
 	}
 }

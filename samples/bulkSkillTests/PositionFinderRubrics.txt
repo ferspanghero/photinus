@@ -15,6 +15,6 @@ POSITIONFINDER ANSWERS
 //Empty array, NullPointer exception, ArrayOutOfBounds exception, 0
 //A: Empty array
 
-//if at line 18 myArray = {"Hola", null}, which line of the program will cause a NullPointer exception?
+//At line 18, if we set myArray to {"Hola", null}, which line of the program will cause a NullPointer exception?
 //19, 20, 6, 10, 11
 //A: 11
