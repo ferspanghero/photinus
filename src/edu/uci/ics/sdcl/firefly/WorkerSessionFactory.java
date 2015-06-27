@@ -194,7 +194,7 @@ public class WorkerSessionFactory{
 					if(!containsMicrotask(sessionMicrotaskList,microtask)){
 						sessionMicrotaskList.add((microtask));
 						mtaskMap.put(microtask.getID(),microtask.getID());
-						System.out.println("--- task: "+microtask.getID());
+						System.out.println("task; "+microtask.getID()+ ";question; "+ microtask.getQuestion());
 					}
 					pos = next + sessionsPerFile;
 					while( pos<list.size() && availabilityList.get(pos).booleanValue()==false)//find the next available microtask
@@ -209,7 +209,7 @@ public class WorkerSessionFactory{
 		
 		System.out.println("---IN SESSIONS expected microtasks: "+list.size()+", actual microtasks:" +mtaskMap.size());
 		System.out.println("FileName: "+ fileName+", expectedSessions: "+sessionsPerFile+ ", actualSessions: "+sessionStack.size());
-		
+		System.out.println("---------------------");
 
 		
 		return sessionStack;

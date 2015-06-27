@@ -369,37 +369,35 @@ public class FileUploadServlet extends HttpServlet {
 		System.out.println("path: "+path);
 		
 		String[] fileList = {"HIT01_8.java", "HIT02_24.java", "HIT03_6.java", "HIT04_7.java",
-				"HIT05_35.java","HIT06_51.java","HIT07_33.java","HIT08_54.java",
-				"HIT09_29.java","HIT10_59.java", "HIT11_43.java"};
+				"HIT05_35.java","HIT06_51.java","HIT07_33.java","HIT08_54.java","HIT10_59.java"};
+		
+	
 		
 		String [] methodList = { "forOffsetHoursMinutes","getPaint","translate", "updateBounds",
-				"add","addNumber","toClass","toLocale", "toJavaVersionInt","findLevel", "appendQuotedString"};
+				"add","addNumber","toClass","toLocale","findLevel"};
 		
-		String [] failureList = { "java.lang.IllegalArgumentException: Minutes out of range: -15",
+		
+		String [] failureList = { "java.lang.IllegalArgumentException: Minutes out of range:-15",
 				"java.lang.IllegalArgumentException: Color parameter outside of expected range: Red Green Blue",
-				"java.lang.StringIndexOutOfBoundsException: String index out of range: 2",
+				"java.lang.StringIndexOutOfBoundsException: String index out of range:2",
 				"junit.framework.AssertionFailedError: expected:&lt;1&gt; but was:&lt;3&gt;",
 				"java.lang.ClassCastException: [Ljava.lang.Object; cannot be cast to [Ljava.lang.String;",
 				"junit.framework.ComparisonFailure: expected:&lt;var x=[-0.]0&gt; but was:&lt;var x=[]0&gt;",
 				"java.lang.NullPointerException", 
-				" java.lang.IllegalArgumentException: Invalid locale format: fr__POSIX",
-				"assertEquals(0, SystemUtils.toJavaVersionInt(\"0\"));",
+				"java.lang.IllegalArgumentException: Invalid locale format:fr__POSIX",
 				"Elevator block will not function.",
-				 "java.lang.OutOfMemoryError: Java heap space"				
 				};
 		
 		String[] testList = {"assertEquals(DateTimeZone.forID(\"-02:15\"), DateTimeZone.forOffsetHoursMinutes(-2, -15));",
 				"GrayPaintScale gps = new GrayPaintScale(); c = (Color) gps.getPaint(-0.5);	assertTrue(c.equals(Color.black));",
 				"assertEquals(\"\uD83D\uDE30\", StringEscapeUtils.escapeCsv(\"\uD83D\uDE30\"));",
 				"TimePeriodValues s = new TimePeriodValues(\"Test\"); s.add(new SimpleTimePeriod(0L, 50L), 3.0); assertEquals(1, s.getMaxMiddleIndex());",			
-				"String[] sa = ArrayUtils.add(stringArray, aString); fail(\"Should have caused IllegalArgumentException\");",
+				"String[] sa= ArrayUtils.add(stringArray,aString); fail(\"Should have caused IllegalArgumentException\");",
 				"assertPrint(\"var x = -0.0;\", \"var x=-0.0\");",
 				"assertTrue(Arrays.equals(new Class[] { String.class, null, Double.class },ClassUtils.toClass(new Object[] { \"Test\", null, 99d })));",
 				"assertValidToLocale(\"fr__POSIX\", \"fr\", \"\", \"POSIX\");",
-				 "junit.framework.AssertionFailedError: expected:<0> but was:<0.0>", 
 				 "Assuming the default searchDistance is 20 blocks, set a elevator block at y=20 then another at y=40.",
-				 "String pattern = \"it\\'\\'s a {0,lower} \\'test\\'!\"; ExtendedMessageFormat emf = new ExtendedMessageFormat(pattern, registry); assertEquals(\"it\\'s a dummy test!\", emf.format(new Object[] {\"DUMMY\"}));"
-		};
+				};
 		
 		
 		

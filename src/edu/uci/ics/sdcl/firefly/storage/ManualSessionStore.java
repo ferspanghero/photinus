@@ -34,7 +34,9 @@ public class ManualSessionStore {
 	
 	public Hashtable<String, Hashtable<Integer,Integer>> generate(){
 
-		Hashtable<String, Hashtable<Integer,Integer>> sessionMicrotaskMap = new Hashtable<String, Hashtable<Integer,Integer>>();
+		Hashtable<String, Hashtable<Integer,Integer>> sessionMicrotaskMap = new Hashtable<String, Hashtable<Integer,Integer>>();		
+		if(fileNameList==null || fileNameList.trim().length()==0)
+			return sessionMicrotaskMap;
 		
 		String[] fileTokenizer = fileNameList.split(":");
 		String[] microtaskGroupTokenizer = microtaskList.split(":");
