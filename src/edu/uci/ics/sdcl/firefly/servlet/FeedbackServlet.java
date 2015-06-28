@@ -42,10 +42,11 @@ public class FeedbackServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		if(request.getParameter("feedback")!=null){
-
-			
 			String feedback = request.getParameter("feedback");
+			if(feedback!=null)
+				feedback = feedback.replaceAll("[\n\r]", " ");
 			request.setAttribute("feedback", feedback); 
 			//Restore data for next Request
 			request.setAttribute("key",request.getParameter("key"));
@@ -53,7 +54,7 @@ public class FeedbackServlet extends HttpServlet {
 
 			storage = StorageStrategy.initializeSingleton();
 			Worker worker = storage.readExistingWorker(workerId);
-			storage.insertFeedback(feedback, worker);
+			storage.insertFeedback(feedback , worker);
 			request.getRequestDispatcher(ThanksPage).include(request, response);
 		}
 		

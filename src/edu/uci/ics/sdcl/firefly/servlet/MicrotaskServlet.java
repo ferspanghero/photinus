@@ -75,6 +75,8 @@ public class MicrotaskServlet extends HttpServlet {
 		int confidenceAnswer = new Integer(request.getParameter("confidence")).intValue();
 		String microtaskId = request.getParameter("microtaskId");
 		String explanation = request.getParameter("explanation");
+		if(explanation!=null)
+			explanation = explanation.replaceAll("[\n\r]"," ");
 		String timeStamp = request.getParameter("timeStamp");
 		int difficulty = new Integer(request.getParameter("difficulty")).intValue();
 		String elapsedTime = TimeStampUtil.computeElapsedTime(timeStamp, TimeStampUtil.getTimeStampMillisec());
