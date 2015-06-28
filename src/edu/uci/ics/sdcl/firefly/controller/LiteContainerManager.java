@@ -349,7 +349,7 @@ public class LiteContainerManager extends StorageStrategy{
 
 	public synchronized boolean insertFeedback(String feedback, Worker worker) {
 		if(worker!=null && updateConsentSurveyTestFeedbackTable(worker.getWorkerId(),worker.getCurrentFileName(),"FEEDBACK")){
-			consentLogger.info("EVENT%FEEDBACK% %workerID%"+worker.getWorkerId()+"% fileName%"+worker.getCurrentFileName()+" %feedback%" +feedback );
+			consentLogger.info("EVENT%FEEDBACK% workerID%"+worker.getWorkerId()+"% fileName%"+worker.getCurrentFileName()+" %feedback%" +feedback );
 		}
 		return true;
 	}
