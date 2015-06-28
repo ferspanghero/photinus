@@ -25,30 +25,27 @@
 #failurePrompt {
 	max-width: 800px;
 	background-color: #D1EEEE;
-	text-align: justify;
+	text-align: left;
 	margin: 0 auto;
-	text-justify: distribute-all-lines;
 }
 
 #internalText {
 	margin-left: 12px;
 	margin-right: 12px;
-	text-justify: distribute-all-lines;
 }
 
 #questionPrompt {
 	max-width: 800px;
 	background-color: #B4CDCD;
 	margin: 0 auto;
-	text-align: justify;
-	text-justify: distribute-all-lines;
+	text-align: left;
 }
 
 #questionCode {
 	max-width: 800px;
 	background-color: #D1EEEE;
 	margin: 0 auto;
-	text-align: justify;
+	text-align: left;
 }
 
 #buttons {
@@ -78,7 +75,7 @@
 
 table {
 	table-layout: fixed;
-	word-break: break-all;
+	word-break: keep-all;
 }
 
 table td {
@@ -414,12 +411,12 @@ div.inner {
 			<input type="button"  value="Quit" onclick='quitConfirm()' style="float:right">
 			<span class="sectionTitle"><b>Please take a look at the following problem, the code below it, and answer the questions.</span></b><br><br>
 			<div id="internalText">
-			<table class="fixed" CELLPADDING="4px" align="center"  style="word-wrap: break-word;">
+			<table class="fixed" CELLPADDING="4px" align="center"  >
 				<col width="210px">
-				<col width="410px">
+				<col width="410px"> <!--  style="word-wrap: break-word;" -->
 				<tr>
 					<td><b>We ran the following <u>test</u>:</b></td>
-					<td><div id="testFailure"> </div></td>
+					<td><div id="testFailure"> alsk;lfkasldfkjasd;flkasdf;ljkasdfl;askjdfasldfkjas;dflkjasdf;lkjasdf;lkjasdal;skdfjasdlf;kjasdfl;kjasdlf;kjasdlfkasdflk</div></td>
 				</tr>
 				<tr height="20px"></tr>
 				<tr>
