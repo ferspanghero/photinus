@@ -168,17 +168,25 @@ public class MyVisitor extends ASTVisitor {
 		//		System.out.println("Parameters: " + parameters);
 
 		int nameStartingLine = cu.getLineNumber(node.getName().getStartPosition());
-		if (this.elementStartingLine !=  nameStartingLine)
-		{	// that means that are comment(s) before the method which is(are) misleading the starting line
-			this.elementStartingLine = nameStartingLine;	// but now I do not know the column start
-			//System.out.println("[MV] New line: " + this.elementStartingLine);
 
+		if(node.getJavadoc()!=null){
+			//Then elementStart is the Javadoc, otherwise will be the method declaration
+			this.elementStartingLine =cu.getLineNumber(node.getJavadoc().getStartPosition()); 
+			System.out.println("IN VISITOR JAVADOC NOT NULL, startline:"+ node.getJavadoc().getStartPosition());
+			this.elementStartingColumn = cu.getColumnNumber(node.getJavadoc().getStartPosition());
+		}else{
+			if (this.elementStartingLine !=  nameStartingLine)
+			{	// that means that are comment(s) before the method which is(are) misleading the starting line
+				this.elementStartingLine = nameStartingLine;	// but now I do not know the column start
+				//System.out.println("[MV] New line: " + this.elementStartingLine);
+			}
 			/* Finding the column start and the end position for the element */
-			this.positionFinder = new PositionFinder(this.elementStartingLine,
+			this.positionFinder = new PositionFinder(nameStartingLine,
 					snippetFactory.getFileContentPerLine(), '(', ')');
 			this.positionFinder.computeStartEndPosition();
 			this.elementEndingLine = this.positionFinder.getEndingLineNumber();
 			this.elementEndingColumn = this.positionFinder.getEndingColumnNumber();
+
 		}
 		setupElementEndPosition();
 		if (null == node.getBody())
@@ -194,6 +202,7 @@ public class MyVisitor extends ASTVisitor {
 			body = node.getBody().toString();
 			this.bodyStartingLine = cu.getLineNumber(node.getBody().getStartPosition());
 			this.bodyStartingColumn = cu.getColumnNumber(node.getBody().getStartPosition());
+
 			setupBodyEndPostition();
 			/* Creating new object with body */
 			this.newMethod = new CodeSnippet(this.packageName, this.className, signature, body, hasReturnStatement,
@@ -231,7 +240,7 @@ public class MyVisitor extends ASTVisitor {
 		}
 		return true;
 	}
-	
+
 	public boolean visit(ClassInstanceCreation node)
 	{
 		if(isInvalidClassInstantiation(node))
@@ -297,7 +306,7 @@ public class MyVisitor extends ASTVisitor {
 		}
 		return true;
 	}
-	
+
 	public boolean visit(ConditionalExpression node)
 	{
 		if(this.newMethod != null)
@@ -323,7 +332,7 @@ public class MyVisitor extends ASTVisitor {
 		}
 		return true;
 	}
-	
+
 	/*Statements */
 	public boolean visit(IfStatement node)
 	{
@@ -573,7 +582,7 @@ public class MyVisitor extends ASTVisitor {
 	{
 		return visit((VariableDeclaration)node);
 	}
-	
+
 	/**
 	 * Treats the two scenarios of variable declaration
 	 * statements. Encapsulated by overrode methods.
@@ -588,21 +597,21 @@ public class MyVisitor extends ASTVisitor {
 			this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
 			this.elementStartingColumn = (node instanceof VariableDeclarationFragment) 
 					? cu.getColumnNumber(node.getParent().getStartPosition())
-					: cu.getColumnNumber(node.getStartPosition());
-			this.elementEndingLine = this.elementStartingLine;
-			this.elementEndingColumn = (node instanceof VariableDeclarationFragment)
-					? cu.getColumnNumber(node.getStartPosition()) + node.getName().getLength()
-					: this.elementStartingColumn + node.getLength();
+							: cu.getColumnNumber(node.getStartPosition());
+					this.elementEndingLine = this.elementStartingLine;
+					this.elementEndingColumn = (node instanceof VariableDeclarationFragment)
+							? cu.getColumnNumber(node.getStartPosition()) + node.getName().getLength()
+									: this.elementStartingColumn + node.getLength();
 
-			MyVariable element = new MyVariable(node.getName().getFullyQualifiedName(), 
-					this.elementStartingLine, this.elementStartingColumn, 
-					this.elementEndingLine, this.elementEndingColumn);
+							MyVariable element = new MyVariable(node.getName().getFullyQualifiedName(), 
+									this.elementStartingLine, this.elementStartingColumn, 
+									this.elementEndingLine, this.elementEndingColumn);
 
-			this.newMethod.addElement(element);
+							this.newMethod.addElement(element);
 		}
 		return true;
 	}
-	
+
 
 	/**
 	 * Check whether a method invocation is an invalid method call. Two types of invalid calls, 
@@ -635,7 +644,7 @@ public class MyVisitor extends ASTVisitor {
 			return true;
 		return isInvalidCall(node.getParent().getNodeType(),node.getName().toString(), node.getExpression());
 	}
-	
+
 	private boolean verifyNestedMethod(MethodInvocation node)
 	{
 		this.elementStartingLine = cu.getLineNumber(node.getStartPosition());
@@ -647,7 +656,7 @@ public class MyVisitor extends ASTVisitor {
 		String expression = node.getExpression()==null ? "" : node.getExpression().toString(); 
 		String arguments = node.arguments()==null ? "" : node.arguments().toString();
 		Integer numberOfArguments = node.arguments()==null ? 0 : node.arguments().size();
- 
+
 
 		MyMethodCall methodCall = new MyMethodCall(name, expression, arguments, numberOfArguments,
 				this.elementStartingLine, this.elementStartingColumn,
@@ -677,7 +686,7 @@ public class MyVisitor extends ASTVisitor {
 			this.callees.add(methodCall);
 			MyMethodCall caller = callees.get(0);
 			if(cu.getColumnNumber(node.getStartPosition()) < caller.getElementStartingColumn()
-				&& (cu.getLineNumber(node.getStartPosition()) == caller.getElementStartingLine()))
+					&& (cu.getLineNumber(node.getStartPosition()) == caller.getElementStartingLine()))
 			{
 				callees.get(0).setElementStartingColumn(cu.getColumnNumber(node.getStartPosition()));
 			}
@@ -686,7 +695,7 @@ public class MyVisitor extends ASTVisitor {
 			return false;
 		return true;
 	}
-	
+
 	public void endVisit(MethodInvocation node)
 	{
 		if(this.constructorMethodArgument == 0)
@@ -726,7 +735,7 @@ public class MyVisitor extends ASTVisitor {
 		this.bodyEndingLine = this.bodyPosition.getEndingLineNumber();
 		this.bodyEndingColumn = this.bodyPosition.getEndingColumnNumber();
 	}
-	
+
 	private void flushCallees()
 	{
 		if(this.newMethod != null)
