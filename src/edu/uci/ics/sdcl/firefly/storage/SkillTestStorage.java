@@ -27,6 +27,17 @@ public class SkillTestStorage {
 		if(skillTests.size() == 0)
 		{
 			loadSkillTests();
+
+			// THIS IS A HARDCODED BIND OF FILES
+			bindSkillTest("HIT01_8.java");
+			bindSkillTest("HIT02_24.java");
+			bindSkillTest("HIT03_6.java");
+			bindSkillTest("HIT04_7.java");
+			bindSkillTest("HIT05_35.java");
+			bindSkillTest("HIT06_51.java");
+			bindSkillTest("HIT07_33.java");
+			bindSkillTest("HIT08_54.java");
+			bindSkillTest("HIT10_59.java");
 		}
 	}
 
@@ -122,7 +133,7 @@ public class SkillTestStorage {
 	 */
 	public void bindSkillTest(String fileName)
 	{
-		if(skillFileTable.get(fileName) == null)
+		if(skillFileTable.get(fileName) == null) // avoid duplicated bind on the same file
 		{
 			int extensionIndex = fileName.indexOf('.');
 			if(extensionIndex != -1)
