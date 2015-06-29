@@ -34,7 +34,7 @@ public class QuestionFactory {
 		/* Loops */
 		templateLoop.add("Is there any issue with the <L>-loop between lines <#1> and <#2> that might be related to the failure?");
 		/* Variables */
-		templateVariable.add("Is there any issue with the definition or/and the use of variable \"<#>\" in the source code below that might be related to the failure?");
+		templateVariable.add("Is there any issue with the definition or the use of variable \"<#>\" in the source code below that might be related to the failure?");
 	}
 
 
