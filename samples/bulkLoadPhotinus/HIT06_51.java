@@ -56,7 +56,11 @@ abstract class CodeConsumer {
   /**
    * Retrieve the last character of the last string sent to append.
    */
-  abstract char getLastChar();
+  char getLastChar() {
+      return (code.length() > 0) ? code.charAt(code.length() - 1) : '\0';
+    }
+  
+  //abstract char getLastChar(); The concrete method above is implemented in class CodePrinter.MappedCodePrinter
 
   void addIdentifier(String identifier) {
     add(identifier);
