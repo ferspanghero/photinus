@@ -56,7 +56,7 @@ public class ConsentServlet extends HttpServlet {
 		}
 		else if(!storage.isFileAvailable(fileName))
 		{
-			showErrorPage(request, response, "Dear worker the file you are trying to access could not be found in our records.");
+			showErrorPage(request, response, "Dear worker, at this moment there are no questions available for the requested file.");
 		}
 		else{
 			Worker worker = null;

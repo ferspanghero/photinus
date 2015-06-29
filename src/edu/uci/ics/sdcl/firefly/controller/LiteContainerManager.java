@@ -62,10 +62,8 @@ public class LiteContainerManager extends StorageStrategy{
 	
 	public boolean isFileAvailable(String fileName)
 	{
-		if(newSessionTable.get(fileName) != null)
-			return true;
-		else
-			return false;
+		Stack<WorkerSession> stack = newSessionTable.get(fileName);
+		return ( stack != null && !(stack.isEmpty()));
 	}
 
 	public void cleanUpRepositories(){
@@ -114,8 +112,8 @@ public class LiteContainerManager extends StorageStrategy{
 	{
 		Worker worker = this.workerTable.get(workerId);
 		if(newSessionTable!=null && !newSessionTable.isEmpty()){
-			Stack<WorkerSession> stack = newSessionTable.get(fileName);
-			if(stack!=null && !stack.isEmpty()){
+			if(isFileAvailable(fileName)){
+				Stack<WorkerSession> stack = newSessionTable.get(fileName);
 				WorkerSession  session = stack.pop();
 				newSessionTable.put(fileName, stack);
 				session.setWorkerId(workerId);
