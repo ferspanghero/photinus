@@ -29,12 +29,13 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.gargoylesoftware.htmlunit.javascript.JavaScriptErrorListener;
 
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 
 public class ServerLoadTest implements Runnable{
 
 	//Number of THREADS
-	private static int maxThreads =150;
+	private static int maxThreads =1;
 	
 	//private static Logger loggerInfo;
 	private static Logger loggerConsent;
@@ -47,11 +48,11 @@ public class ServerLoadTest implements Runnable{
 	private static int threadId=0;
 	private int defaultId;
 	private int myThread;
-	private static String localPath = "http://localhost:8080/photinus/";
+	private static String localPath = "http://localhost:8080/Photinus/";
 	private static String serverPath = "http://dellserver.ics.uci.edu:8080/photinus/";
 	private static String path;
-	private static String filename = "7_TimePeriodValues";//"8_DateTimeZone";//"6_CharSequenceTranslator";//
-
+	private static String filename = "HIT02_24";//"8_DateTimeZone";//"6_CharSequenceTranslator";//
+	private static int microtaskPerSession = 0;
 	private HtmlPage nextPage;
 
 	@Before
@@ -60,6 +61,8 @@ public class ServerLoadTest implements Runnable{
 	}
 
 	public ServerLoadTest(int myThread){
+		PropertyManager property = PropertyManager.initializeSingleton();
+		microtaskPerSession = property.microtasksPerSession;
 		//loggerInfo = LoggerFactory.getLogger("info");
 		loggerConsent = LoggerFactory.getLogger("consent");
 		loggerSession = LoggerFactory.getLogger("session");
@@ -90,7 +93,7 @@ public class ServerLoadTest implements Runnable{
 
 	public static void main(String args[]){
 		try{
-			path = serverPath; //localPath;
+			path = localPath;
 			while(threadId<maxThreads){
 				threadId++;
 				System.out.println("Thread ="+threadId);
@@ -104,7 +107,6 @@ public class ServerLoadTest implements Runnable{
 	
 	//@Override
 	public void run2(){
-
 		try{
 			CookieManager manager = new CookieManager();
 			manager.clearCookies();
@@ -130,7 +132,7 @@ public class ServerLoadTest implements Runnable{
 					{
 						boolean success=true;
 						int i=0;
-						while(success && i<1){
+						while(success && i< microtaskPerSession){
 							success = runMicrotask();
 							i++;
 						}
@@ -192,17 +194,20 @@ public class ServerLoadTest implements Runnable{
 
 		final HtmlInput radio1 = form.getInputByName("QUESTION1");
 		radio1.click();
-		radio1.setValueAttribute("c");
+		radio1.setValueAttribute("d");
 		final HtmlRadioButtonInput radio2 = form.getInputByName("QUESTION2");
 		radio2.click();
-		radio2.setValueAttribute("a");
+		radio2.setValueAttribute("b");
 		final HtmlRadioButtonInput radio3 = form.getInputByName("QUESTION3");
 		radio3.click();
-		radio3.setValueAttribute("d");
+		radio3.setValueAttribute("e");
 		final HtmlRadioButtonInput radio4 = form.getInputByName("QUESTION4");
 		radio4.click();
-		radio4.setValueAttribute("b");
-
+		radio4.setValueAttribute("a");
+		final HtmlRadioButtonInput radio5 = form.getInputByName("QUESTION5");
+		radio5.click();
+		radio5.setValueAttribute("d");
+		
 		form.setActionAttribute("skillTest");
 		HtmlHiddenInput input1 = form.getInputByName("workerId");
 		input1.setValueAttribute(this.workerId);
