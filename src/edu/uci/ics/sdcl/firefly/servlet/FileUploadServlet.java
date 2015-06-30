@@ -369,12 +369,12 @@ public class FileUploadServlet extends HttpServlet {
 		System.out.println("path: "+path);
 		
 		String[] fileList = {"HIT01_8.java", "HIT02_24.java", "HIT03_6.java", "HIT04_7.java",
-				"HIT05_35.java","HIT06_51.java","HIT07_33.java","HIT08_54.java","HIT10_59.java"};
+				"HIT05_35.java","HIT06_51.java","HIT07_33.java","HIT08_54.java"};//,"HIT10_59.java"};
 		
 	
 		
 		String [] methodList = { "forOffsetHoursMinutes","getPaint","translate", "updateBounds",
-				"add","addNumber","toClass","toLocale","findLevel"};
+				"add","addNumber","toClass","toLocale"};//,"findLevel"};
 		
 		
 		String [] failureList = { "java.lang.IllegalArgumentException: Minutes out of range:-15",
@@ -384,9 +384,9 @@ public class FileUploadServlet extends HttpServlet {
 				"java.lang.ClassCastException: [Ljava.lang.Object; cannot be cast to [Ljava.lang.String;",
 				"junit.framework.ComparisonFailure: expected:&lt;var x=[-0.]0&gt; but was:&lt;var x=[]0&gt;",
 				"java.lang.NullPointerException", 
-				"java.lang.IllegalArgumentException: Invalid locale format:fr__POSIX",
-				"Elevator block will not function.",
-				};
+				"java.lang.IllegalArgumentException: Invalid locale format:fr__POSIX"};
+//				"Elevator block will not function.",
+	//			};
 		
 		String[] testList = {"assertEquals(DateTimeZone.forID(\"-02:15\"), DateTimeZone.forOffsetHoursMinutes(-2, -15));",
 				"GrayPaintScale gps = new GrayPaintScale(); c = (Color) gps.getPaint(-0.5);	assertTrue(c.equals(Color.black));",
@@ -395,9 +395,9 @@ public class FileUploadServlet extends HttpServlet {
 				"String[] stringArray=null; String aString=null; String[] sa= ArrayUtils.add(stringArray,aString); fail(\"Should have caused IllegalArgumentException\");",
 				"assertEquals(\"var x = -0.0\", parsePrint(\"var x = -0.0;\", false, CodePrinter.DEFAULT_LINE_LENGTH_THRESHOLD));",
 				"assertTrue(Arrays.equals(new Class[] { String.class, null, Double.class },ClassUtils.toClass(new Object[] { \"Test\", null, 99d })));",
-				"assertValidToLocale(\"fr__POSIX\", \"fr\", \"\", \"POSIX\");",
-				 "Assuming the default searchDistance is 20 blocks, set a elevator block at y=20 then another at y=40.",
-				};
+				"Locale locale = LocaleUtils.toLocale(\"fr__POSIX\");"};
+		//		 "Assuming the default searchDistance is 20 blocks, set a elevator block at y=20 then another at y=40.",
+			//	};
 		
 		
 		
