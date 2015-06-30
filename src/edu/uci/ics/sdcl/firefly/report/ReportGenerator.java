@@ -59,14 +59,14 @@ public class ReportGenerator {
 		WorkerSessionStorage workerSessionStorage = WorkerSessionStorage.initializeSingleton();
 		Vector<WorkerSession> closedSessions = workerSessionStorage.retrieveClosedSessionStorage();
 		Hashtable<String, WorkerSession> activeSessions = workerSessionStorage.retrieveActiveSessionStorage();
-		Stack<WorkerSession> newSessions = workerSessionStorage.retrieveNewSessionStorage();
+		Hashtable<String, Stack<WorkerSession>> newSessions = workerSessionStorage.retrieveNewSessionStorage();
 		
 		if(closedSessions==null)
 			closedSessions= new Vector<WorkerSession>();
 		if(activeSessions==null)
 			activeSessions= new Hashtable<String, WorkerSession>();
 		if(newSessions==null)
-			newSessions= new Stack<WorkerSession>();
+			newSessions= new Hashtable<String, Stack<WorkerSession>>();
 		
 		if (closedSessions.size()==0 && activeSessions.size()==0 && newSessions.size()==0){ //Don't even generate the report, because it is empty
 			return false;

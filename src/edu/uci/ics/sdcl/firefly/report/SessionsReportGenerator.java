@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -48,7 +49,7 @@ public class SessionsReportGenerator {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public boolean writeToXlsx(Vector<WorkerSession> closedSessions, Hashtable<String,WorkerSession> activeSessions, Stack<WorkerSession> newSessions)
+	public boolean writeToXlsx(Vector<WorkerSession> closedSessions, Hashtable<String,WorkerSession> activeSessions, Hashtable<String,Stack<WorkerSession>> newSessions)
 	{
 		/* setting a HashMap with the microtask's ID and the respective column number  */
 		// reading closed session's questions
@@ -66,9 +67,14 @@ public class SessionsReportGenerator {
 		}
 		// reading new session's questions
 		Vector<WorkerSession> newSessionsAL = new Vector<WorkerSession>();
-		for (WorkerSession workerSession : newSessions) {
-			this.populateQuestionMap(workerSession.getMicrotaskList());
-			newSessionsAL.add(workerSession);		// converting to array list (AL)
+		Set<String> keys = newSessions.keySet();
+		for (String key : keys) {
+			Stack<WorkerSession> workerSession = newSessions.get(key);
+			Iterator<WorkerSession> iter = workerSession.iterator();
+			while(iter.hasNext()){
+				this.populateQuestionMap((iter.next()).getMicrotaskList());
+				newSessionsAL.add(iter.next());		// converting to array list (AL)
+			}
 		}
 		
 		/* preparing the data structure */

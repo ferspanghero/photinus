@@ -62,7 +62,7 @@ private String fileName = "WorkersReport.xlsx";
 		cell = row.createCell(cellNum++);
 				
 		// skill test answers
-		for (Integer k=1; k<=4; k++){
+		for (Integer k=1; k<=5; k++){
 			cell.setCellValue("Q" + k.toString());
 			cell = row.createCell(cellNum++);
 		}	
@@ -88,7 +88,7 @@ private String fileName = "WorkersReport.xlsx";
 			Worker worker = mapEntryWorker.getValue();
 			
 			// preparing line (object), which index is a cell
-			Object[] lineContent = new Object[14]; 		// 14 columns
+			Object[] lineContent = new Object[16]; 		// 16 columns
 			lineContent[0] = worker.getWorkerId();	// user ID (cell 0)
 			
 			try{
