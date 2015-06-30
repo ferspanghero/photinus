@@ -8,6 +8,7 @@ import net.sourceforge.jwebunit.junit.WebTester;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.support.ui.Sleeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,7 @@ import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 public class ServerLoadTest implements Runnable{
 
 	//Number of THREADS
-	private static int maxThreads =1;
+	private static int maxThreads =50;
 	
 	//private static Logger loggerInfo;
 	private static Logger loggerConsent;
@@ -49,11 +50,11 @@ public class ServerLoadTest implements Runnable{
 	private int defaultId;
 	private int myThread;
 	private static String localPath = "http://localhost:8080/Photinus/";
-	private static String serverPath = "http://dellserver.ics.uci.edu:8080/photinus/";
+	private static String serverPath = "http://dellserver.ics.uci.edu:8080/crowd_debug/";
 	private static String path;
 	private static String filename = "HIT02_24";//"8_DateTimeZone";//"6_CharSequenceTranslator";//
 	private static int microtaskPerSession = 0;
-	private HtmlPage nextPage;
+//	private HtmlPage nextPage;
 
 	@Before
 	public void setupHTMLUnit(){
@@ -93,7 +94,7 @@ public class ServerLoadTest implements Runnable{
 
 	public static void main(String args[]){
 		try{
-			path = localPath;
+			path = serverPath; //localPath;
 			while(threadId<maxThreads){
 				threadId++;
 				System.out.println("Thread ="+threadId);
@@ -105,7 +106,7 @@ public class ServerLoadTest implements Runnable{
 		}
 	}
 	
-	//@Override
+	/*//@Override
 	public void run2(){
 		try{
 			CookieManager manager = new CookieManager();
@@ -118,27 +119,27 @@ public class ServerLoadTest implements Runnable{
 		catch(Exception e){
 			System.err.println(e.toString());
 		}
-	}
+	}*/
 
 	@Override
 	public void run(){
-
+		HtmlPage nextPage = null;
 		try{
 			CookieManager manager = new CookieManager();
 			manager.clearCookies();
-			if(runConsent())
-				if(runSurvey()){
-					if(runSkillTest())
+			if((nextPage = runConsent(nextPage)) != null)
+				if((nextPage = runSurvey(nextPage)) != null){
+					if((nextPage = runSkillTest(nextPage)) != null)
 					{
 						boolean success=true;
 						int i=0;
-						while(success && i< microtaskPerSession){
-							success = runMicrotask();
+						while(success && i< 3){
+							success = ((nextPage = runMicrotask(nextPage)) != null);
 							i++;
 						}
 						loggerSession.info("Thread ="+this.myThread+"; answered="+new Integer(i).toString()+" times.");
 						if(success)
-							runFeedback();
+							nextPage = runFeedback(nextPage);
 					}
 				}
 		}
@@ -151,7 +152,7 @@ public class ServerLoadTest implements Runnable{
 
 
 	//@Test
-	public boolean runConsent()throws Exception {
+	public HtmlPage runConsent(HtmlPage nextPage)throws Exception {
 		
 		final HtmlPage page = this.webClient.getPage(path+"ConsentForm.jsp"+"?"+filename);
 		System.out.println("STARTED : "+page.getTitleText());
@@ -164,7 +165,7 @@ public class ServerLoadTest implements Runnable{
 		checkBox.click();
 
 		// Now submit the form by clicking the button and get back the second page.
-		this.nextPage = button.click();
+		nextPage = button.click();
 
 		//System.out.println("Consent , nextpage="+nextPage.getTitleText());
 		if(nextPage.getTitleText().matches("Error Page")){
@@ -173,7 +174,7 @@ public class ServerLoadTest implements Runnable{
 			String message = messageInput.getValueAttribute();
 			this.workerId = Integer.toString(this.defaultId);
 			loggerConsent.info("Consent=FAILED; threadId= "+ this.myThread+ "; Page="+ nextPage.getTitleText() + "; message="+message);
-			return false;
+			return null;
 		}
 		else{// The survey page shows up
 			//obtain the workerId
@@ -182,15 +183,16 @@ public class ServerLoadTest implements Runnable{
 			final HtmlHiddenInput workerIdInput = surveyForm.getInputByName("workerId");
 			this.workerId = workerIdInput.getValueAttribute();
 			loggerConsent.info("Consent=SUCCESS; workerId= "+ this.workerId+ "; Page="+ nextPage.getTitleText());
-			return true;
+			Thread.sleep(50);
+			return nextPage;
 		}
 	}
 
 
-	public boolean runSkillTest() throws Exception	{
+	public HtmlPage runSkillTest(HtmlPage nextPage) throws Exception	{
 		//final HtmlPage page = this.webClient.getPage(path+"SkillTest.jsp");
 		System.out.println("STARTED : "+nextPage.getTitleText());
-		final HtmlForm form = this.nextPage.getFormByName("testForm");
+		final HtmlForm form = nextPage.getFormByName("testForm");
 
 		final HtmlInput radio1 = form.getInputByName("QUESTION1");
 		radio1.click();
@@ -221,31 +223,32 @@ public class ServerLoadTest implements Runnable{
 		
 		final HtmlInput button = form.getInputByName("answerButton");
 		//System.out.println("Test clicked, workerId= "+ this.workerId);
-		this.nextPage= button.click();
+		nextPage= button.click();
 
 		if(nextPage.getTitleText().matches("Error Page")){
 			final HtmlForm messageForm = nextPage.getFormByName("errorForm");
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
 			loggerConsent.info("Tests=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
-			return false;
+			return null;
 		}else
 			if(nextPage.getTitleText().matches("Sorry Page")){
 				final HtmlForm messageForm = nextPage.getFormByName("sorryForm");
 				final HtmlInput messageInput = messageForm.getInputByName("message");
 				String message = messageInput.getValueAttribute();
 				loggerConsent.info("Tests=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
-				return false;
+				return null;
 			}
 			else{// The question page shows up
 				System.out.println("ENDED : "+nextPage.getTitleText());
 				loggerConsent.info("Test=SUCCESS; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText());
-				return true;
+				Thread.sleep(50);
+				return nextPage;
 			}
 	}
 
 	@Test
-	public boolean runMicrotask() throws Exception {
+	public HtmlPage runMicrotask(HtmlPage nextPage) throws Exception {
 		System.out.println("STARTED : "+nextPage.getTitleText());
 		//final HtmlPage page = this.webClient.getPage(path+"QuestionMicrotask.jsp");
 		final HtmlForm answerForm = nextPage.getFormByName("answerForm");
@@ -285,30 +288,32 @@ public class ServerLoadTest implements Runnable{
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
 			loggerSession.info("Microtask=FAILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
-			return false;
+			return null;
 		}else
 			if(nextPage.getTitleText().matches("Sorry Page")){
 				final HtmlForm messageForm = nextPage.getFormByName("sorryForm");
 				final HtmlInput messageInput = messageForm.getInputByName("message");
 				String message = messageInput.getValueAttribute();
 				loggerSession.info("Microtask=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
-				return false;
+				return null;
 			}
 			else
 				if(nextPage.getTitleText().matches("Feedback Page")){ // The feedback page shows up
 					loggerConsent.info("Feedback Page");
-					return true;
+					Thread.sleep(50);
+					return nextPage;
 				}
 				else{ // There are more questions so continue on the MicroTaskPage
 					final HtmlForm microtaskForm = nextPage.getFormByName("answerForm");
 					final HtmlInput microtaskId = microtaskForm.getInputByName("microtaskId");
 					loggerSession.info("Microtask=SUCCESS; workerId= "+ this.workerId+"; microtaskId="+microtaskId.getValueAttribute()+ "; Page="+nextPage.getTitleText());
-					return true;
+					Thread.sleep(50);
+					return nextPage;
 				}
 	}
 
 	@Test
-	public boolean runSurvey() throws Exception {
+	public HtmlPage runSurvey(HtmlPage nextPage) throws Exception {
 		System.out.println("STARTED : "+nextPage.getTitleText());
 		//final HtmlPage page = this.webClient.getPage(path+"QuestionMicrotask.jsp");
 		final HtmlForm surveyForm = nextPage.getFormByName("surveyForm");
@@ -348,7 +353,7 @@ public class ServerLoadTest implements Runnable{
 
 		// Submit form
 		final HtmlSubmitInput button = surveyForm.getInputByName("surveySubmit");
-		this.nextPage= button.click();
+		nextPage = button.click();
 		
 		System.out.println("ENDED : "+nextPage.getTitleText());
 		
@@ -357,24 +362,25 @@ public class ServerLoadTest implements Runnable{
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
 			loggerConsent.info("Survey=FAIILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
-			return false;
+			return null;
 		}else
 			if(nextPage.getTitleText().matches("Sorry Page")){
 				final HtmlForm messageForm = nextPage.getFormByName("sorryForm");
 				final HtmlInput messageInput = messageForm.getInputByName("message");
 				String message = messageInput.getValueAttribute();
 				loggerConsent.info("Survey=FAILED; threadId= "+ this.myThread+"; Page="+nextPage.getTitleText()+ "; Message="+message);
-				return false;
+				return null;
 			}
 			else{ // It comes to Skill Test page
 				loggerConsent.info("Session=OPENED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText());
-				return true;
+				Thread.sleep(50);
+				return nextPage;
 			}
 
 
 	}
 	
-	public boolean runFeedback() throws IOException
+	public HtmlPage runFeedback(HtmlPage nextPage) throws IOException, InterruptedException
 	{
 		System.out.println("STARTED : "+nextPage.getTitleText());
 		// Feedback form
@@ -396,7 +402,7 @@ public class ServerLoadTest implements Runnable{
 			final HtmlInput messageInput = messageForm.getInputByName("message");
 			String message = messageInput.getValueAttribute();
 			loggerConsent.info("Survey=FAIILED; workerId= "+ this.workerId+"; Page="+nextPage.getTitleText()+ "; Message="+message);
-			return false;
+			return null;
 		}
 		else
 		{ // Thanks page shows up
@@ -404,7 +410,8 @@ public class ServerLoadTest implements Runnable{
 			final HtmlInput sessionId = reasonForm.getInputByName("sessionId");
 			final DomElement divKey = nextPage.getElementById("key");
 			loggerConsent.info("Session=CLOSED; workerId= "+ this.workerId+"; sessionId="+sessionId.getValueAttribute() + "; MechanicalTurk=" +divKey.getNodeValue());
-			return true;
+			Thread.sleep(50);
+			return nextPage;
 		}
 		
 	}
