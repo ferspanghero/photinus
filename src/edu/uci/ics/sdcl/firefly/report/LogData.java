@@ -97,7 +97,7 @@ public class LogData {
 
 	public static String question[] = {"Gender", "Age", "Country", "Years progr.", "Difficulty", "Feedback"};   
 
-	private String logPath = "c:/firefly/logs/";
+	private String logPath = "C:/Users/igMoreira/Documents/GitHub/photinus/logs";
 
 
 	private File consentFile; 
@@ -277,7 +277,7 @@ public class LogData {
 		if(token.trim().matches("CONSENT")){
 			tokenizer.nextToken(); //consentDate label
 			String consentDate = tokenizer.nextToken();
-			worker = new Worker(workerId,consentDate);
+			worker = new Worker(workerId,consentDate, null);
 
 			if(!workerMap.containsKey(worker.getWorkerId())){
 				//Add to the sequential list
@@ -294,16 +294,18 @@ public class LogData {
 
 				worker = this.workerMap.get(workerId);
 
-				Hashtable<String, Boolean> gradeMap = new Hashtable<String, Boolean>();
+				boolean[] gradeMap = new boolean[5];
 				tokenizer.nextToken(); //test 1 label
-				gradeMap.put("QUESTION1", new Boolean(tokenizer.nextToken())); 
+				gradeMap[0] = new Boolean(tokenizer.nextToken()); 
 				tokenizer.nextToken(); //test 2 label
-				gradeMap.put("QUESTION2", new Boolean(tokenizer.nextToken()));
+				gradeMap[1] = new Boolean(tokenizer.nextToken());
 				tokenizer.nextToken(); //test 3 label
-				gradeMap.put("QUESTION3", new Boolean(tokenizer.nextToken()));
+				gradeMap[2] = new Boolean(tokenizer.nextToken());
 				tokenizer.nextToken(); //test 4 label
-				gradeMap.put("QUESTION4", new Boolean(tokenizer.nextToken()));
-
+				gradeMap[3] = new Boolean(tokenizer.nextToken());
+				/*tokenizer.nextToken(); //test 5 label
+				gradeMap[4] = new Boolean(tokenizer.nextToken());*/
+				
 				tokenizer.nextToken(); //grade label
 				String grade = tokenizer.nextToken();
 				tokenizer.nextToken(); //duration label
@@ -451,10 +453,9 @@ public class LogData {
 				//	else
 				//	System.out.println("durationDouble: "+ durationDouble + "> minDuration: "+minDuration);
 				this.countDuration(durationDouble);
+				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp);
 
-				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp, null);
-
-				//List of sequential microtasks
+				//List of sequential Microtasks
 				Vector<Answer> singleAnswerList = new Vector<Answer>();
 				singleAnswerList.add(answerObj);
 				Microtask uniqueMicrotask = new Microtask(question, new Integer(microtaskId), singleAnswerList,fileName);
@@ -612,7 +613,7 @@ public class LogData {
 		if(token.trim().matches("CONSENT")){
 			//			tokenizer.nextToken(); //consentDate label
 			String consentDate = nextTokenValue("consentDate",line);
-			worker = new Worker(workerId,consentDate);
+			worker = new Worker(workerId,consentDate,null);
 
 			if(!workerMap.containsKey(worker.getWorkerId())){
 				//Add to the sequential list
@@ -629,16 +630,18 @@ public class LogData {
 
 				worker = this.workerMap.get(workerId);
 
-				Hashtable<String, Boolean> gradeMap = new Hashtable<String, Boolean>();
+				boolean[] gradeMap = new boolean[5];
 				//test 1 label
-				gradeMap.put("QUESTION1", new Boolean(nextTokenValue("test1",line))); 
+				gradeMap[0] =  new Boolean(nextTokenValue("test1",line)); 
 				//test 2 label
-				gradeMap.put("QUESTION2", new Boolean(nextTokenValue("test2",line)));
+				gradeMap[1] =  new Boolean(nextTokenValue("test2",line)); 
 				//test 3 label
-				gradeMap.put("QUESTION3", new Boolean(nextTokenValue("test3",line)));
+				gradeMap[2] =  new Boolean(nextTokenValue("test3",line)); 
 				//test 4 label
-				gradeMap.put("QUESTION4", new Boolean(nextTokenValue("test4",line)));
-
+				gradeMap[3] =  new Boolean(nextTokenValue("test4",line)); 
+				//test 5 label
+				gradeMap[4] =  new Boolean(nextTokenValue("test5",line)); 
+				
 				//grade label
 				String grade = nextTokenValue("grade",line);
 				//testDuration label
@@ -760,7 +763,7 @@ public class LogData {
 
 				this.countDuration(durationDouble);
 
-				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp, null);
+				Answer answerObj = new Answer(answer, explanation, workerId,duration, timeStamp);
 
 				//List of sequential microtasks
 				Vector<Answer> singleAnswerList = new Vector<Answer>();
@@ -863,7 +866,7 @@ public class LogData {
 
 	private static LogData initializeLogs(){
 		//String path = "C:\\Users\\adrianoc\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\RawDataLogs\\";
-		String path = "C:\\Users\\Christian Adriano\\Dropbox (PE-C)\\3.Research\\2.Fall2014-Experiments\\RawDataLogs\\";
+		String path = "C:/Users/igMoreira/Documents/GitHub/photinus/logs";
 		LogData data = new LogData(true, 0);
 		data.processLogProduction2(path);
 		data.processLogProduction1(path);

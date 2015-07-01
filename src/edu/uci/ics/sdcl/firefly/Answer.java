@@ -37,6 +37,28 @@ public class Answer implements Serializable{
 		this.timeStamp = timeStamp;
 		this.difficulty = difficulty;
 	}
+	
+	
+	/**
+	 * Support for the old version
+	 * 
+	 * @param option
+	 * @param explanation
+	 * @param workerId
+	 * @param elapsedTime
+	 * @param timeStamp
+	 */
+	public Answer(String option, String explanation, String workerId,
+			String elapsedTime, String timeStamp) {
+		super();
+		this.option = option;
+		this.explanation = explanation;
+		this.workerId = workerId;
+		this.elapsedTime = elapsedTime;
+		this.timeStamp = timeStamp;
+	}
+
+
 
 	public String getOption() {
 		return option;

@@ -176,33 +176,10 @@
 					<c:forEach items="${requestScope.options[Counter.index]}" var="alternative" varStatus="AltCounter">
 						<input type="radio" name="QUESTION${Counter.count}" value="&#${AltCounter.index % 26 + 97};">${alternative}<br>
 					</c:forEach>
-					<%-- <input type="radio" name="QUESTION${Counter.index}" value="a">0<br>
-					<input type="radio" name="QUESTION1" value="b">1<br>
-					<input type="radio" name="QUESTION1" value="c">2<br>
-					<input type="radio" name="QUESTION1" value="d">3<br> --%>
 
 					<br>
 			</c:forEach>
-			
-			<!--  <br> The source code below is used in the questions 4 and 5<br>
-			<div id="editor2"><xmp>${requestScope["editor2"]}</xmp></div>
-
-				<script>
-					//Editor for Questions 4 and 5
-					var editor2 = ace.edit("editor2");
-					editor2.setReadOnly(true);
-					editor2.setTheme("ace/theme/github");
-					editor2.getSession().setMode("ace/mode/java");
-					editor2.setBehavioursEnabled(false);
-					editor2.setOption("highlightActiveLine", false); // disable highligthing on the active line
-					editor2.setShowPrintMargin(false); // disable printing margin
-				</script>
-
-			<br>
-			-->
-			
-	
-					<input type="button"  value="Quit" onclick='quitConfirm()'>
+			<input type="button"  value="Quit" onclick='quitConfirm()'>
 			<INPUT TYPE="button" name="answerButton" VALUE="Submit answers" onclick="submitAnswers(event)">
 
 		</form>
