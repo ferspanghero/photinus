@@ -25,6 +25,13 @@
 .ui-dialog-titlebar-close {
   visibility: hidden;
 }
+
+.alertJS{
+	font-size: 20px;
+	background-color: #FF0000;
+	widtgh: 100%;
+	text-align: center;
+}
 </style>
 
 </head>
@@ -134,7 +141,22 @@
 				window.close();
 			}
 		}
+		
+		$(document).ready(function(){
+			var cookieEnabled=(navigator.cookieEnabled)? true : false					 
+			//if not IE4+ nor NS6+
+			if (typeof navigator.cookieEnabled=="undefined" && !cookieEnabled){ 
+				document.cookie="testcookie"
+				cookieEnabled=(document.cookie.indexOf("testcookie")!=-1)? true : false
+			}
+			
+			if (!cookieEnabled){
+				alert("Please enable your cookies and refresh the page!");
+			}
+		});
 	</script>
+	
+	<noscript><div class="alertJS">JavaScript is off. Please enable to view full site.</div></noscript>
 <body>
 
 
