@@ -3,18 +3,18 @@
 //-1, 0, 1, 2, 3
 //A: 0
 
-//At line 20, if mySentence is set to "cogito ergo cogito", what would be the output?
+//What would have been the output if the variable mySentence was set to "cogito ergo cogito" at line 20?
 //-1, 0, 1, 2, 3
 //A: 2
 
-//At line 12, if we replace "int i=0;" with "int i=1;",  what would be the output?
+//What would have been the output if instead of "int i=0;" we had "int i=1;" at line 12?
 //-1, 0, 1, 2, 3
 //A: -1
 
-//At line 14, if we replace "found= i;" with "return i;", what would be the output?
+//What would have been the output if instead of "found= i;" we had "return i;" at line 14?
 //-1, 0, 1, 2, 3
 //A: 0
 
-//At line 20, if mySentence is set to null instead of "cogito ergo sum", what line in the program will cause a Null Pointer Exception?
+//What line in the program would have caused a Null Pointer exception if we set the variable mySentence to null at line 20? 
 //21, 22, 6, 10, 13
 //A: 10

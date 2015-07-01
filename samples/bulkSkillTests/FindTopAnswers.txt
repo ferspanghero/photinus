@@ -3,18 +3,18 @@ FINDTOP.JAVA ANSWERS
 //-1, 0, 2, 4, 8
 //A: 8
 
-//At line 21, if we had "numbers.findHighest(1,1)", what would be the output?
+//What would have been the output if we had "numbers.findHighest(1,1)" at line 21?
 //10, 5, 2, 4, 8
 //A: 5
 
-//At line 11, if instead of "int i=lowIndex;" we had "int i=0;", what would be the output?
+//What would have been the output if instead of "int i=lowIndex;" we had "int i=0;" at line 11?
 //10, 5, 2, 4, 8
 //A: 10
 
-//At line 13, if we had "return i;" instead, what would be the output?
+//What would have been the output if we had "return i;" at line 13? 
 //10, 5, 2, 4, 8
 //A: 4
 
-//At line 21, if we had "numbers.findHighest(0,5)" instead, what line in the program would cause an ArrayIndexOutOfBounds Exception?
+//What line in the program would have caused an ArrayIndexOutOfBounds exception if we  had "numbers.findHighest(0,5)" at line 21?
 //6, 10, 11, 12, 13
 //A: 12	

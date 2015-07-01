@@ -1,20 +1,20 @@
-POSITIONFINDER ANSWERS
+//POSITIONFINDER ANSWERS
 //What is the output of the code? 
 //-1, 0, 1, 2, 3
 //A: 2
 
-//At line 19, what would be the output if instead of "Ciao" we have "Hola"?
+//What would have been the output if instead of "Ciao" we had "Hola" at line 19?
 //-1, 0, 1, 2, 3
 //A: 0
 
-//At line 19, what would be the output if instead of "Ciao" we have an empty String (e.g., " ")?
+//What would have been the output if instead of "Ciao" we had an empty String (e.g.,"") at line 19?
 //-1, 0, 1, 2, 3
 //A: 3
 
-//At line 18, what would be the output if we have "String[] myArray = {};" ?
+//What would have been the output if we had "String[] myArray = {};" at line 18?
 //Empty array, NullPointer exception, ArrayOutOfBounds exception, 0
 //A: Empty array
 
-//At line 18, if we set myArray to {"Hola", null}, which line of the program will cause a NullPointer exception?
+//What line of the program would have caused a NullPointer exception if we set myArray to {"Hola", null} at line 18?
 //19, 20, 6, 9, 10
 //A: 9
