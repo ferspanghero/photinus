@@ -170,6 +170,7 @@ public class LiteContainerManager extends StorageStrategy{
 			if(updateSessionMicrotaskTable(worker.getWorkerId(),sessionId,microtaskId)){
 				sessionLogger.info("EVENT%MICROTASK% workerId%"+ answer.getWorkerId()+"% fileName%"+microtask.getFileName()
 						+"% sessionId%"+ sessionId+"% microtaskId%"+microtaskId
+						+"% questionType%" +microtask.getCodeElementType()
 						+"% question%"+ microtask.getQuestion()+"% answer%"+answer.getOption()
 						+"% confidenceLevel%"+answer.getConfidenceOption()
 						+ "% difficulty%"+answer.getDifficulty()
