@@ -72,7 +72,13 @@ public class MicrotaskServlet extends HttpServlet {
 	private void loadNextMicrotask(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 			
 		int answer = new Integer(request.getParameter("answer")).intValue();
-		int confidenceAnswer = new Integer(request.getParameter("confidence")).intValue();
+		int confidenceAnswer;
+		String test = request.getParameter("confidence");
+		if(request.getParameter("confidence")==null){
+			confidenceAnswer = 0;
+		}else{
+			confidenceAnswer = new Integer(request.getParameter("confidence")).intValue();
+		}
 		String microtaskId = request.getParameter("microtaskId");
 		String explanation = request.getParameter("explanation");
 		if(explanation!=null)

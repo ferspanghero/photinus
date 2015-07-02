@@ -204,15 +204,17 @@ div.inner {
 					}
 
 					if (option2 == -1) {
-						alert("Please select a confidence level.");
-						return -1;
-					} else {
-						if (document.getElementById("explanation").value == '') {
+						if (!$("#idk").is(':checked')){
+							alert("Please select a confidence level.");
+							return -1;	
+						}
+					}
+					
+					if (document.getElementById("explanation").value == '') {
 							alert("Please provide an explanation for your answer.");
 							return -1;
 						} else {
 							return option;
-						}
 					}
 				} else
 					return option;
@@ -310,6 +312,17 @@ div.inner {
 		    $( "#progressbar" ).progressbar({
 		    	max: parseInt(document.getElementById('totalTasks').value),
 		    	value: parseInt(document.getElementById('currentTask').value)
+		    });
+		    
+		    $('input[name="answer"]:radio').on("change", function () {
+		    	var inputs = document.getElementsByName('confidence');
+	        	for (var i = 0, len = inputs.length; i<len; i++){
+		       		if ($("#idk").is(':checked')) {
+		        		inputs[i].disabled = true;
+		        	}else{
+		        		inputs[i].disabled = false;
+		        	}
+		        }
 		    });
 	 	});
 	</script>
@@ -442,7 +455,7 @@ div.inner {
 				<col width="240px" />
 				<col width="180px" />
 			<tr>
-			<td style="text-align: left"><label><input type="radio" name="answer" value="2" />I don't know</label></td>
+			<td style="text-align: left"><label><input type="radio" name="answer" id="idk" value="2" />I don't know</label></td>
 			<td><label><input type="radio" name="answer" value="1" />Yes, there is an issue </label></td>
 			<td><label><input type="radio" name="answer" value="3" />No, there is not an issue</label></td>
 		</tr>
@@ -467,12 +480,11 @@ div.inner {
 				</tr>
 				<tr>
 					<td></td>
-
 					<td style="text-align: right"><label><input type="radio" name="confidence"value="5" />5</label></td>
 					<td style="text-align: right"><label><input type="radio" name="confidence" value="4" />4</label></td>
 					<td style="text-align: right"><label><input type="radio" name="confidence" value="3" />3</label></td>
 					<td style="text-align: right"><label><input type="radio" name="confidence" value="2" />2</label></td>
-					<td style="text-align: right"><label><input type="radio"	name="confidence" value="1" />1</label></td>
+					<td style="text-align: right"><label><input type="radio" name="confidence" value="1" />1</label></td>
 							
 				</tr>
 			</table>
