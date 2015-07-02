@@ -193,16 +193,16 @@
 					least 18 years of age or older and are fluent in English.</li>
 				<br>
 				<li>The research procedures involve using an online software
-					development tool and will last approximately from 5 to 15 minutes.</li>
+					development tool and will last approximately from 15 to 25 minutes.</li>
 				<br>
-				<li>There are no risks/discomforts associated with the study.
+				<li>There are no risks or discomfort associated with the study.
 					No personal information will be collected.</li>
 				<br>
 				<li>There are no direct benefits from participation in the
 					study. However, this study may help us to better understand how
 					programmers work with tools.</li>
 				<br>
-				<li>You will be paid 50 cents of dollar per microtask through
+				<li>You will be paid 3 dollars through
 					Amazon Mechanical Turk. At the end of the study, you will be given
 					a code to enter in your HIT (Human Intelligent Task) that confirms
 					that you participated.</li>
