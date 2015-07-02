@@ -20,7 +20,7 @@ public class FindTop {
 	public static void main(String[] args) {
 		int myNumbers[] = {10, 5, 2, 4, 8};
 		FindTop numbers = new FindTop(myNumbers);
-		System.out.println( numbers.findHighest(0, 5));
+		System.out.println( numbers.findHighest(0, 5) );
 	}
 	
 }
