@@ -268,6 +268,9 @@ div.inner {
 		
 		function splitReplaceTestDescription(){
 			var description = '${requestScope["testCase"]}'; 
+			if (description == 'assertEquals("?", StringEscapeUtils.escapeCsv("?"));'){
+				description = 'assertEquals("uD83D uDE30", StringEscapeUtils.escapeCsv(\"uD83D uDE30"));';
+			}
 			//alert("description:"+description);
 			var arr = description.split('; ');
 			var htmlContent = '';
@@ -324,6 +327,9 @@ div.inner {
 		        	}
 		        }
 		    });
+		    
+		    var test = '${requestScope["testCase"]}';
+		    //assertEquals(\"\uD83D\uDE30\", StringEscapeUtils.escapeCsv(\"\uD83D\uDE30\"));
 	 	});
 	</script>
 
@@ -429,7 +435,7 @@ div.inner {
 				<col width="410px"> <!--  style="word-wrap: break-word;" -->
 				<tr>
 					<td><b>We ran the following <u>test</u>:</b></td>
-					<td><div id="testFailure"> alsk;lfkasldfkjasd;flkasdf;ljkasdfl;askjdfasldfkjas;dflkjasdf;lkjasdf;lkjasdal;skdfjasdlf;kjasdfl;kjasdlf;kjasdlfkasdflk</div></td>
+					<td><div id="testFailure"></div></td>
 				</tr>
 				<tr height="20px"></tr>
 				<tr>
