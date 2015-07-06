@@ -16,19 +16,13 @@ import edu.uci.ics.sdcl.firefly.Worker;
 public abstract class ConsentDTO {
 	
 	/**
-	 * Will hold the data loaded from the database.
-	 * Necessary not to keep connecting to the database.
-	 */
-	protected HashMap<String, Worker> workers = new HashMap<String, Worker>();
-	
-	/**
 	 * Responsible for getting all the workers
 	 * existent. If the workers were not loaded
 	 * from the database it should read the database
 	 * content first.
 	 * @return: A list containing all the workers on the database
 	 */
-	public abstract List<Worker> getWorkers();
+	public abstract HashMap<String, Worker> getWorkers();
 	
 	/**
 	 * Responsible for loading data from the database.
