@@ -60,10 +60,10 @@ public class SkillTestStorage {
 	
 	private void populateBuffer(StringBuffer buff, String fileName){
 		try {
-			System.out.println("In SkillTestSource: "+ testsPath+ "/"+fileName);
+			//System.out.println("In SkillTestSource: "+ testsPath+ "/"+fileName);
 			Scanner scanner = new Scanner(new File(testsPath+"/"+fileName));
 			String content = scanner.useDelimiter("\\Z").next();
-			System.out.println("In SkillTestSource, content= "+content);
+			//System.out.println("In SkillTestSource, content= "+content);
 			buff.append(content);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch bloc
@@ -75,7 +75,7 @@ public class SkillTestStorage {
 	{
 		StringBuffer buff = new StringBuffer();
 		populateBuffer(buff,fileName);
-		System.out.println("In SkillTestSource, fileName= "+fileName);
+		//System.out.println("In SkillTestSource, fileName= "+fileName);
 		buff.delete(0, buff.indexOf("public class"));
 		test.setSourceCode(buff);
 	}

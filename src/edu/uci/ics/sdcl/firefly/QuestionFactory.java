@@ -34,7 +34,7 @@ public class QuestionFactory {
 		/* Loops */
 		templateLoop.add("Is there any issue with the <L>-loop between lines <#1> and <#2> that might be related to the failure?");
 		/* Variables */
-		templateVariable.add("Is there any issue with the definition or the use of variable \"<#>\" in the source code below that might be related to the failure?");
+		templateVariable.add("Is there any issue with the use or the definition of variable \"<#>\" in the source code below that might be related to the failure?");
 	}
 
 
@@ -55,7 +55,7 @@ public class QuestionFactory {
 
 			for (CodeElement element : statements)
 			{
-				System.out.println(element.getType());
+				//System.out.println("Question type: "+ element.getType());
 				switch (element.getType())
 				{
 				case CodeElement.METHOD_INVOCATION:

@@ -172,7 +172,7 @@ public class MyVisitor extends ASTVisitor {
 		if(node.getJavadoc()!=null){
 			//Then elementStart is the Javadoc, otherwise will be the method declaration
 			this.elementStartingLine =cu.getLineNumber(node.getJavadoc().getStartPosition()); 
-			System.out.println("IN VISITOR JAVADOC NOT NULL, startline:"+ node.getJavadoc().getStartPosition());
+			//System.out.println("IN VISITOR JAVADOC NOT NULL, startline:"+ node.getJavadoc().getStartPosition());
 			this.elementStartingColumn = cu.getColumnNumber(node.getJavadoc().getStartPosition());
 		}else{
 			if (this.elementStartingLine !=  nameStartingLine)

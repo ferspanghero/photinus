@@ -139,7 +139,7 @@ public class SkillTestServlet extends HttpServlet {
 
 			//For load test
 			Boolean isTest = Boolean.valueOf(request.getParameter("isTest"));
-			System.out.println("isTest: "+isTest);
+			//System.out.println("isTest: "+isTest);
 			request = MicrotaskServlet.generateRequest(request, storage.getNextMicrotask(session.getId()));
 			if(isTest)
 				request.getRequestDispatcher(MicrotaskLoadTestPage).forward(request, response);

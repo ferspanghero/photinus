@@ -123,7 +123,7 @@ public class MicrotaskServlet extends HttpServlet {
 		
 				//For load test
 				Boolean isTest = Boolean.valueOf(request.getParameter("isTest"));
-				System.out.println("MicrotaskServlet - isTest: "+isTest);
+				//System.out.println("MicrotaskServlet - isTest: "+isTest);
 				
 				if(isTest)
 					request.getRequestDispatcher(MicrotaskLoadTestPage).forward(request, response);

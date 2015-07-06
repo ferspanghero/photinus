@@ -267,7 +267,7 @@ public class WorkerSessionFactory{
 			Iterator<String> sessionIterator = sessionSet.iterator();
 			while(sessionIterator.hasNext()){
 				String fileName = (String) sessionIterator.next();
-				System.out.println("in WorkerSessionFactory, filename="+fileName);
+				//System.out.println("in WorkerSessionFactory, filename="+fileName);
 				FileDebugSession map = this.microtaskStorage.read(fileName);
 
 				if(fileMethodMap.get(fileName)==null){
