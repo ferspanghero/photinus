@@ -10,6 +10,12 @@
 	position: relative;
 }
 
+.highlighting {
+	position: absolute;
+	background: rgba(255, 223, 0, 0.3);
+	z-index: 20	
+}
+
 .callers {
 	position: absolute;
 	background: rgba(27, 132, 249, 0.3);
@@ -18,7 +24,7 @@
 
 .callees {
 	position: absolute;
-	background: rgba(27, 132, 249, 0.3);
+	background: rgba(32,178,170, 0.3);
 	z-index: 20
 }
 
@@ -600,7 +606,7 @@ div.inner {
 							mainEditor.session.addMarker(new Range(startLine
 									- codeSnippetStartingLine, startColumn,
 									endLine - codeSnippetStartingLine,
-									endColumn), "ace_active-line", "line");
+									endColumn), "highlighting", "line");
 
 							mainEditor.gotoLine(startLine
 									- codeSnippetStartingLine + 1);
@@ -665,7 +671,7 @@ div.inner {
 									clEnd = numbersCaller[i + 3];
 									editorCaller.session.addMarker(new Range(
 											lnStart, clStart, lnEnd, clEnd),
-											"ace_active-line", "line");
+											"highlighting", "line");
 									//document.write("positions: " + lnStart + ", " + clStart + ", " + lnEnd + ", " + clEnd +"<br>");
 								}
 								//document.write("<br>");
