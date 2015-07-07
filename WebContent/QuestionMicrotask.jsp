@@ -275,7 +275,7 @@ div.inner {
 		function splitReplaceTestDescription(){
 			var description = '${requestScope["testCase"]}'; 
 			if (description == 'assertEquals("?", StringEscapeUtils.escapeCsv("?"));'){
-				description = 'assertEquals("uD83D uDE30", StringEscapeUtils.escapeCsv(\"uD83D uDE30"));';
+				description = 'assertEquals("\\uD83D\\uDE30", StringEscapeUtils.escapeCsv(\"\\uD83D\\uDE30\"));';
 			}
 			//alert("description:"+description);
 			var arr = description.split('; ');
@@ -284,14 +284,14 @@ div.inner {
 				for(var i=0; i<arr.length; i++) {
 					var value = arr[i];
 					if(i == arr.length-1){
-						htmlContent = htmlContent + '<code>'+ value + '<code><br>';	
+						htmlContent = htmlContent + value + '<br>';	
 					}else{
-						htmlContent = htmlContent + '<code>'+ value + ';<code><br>';	
+						htmlContent = htmlContent + value + ';<br>';	
 					}
 				}
 			}
 			else{
-				htmlContent=arr[0];
+				htmlContent = arr[0];
 			}
 			//alert("htmlContent:"+ htmlContent);
 			document.getElementById('testFailure').innerHTML=htmlContent;
@@ -305,11 +305,11 @@ div.inner {
 			if(arr.length>1){
 				for(var i=0; i<arr.length; i++) {
 					var value = arr[i];
-					htmlContent = htmlContent + '<code>'+ value + '<code><br>';	
+					htmlContent = htmlContent + value + '<br>';	
 				}
 			}
 			else{
-				htmlContent=arr[0];
+				htmlContent = arr[0];
 			}
 			//alert("htmlContent:"+ htmlContent);
 			document.getElementById('testReport').innerHTML=htmlContent;
@@ -334,7 +334,7 @@ div.inner {
 		        }
 		    });
 		    
-		    var test = '${requestScope["testCase"]}';
+		    <!-- var test = '${requestScope["testCase"]}'; -->
 		    //assertEquals(\"\uD83D\uDE30\", StringEscapeUtils.escapeCsv(\"\uD83D\uDE30\"));
 	 	});
 	</script>
@@ -435,18 +435,18 @@ div.inner {
 		<br>
 			<input type="button"  value="Quit" onclick='quitConfirm()' style="float:right">
 			<span class="sectionTitle"><b>Please take a look at the following problem, the code below it, and answer the questions.</span></b><br><br>
-			<div id="internalText">
+			<!-- div id="internalText"  -->
 			<table class="fixed" CELLPADDING="4px" align="center"  >
 				<col width="210px">
 				<col width="410px"> <!--  style="word-wrap: break-word;" -->
 				<tr>
-					<td><b>We ran the following <u>test</u>:</b></td>
-					<td><div id="testFailure"></div></td>
+					<td><b>We ran the following <u>test:</u></b></td>
+					<td><code><div id="testFailure"></div></code></td>
 				</tr>
 				<tr height="20px"></tr>
 				<tr>
 					<td><b> But we received this <u>failure:</u></b></td>
-					<td><div id="testReport"> </div></td>
+					<td><code><div id="testReport"></div></code></td>
 				</tr>
 			</table>
 	<br>
