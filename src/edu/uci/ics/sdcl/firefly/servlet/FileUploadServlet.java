@@ -394,7 +394,7 @@ public class FileUploadServlet extends HttpServlet {
 				"TimePeriodValues s = new TimePeriodValues(\"Test\"); s.add(new SimpleTimePeriod(0L, 50L), 3.0); assertEquals(1, s.getMaxMiddleIndex());",			
 				"String[] stringArray=null; String aString=null; String[] sa= ArrayUtils.add(stringArray,aString); fail(\"Should have caused IllegalArgumentException\");",
 				"assertEquals(\"var x = -0.0\", parsePrint(\"var x = -0.0;\", false, CodePrinter.DEFAULT_LINE_LENGTH_THRESHOLD));",
-				"assertTrue(Arrays.equals(new Class[] { String.class, null, Double.class },ClassUtils.toClass(new Object[] { \"Test\", null, 99d })));",
+				"assertTrue(Arrays.equals(new Class[]{String.class, null, Double.class}, ClassUtils.toClass(new Object[]{\"Test\",null,99d} ) ) );",
 				"Locale locale = LocaleUtils.toLocale(\"fr__POSIX\");"};
 		//		 "Assuming the default searchDistance is 20 blocks, set a elevator block at y=20 then another at y=40.",
 			//	};
