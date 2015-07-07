@@ -196,4 +196,9 @@ public class WorkerSession implements Serializable{
 		return this.fileName;//Assume that all microtasks are from the same file.
 	}
 	
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+	
 }

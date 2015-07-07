@@ -15,6 +15,10 @@ public class FileSessionDTO extends SessionDTO{
 
 	private final String logPath;
 	
+	/**
+	 * CONSTRUCTOR
+	 * @param logPath: Full path of the log file. Ex.: myFolder/myFile.log
+	 */
 	public FileSessionDTO(String logPath) {
 		this.logPath = logPath;
 	}
@@ -47,6 +51,8 @@ public class FileSessionDTO extends SessionDTO{
 			String line = null;
 			WorkerSession session = null;
 			while ((line = log.readLine()) != null) {
+				if(line.equals(""))
+					continue;
 				String event = line.split("%")[1];
 				switch (event) {
 					case "OPEN SESSION":
@@ -106,34 +112,22 @@ public class FileSessionDTO extends SessionDTO{
 		String question = null;
 		String answer = null;
 		String duration = null;
+		Integer confidenceLevel = 0;
+		Integer diffculty = 0;
 		for (int i = 0; i < result.length; i++) {
 			String field = result[i];
 			field = field.replaceAll("\\s", "");
 			switch (field) {
-			case "workerId":
-				workerID = result[i+1];
-				break;
-			case "explanation":
-				explanation = (result.length == 18) ? result[i+1] : "";
-				break;
-			case "fileName":
-				fileName = result[i+1];
-				break;
-			case "question":
-				question = result[i+1];
-				break;
-			case "answer":
-				answer = result[i+1];
-				break;
-			case "duration":
-				duration = result[i+1];
-				break;
-			case "sessionId":
-				sessionID = result[i+1];
-				break;
-			case "microtaskId":
-				microtaskID = Integer.parseInt(result[i+1]);
-				break;
+			case "workerId": workerID = result[i+1]; break;
+			case "explanation": explanation = (result.length == 18) ? result[i+1] : "";	break;
+			case "fileName": fileName = result[i+1]; break;
+			case "question": question = result[i+1]; break;
+			case "answer": answer = result[i+1]; break;
+			case "duration": duration = result[i+1]; break;
+			case "sessionId": sessionID = result[i+1]; break;
+			case "microtaskId":	microtaskID = Integer.parseInt(result[i+1]); break;
+			case "confidenceLevel":	confidenceLevel = Integer.parseInt(result[i+1]);break;
+			case "difficulty":diffculty = Integer.parseInt(result[i+1]);break;
 			}
 		}
 		Microtask microtask = this.microtasks.get(microtaskID);
@@ -141,7 +135,7 @@ public class FileSessionDTO extends SessionDTO{
 		{
 			// The microtask does not exist yet so insert on table
 			Vector<Answer> answerList = new Vector<Answer>();
-			answerList.add(new Answer(answer, explanation, workerID, duration, null));
+			answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, null,diffculty));
 			microtask = new Microtask(question, microtaskID, answerList , fileName);
 			this.microtasks.put(microtaskID.toString(), microtask);
 		}
@@ -149,7 +143,7 @@ public class FileSessionDTO extends SessionDTO{
 		{
 			//The microtask already exists so add the answer to it
 			Vector<Answer> answerList = microtask.getAnswerList();
-			answerList.add(new Answer(answer, explanation, workerID, duration, null));
+			answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, null,diffculty));
 		}
 		HashMap<String, WorkerSession> conc = concatenateSessionTable();
 		WorkerSession session = conc.get(sessionID);
@@ -167,10 +161,12 @@ public class FileSessionDTO extends SessionDTO{
 	 */
 	private WorkerSession loadSession(String line){
 		String[] result = line.split("%");
-		String workerID = result[3];
-		String sessionID = result[5];
+		String workerID = (result[3].replaceAll("\\s", ""));
+		String sessionID = (result[5].replaceAll("\\s", ""));
+		String fileName = (result[7].replaceAll("\\s", ""));
 		WorkerSession session = new WorkerSession(sessionID, new Vector<Microtask>());
 		session.setWorkerId(workerID);
+		session.setFileName(fileName);
 		return session;
 	}
 	
