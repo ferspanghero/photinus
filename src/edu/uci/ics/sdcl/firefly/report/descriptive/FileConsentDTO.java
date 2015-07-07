@@ -44,19 +44,17 @@ public class FileConsentDTO extends ConsentDTO{
 			String line = null;
 			while((line = log.readLine()) != null)
 			{
-				String event = line.split("%")[1];
+				if(line.equals(""))
+					continue;
+				String event = line.split("%")[1].replaceAll("\\s", "");
 				switch (event.toUpperCase()) {
-					case "CONSENT":
-						loadConsent(line);
-						break;
-					case "SKILLTEST":
-						loadSkillTest(line);
-						break;
-					case "SURVEY":
-						loadSurvey(line);
-						break;
+					case "CONSENT":loadConsent(line);break;
+					case "SKILLTEST": loadSkillTest(line);break;
+					case "SURVEY": loadSurvey(line); break;
+					case "FEEDBACK": loadFeedback(line); break;
+					case "QUIT": loadQuit(line); break;
 					default:
-						System.out.println("DATABASE ERROR: Invalid event on log");
+						System.out.println("DATABASE ERROR: Invalid event on log "+event);
 						System.exit(0);
 				}
 			}
@@ -94,32 +92,9 @@ public class FileConsentDTO extends ConsentDTO{
 		Worker worker = this.workers.get(workerId);
 		if(worker != null)
 		{
-			for(int i=0; i< result.length; i++)
+			for(int i=6; i< result.length-1; i+=2)
 			{
-				switch(result[i])
-				{
-				case "sessionId":
-					worker.setSessionId(result[i+1]);
-					break;
-				case "Feedback":
-					worker.setFeedback(result[i+1]);
-					break;
-				case "Gender":
-					worker.setGender(result[i+1]);
-					break;
-				case "Years progr.":
-					worker.setYearsProgramming(Integer.parseInt(result[i+1]));
-					break;
-				case "Difficulty":
-					worker.setDifficulty(Integer.parseInt(result[i+1]));
-					break;
-				case "Country":
-					worker.setCountry(result[i+1]);
-					break;
-				case "Age":
-					worker.setAge(Integer.parseInt(result[i+1]));
-					break;
-				}
+				worker.addSurveyAnswer(result[i], result[i+1]);
 			}
 		}
 	}
@@ -160,9 +135,49 @@ public class FileConsentDTO extends ConsentDTO{
 	{
 		String[] result = line.split("%");
 		Worker worker = new Worker(result[3], result[5], null);
+		worker.setConsentDate(result[7]);
+		worker.setCurrentFileName(result[5]);
 		if(!(this.workers.containsKey(worker.getWorkerId())))
 		{
 			this.workers.put(worker.getWorkerId(), worker);
+		}
+	}
+	
+	/**
+	 * Load the worker feedback info and
+	 * add in the designated worker.
+	 * @param line: line containing the feedback data
+	 */
+	private void loadFeedback(String line)
+	{
+		String[] result = line.split("%");
+		String workerId = result[3];
+		Worker worker = this.workers.get(workerId);
+		if(worker != null)
+		{
+			for (int i = 0; i < result.length; i++) {
+				if(result[i].equalsIgnoreCase("feedback"))
+					worker.addSurveyAnswer("feedback", (i == (result.length -1)) ? "" : result[i+1]);
+			}
+		}
+	}
+	
+	/**
+	 * Load the worker quit info and
+	 * add in the designated worker.
+	 * @param line: line containing the quit data
+	 */
+	private void loadQuit(String line)
+	{
+		String[] result = line.split("%");
+		String workerId = result[3];
+		Worker worker = this.workers.get(workerId);
+		if(worker != null)
+		{
+			for (int i = 0; i < result.length; i++) {
+				if(result[i].equalsIgnoreCase("answer"))
+					worker.setQuitReason((i == (result.length -1)) ? "" : result[i+1]);
+			}
 		}
 	}
 

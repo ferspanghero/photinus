@@ -19,13 +19,7 @@ public class Worker implements Serializable{
 	private String currentFileName; //File name that the worker is requesting to work on. 
 	private Hashtable<String, Integer> fileHistory = new Hashtable<String, Integer>();
 	private Boolean answeredSurvey;
-
-	private String gender;
-	private String country;
-	private int yearsProgramming;
-	private int age;
-	private String feedback;
-	private int difficulty;
+	private String quitReason = null;
 
 	public Worker(String workerId, String consentDateStr, String currentFileName) {
 		this.workerId = workerId;
@@ -186,52 +180,14 @@ public class Worker implements Serializable{
 			return false;
 	}
 
-	public String getGender() {
-		return gender;
+	public String getQuitReason() {
+		return quitReason;
 	}
 
-	public void setGender(String gender) {
-		this.gender = gender;
+	public void setQuitReason(String quitReason) {
+		this.quitReason = quitReason;
 	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public int getYearsProgramming() {
-		return yearsProgramming;
-	}
-
-	public void setYearsProgramming(int yearsProgramming) {
-		this.yearsProgramming = yearsProgramming;
-	}
-
-	public int getAge() {
-		return age;
-	}
-
-	public void setAge(int age) {
-		this.age = age;
-	}
-
-	public String getFeedback() {
-		return feedback;
-	}
-
-	public void setFeedback(String feedback) {
-		this.feedback = feedback;
-	}
-
-	public int getDifficulty() {
-		return difficulty;
-	}
-
-	public void setDifficulty(int difficulty) {
-		this.difficulty = difficulty;
-	}
+	
+	
 
 }
