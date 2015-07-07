@@ -8,7 +8,7 @@ import net.sourceforge.jwebunit.junit.WebTester;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.support.ui.Sleeper;
+//import org.openqa.selenium.support.ui.Sleeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ import edu.uci.ics.sdcl.firefly.util.TimeStampUtil;
 public class ServerLoadTest implements Runnable{
 
 	//Number of THREADS
-	private static int maxThreads =50;
+	private static int maxThreads =20;
 	
 	//private static Logger loggerInfo;
 	private static Logger loggerConsent;
@@ -52,7 +52,7 @@ public class ServerLoadTest implements Runnable{
 	private static String localPath = "http://localhost:8080/Photinus/";
 	private static String serverPath = "http://dellserver.ics.uci.edu:8080/crowd_debug/";
 	private static String path;
-	private static String filename = "HIT02_24";//"8_DateTimeZone";//"6_CharSequenceTranslator";//
+	private static String filename = "HIT04_7";//"8_DateTimeZone";//"6_CharSequenceTranslator";//
 	private static int microtaskPerSession = 0;
 //	private HtmlPage nextPage;
 
@@ -196,19 +196,19 @@ public class ServerLoadTest implements Runnable{
 
 		final HtmlInput radio1 = form.getInputByName("QUESTION1");
 		radio1.click();
-		radio1.setValueAttribute("d");
+		radio1.setValueAttribute("e"); //d WORDFINDER
 		final HtmlRadioButtonInput radio2 = form.getInputByName("QUESTION2");
 		radio2.click();
-		radio2.setValueAttribute("b");
+		radio2.setValueAttribute("b"); //b
 		final HtmlRadioButtonInput radio3 = form.getInputByName("QUESTION3");
 		radio3.click();
-		radio3.setValueAttribute("e");
+		radio3.setValueAttribute("a"); //e
 		final HtmlRadioButtonInput radio4 = form.getInputByName("QUESTION4");
 		radio4.click();
-		radio4.setValueAttribute("a");
+		radio4.setValueAttribute("d"); //a
 		final HtmlRadioButtonInput radio5 = form.getInputByName("QUESTION5");
 		radio5.click();
-		radio5.setValueAttribute("d");
+		radio5.setValueAttribute("d"); //d
 		
 		form.setActionAttribute("skillTest");
 		HtmlHiddenInput input1 = form.getInputByName("workerId");
