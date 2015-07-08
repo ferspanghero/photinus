@@ -53,6 +53,7 @@ public class FileConsentDTO extends ConsentDTO{
 					case "SURVEY": loadSurvey(line); break;
 					case "FEEDBACK": loadFeedback(line); break;
 					case "QUIT": loadQuit(line); break;
+					case "ERROR": break;
 					default:
 						System.out.println("DATABASE ERROR: Invalid event on log. EVENT = "+event);
 						System.exit(0);
