@@ -1,7 +1,6 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.HashMap;
-import java.util.List;
 
 import edu.uci.ics.sdcl.firefly.Worker;
 

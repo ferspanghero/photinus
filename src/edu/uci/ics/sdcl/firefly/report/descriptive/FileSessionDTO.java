@@ -13,7 +13,7 @@ import edu.uci.ics.sdcl.firefly.WorkerSession;
 
 public class FileSessionDTO extends SessionDTO{
 
-	private final String logPath;
+	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/pilot2/session-Pilot2-log.log";
 	
 	/**
 	 * CONSTRUCTOR
@@ -21,6 +21,10 @@ public class FileSessionDTO extends SessionDTO{
 	 */
 	public FileSessionDTO(String logPath) {
 		this.logPath = logPath;
+	}
+	
+	public FileSessionDTO() {
+		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -114,6 +118,7 @@ public class FileSessionDTO extends SessionDTO{
 		String duration = null;
 		Integer confidenceLevel = 0;
 		Integer diffculty = 0;
+		String questionType = null;
 		for (int i = 0; i < result.length; i++) {
 			String field = result[i];
 			field = field.replaceAll("\\s", "");
@@ -128,15 +133,17 @@ public class FileSessionDTO extends SessionDTO{
 			case "microtaskId":	microtaskID = Integer.parseInt(result[i+1]); break;
 			case "confidenceLevel":	confidenceLevel = Integer.parseInt(result[i+1]);break;
 			case "difficulty":diffculty = Integer.parseInt(result[i+1]);break;
+			case "questionType":questionType = result[i+1]; break;
 			}
 		}
-		Microtask microtask = this.microtasks.get(microtaskID);
+		Microtask microtask = this.microtasks.get(microtaskID.toString());
 		if(microtask == null)
 		{
 			// The microtask does not exist yet so insert on table
 			Vector<Answer> answerList = new Vector<Answer>();
 			answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, null,diffculty));
 			microtask = new Microtask(question, microtaskID, answerList , fileName);
+			microtask.setQuestionType(questionType);
 			this.microtasks.put(microtaskID.toString(), microtask);
 		}
 		else

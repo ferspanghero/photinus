@@ -10,17 +10,24 @@ import java.util.List;
  * @author igMoreira
  *
  */
-public abstract class DescriptiveReport {
+public class DescriptiveReport {
 
 	/**
 	 * Holds all the contents of the report.
 	 */
 	private HashMap<String, List<String>> table = new HashMap<String, List<String>>();
 	
+	public DescriptiveReport(HashMap<String, List<String>> content) {
+		this.table = content;
+	}
+	
 	/**
 	 * Calls the ReportWrite so the content
 	 * of this report will be written in an
 	 * external source, an excel sheet for instance
 	 */
-	public abstract void exportReport();
+	public void exportReport()
+	{
+		throw new UnsupportedOperationException("method not implemented yet");
+	}
 }
