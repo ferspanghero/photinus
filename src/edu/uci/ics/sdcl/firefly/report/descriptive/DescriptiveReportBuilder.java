@@ -30,15 +30,15 @@ public class DescriptiveReportBuilder {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void setAnswers(AnswerReport answers) {
+	public void setAnswerReport(AnswerReport answers) {
 		this.answers = answers;
 	}
 
-	public void setCounters(CountReport counters) {
+	public void setCounterReport(CountReport counters) {
 		this.counters = counters;
 	}
 
-	public void setCorrectness(CorrectnessReport correctness) {
+	public void setCorrectnessReport(CorrectnessReport correctness) {
 		this.correctness = correctness;
 	}
 
@@ -90,7 +90,7 @@ public class DescriptiveReportBuilder {
 	 * DescritiveReport for a external agent.
 	 * @return: The built DescriptveReport with all parts assembled.
 	 */
-	public DescriptiveReport getDescriptiveReport()
+	public DescriptiveReport generateDescriptiveReport()
 	{
 		HashMap<String, List<String>> content = buildHeaderReport();
 		content = buildAnswerReport(content);
