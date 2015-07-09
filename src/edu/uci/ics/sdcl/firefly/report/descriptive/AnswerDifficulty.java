@@ -1,16 +1,17 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
+
 import edu.uci.ics.sdcl.firefly.Answer;
 
-public class AnswerOption extends AnswerReport {
+public class AnswerDifficulty extends AnswerReport {
 	
-	 public AnswerOption() {
+	public AnswerDifficulty() {
 		super();
 	}
 	
 	@Override
 	protected String reportData(Answer answer) {
-		return answer.getOption();
+		return new Integer(answer.getDifficulty()).toString();
 	}
 
 }

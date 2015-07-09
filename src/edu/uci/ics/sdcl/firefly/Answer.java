@@ -22,7 +22,7 @@ public class Answer implements Serializable{
 	private int confidenceOption;
 	private String explanation;
 	private String workerId;
-	private String elapsedTime;
+	private String elapsedTime; // duration of the answer
 	private String timeStamp;
 	private int difficulty;
 	

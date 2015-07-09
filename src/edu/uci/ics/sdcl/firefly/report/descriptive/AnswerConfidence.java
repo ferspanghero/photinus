@@ -2,15 +2,11 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 
-public class AnswerOption extends AnswerReport {
-	
-	 public AnswerOption() {
-		super();
-	}
-	
+public class AnswerConfidence extends AnswerReport{
+
 	@Override
 	protected String reportData(Answer answer) {
-		return answer.getOption();
+		return new Integer(answer.getConfidenceOption()).toString();
 	}
 
 }

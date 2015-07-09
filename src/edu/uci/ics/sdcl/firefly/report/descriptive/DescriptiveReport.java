@@ -12,13 +12,20 @@ import java.util.List;
  */
 public class DescriptiveReport {
 
+	
 	/**
 	 * Holds all the contents of the report.
 	 */
 	private HashMap<String, List<String>> table = new HashMap<String, List<String>>();
+	private DescriptiveReportWriter exporter;
 	
-	public DescriptiveReport(HashMap<String, List<String>> content) {
+	public DescriptiveReport(HashMap<String, List<String>> content, DescriptiveReportWriter exporter) {
 		this.table = content;
+		this.exporter = exporter;
+	}
+	
+	public HashMap<String, List<String>> getTable() {
+		return table;
 	}
 	
 	/**
@@ -28,6 +35,9 @@ public class DescriptiveReport {
 	 */
 	public void exportReport()
 	{
-		throw new UnsupportedOperationException("method not implemented yet");
+		exporter.exportReport(this);
 	}
+
+	
+	
 }
