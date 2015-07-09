@@ -31,6 +31,8 @@ public class Microtask implements Serializable
 	private String callerFileContent;
 	private Integer callerLOCS;
 	private String fileName;
+	
+	private String questionType;
 
 
 	/**
@@ -276,4 +278,14 @@ public class Microtask implements Serializable
 	public String getFileName() {
 		return this.fileName;
 	}
+
+	public String getQuestionType() {
+		return questionType;
+	}
+
+	public void setQuestionType(String questionType) {
+		this.questionType = questionType;
+	}
+	
+	
 }

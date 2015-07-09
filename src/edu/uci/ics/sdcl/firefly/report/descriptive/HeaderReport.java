@@ -1,7 +1,10 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import edu.uci.ics.sdcl.firefly.Microtask;
 
 /**
  * This class holds a part of the DescriptiveReport.
@@ -16,11 +19,13 @@ public class HeaderReport {
 	 * Holds the content of the BLUE part of the report
 	 */
 	private HashMap<String, List<String>> content = new HashMap<String, List<String>>();
+	private HashMap<String, Microtask> questions;
 	
 	/**
 	 * CONSTRUCTOR
 	 */
-	public HeaderReport(HashMap<String, List<String>> content) {
+	public HeaderReport(HashMap<String, Microtask> content) {
+		this.questions = content;
 	}
 	
 	/**
@@ -30,7 +35,12 @@ public class HeaderReport {
 	 */
 	public HashMap<String, List<String>> generateReport()
 	{
-		throw new UnsupportedOperationException("The method generateReport is not implemented yet");
+		List<String> questionIDList = new ArrayList<String>();
+		for (String questionID : questions.keySet()) {
+			questionIDList.add(questionID);
+		}
+		this.content.put("Question ID", questionIDList);
+		return this.content;
 	}
 	
 }
