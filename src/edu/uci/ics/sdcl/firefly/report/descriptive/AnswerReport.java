@@ -2,7 +2,9 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
@@ -24,7 +26,7 @@ public abstract class AnswerReport {
 	/**
 	 * Holds the content of the GREEN part of the report
 	 */
-	protected HashMap<String, List<String>> content = new HashMap<String, List<String>>();
+	protected Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
 	
 	public AnswerReport() {
 		PropertyManager properties = PropertyManager.initializeSingleton();
@@ -36,7 +38,7 @@ public abstract class AnswerReport {
 	 * the Headers and the contents of the table.
 	 * @return: The map containing the columns and values of the table
 	 */
-	public HashMap<String, List<String>> generateReport( HashMap<String, List<String>> content, HashMap<String, Microtask> microtasks )
+	public Map<String, List<String>> generateReport( Map<String, List<String>> content, HashMap<String, Microtask> microtasks )
 	{
 		List<String> questionIDList = content.get("Question ID"); // this is the data that came form the HeaderReport
 

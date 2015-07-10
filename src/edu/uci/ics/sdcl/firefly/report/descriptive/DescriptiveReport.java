@@ -1,7 +1,8 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This holds the complete descriptive report table,
@@ -16,15 +17,15 @@ public class DescriptiveReport {
 	/**
 	 * Holds all the contents of the report.
 	 */
-	private HashMap<String, List<String>> table = new HashMap<String, List<String>>();
+	private Map<String, List<String>> table = new LinkedHashMap<String, List<String>>();
 	private DescriptiveReportWriter exporter;
 	
-	public DescriptiveReport(HashMap<String, List<String>> content, DescriptiveReportWriter exporter) {
+	public DescriptiveReport(Map<String, List<String>> content, DescriptiveReportWriter exporter) {
 		this.table = content;
 		this.exporter = exporter;
 	}
 	
-	public HashMap<String, List<String>> getTable() {
+	public Map<String, List<String>> getTable() {
 		return table;
 	}
 	

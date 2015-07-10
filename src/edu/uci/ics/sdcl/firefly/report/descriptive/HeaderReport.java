@@ -1,8 +1,9 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
@@ -19,13 +20,13 @@ public class HeaderReport {
 	/**
 	 * Holds the content of the BLUE part of the report
 	 */
-	private HashMap<String, List<String>> content = new HashMap<String, List<String>>();
-	private HashMap<String, Microtask> questions;
+	private Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
+	private Map<String, Microtask> questions;
 	
 	/**
 	 * CONSTRUCTOR
 	 */
-	public HeaderReport(HashMap<String, Microtask> content) {
+	public HeaderReport(Map<String, Microtask> content) {
 		this.questions = content;
 	}
 	
@@ -34,7 +35,7 @@ public class HeaderReport {
 	 * the Headers and the contents of the table.
 	 * @return: The map containing the columns and values of the table
 	 */
-	public HashMap<String, List<String>> generateReport()
+	public Map<String, List<String>> generateReport()
 	{
 		PropertyManager properties = PropertyManager.initializeSingleton();
 		List<String> bugCoveringIds = new ArrayList<String>();
@@ -54,8 +55,8 @@ public class HeaderReport {
 		}
 		this.content.put("Question ID", questionIDList);
 		this.content.put("Java Method", javaMethodList);
-		this.content.put("Type of question", questionTypeList);
 		this.content.put("Bug Covering", bugCoveringList);
+		this.content.put("Type of question", questionTypeList);
 		
 		return this.content;
 	}

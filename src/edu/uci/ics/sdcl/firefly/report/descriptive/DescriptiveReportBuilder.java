@@ -1,7 +1,7 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -19,15 +19,13 @@ public class DescriptiveReportBuilder {
 	private AnswerReport answers;
 	private CountReport counters;
 	private CorrectnessReport correctness;
+	private DescriptiveReportWriter exporter;
 	
-	public DescriptiveReportBuilder(AnswerReport answer, CountReport counter, CorrectnessReport correctness) {
+	public DescriptiveReportBuilder(AnswerReport answer, CountReport counter, CorrectnessReport correctness, DescriptiveReportWriter exporter) {
 		this.answers = answer;
 		this.counters = counter;
 		this.correctness = correctness;
-	}
-	
-	public DescriptiveReportBuilder() {
-		// TODO Auto-generated constructor stub
+		this.exporter = exporter;
 	}
 	
 	public void setAnswerReport(AnswerReport answers) {
@@ -47,7 +45,7 @@ public class DescriptiveReportBuilder {
 	 * the blue part of the tables. 
 	 * @return: The HeaderReport containing all the necessary data.
 	 */
-	private HashMap<String, List<String>> buildHeaderReport()
+	private Map<String, List<String>> buildHeaderReport()
 	{
 		SessionDTO database = new FileSessionDTO();
 		HeaderReport header = new HeaderReport(database.getMicrotasks());
@@ -59,7 +57,7 @@ public class DescriptiveReportBuilder {
 	 * the green parts of the tables.
 	 * @return: The AnswerReport containing the filtered data for the report type X
 	 */
-	private HashMap<String, List<String>> buildAnswerReport(HashMap<String, List<String>> content)
+	private Map<String, List<String>> buildAnswerReport(Map<String, List<String>> content)
 	{
 		SessionDTO database = new FileSessionDTO();
 		return answers.generateReport(content, database.getMicrotasks());
@@ -70,7 +68,7 @@ public class DescriptiveReportBuilder {
 	 * the yellow parts of the tables.
 	 * @return: The CountReport containing the filtered data for the report type X
 	 */
-	private HashMap<String, List<String>> buildCountReport()
+	private Map<String, List<String>> buildCountReport()
 	{
 		throw new UnsupportedOperationException("The method buildCountReport is not implemented yet");
 	}
@@ -80,7 +78,7 @@ public class DescriptiveReportBuilder {
 	 * the orange parts of the tables.
 	 * @return: The CorrectnessReport containing the filtered data for the report type X
 	 */
-	private HashMap<String, List<String>> buildCorrectnessReport()
+	private Map<String, List<String>> buildCorrectnessReport()
 	{
 		throw new UnsupportedOperationException("The method buildCorrectnessReport is not implemented yet");
 	}
@@ -92,9 +90,9 @@ public class DescriptiveReportBuilder {
 	 */
 	public DescriptiveReport generateDescriptiveReport()
 	{
-		HashMap<String, List<String>> content = buildHeaderReport();
+		Map<String, List<String>> content = buildHeaderReport();
 		content = buildAnswerReport(content);
-		DescriptiveReport report = new DescriptiveReport(content, new ExcelExporter());
+		DescriptiveReport report = new DescriptiveReport(content, exporter);
 		return report;
 	}
 }
