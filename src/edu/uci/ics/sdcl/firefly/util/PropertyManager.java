@@ -10,7 +10,7 @@ public class PropertyManager {
 
 	private String fileName="firefly.properties";
 
-	private String devPropertyPath= "C:/Users/adrianoc/Documents/GitHub/photinus/"; 
+	private String devPropertyPath= "C:/Users/igMoreira/Documents/GitHub/photinus/"; 
 
 	public String serverPropertyPath ="/var/lib/tomcat7/webapps/";   
 	
@@ -20,7 +20,7 @@ public class PropertyManager {
 	
 	public String fileUploadSourcePath;
 	
-	public String skillTestUploadPath;	
+	public String skillTestUploadPath = "C:/Users/igMoreira/Documents/GitHub/photinus";	
 	
 	public String serializationPath;
 
@@ -33,6 +33,8 @@ public class PropertyManager {
 	public String fileNameTokenList;
 	
 	public String microtaskTokenList;
+	
+	public String bugCoveringList;
 
 	private static PropertyManager manager;
 	
@@ -71,6 +73,7 @@ public class PropertyManager {
 			this.microtasksPerSession = new Integer(properties.getProperty("microtasksPerSession")).intValue();
 			this.fileNameTokenList = new String(properties.getProperty("fileNameList"));
 			this.microtaskTokenList = new String(properties.getProperty("microtaskList"));
+			this.bugCoveringList = new String(properties.getProperty("bugCoveringQuestions"));
 		} 
 		catch (IOException e) {
 			System.out.println("Could not load properties. Please be sure that the property file is located at: "+this.devPropertyPath);
@@ -89,6 +92,7 @@ public class PropertyManager {
 			this.microtasksPerSession = new Integer(properties.getProperty("microtasksPerSession")).intValue();
 			this.fileNameTokenList = new String(properties.getProperty("fileNameList"));
 			this.microtaskTokenList = new String(properties.getProperty("microtaskList"));
+			this.bugCoveringList = new String(properties.getProperty("bugCoveringQuestions"));
 		} 
 		catch (IOException e) {
 			System.out.println("Could not load properties. Please be sure that the property file is located at: "+this.serverPropertyPath);
