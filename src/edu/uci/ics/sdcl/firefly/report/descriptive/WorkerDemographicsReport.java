@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,14 +21,19 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 
-
+import edu.uci.ics.sdcl.firefly.Answer;
+import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.servlet.SurveyServlet;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class WorkerDemographicsReport {
 
 private String fileName = "WorkersDemographicsReport.xlsx";
+	
+	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-Pilot2-log.txt";
+	String sessionLogpath = "C:/var/lib/tomcat7/webapps/session-log.log";
 
 	public WorkerDemographicsReport(){
 		writeToXlsx();
@@ -46,7 +53,6 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		createSecondHeader(workersSheet);
 		
 		populateTable(workersSheet);
-
 		try{
 			//Write the workbook in file system
 			FileOutputStream out = new FileOutputStream(new File(this.fileName));
@@ -163,7 +169,7 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 	}
 	
 	public void populateTable(XSSFSheet workersSheet){
-		FileConsentDTO fc = new FileConsentDTO("C:/var/lib/tomcat7/webapps/consent-Pilot2-log.txt");
+		FileConsentDTO fc = new FileConsentDTO(consentLogpath);
 		
 		int rownum = 2;
 		Row row = workersSheet.createRow(rownum);
@@ -171,14 +177,12 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		Iterator<Worker> workersIter = fc.getWorkers().values().iterator();
 		while (workersIter.hasNext()) {
 			Worker worker = workersIter.next();
-			
 			populateDataIdentifiers(row, cellNum, worker);
-			
 			rownum++;
 			row = workersSheet.createRow(rownum);
 			cellNum = 0;
 		}
-		
+
 	}
 
 	public void populateDataIdentifiers(Row row, int cellNum, Worker worker) {
@@ -206,6 +210,54 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		
 		cell = row.createCell(cellNum++);
 		cell.setCellValue(worker.getSurveyAnswer(" Learned"));
+		
+		populateLoadFactor(row, cellNum, worker);
+
+	}
+	
+	public void populateLoadFactor(Row row, int cellNum, Worker worker) {
+		FileSessionDTO fs = new FileSessionDTO(sessionLogpath);
+		ArrayList<WorkerSession> workerSessions = fs.getSessionsByWorkerID(worker.getWorkerId());
+		
+		int numberOfAnswers = 0;
+		int numberOfYes =0;
+		int numberOfNo = 0;
+		int numberOfIDK = 0;
+		for (WorkerSession workerSession : workerSessions) {
+			Iterator<Microtask> iterMicrotask = workerSession.getMicrotaskList().iterator();
+			while(iterMicrotask.hasNext()){
+				Microtask microtask = iterMicrotask.next();
+				Answer answer = microtask.getAnswerByUserId(worker.getWorkerId());
+				if(answer!=null){
+					numberOfAnswers++;
+				};
+				int answerOption = Answer.mapOptionNumber(answer.getOption());
+				if(answerOption == 1){
+					numberOfYes ++;
+				}else if(answerOption == 2){
+					numberOfIDK++;
+				}else{
+					numberOfNo++;
+				}
+			}
+		}
+		int numberOfTasks = workerSessions.size();
+		
+		Cell cell;
+		cell = row.createCell(cellNum++);
+		cell.setCellValue(numberOfTasks);
+		
+		cell = row.createCell(cellNum++);
+		cell.setCellValue(numberOfAnswers);
+		
+		cell = row.createCell(cellNum++);
+		cell.setCellValue(numberOfYes);
+		
+		cell = row.createCell(cellNum++);
+		cell.setCellValue(numberOfNo);	
+		
+		cell = row.createCell(cellNum++);
+		cell.setCellValue(numberOfIDK);	
 	}
 	
 	public static void main(String[] args) {

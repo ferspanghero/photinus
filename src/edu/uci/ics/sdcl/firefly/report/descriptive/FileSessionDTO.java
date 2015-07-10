@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -76,7 +78,7 @@ public class FileSessionDTO extends SessionDTO{
 						loadMicrotask(line);
 						break;
 					default:
-						System.out.println("INVALID EVENT ON LOG");
+						System.out.println("INVALID EVENT ON LOG " + event  );
 						System.exit(0);
 				}
 			}
@@ -188,5 +190,21 @@ public class FileSessionDTO extends SessionDTO{
 		conc.putAll(openSessions);
 		conc.putAll(closedSessions);
 		return conc;
+	}
+	
+	/**
+	 * gets the sessions of a single worker
+	 * @return: A hashMap containing all the sessions related to the worker
+	 */
+	@Override
+	public ArrayList<WorkerSession> getSessionsByWorkerID(String workerID) {
+		ArrayList<WorkerSession> workerSessions = new ArrayList<WorkerSession>();
+		Collection<WorkerSession>  sessions = getSessions().values();
+		for (WorkerSession session : sessions) {
+			if(session.getWorkerId().compareTo(workerID)==0){
+				workerSessions.add(session);
+			}
+		}
+		return workerSessions;
 	}
 }
