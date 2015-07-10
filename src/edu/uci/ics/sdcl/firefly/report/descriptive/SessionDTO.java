@@ -1,5 +1,6 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.uci.ics.sdcl.firefly.Microtask;
@@ -50,5 +51,7 @@ public abstract class SessionDTO {
 	 * and setting to the sessions attribute.
 	 */
 	protected  abstract void loadSessions();
+	
+	public abstract ArrayList<WorkerSession> getSessionsByWorkerID(String workerID);
 	
 }

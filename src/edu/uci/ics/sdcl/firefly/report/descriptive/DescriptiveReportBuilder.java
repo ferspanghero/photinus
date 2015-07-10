@@ -94,7 +94,7 @@ public class DescriptiveReportBuilder {
 	{
 		HashMap<String, List<String>> content = buildHeaderReport();
 		content = buildAnswerReport(content);
-		DescriptiveReport report = new DescriptiveReport(content);
+		DescriptiveReport report = new DescriptiveReport(content, new ExcelExporter());
 		return report;
 	}
 }

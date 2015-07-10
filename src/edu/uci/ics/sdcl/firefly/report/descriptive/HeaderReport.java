@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 /**
  * This class holds a part of the DescriptiveReport.
@@ -35,12 +36,48 @@ public class HeaderReport {
 	 */
 	public HashMap<String, List<String>> generateReport()
 	{
+		PropertyManager properties = PropertyManager.initializeSingleton();
+		List<String> bugCoveringIds = new ArrayList<String>();
+		for (String id : properties.bugCoveringList.split(";")) {
+			bugCoveringIds.add(id);
+		}
 		List<String> questionIDList = new ArrayList<String>();
+		List<String> javaMethodList = new ArrayList<String>();
+		List<String> questionTypeList = new ArrayList<String>();
+		List<String> bugCoveringList = new ArrayList<String>();
 		for (String questionID : questions.keySet()) {
 			questionIDList.add(questionID);
+			Microtask microtask = questions.get(questionID);
+			javaMethodList.add(microtask.getFileName());
+			questionTypeList.add(microtask.getQuestionType());
+			bugCoveringList.add((verifyBugCovering(questionID, bugCoveringIds) ? "yes" : "no"));
 		}
 		this.content.put("Question ID", questionIDList);
+		this.content.put("Java Method", javaMethodList);
+		this.content.put("Type of question", questionTypeList);
+		this.content.put("Bug Covering", bugCoveringList);
+		
 		return this.content;
+	}
+	
+	/**
+	 * Verifies weather a question is bug covering or not.
+	 * 
+	 * @param questionID: Question ID of the microtask to be verified.
+	 * @param bugCoveringIDs: The list of all microtasks that are bug covering.
+	 * @return: TRUE if it is bug covering FALSE otherwise.
+	 */
+	private boolean verifyBugCovering(String questionID, List<String> bugCoveringIDs)
+	{
+		boolean status = false;
+		for (String ID : bugCoveringIDs) {
+			if(ID.equalsIgnoreCase(questionID))
+			{
+				status = true;
+				break;
+			}
+		}
+		return status;
 	}
 	
 }
