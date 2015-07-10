@@ -11,8 +11,8 @@ import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
 
 public class AnswerCounter {
 
-	String[] fileList = {"HIT01_8.java", "HIT02_24.java", "HIT03_6.java", "HIT04_7.java",
-			"HIT05_35.java","HIT06_51.java","HIT07_33.java","HIT08_54.java"};//,"HIT10_59.java"};
+	public static String[] fileList = {"HIT01_8", "HIT02_24", "HIT03_6", "HIT04_7",
+			"HIT05_35","HIT06_51","HIT07_33","HIT08_54"};//,"HIT10_59"};
 
 
 	public static void main(String[] args){
@@ -41,11 +41,21 @@ public class AnswerCounter {
 			totalMicrotaskMap.put(task1.getID(), task1);
 		}
 		
-		String secondSession = "session-log-21.log";
+		String secondSession = "session-log-25.log";
 		
 		FileSessionDTO sessionDTO_2 = new FileSessionDTO(logPath+secondSession);
 		HashMap<String, WorkerSession> sessionMap_2 = sessionDTO_2.getSessions();
 		System.out.println("sessionMap_2 size: "+ sessionMap_2.size());
+		
+		//Count consumed sessions
+		HashMap<String, Integer> sessionCountMap =  new HashMap<String, Integer>();
+		for(String fileName: fileList){
+			sessionCountMap.put(fileName, new Integer(countNumberSessions(sessionMap_2,fileName)));
+			
+		}
+		printSessionCount(sessionCountMap);
+		
+		//get microtasks for Session-2
 		
 		HashMap<String, Microtask> microtaskMap_2 = sessionDTO_2.getMicrotasks();
 		System.out.println("microtaskMap_2 size: "+ microtaskMap_2.size());
@@ -83,11 +93,36 @@ public class AnswerCounter {
 			String fileName = task.getFileName();
 			int count = task.getAnswerList().size();
 			
-			System.out.println(fileName+";"+taskID+";"+count);
-			
+			//System.out.println(fileName+";"+taskID+";"+count);	
 		}
-		
-		
 	}
 
+	
+	
+	public static int countNumberSessions(HashMap<String, WorkerSession> map, String fileName){
+		
+		int count = 0;
+		Iterator<String> iter = map.keySet().iterator();
+		while(iter.hasNext()){
+			String sessionID = iter.next();
+			WorkerSession session = map.get(sessionID);
+			//ystem.out.println(session.getFileName());
+			if(session.getFileName().compareTo(fileName)==0){
+				count++;
+			}
+		}
+		return count;
+		
+	}
+	
+	public static void printSessionCount(HashMap<String, Integer> sessionMapCount){
+		
+		Iterator<String> iter = sessionMapCount.keySet().iterator();
+		while(iter.hasNext()){
+			String fileName = iter.next();
+			Integer count = sessionMapCount.get(fileName);
+			System.out.println(fileName+";"+count);
+		}
+	}
+	
 }
