@@ -33,7 +33,7 @@ public class WorkerDemographicsReport {
 private String fileName = "WorkersDemographicsReport.xlsx";
 	
 	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-Pilot2-log.txt";
-	String sessionLogpath = "C:/var/lib/tomcat7/webapps/session-log.log";
+	String sessionLogpath = "C:/var/lib/tomcat7/webapps/session-Pilot2-log.log";
 
 	public WorkerDemographicsReport(){
 		writeToXlsx();
@@ -77,15 +77,15 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		cell = row.createCell(8); //next cell starts at position 8
 
 		cell.setCellValue("2 - Load Factor");
-		workersSheet.addMergedRegion(CellRangeAddress.valueOf("I1:M1"));
-		cell = row.createCell(13);//next cell starts at position 13
+		workersSheet.addMergedRegion(CellRangeAddress.valueOf("I1:P1"));
+		cell = row.createCell(16);//next cell starts at position 13
 
 		cell.setCellValue("3 - Optimism Analisys");
-		workersSheet.addMergedRegion(CellRangeAddress.valueOf("N1:Q1"));
-		cell = row.createCell(17);//next cell starts at position 17
+		workersSheet.addMergedRegion(CellRangeAddress.valueOf("Q1:T1"));
+		cell = row.createCell(20);//next cell starts at position 17
 
 		cell.setCellValue("4 - Quality");
-		workersSheet.addMergedRegion(CellRangeAddress.valueOf("R1:W1"));
+		workersSheet.addMergedRegion(CellRangeAddress.valueOf("U1:Z1"));
 		
 	}
 	
@@ -120,10 +120,10 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		cell = row.createCell(cellNum++);
 		//-----------------------------------------//
 		//Load Factor
-		cell.setCellValue("#Tasks Taken");
+		cell.setCellValue("#HITs");
 		cell = row.createCell(cellNum++);
 
-		cell.setCellValue("#Answers given (average)");
+		cell.setCellValue("#Questions Answered");
 		cell = row.createCell(cellNum++);
 		
 		cell.setCellValue("#Yes");
@@ -134,6 +134,17 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		
 		cell.setCellValue("#IDK");
 		cell = row.createCell(cellNum++);
+		
+		cell.setCellValue("Difficulty Average");
+		cell = row.createCell(cellNum++);
+		
+		cell.setCellValue("Confidence Average");
+		cell = row.createCell(cellNum++);
+		
+		cell.setCellValue("Answer Duration Average");
+		cell = row.createCell(cellNum++);
+		
+		
 		//------------------------------------------//
 		//Optimism Analisys
 		cell.setCellValue("#Expected Yes");
@@ -223,6 +234,10 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		int numberOfYes =0;
 		int numberOfNo = 0;
 		int numberOfIDK = 0;
+		int difAverage = getDifficultyAverage(workerSessions, worker);
+		int confidencyAverage = getConfidenceAverage(workerSessions, worker);
+		double durationAverage = getDurationAverage(workerSessions, worker);
+		
 		for (WorkerSession workerSession : workerSessions) {
 			Iterator<Microtask> iterMicrotask = workerSession.getMicrotaskList().iterator();
 			while(iterMicrotask.hasNext()){
@@ -257,7 +272,77 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		cell.setCellValue(numberOfNo);	
 		
 		cell = row.createCell(cellNum++);
-		cell.setCellValue(numberOfIDK);	
+		cell.setCellValue(numberOfIDK);
+		
+		cell = row.createCell(cellNum++);
+		cell.setCellValue(difAverage);	
+		
+		cell = row.createCell(cellNum++);
+		cell.setCellValue(confidencyAverage);
+		
+		cell = row.createCell(cellNum++);
+		cell.setCellValue(durationAverage);
+	}
+	
+	public int getDifficultyAverage(ArrayList<WorkerSession> workerSessions, Worker worker) {
+		int numberOfAnswers = 0;
+		int difficulties = 0;
+		for (WorkerSession workerSession : workerSessions) {
+			Iterator<Microtask> iterMicrotask = workerSession.getMicrotaskList().iterator();
+			while(iterMicrotask.hasNext()){
+				Microtask microtask = iterMicrotask.next();
+				Answer answer = microtask.getAnswerByUserId(worker.getWorkerId());
+				if (answer != null){
+					difficulties += answer.getDifficulty();
+					numberOfAnswers++;
+				}
+			}
+		}
+		if(numberOfAnswers == 0){
+			return 0;
+		}
+		return difficulties/numberOfAnswers;
+	}
+	
+	public int getConfidenceAverage(ArrayList<WorkerSession> workerSessions, Worker worker) {
+		int numberOfAnswers = 0;
+		int confidencies = 0;
+		for (WorkerSession workerSession : workerSessions) {
+			Iterator<Microtask> iterMicrotask = workerSession.getMicrotaskList().iterator();
+			while(iterMicrotask.hasNext()){
+				Microtask microtask = iterMicrotask.next();
+				Answer answer = microtask.getAnswerByUserId(worker.getWorkerId());
+				if (answer != null){
+					confidencies += answer.getConfidenceOption();
+					numberOfAnswers++;
+				}
+			}
+		}
+		if(numberOfAnswers == 0){
+			return 0;
+		}
+		return confidencies/numberOfAnswers;
+	}
+	
+	public double getDurationAverage(ArrayList<WorkerSession> workerSessions, Worker worker) {
+		int numberOfAnswers = 0;
+		double durations = 0;
+		for (WorkerSession workerSession : workerSessions) {
+			Iterator<Microtask> iterMicrotask = workerSession.getMicrotaskList().iterator();
+			while(iterMicrotask.hasNext()){
+				Microtask microtask = iterMicrotask.next();
+				Answer answer = microtask.getAnswerByUserId(worker.getWorkerId());
+				if (answer != null){
+					double time = Double.parseDouble(answer.getElapsedTime());
+					durations += time;
+					numberOfAnswers++;
+				}
+			}
+		}
+		if(numberOfAnswers == 0){
+			return 0;
+		}
+		return (durations/numberOfAnswers)/1000;
 	}
 	
 	public static void main(String[] args) {

@@ -118,9 +118,9 @@ public class FileConsentDTO extends ConsentDTO{
 				{
 					gradeMap[j++] = Boolean.valueOf(result[i]);
 				}
-				else if(result[i].equalsIgnoreCase("grade"))
+				else if(result[i].trim().equalsIgnoreCase("grade"))
 					worker.setGrade(Integer.parseInt(result[i+1]));
-				else if(result[i].equalsIgnoreCase("testDuration"))
+				else if(result[i].trim().equalsIgnoreCase("testDuration"))
 					worker.setSkillTestDuration(result[i+1]);
 			}
 			worker.setGradeMap(gradeMap);

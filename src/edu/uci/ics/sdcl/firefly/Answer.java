@@ -11,12 +11,6 @@ public class Answer implements Serializable{
 	public static final String YES = "YES, THERE IS AN ISSUE";
 	public static final String I_DONT_KNOW = "I DON'T KNOW";
 	public static final String NO = "NO, THERE IS NOT AN ISSUE";
-	//confidence options \/
-	public static final String VERY_CONFIDENT = "VERY CONFIDENT";
-	public static final String CONFIDENT = "CONFIDENT";
-	public static final String SOMEWHAT_CONFIDENT = "SOMEWHAT CONFIDENT";
-	public static final String UNSURE = "UNSURE";
-	public static final String NOT_AT_ALL = "NOT AT ALL";
 
 	private String option;
 	private int confidenceOption;
