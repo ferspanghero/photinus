@@ -71,6 +71,8 @@ public abstract class AnswerReport {
 		return content;
 	}
 	
+	public abstract String getType();
+	
 	protected abstract String reportData(Answer answer);
 	
 }

@@ -92,7 +92,7 @@ public class DescriptiveReportBuilder {
 	{
 		Map<String, List<String>> content = buildHeaderReport();
 		content = buildAnswerReport(content);
-		DescriptiveReport report = new DescriptiveReport(content, exporter);
+		DescriptiveReport report = new DescriptiveReport(content, exporter, answers.getType());
 		return report;
 	}
 }

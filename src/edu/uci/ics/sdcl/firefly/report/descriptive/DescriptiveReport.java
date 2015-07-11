@@ -19,10 +19,12 @@ public class DescriptiveReport {
 	 */
 	private Map<String, List<String>> table = new LinkedHashMap<String, List<String>>();
 	private DescriptiveReportWriter exporter;
+	private String type;
 	
-	public DescriptiveReport(Map<String, List<String>> content, DescriptiveReportWriter exporter) {
+	public DescriptiveReport(Map<String, List<String>> content, DescriptiveReportWriter exporter, String type) {
 		this.table = content;
 		this.exporter = exporter;
+		this.type = type;
 	}
 	
 	public Map<String, List<String>> getTable() {
@@ -40,5 +42,8 @@ public class DescriptiveReport {
 	}
 
 	
-	
+	public String reportType()
+	{
+		return type;
+	}
 }

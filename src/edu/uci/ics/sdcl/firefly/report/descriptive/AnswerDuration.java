@@ -9,4 +9,9 @@ public class AnswerDuration extends AnswerReport {
 		return answer.getElapsedTime();
 	}
 
+	@Override
+	public String getType() {
+		return "Duration in seconds";
+	}
+
 }

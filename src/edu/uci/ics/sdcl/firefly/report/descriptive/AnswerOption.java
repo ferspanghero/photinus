@@ -13,4 +13,9 @@ public class AnswerOption extends AnswerReport {
 		return answer.getOption();
 	}
 
+	@Override
+	public String getType() {
+		return "Answer option";
+	}
+
 }

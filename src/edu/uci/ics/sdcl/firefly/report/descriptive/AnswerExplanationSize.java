@@ -9,4 +9,9 @@ public class AnswerExplanationSize extends AnswerReport {
 		return new Integer(answer.getExplanation().length()).toString();
 	}
 
+	@Override
+	public String getType() {
+		return "Size of explanation (characters)";
+	}
+
 }

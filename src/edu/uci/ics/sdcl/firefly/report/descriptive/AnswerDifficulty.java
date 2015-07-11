@@ -14,4 +14,9 @@ public class AnswerDifficulty extends AnswerReport {
 		return new Integer(answer.getDifficulty()).toString();
 	}
 
+	@Override
+	public String getType() {
+		return "Difficulty of questions";
+	}
+
 }

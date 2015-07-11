@@ -9,4 +9,9 @@ public class AnswerConfidence extends AnswerReport{
 		return new Integer(answer.getConfidenceOption()).toString();
 	}
 
+	@Override
+	public String getType() {
+		return "Levels of confidence of answers";
+	}
+
 }
