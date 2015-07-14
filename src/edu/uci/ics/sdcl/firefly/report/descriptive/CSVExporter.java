@@ -25,12 +25,13 @@ public class CSVExporter implements DescriptiveReportWriter {
 			Map<String, List<String>> table = report.getTable();
 			List<String> keys = new ArrayList<String>(table.keySet());
 			for (String subTitle : keys) {
-				file.write(subTitle+"%");
+				file.write(subTitle+";");
 			}
 			for (int i = 0; i < table.get(keys.get(0)).size(); i++) {
 				file.write("\n");
 				for (String key : keys) {
-					file.write(table.get(key).get(i)+"%");
+					String data = table.get(key).get(i);
+					file.write((data == null)? ";" : (data+";"));
 				}
 			}
 		} catch (FileNotFoundException e) {
