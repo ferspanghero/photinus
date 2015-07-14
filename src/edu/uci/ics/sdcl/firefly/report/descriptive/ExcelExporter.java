@@ -21,13 +21,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class ExcelExporter implements DescriptiveReportWriter {
-	private Integer NUMBER_OF_ANSWERS;
+	private final Integer NUMBER_OF_ANSWERS;
 	private final String reportPath;
 	private final String reportFileName = "firefly_report.xlsx";
 	
 	public ExcelExporter() {
 		PropertyManager property = PropertyManager.initializeSingleton();
-		this.NUMBER_OF_ANSWERS = 0;
+		this.NUMBER_OF_ANSWERS = property.answersPerMicrotask;
 		this.reportPath = property.reportPath;
 	}
 	
@@ -73,12 +73,14 @@ public class ExcelExporter implements DescriptiveReportWriter {
 			i -= 26;
 		}
 		
-		cell.setCellValue("2 - DATA VALUES "+ report.reportType());
+		cell.setCellValue("2 - "+ report.reportTypes()[0]);
 		int endOfAnswers = 68 + NUMBER_OF_ANSWERS; // D1+NUMBER_OF_ANSWERS
 		String letter = Character.toString((char) endOfAnswers);
 		workersSheet.addMergedRegion(CellRangeAddress.valueOf("E1:"+letter+columnNumber));
 		cell.setCellStyle(answerHeaderColor(wb));
 		
+		cell = row.createCell(columnNumber+1);
+		cell.setCellValue("3 - "+ report.reportTypes()[1]);
 		cell = row.createCell(4+NUMBER_OF_ANSWERS);
 	}
 	
@@ -101,10 +103,11 @@ public class ExcelExporter implements DescriptiveReportWriter {
 			cell.setCellValue(subTitle);
 			if((cellNumber) < 4)
 				cell.setCellStyle(dataIdentifierDataColor(wb));
-			else
+			else if(cellNumber < NUMBER_OF_ANSWERS+4)
 			{
 				cell.setCellStyle(answerDataColor(wb));
-				NUMBER_OF_ANSWERS++;
+			}else{
+				cell.setCellStyle(countReportColor(wb));
 			}
 			cell.getCellStyle().setFont(font);
 			cellNumber++;
@@ -120,8 +123,11 @@ public class ExcelExporter implements DescriptiveReportWriter {
 				cell.setCellValue(table.get(key).get(i));
 				if((cellNumber) <= 4)
 					cell.setCellStyle(dataIdentifierDataColor(wb));
-				else
+				else if (cellNumber <= NUMBER_OF_ANSWERS + 4){
 					cell.setCellStyle(answerDataColor(wb));
+				}else{
+					cell.setCellStyle(countReportColor(wb));
+				}
 			}
 		}
 	}
@@ -174,6 +180,23 @@ public class ExcelExporter implements DescriptiveReportWriter {
 	{
 		XSSFCellStyle style = (XSSFCellStyle) wb.createCellStyle();
 		style.setFillForegroundColor(new XSSFColor(new java.awt.Color(198, 224, 180)));
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		
+		style.setBorderRight(CellStyle.BORDER_THIN);
+		style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+		style.setBorderBottom(CellStyle.BORDER_THIN);
+		style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		style.setBorderLeft(CellStyle.BORDER_THIN);
+		style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+		style.setBorderTop(CellStyle.BORDER_THIN);
+		style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+		
+		return style;
+	}
+	
+	private CellStyle countReportColor(Workbook wb){
+		XSSFCellStyle style = (XSSFCellStyle) wb.createCellStyle();
+		style.setFillForegroundColor(new XSSFColor(new java.awt.Color(255, 230, 153)));
 		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
 		
 		style.setBorderRight(CellStyle.BORDER_THIN);
