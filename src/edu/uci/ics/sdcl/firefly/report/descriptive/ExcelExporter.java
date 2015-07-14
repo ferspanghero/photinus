@@ -21,13 +21,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class ExcelExporter implements DescriptiveReportWriter {
-	private final Integer NUMBER_OF_ANSWERS;
+	private Integer NUMBER_OF_ANSWERS;
 	private final String reportPath;
 	private final String reportFileName = "firefly_report.xlsx";
 	
 	public ExcelExporter() {
 		PropertyManager property = PropertyManager.initializeSingleton();
-		this.NUMBER_OF_ANSWERS = property.answersPerMicrotask;
+		this.NUMBER_OF_ANSWERS = 0;
 		this.reportPath = property.reportPath;
 	}
 	
@@ -40,8 +40,8 @@ public class ExcelExporter implements DescriptiveReportWriter {
 
 		//Create a blank sheet (for the scores)
 		XSSFSheet workersSheet = workbook.createSheet("Answers Report");
-		createHeaders(workersSheet, workbook, report);
 		populateSheet(workersSheet, report, workbook);
+		createHeaders(workersSheet, workbook, report);
 		try{
 			//Write the workbook in file system
 			FileOutputStream out = new FileOutputStream(new File(this.reportPath+this.reportFileName));
@@ -102,7 +102,10 @@ public class ExcelExporter implements DescriptiveReportWriter {
 			if((cellNumber) < 4)
 				cell.setCellStyle(dataIdentifierDataColor(wb));
 			else
+			{
 				cell.setCellStyle(answerDataColor(wb));
+				NUMBER_OF_ANSWERS++;
+			}
 			cell.getCellStyle().setFont(font);
 			cellNumber++;
 		}
