@@ -34,6 +34,7 @@ public class CSVExporter implements DescriptiveReportWriter {
 					file.write((data == null)? ";" : (data+";"));
 				}
 			}
+			System.out.println("\"firefly_report.csv\" written successfully on disk.");
 		} catch (FileNotFoundException e) {
 			System.out.println("REPORT ERROR: Error trying to create a file.");
 			System.exit(0);

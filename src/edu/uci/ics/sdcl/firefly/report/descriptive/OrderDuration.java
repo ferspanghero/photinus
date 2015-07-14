@@ -25,7 +25,7 @@ public class OrderDuration extends AnswerReport {
 	
 	@Override
 	public String getType() {
-		return "Average duration of answers agrouped by order in the session";
+		return "Average duration (in seconds) of answers agrouped by order in the session";
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class OrderDuration extends AnswerReport {
 			for (int i = 0; i < QUESTIONS_PER_SESSION; i++) {
 				List<String> column = new ArrayList<String>();
 				for (String questionID : questionIDList) {
-					int sum = answerOrder.get(questionID)[i];
+					double sum = answerOrder.get(questionID)[i] / 1000; // Converting to seconds 
 					int size = length.get(questionID)[i];
 					double average = (sum == 0) ? 0 : (sum / size);
 					column.add((average == 0.0) ? "" : (average + ""));
