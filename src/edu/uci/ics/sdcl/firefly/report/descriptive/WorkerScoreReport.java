@@ -7,7 +7,7 @@ import edu.uci.ics.sdcl.firefly.Worker;
 
 public class WorkerScoreReport extends AnswerReport{
 	
-	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-Pilot2-log.txt";
+	String consentLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/pilot2/consent-Pilot2-log.txt";
 	
 	@Override
 	public String getType() {

@@ -59,8 +59,7 @@ public class DescriptiveReportBuilder {
 	 */
 	private Map<String, List<String>> buildAnswerReport(Map<String, List<String>> content)
 	{
-		SessionDTO database = new FileSessionDTO();
-		return answers.generateReport(content, database.getMicrotasks());
+		return answers.generateReport(content);
 	}
 	
 	/**

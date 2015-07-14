@@ -147,19 +147,21 @@ public class FileSessionDTO extends SessionDTO{
 			microtask = new Microtask(question, microtaskID, answerList , fileName);
 			microtask.setQuestionType(questionType);
 			this.microtasks.put(microtaskID.toString(), microtask);
+			
+			// Bind the microtask with the session
+			HashMap<String, WorkerSession> conc = concatenateSessionTable();
+			WorkerSession session = conc.get(sessionID);
+			if(session != null)
+			{
+				//Add this microtask to the session
+				session.getMicrotaskList().add(microtask);
+			}
 		}
 		else
 		{
 			//The microtask already exists so add the answer to it
 			Vector<Answer> answerList = microtask.getAnswerList();
 			answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, null,diffculty));
-		}
-		HashMap<String, WorkerSession> conc = concatenateSessionTable();
-		WorkerSession session = conc.get(sessionID);
-		if(session != null)
-		{
-			//Add this microtask to the session
-			session.getMicrotaskList().add(microtask);
 		}
 	}
 	
