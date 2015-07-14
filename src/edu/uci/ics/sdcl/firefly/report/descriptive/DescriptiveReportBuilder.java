@@ -67,9 +67,9 @@ public class DescriptiveReportBuilder {
 	 * the yellow parts of the tables.
 	 * @return: The CountReport containing the filtered data for the report type X
 	 */
-	private Map<String, List<String>> buildCountReport()
+	private Map<String, List<String>> buildCountReport(Map<String, List<String>> content)
 	{
-		throw new UnsupportedOperationException("The method buildCountReport is not implemented yet");
+		return counters.generateReport(content);
 	}
 	
 	/**
@@ -91,6 +91,7 @@ public class DescriptiveReportBuilder {
 	{
 		Map<String, List<String>> content = buildHeaderReport();
 		content = buildAnswerReport(content);
+		content = buildCountReport(content);
 		DescriptiveReport report = new DescriptiveReport(content, exporter, answers.getType());
 		return report;
 	}

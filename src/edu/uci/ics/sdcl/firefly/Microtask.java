@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.lite.MicrotaskLite;
@@ -253,6 +254,16 @@ public class Microtask implements Serializable
 			}
 		}
 		return foundAnswer;
+	}
+	
+	public List<String> getWorkerIds(){
+		List<String> workerIDs = new ArrayList<String>();
+		for (Answer answer : answerList) {
+			if(answer != null){
+				workerIDs.add(answer.getWorkerId());
+			}
+		}
+		return workerIDs;
 	}
 	
 	public Microtask getLiteVersion(){
