@@ -39,9 +39,9 @@ public class HITApprovalUtil {
 			while ((line = log.readLine()) != null) {
 				if(line.equals(""))
 					continue;
-				String turkerID = line.split(",")[0];
-				String code = line.split(",")[1]; //completion code entered by the worker
-				//System.out.println(turkerID+":"+code);
+				String turkerID = line.split(",")[17];
+				String code = line.split(",")[29]; //completion code entered by the worker
+				System.out.println(turkerID+":"+code);
 				
 				if(hitMap.containsKey(code)){
 					System.out.println("repeated: "+turkerID+":"+code);
@@ -70,27 +70,34 @@ public class HITApprovalUtil {
 	public static void main(String[] args){
 		
 		String logPath = "C:/firefly/logs/";
-		String firstSession = "session-log-6.log";
+		String firstSession = "session-log-6.log"; //session1
+		String secondSession ="session-log-28.log"; //session2
+		String thirdSession = "session-log-35.log"; //topup1
+		String fourthSession = "session-log-43.log"; //topup2 ***
+		String fifthSession = "session-log-46.log"; //topup3
+		String sixthSession = "session-log-53.log"; //topup4
+		String seventhSession = "session-log-57.log"; //topup5
+		String eighthSession = "session-log-64.log"; //topup6
 		
-		String sessionFile = firstSession; 
+		String sessionFile = seventhSession; 
 		
-		
+	
 		FileSessionDTO sessionDTO = new FileSessionDTO(logPath+sessionFile);
 		HashMap<String, WorkerSession> sessionMap = sessionDTO.getSessions();
 		System.out.println("sessionMap size: "+ sessionMap.size());
 		
 		
-		String mturkHITFile = "hit04_7batch1.csv";
+		String mturkHITFile = "HIT04_7 11_TP6.csv";
 		HITApprovalUtil hitUtil = new HITApprovalUtil();
 		HashMap<String, String> hitMap = hitUtil.getHITCodes(logPath + mturkHITFile);
 		System.out.println("hitMap size: "+ hitMap.size());
 		
-		//hitUtil.listInvalidSessions(hitMap, sessionMap); //1st step
+		hitUtil.listInvalidSessions(hitMap, sessionMap); //1st step
 		
 		HashMap<String,String> map = hitUtil.listTuple(hitMap,sessionMap); //2nd step
 		
 		
-		String bonusControl = "bonusControl.csv";
+		String bonusControl = "bonusControl - TopUp4.csv";
 		
 		HashMap<String,String> bonusMap = hitUtil.listBonus(map, logPath + bonusControl);//3rd step
 		System.out.println("bonusMap size: "+ bonusMap.size());
@@ -113,7 +120,7 @@ public class HITApprovalUtil {
 				String turkerId = hitMap.get(code);
 				WorkerSession worker =  sessionMap.get(code);
 				String workerId = worker.getWorkerId();
-				System.out.println(turkerId+";"+workerId+";"+code);
+				//System.out.println(turkerId+";"+workerId+";"+code);
 				map.put(turkerId, workerId);
 			}
 		}
@@ -134,7 +141,7 @@ public class HITApprovalUtil {
 			String code = codeIter.next();
 			if(!sessionMap.containsKey(code)){
 				invalidMap.put(code, hitMap.get(code));
-				System.out.println("Code not found: "+ code);
+				System.out.println("SessionID Not found: "+ code);
 			}
 		}
 		return invalidMap;
@@ -182,12 +189,20 @@ public class HITApprovalUtil {
 	
 	public void printBonusMap(HashMap<String,String> map){
 		
-		System.out.println("Pay bonus to following workers: ");
+		System.out.println("Pay bonus to following workers (turkerID): ");
 		Iterator<String> iter = map.keySet().iterator();
 		while(iter.hasNext()){
 			String turkerID = iter.next();
 			String workerID = map.get(turkerID);
-			System.out.println(turkerID+";"+workerID);
+			System.out.println(turkerID);  
+			
+		}
+		System.out.println("Worker IDs: ");
+		iter = map.keySet().iterator();
+		while(iter.hasNext()){
+			String turkerID = iter.next();
+			String workerID = map.get(turkerID);
+			System.out.println(workerID);  
 			
 		}
 	}
