@@ -91,8 +91,8 @@ public class DescriptiveReportBuilder {
 	{
 		Map<String, List<String>> content = buildHeaderReport();
 		content = buildAnswerReport(content);
-		content = buildCountReport(content);
-		DescriptiveReport report = new DescriptiveReport(content, exporter, answers.getType(), counters.getType());
+//		content = buildCountReport(content);
+		DescriptiveReport report = new DescriptiveReport(content, exporter, answers.getType(), null);
 		return report;
 	}
 }

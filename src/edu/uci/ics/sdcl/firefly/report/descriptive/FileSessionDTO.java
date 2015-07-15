@@ -15,7 +15,7 @@ import edu.uci.ics.sdcl.firefly.WorkerSession;
 
 public class FileSessionDTO extends SessionDTO{
 
-	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/pilot2/session-Pilot2-log.log";
+	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample.log";
 	
 	/**
 	 * CONSTRUCTOR
@@ -63,14 +63,14 @@ public class FileSessionDTO extends SessionDTO{
 				switch (event) {
 					case "OPEN SESSION":
 						session = loadSession(line);
-						this.openSessions.put(session.getId(), session);
+						this.openSessions.put(session.getId()+ ":" +session.getWorkerId(), session);
 						break;
 					case "CLOSE SESSION":
 						session = loadSession(line);
-						if(this.openSessions.containsKey(session.getId()))
+						if(this.openSessions.containsKey(session.getId()+ ":" +session.getWorkerId()))
 						{
-							session = this.openSessions.get(session.getId());
-							this.openSessions.remove(session.getId());
+							session = this.openSessions.get(session.getId()+ ":" +session.getWorkerId());
+							this.openSessions.remove(session.getId()+ ":" +session.getWorkerId());
 						}
 						this.closedSessions.put(session.getId(), session);
 						break;
@@ -124,6 +124,7 @@ public class FileSessionDTO extends SessionDTO{
 		for (int i = 0; i < result.length; i++) {
 			String field = result[i];
 			field = field.replaceAll("\\s", "");
+			field = field.replaceAll("\n", "");
 			switch (field) {
 			case "workerId": workerID = result[i+1]; break;
 			case "explanation": explanation = (result.length == 18) ? result[i+1] : "";	break;
@@ -138,29 +139,31 @@ public class FileSessionDTO extends SessionDTO{
 			case "questionType":questionType = result[i+1]; break;
 			}
 		}
-		Microtask microtask = this.microtasks.get(microtaskID.toString());
-		if(microtask == null)
+		
+		Vector<Answer> answerList = new Vector<Answer>();
+		answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, null,diffculty));
+		Microtask microtask = new Microtask(question, microtaskID, answerList , fileName);
+		microtask.setQuestionType(questionType);
+		
+		// Bind the microtask with the session
+		HashMap<String, WorkerSession> conc = concatenateSessionTable();
+		WorkerSession session = conc.get(sessionID+ ":" + workerID);
+		if(session != null)
+		{
+			//Add this microtask to the session
+			session.getMicrotaskList().add(microtask);
+		}
+		
+		if(this.microtasks.get(microtaskID.toString()) == null)
 		{
 			// The microtask does not exist yet so insert on table
-			Vector<Answer> answerList = new Vector<Answer>();
-			answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, null,diffculty));
-			microtask = new Microtask(question, microtaskID, answerList , fileName);
-			microtask.setQuestionType(questionType);
 			this.microtasks.put(microtaskID.toString(), microtask);
 			
-			// Bind the microtask with the session
-			HashMap<String, WorkerSession> conc = concatenateSessionTable();
-			WorkerSession session = conc.get(sessionID);
-			if(session != null)
-			{
-				//Add this microtask to the session
-				session.getMicrotaskList().add(microtask);
-			}
 		}
 		else
 		{
 			//The microtask already exists so add the answer to it
-			Vector<Answer> answerList = microtask.getAnswerList();
+			answerList = this.microtasks.get(microtaskID.toString()).getAnswerList();
 			answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, null,diffculty));
 		}
 	}
@@ -173,7 +176,9 @@ public class FileSessionDTO extends SessionDTO{
 	private WorkerSession loadSession(String line){
 		String[] result = line.split("%");
 		String workerID = (result[3].replaceAll("\\s", ""));
+		workerID = workerID.replaceAll("\n", "");
 		String sessionID = (result[5].replaceAll("\\s", ""));
+		sessionID = sessionID.replaceAll("\n", "");
 		String fileName = (result[7].replaceAll("\\s", ""));
 		WorkerSession session = new WorkerSession(sessionID, new Vector<Microtask>());
 		session.setWorkerId(workerID);
