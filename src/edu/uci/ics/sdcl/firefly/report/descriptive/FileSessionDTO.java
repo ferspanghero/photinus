@@ -72,7 +72,7 @@ public class FileSessionDTO extends SessionDTO{
 							session = this.openSessions.get(session.getId()+ ":" +session.getWorkerId());
 							this.openSessions.remove(session.getId()+ ":" +session.getWorkerId());
 						}
-						this.closedSessions.put(session.getId(), session);
+						this.closedSessions.put(session.getId()+ ":" +session.getWorkerId(), session);
 						break;
 					case "MICROTASK":
 						loadMicrotask(line);
