@@ -25,7 +25,7 @@ public abstract class AnswerReport {
 	/**
 	 * Holds the content of the GREEN part of the report
 	 */
-	protected Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
+	protected Map<String, List<String>> answerContent = new LinkedHashMap<String, List<String>>();
 	
 	public AnswerReport() {
 		PropertyManager properties = PropertyManager.initializeSingleton();
@@ -61,7 +61,7 @@ public abstract class AnswerReport {
 						answers.add("");
 					}
 				}
-				content.put("Answer "+(i+1), answers);
+				this.answerContent.put("Answer "+(i+1), answers);
 			}
 		}
 		else
@@ -69,7 +69,7 @@ public abstract class AnswerReport {
 			System.out.println("Invalid question ID came from the HeaderReport");
 			System.exit(0);
 		}
-		return content;
+		return this.answerContent;
 	}
 	
 	public abstract String getType();

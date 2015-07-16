@@ -1,6 +1,5 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,17 +11,18 @@ import java.util.Map;
  * @author igMoreira
  *
  */
-public class CorrectnessReport {
+public abstract class CorrectnessReport {
 
 	/**
 	 * Holds the content of the ORANGE part of the report
 	 */
-	private Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
+	protected Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
 	
 	/**
 	 * CONSTRUCTOR
 	 */
-	public CorrectnessReport(Map<String, List<String>> content) {
+	public CorrectnessReport() {
+		this.content = new LinkedHashMap<String, List<String>>();
 	}
 	
 	/**
@@ -30,8 +30,5 @@ public class CorrectnessReport {
 	 * the Headers and the contents of the table.
 	 * @return: The map containing the columns and values of the table
 	 */
-	public Map<String, List<String>> generateReport()
-	{
-		throw new UnsupportedOperationException("The method generateReport is not implemented yet");
-	}	
+	public abstract Map<String, List<String>> generateReport(Map<String, List<String>> headerContent, Map<String, List<String>> answerReport);
 }

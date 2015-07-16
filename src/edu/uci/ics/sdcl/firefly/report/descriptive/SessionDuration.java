@@ -41,7 +41,7 @@ public class SessionDuration extends AnswerReport {
 					else
 						answers.add("");
 				}
-				content.put("Answer "+(i+1), answers);
+				this.answerContent.put("Answer "+(i+1), answers);
 			}
 		}
 		else
@@ -50,7 +50,7 @@ public class SessionDuration extends AnswerReport {
 			System.exit(0);
 		}
 		
-		return content;
+		return this.answerContent;
 	}
 	
 	@Override

@@ -50,7 +50,7 @@ public class OrderDuration extends AnswerReport {
 					double average = (sum == 0) ? 0 : (sum / size);
 					column.add((average == 0.0) ? "" : (average + ""));
 				}
-				content.put("Answer order " + (i+1), column);
+				this.answerContent.put("Answer order " + (i+1), column);
 			}
 		}
 		else
@@ -58,7 +58,7 @@ public class OrderDuration extends AnswerReport {
 			System.out.println("Invalid question ID came from the HeaderReport");
 			System.exit(0);
 		}
-		return content;
+		return this.answerContent;
 	}
 	
 	private void obtainMicrotasksDurationByOrder()

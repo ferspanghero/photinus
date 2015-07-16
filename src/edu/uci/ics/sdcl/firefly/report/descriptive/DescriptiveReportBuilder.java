@@ -1,5 +1,6 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,9 +78,9 @@ public class DescriptiveReportBuilder {
 	 * the orange parts of the tables.
 	 * @return: The CorrectnessReport containing the filtered data for the report type X
 	 */
-	private Map<String, List<String>> buildCorrectnessReport()
+	private Map<String, List<String>> buildCorrectnessReport(Map<String, List<String>> headerReport, Map<String, List<String>> answerReport)
 	{
-		throw new UnsupportedOperationException("The method buildCorrectnessReport is not implemented yet");
+		return this.correctness.generateReport(headerReport, answerReport);
 	}
 	
 	/**
@@ -89,9 +90,14 @@ public class DescriptiveReportBuilder {
 	 */
 	public DescriptiveReport generateDescriptiveReport()
 	{
-		Map<String, List<String>> content = buildHeaderReport();
-		content = buildAnswerReport(content);
+		Map<String, List<String>> headerContent = buildHeaderReport();
+		Map<String, List<String>> answerContent = buildAnswerReport(headerContent);
+		Map<String, List<String>> correctnessContent = buildCorrectnessReport(headerContent,answerContent);
 //		content = buildCountReport(content);
+		Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
+		content.putAll(headerContent);
+		content.putAll(answerContent);
+		content.putAll(correctnessContent);
 		DescriptiveReport report = new DescriptiveReport(content, exporter, answers.getType(), null);
 		return report;
 	}
