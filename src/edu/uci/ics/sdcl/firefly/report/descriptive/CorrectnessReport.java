@@ -16,15 +16,21 @@ public abstract class CorrectnessReport {
 	/**
 	 * Holds the content of the ORANGE part of the report
 	 */
-	protected Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
+	protected Map<String, List<String>> correctnessContent = new LinkedHashMap<String, List<String>>();
 	
 	/**
 	 * CONSTRUCTOR
 	 */
 	public CorrectnessReport() {
-		this.content = new LinkedHashMap<String, List<String>>();
+		this.correctnessContent = new LinkedHashMap<String, List<String>>();
 	}
 	
+	public Map<String, List<String>> getContent() {
+		return correctnessContent;
+	}
+
+
+
 	/**
 	 * Filters the content and returns the HashMap containing
 	 * the Headers and the contents of the table.

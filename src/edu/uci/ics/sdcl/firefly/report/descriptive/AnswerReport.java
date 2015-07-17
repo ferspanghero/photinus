@@ -72,6 +72,10 @@ public abstract class AnswerReport {
 		return this.answerContent;
 	}
 	
+	public Map<String, List<String>> getContent() {
+		return answerContent;
+	}
+
 	public abstract String getType();
 	
 	protected abstract String reportData(Answer answer);

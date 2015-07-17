@@ -17,6 +17,7 @@ import java.util.Map;
  */
 public class DescriptiveReportBuilder {
 
+	private HeaderReport header;
 	private AnswerReport answers;
 	private CountReport counters;
 	private CorrectnessReport correctness;
@@ -49,7 +50,7 @@ public class DescriptiveReportBuilder {
 	private Map<String, List<String>> buildHeaderReport()
 	{
 		SessionDTO database = new FileSessionDTO();
-		HeaderReport header = new HeaderReport(database.getMicrotasks());
+		this.header = new HeaderReport(database.getMicrotasks());
 		return header.generateReport();
 	}
 	
@@ -92,13 +93,9 @@ public class DescriptiveReportBuilder {
 	{
 		Map<String, List<String>> headerContent = buildHeaderReport();
 		Map<String, List<String>> answerContent = buildAnswerReport(headerContent);
-		Map<String, List<String>> correctnessContent = buildCorrectnessReport(headerContent,answerContent);
+		buildCorrectnessReport(headerContent,answerContent);
 //		content = buildCountReport(content);
-		Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
-		content.putAll(headerContent);
-		content.putAll(answerContent);
-		content.putAll(correctnessContent);
-		DescriptiveReport report = new DescriptiveReport(content, exporter, answers.getType(), null);
+		DescriptiveReport report = new DescriptiveReport(this.header, this.answers, this.counters, this.correctness, exporter);
 		return report;
 	}
 }

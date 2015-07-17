@@ -1,11 +1,8 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import edu.uci.ics.sdcl.firefly.Microtask;
 
 
 /**
@@ -20,12 +17,17 @@ public abstract class CountReport {
 	/**
 	 * Holds the content of the ORANGE part of the report
 	 */
-	private Map<String, List<String>> table = new LinkedHashMap<String, List<String>>();
+	protected Map<String, List<String>> countContent = new LinkedHashMap<String, List<String>>();
 	
 	/**
 	 * CONSTRUCTOR
 	 */
 	public CountReport() {
+	}
+	
+	public Map<String, List<String>> getContent()
+	{
+		return this.countContent;
 	}
 	
 	/**

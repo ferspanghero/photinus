@@ -58,13 +58,13 @@ public class RegularCorrectness extends CorrectnessReport {
 			falseNegative.add(Integer.toString(aux[3]));
 			idk.add(Integer.toString(aux[4]));
 		}
-		this.content.put("True Positives", truePositive);
-		this.content.put("True Negatives", trueNegative);
-		this.content.put("False Positives", falsePositive);
-		this.content.put("False Negatives", falseNegative);
-		this.content.put("IDK", idk);
+		this.correctnessContent.put("True Positives", truePositive);
+		this.correctnessContent.put("True Negatives", trueNegative);
+		this.correctnessContent.put("False Positives", falsePositive);
+		this.correctnessContent.put("False Negatives", falseNegative);
+		this.correctnessContent.put("IDK", idk);
 		
-		return this.content;
+		return this.correctnessContent;
 	}
 
 }

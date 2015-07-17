@@ -80,5 +80,9 @@ public class HeaderReport {
 		}
 		return status;
 	}
+
+	public Map<String, List<String>> getContent() {
+		return content;
+	}
 	
 }
