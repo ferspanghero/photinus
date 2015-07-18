@@ -1,4 +1,4 @@
-package edu.uci.ics.sdcl.firefly.util;
+package edu.uci.ics.sdcl.firefly.util.mturk;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -21,7 +21,15 @@ import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
  */
 public class HITApprovalUtil {
 	
+	/**
+	 * Build a map of TurkerIDs and the SessionID entered in Mechanical Turk
+	 * @param path
+	 * @return
+	 */
 	public HashMap<String, String> getHITCodes(String path){
+		
+		int turkerIDPos = 0;
+		int workerIDPos = 1;
 		
 		HashMap<String, String> hitMap = new HashMap<String,String>();
 		
@@ -30,18 +38,31 @@ public class HITApprovalUtil {
 			System.out.println("Batch: "+path);
 			log = new BufferedReader(new FileReader(path));
 			String line = log.readLine(); //discards first line
+			
 			if(line==null){ 
 				log.close();
 				return null;
 			}
+			
+			if(line.split(",").length >2){
+				turkerIDPos = 17;
+				workerIDPos = 29;
+			}
+			else{
+				turkerIDPos = 0;
+				workerIDPos = 1;
+			}
+				
+			
+		
 			int i=1;
 			String repeated="repeated";
 			while ((line = log.readLine()) != null) {
 				if(line.equals(""))
 					continue;
-				String turkerID = line.split(",")[17];
-				String code = line.split(",")[29]; //completion code entered by the worker
-				System.out.println(turkerID+":"+code);
+				String turkerID = line.split(",")[turkerIDPos];
+				String code = line.split(",")[workerIDPos]; //completion code entered by the worker
+				//System.out.println(turkerID+":"+code);
 				
 				if(hitMap.containsKey(code)){
 					System.out.println("repeated: "+turkerID+":"+code);
@@ -73,31 +94,31 @@ public class HITApprovalUtil {
 		String firstSession = "session-log-6.log"; //session1
 		String secondSession ="session-log-28.log"; //session2
 		String thirdSession = "session-log-35.log"; //topup1
-		String fourthSession = "session-log-43.log"; //topup2 ***
+		String fourthSession = "session-log-43.log"; //topup2
 		String fifthSession = "session-log-46.log"; //topup3
-		String sixthSession = "session-log-53.log"; //topup4
-		String seventhSession = "session-log-57.log"; //topup5
+		String sixthSession = "session-log-54.log"; //topup4
+		String seventhSession = "session-log-58.log"; //topup5
 		String eighthSession = "session-log-64.log"; //topup6
 		
-		String sessionFile = seventhSession; 
+		String sessionFile = eighthSession; 
 		
 	
 		FileSessionDTO sessionDTO = new FileSessionDTO(logPath+sessionFile);
 		HashMap<String, WorkerSession> sessionMap = sessionDTO.getSessions();
-		System.out.println("sessionMap size: "+ sessionMap.size());
+		//System.out.println("sessionMap size: "+ sessionMap.size());
 		
 		
 		String mturkHITFile = "HIT04_7 11_TP6.csv";
 		HITApprovalUtil hitUtil = new HITApprovalUtil();
 		HashMap<String, String> hitMap = hitUtil.getHITCodes(logPath + mturkHITFile);
-		System.out.println("hitMap size: "+ hitMap.size());
+		//System.out.println("hitMap size: "+ hitMap.size());
 		
 		hitUtil.listInvalidSessions(hitMap, sessionMap); //1st step
 		
 		HashMap<String,String> map = hitUtil.listTuple(hitMap,sessionMap); //2nd step
 		
 		
-		String bonusControl = "bonusControl - TopUp4.csv";
+		String bonusControl = "bonusControl - TopUp5.csv";
 		
 		HashMap<String,String> bonusMap = hitUtil.listBonus(map, logPath + bonusControl);//3rd step
 		System.out.println("bonusMap size: "+ bonusMap.size());
@@ -120,7 +141,7 @@ public class HITApprovalUtil {
 				String turkerId = hitMap.get(code);
 				WorkerSession worker =  sessionMap.get(code);
 				String workerId = worker.getWorkerId();
-				//System.out.println(turkerId+";"+workerId+";"+code);
+				System.out.println(turkerId+";"+workerId+";"+code);
 				map.put(turkerId, workerId);
 			}
 		}
