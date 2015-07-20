@@ -16,3 +16,4 @@ WebContent/WEB-INF/classes/logback.xml
 /bin/
 src/edu/uci/ics/sdcl/firefly/util/PropertyManager.java
 WebContent/WEB-INF/classes/logback.xml
+src/edu/uci/ics/sdcl/firefly/util/PropertyManager.java

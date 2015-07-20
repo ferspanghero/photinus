@@ -85,18 +85,20 @@ public class FileSessionDTO extends SessionDTO{
 		} catch (FileNotFoundException e) {
 			System.out.println("DATABASE ERROR: Could not open database file.");
 			e.printStackTrace();
-			System.exit(0);
 		} catch (IOException e) {
 			System.out.println("DATABASE ERROR: Could not read database file.");
 			e.printStackTrace();
-			System.exit(0);
+		}
+		catch (Exception e) {
+			System.out.println("ERROR while processing file:" + logPath);
+			e.printStackTrace();
 		}
 		finally
 		{
 			try {
 				log.close();
 			} catch (IOException e) {
-				System.out.println("DATABASE ERROR: Could not close database file.");
+				System.out.println("DATABASE ERROR: Could not close database file:"+logPath);
 				e.printStackTrace();
 				System.exit(0);
 			}
