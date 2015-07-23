@@ -26,7 +26,6 @@ public class FileSessionDTO extends SessionDTO{
 	}
 	
 	public FileSessionDTO() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

@@ -41,10 +41,10 @@ public abstract class SessionDTO {
 	 * content first.
 	 * @return: A list containing all the sessions on the database
 	 */
-	public abstract HashMap<String,WorkerSession> getSessions(); //TODO: Implement the get session on SessionDTO.
+	public abstract HashMap<String,WorkerSession> getSessions();
 	
 	
-	public abstract HashMap<String,Microtask> getMicrotasks();//TODO: Implement the get microtasks on the SessionDTO.
+	public abstract HashMap<String,Microtask> getMicrotasks();
 	
 	/**
 	 * Responsible for loading data from the database

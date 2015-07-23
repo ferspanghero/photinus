@@ -60,13 +60,10 @@ public class SkillTestStorage {
 	
 	private void populateBuffer(StringBuffer buff, String fileName){
 		try {
-			//System.out.println("In SkillTestSource: "+ testsPath+ "/"+fileName);
 			Scanner scanner = new Scanner(new File(testsPath+"/"+fileName));
 			String content = scanner.useDelimiter("\\Z").next();
-			//System.out.println("In SkillTestSource, content= "+content);
 			buff.append(content);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch bloc
 			e.printStackTrace();
 		}
 	}
