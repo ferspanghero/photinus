@@ -74,7 +74,7 @@ public class ExcelExporter implements DescriptiveReportWriter {
 			endColumnNumber++;
 			i -= 26;
 		}
-		cell.setCellValue("2 - "+ report.reportTypes()[0]);
+		cell.setCellValue("2 - DATA VALUES - "+ report.reportTypes()[0].toUpperCase());
 		int start = (65 + report.getHeaderReportSize());
 		String startLetter = Character.toString((char) start);
 		int end = (64 + ( (report.getHeaderReportSize() + report.getAnswerReportSize()) %26)); // D1+NUMBER_OF_ANSWERS
@@ -94,7 +94,7 @@ public class ExcelExporter implements DescriptiveReportWriter {
 			start  = end + 1;
 			end = (64 + ((report.getHeaderReportSize() + report.getAnswerReportSize() + report.getCountReportSize()) %26));
 			cell = row.createCell(4+report.getAnswerReportSize());
-			cell.setCellValue("3 - "+ report.reportTypes()[1]);
+			cell.setCellValue("3 - "+ report.reportTypes()[1].toUpperCase());
 			startLetter = Character.toString((char) start);
 			endLetter = Character.toString((char) end);
 			workersSheet.addMergedRegion(CellRangeAddress.valueOf(buildMergedCellsString(startColumnNumber, startLetter, endColumnNumber, endLetter)));
@@ -112,7 +112,7 @@ public class ExcelExporter implements DescriptiveReportWriter {
 			start  = end + 1;
 			end = (64 + ((report.getHeaderReportSize() + report.getAnswerReportSize() + report.getCountReportSize() + report.getCorrectnessSize()) %26));
 			cell = row.createCell(4+report.getAnswerReportSize()+report.getCountReportSize());
-			cell.setCellValue(((report.getCountReportSize() != 0) ? report.reportTypes()[2] : "3- Derived Data"));
+			cell.setCellValue(((report.getCountReportSize() != 0) ? report.reportTypes()[2].toUpperCase() : "3- DERIVED DATA"));
 			startLetter = Character.toString((char) start);
 			endLetter = Character.toString((char) end);
 			workersSheet.addMergedRegion(CellRangeAddress.valueOf(buildMergedCellsString(startColumnNumber, startLetter, endColumnNumber, endLetter)));
