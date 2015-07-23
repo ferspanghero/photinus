@@ -112,7 +112,7 @@ public class ExcelExporter implements DescriptiveReportWriter {
 			start  = end + 1;
 			end = (64 + ((report.getHeaderReportSize() + report.getAnswerReportSize() + report.getCountReportSize() + report.getCorrectnessSize()) %26));
 			cell = row.createCell(4+report.getAnswerReportSize()+report.getCountReportSize());
-			cell.setCellValue(report.reportTypes()[2]);
+			cell.setCellValue(((report.getCountReportSize() != 0) ? report.reportTypes()[2] : "3- Derived Data"));
 			startLetter = Character.toString((char) start);
 			endLetter = Character.toString((char) end);
 			workersSheet.addMergedRegion(CellRangeAddress.valueOf(buildMergedCellsString(startColumnNumber, startLetter, endColumnNumber, endLetter)));

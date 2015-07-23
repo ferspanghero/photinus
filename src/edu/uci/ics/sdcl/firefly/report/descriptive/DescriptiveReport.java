@@ -34,13 +34,21 @@ public class DescriptiveReport {
 		this.countReport = countReport;
 		this.correctnessReport = correctnessReport;
 		this.exporter = exporter;
-		this.type = new String[]{answerReport.getType(), countReport.getType(), correctnessReport.getType()};
+		this.type = new String[]{
+				((answerReport == null) ? "" : answerReport.getType()),
+				((countReport == null) ? "" : countReport.getType()),
+				((correctnessReport == null) ? "" :correctnessReport.getType())
+				};
 		
 		Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
-		content.putAll(headerReport.getContent());
-		content.putAll(answerReport.getContent());
-		content.putAll(countReport.getContent());
-		content.putAll(correctnessReport.getContent());
+		if(headerReport != null)
+			content.putAll(headerReport.getContent());
+		if(answerReport != null)
+			content.putAll(answerReport.getContent());
+		if(countReport != null)
+			content.putAll(countReport.getContent());
+		if(correctnessReport != null)
+			content.putAll(correctnessReport.getContent());
 		this.table = content;
 	}
 	

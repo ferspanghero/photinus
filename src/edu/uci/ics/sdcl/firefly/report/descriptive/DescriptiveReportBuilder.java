@@ -93,10 +93,13 @@ public class DescriptiveReportBuilder {
 	{
 		Map<String, List<String>> headerContent = buildHeaderReport();
 		Map<String, List<String>> answerContent = buildAnswerReport(headerContent);
-		Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
-		content.putAll(headerContent);
-		content.putAll(answerContent);
-		buildCountReport(content);
+		if(this.counters != null)
+		{
+			Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
+			content.putAll(headerContent);
+			content.putAll(answerContent);
+			buildCountReport(content);
+		}
 		buildCorrectnessReport(headerContent,answerContent);
 		DescriptiveReport report = new DescriptiveReport(this.header, this.answers, this.counters, this.correctness, exporter);
 		return report;
