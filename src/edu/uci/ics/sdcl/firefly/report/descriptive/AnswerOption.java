@@ -10,7 +10,20 @@ public class AnswerOption extends AnswerReport {
 	
 	@Override
 	protected String reportData(Answer answer) {
-		return answer.getOption();
+		return shortenOption(answer.getOption());
+	}
+	
+	private String shortenOption(String option){
+		if(option.compareTo("YES, THERE IS AN ISSUE")==0)
+			return "YES";
+		else
+			if(option.compareTo("NO, THERE IS NOT AN ISSUE")==0)
+				return "NO";
+			else
+				if(option.compareTo("I DON'T KNOW")==0)
+					return "IDK";
+				else
+					return "ERROR";
 	}
 
 	@Override
