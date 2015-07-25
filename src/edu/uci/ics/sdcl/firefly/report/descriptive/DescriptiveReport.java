@@ -34,12 +34,21 @@ public class DescriptiveReport {
 		this.countReport = countReport;
 		this.correctnessReport = correctnessReport;
 		this.exporter = exporter;
-		this.type = new String[]{answerReport.getType(), null};
+		this.type = new String[]{
+				((answerReport == null) ? "" : answerReport.getType()),
+				((countReport == null) ? "" : countReport.getType()),
+				((correctnessReport == null) ? "" :correctnessReport.getType())
+				};
 		
 		Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
-		content.putAll(headerReport.getContent());
-		content.putAll(answerReport.getContent());
-		content.putAll(correctnessReport.getContent());
+		if(headerReport != null)
+			content.putAll(headerReport.getContent());
+		if(answerReport != null)
+			content.putAll(answerReport.getContent());
+		if(countReport != null)
+			content.putAll(countReport.getContent());
+		if(correctnessReport != null)
+			content.putAll(correctnessReport.getContent());
 		this.table = content;
 	}
 	
@@ -65,21 +74,33 @@ public class DescriptiveReport {
 	
 	public int getHeaderReportSize()
 	{
-		return this.headerReport.getContent().size();
+		int size = 0;
+		if(this.headerReport != null)
+			size = this.headerReport.getContent().size();
+		return size;
 	}
 	
 	public int getAnswerReportSize()
 	{
-		return this.answerReport.getContent().size();
+		int size = 0;
+		if(this.answerReport != null)
+			size = this.answerReport.getContent().size();
+		return size;
 	}
 	
 	public int getCountReportSize()
 	{
-		return this.countReport.getContent().size();
+		int size = 0;
+		if(this.countReport != null)
+			size = this.countReport.getContent().size();
+		return size;
 	}
 	
 	public int getCorrectnessSize()
 	{
-		return this.correctnessReport.getContent().size();
+		int size = 0;
+		if(correctnessReport != null)
+			size = this.correctnessReport.getContent().size();
+		return size;
 	}
 }

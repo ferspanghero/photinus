@@ -6,7 +6,10 @@ public class AnswerDuration extends AnswerReport {
 
 	@Override
 	protected String reportData(Answer answer) {
-		return answer.getElapsedTime();
+		String number = answer.getElapsedTime();
+		String firstNumber = number.replaceFirst(".*?(\\d+).*", "$1");
+		Integer seconds = Integer.valueOf(firstNumber)/1000;
+		return seconds.toString();
 	}
 
 	@Override

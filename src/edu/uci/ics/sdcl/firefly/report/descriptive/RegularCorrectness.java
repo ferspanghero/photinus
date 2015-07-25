@@ -67,4 +67,9 @@ public class RegularCorrectness extends CorrectnessReport {
 		return this.correctnessContent;
 	}
 
+	@Override
+	public String getType() {
+		return "Categorizing";
+	}
+
 }

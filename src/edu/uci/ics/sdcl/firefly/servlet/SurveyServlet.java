@@ -67,7 +67,6 @@ public class SurveyServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 	}
 	
 	protected String mapExperience(String level, String other){

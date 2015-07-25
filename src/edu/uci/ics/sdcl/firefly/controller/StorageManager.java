@@ -122,32 +122,27 @@ public class StorageManager extends StorageStrategy{
 
 	@Override
 	public boolean insertQuitReason(Worker worker, String answer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
 	public WorkerSession readActiveSessionById(String sessionId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Worker insertNewWorker(String consentDateStr, String fileName) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean insertConsent(Worker worker, String consentDateStr,
 			String fileName) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean insertFeedback(String feedback, Worker workerId) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	

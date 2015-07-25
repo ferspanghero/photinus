@@ -28,7 +28,8 @@ public abstract class CorrectnessReport {
 	public Map<String, List<String>> getContent() {
 		return correctnessContent;
 	}
-
+	
+	public abstract String getType();
 
 
 	/**
