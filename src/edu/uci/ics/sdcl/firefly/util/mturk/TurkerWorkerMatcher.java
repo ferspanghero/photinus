@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 
 import edu.uci.ics.sdcl.firefly.WorkerSession;
@@ -27,145 +26,111 @@ public class TurkerWorkerMatcher {
 
 	String folder = "C:/firefly/stage/";
 
-	String[] mturkLogs_TP23456 = {	
+	//Alls maps, one indexed by turker other indexed by sessionsIDs
+	HashMap<String, Turker> hitsMapAll = new HashMap<String, Turker>(); 
+	HashMap<String, HashMap<String,Turker>>allTurkSessionsMap = new HashMap<String, HashMap<String,Turker>>();
 
-			"HIT03_6 6_v0_TP2.csv",
-			"HIT04_7 7_v1_TP2.csv",
-			"HIT05_35 4_TP2.csv",
-			"HIT06_51 4_TP2.csv",
-			"HIT07_33 4_TP2.csv",
-			"HIT08_54 4_TP2.csv",
-
-			"HIT03_6 6-v2_TP3.csv",
-			"HIT04_7 7_TP3.csv",
-			"HIT05_35 5_TP3.csv",
-			"HIT06_51 5_TP3.csv",
-			"HIT06_51 6_TP3.csv",
-			"HIT07_33 5_TP3.csv",
-
-			"HIT08_54 5_TP4.csv",
-			"HIT04_7 8_TP4.csv",
-			"HIT03_6 7_TP4.csv",
-
-			"HIT04_7 10_TP5.csv",
-
-			"HIT04_7 11_TP6.csv",
-			"008 HIT08_54_b2_TP6.csv",
-			"004 HIT04_7 1_TP6.csv",
-			"008 HIT08_54 TP6.csv",
-
-	};
-
-	String crowdLog_TP23456 = "session-log-43_46_54_58_64_TOPUPs.txt";
-
-
-	//----------------------------------
-
-	String[] mturkLogs_TP1 = {
-			"hit01_8 3_TopUp1.csv",
-			"hit03_6_5_TopUp1.csv",
-			"hit04_7_6_TopUp1.csv",
-			"hit05_35batch5_TopUp1.csv",
-			"hit06_51batch3-TopUp1.csv",
-			"hit07_33batch3-TopUp1.csv",
-			"hit08_54batch3-TopUp1.csv"
-	};
-
-
-	String crowdLog_TP1 = "session-log-35_c.log";
-
-	//----------------------------------------
-
-
-
-
-	String[] mturkLogs_S1 = {
-			"HIT01_08_1.csv",
-			"HIT02_24_1.csv",
-			"HIT03_6_1.csv",
-			"HIT04_7_1.csv",		
-	};
-
-
-	String crowdLog_S1 = "session-log-6c.txt";
-
-
-	//--------------------------------------
-
-	String[] mturkLogs_S2 = {
-			"HIT05_35 2.csv",
-			"HIT06_51 2.csv",
-			"HIT07_33 2.csv",
-			"HIT02_24 2.csv",
-			"HIT03_6 2.csv",
-			"HIT01_8 2.csv",
-			"HIT08_54_1.csv",
-			"HIT08_54 3.csv",
-			"HIT06_51_1.csv",
-			"HIT04_7 5.csv"
-	};
-
-
-	String crowdLog_S2 = "session-log-28.log";
-
+	//Matching sessions maps.
 	HashMap<String, Turker> hitsMap1 = new HashMap<String, Turker>(); 
 	HashMap<String, Turker> hitsMap2 = new HashMap<String, Turker>();
+	HashMap<String, WorkerSession> sessionMap = new HashMap<String, WorkerSession>();
+
+	MTurkSessions checker;
+
+	private HashMap<String, HashMap<String, WorkerSession>> workerSessionsMap;
+
+	private HashMap<String, HashMap<String, WorkerSession>> missinHITSessionMap;
 
 	//-----------------------------------
 
 	public static void main(String[] args){
-		TurkerWorkerMatcher matcher = new TurkerWorkerMatcher();
-		matcher.loadHITs();
 
-		matcher.loadSessions();  //Load the sessions and populate turkers with respective workerIds.
+		MTurkSessions checker = new MTurkSessions();
+		TurkerWorkerMatcher matcher = new TurkerWorkerMatcher();
+
+		matcher.loadAllHITs();
+
+		matcher.loadHITs(matcher.checker.mturkLogs_TP6,matcher.checker.mturkLogs_S2);
+
+		matcher.loadSession(matcher.checker.crowddebugLogs[7]);
+
+		matcher.matchWorkerIDs(checker.crowddebugLogs[7],matcher.hitsMap1);
+
+		matcher.matchSessions(matcher.hitsMap1);
+
+		matcher.findMissingHITSessions();
+
+		//checkAllNotClaimed();
+
+		//matcher.loadSessions(0,1);  //Load the sessions and populate turkers with respective workerIds.
+
+		//matcher.printToFileAllTurkerHITs();
 
 		//matcher.printTurkersWithSameWorkerID();//Session (1,2,TP1, TP2, etc.), same workerID:  (TurkerID1:WorkerSession , TurkerID2:WorkerSession)
 
 		//matcher.printTurkerWithDifferentWorkerID();
 		//Order of checking: Session (TP6 x TP5, TP65 x TP4, TP654x TP3, TP6453x TP1, TP x S1, TPS x S2 
-
 	}
 
 
-	public void loadHITs(){
+	public TurkerWorkerMatcher(){
+		this.checker = new MTurkSessions();
+	}
 
-		for(String batchFile: mturkLogs_S1){
-			//	this.hitsMap1= importHITCodes(batchFile, hitsMap1);		
+	public void loadHITs(String[] firstLogs, String[] secondLogs){
+
+		for(String batchFile: firstLogs){
+			this.hitsMap1= importHITCodes(batchFile, hitsMap1);		
 		}
 
-		for(String batchFile: mturkLogs_S2){
-			this.hitsMap2= importHITCodes(batchFile, hitsMap2);		
+		for(String batchFile: secondLogs){
+			//this.hitsMap2= importHITCodes(batchFile, hitsMap2);		
 		}
 	}
 
-	public void loadSessions(){
-		//	matchWorkerIDs(crowdLog_S1,hitsMap1); //Load the sessions and populate turkers with respective workerIds.
-		matchWorkerIDs(crowdLog_S2,hitsMap2);
-	}
-
-
-	public void matchWorkerIDs(String crowdLog, HashMap<String, Turker> hitsMap){
-
-
+	public void loadSession(String crowdLog){
 		FileSessionDTO sessionDTO = new FileSessionDTO(this.folder+crowdLog);
-		HashMap<String, WorkerSession> sessionMap = sessionDTO.getSessions();
+		this.sessionMap = sessionDTO.getSessions();
+		buildWorkerSessionsMap();
+	}
+
+
+	private void buildWorkerSessionsMap(){
+		this.workerSessionsMap = new HashMap<String, HashMap<String,WorkerSession>>();
+		for(WorkerSession session: sessionMap.values()){
+			String workerID = session.getWorkerId();
+			HashMap<String,WorkerSession> map = this.workerSessionsMap.get(workerID);
+			if(map==null)
+				map = new HashMap<String,WorkerSession>();
+			map.put(extract(session.getId()), session);
+			this.workerSessionsMap.put(workerID, map);			
+		}
+	}
+
+
+	public void matchSessions(int firstSession, int secondSession){
+		matchWorkerIDs(checker.crowddebugLogs[firstSession],hitsMap1); //Load the sessions and populate turkers with respective workerIds.
+		//matchWorkerIDs(checker.crowddebugLogs[secondSession],hitsMap2);
+	}
+
+
+	private void matchWorkerIDs(String crowdLog, HashMap<String, Turker> hitsMap){
 
 		for(Turker turker: hitsMap.values()){
 			for(String sessionID: turker.sessionMap.keySet()){
 				//System.out.println("Turker sessionID entered:"+sessionID);
-					String workerID = retrieveWorkerID(sessionMap, sessionID.trim());
-					if(workerID!=null){
-						//System.out.println("found, turkerID:"+turker.turkerID+": workerID:"+workerID+": sessionID:"+sessionID );
-						turker.setWorkerID(workerID);
-						hitsMap.put(turker.turkerID, turker);
-					}
-					else{
-						//System.out.println("NOT FOUND! turkerID:"+turker.turkerID+": sessionID:"+sessionID );
-					}
+				String workerID = retrieveWorkerID(sessionMap, sessionID.trim());
+				if(workerID!=null && !this.workerHasExtraSessions(workerID, turker)){ //For merging, I will have to drop the workerHasExtraSessions condition.
+					System.out.println("MATCH, turkerID:"+turker.turkerID+": workerID:"+workerID+": sessionID:"+sessionID );
+					turker.setWorkerID(workerID,crowdLog);
+					hitsMap.put(turker.turkerID, turker);
+				}
+				else{
+					System.out.println("NOT FOUND VIABLE SESSION! turkerID:"+turker.turkerID+": sessionID:"+sessionID );
+				}
 			}
 		}
 	}
-
 
 
 	/** Look for the sessionID that matches the workerID */
@@ -176,20 +141,201 @@ public class TurkerWorkerMatcher {
 			//System.out.println("composedSessionID: "+composedSessionID);
 			String sessionIDpart = composedSessionID.split(":")[0].trim();
 			String workerIDpart = composedSessionID.split(":")[1].trim();
-			
+
 			if(sessionID.compareTo(sessionIDpart)==0){
 				if((sessionMap.get(composedSessionID).getMicrotaskListSize()>0)){
 					return workerIDpart;
 				}
 				else{
 					System.out.println("EMPTY SESSION: "+sessionID);
+					return workerIDpart;
 				}
-					
 			}
 		}
 		return null;
 	}
 
+
+	public void matchSessions(HashMap<String, Turker> hitsMap){
+
+		//Get each turker list the sessions 
+		for(Turker turker: hitsMap.values()){
+
+			//Accumulate all sessions in the log that are associated to a workerID
+			HashMap<String, WorkerSession> foundSessionsInLog = new HashMap<String, WorkerSession>();
+			HashMap<String, String> workerWithInvalidSession = new HashMap<String,String>();
+
+
+			for(String turkWorkerID: turker.workerIDMap.keySet()){
+
+				HashMap<String, WorkerSession> logSessionsMap = this.workerSessionsMap.get(turkWorkerID);
+				if(logSessionsMap==null){
+					workerWithInvalidSession.put(turker.turkerID,turkWorkerID);
+					System.out.println("NOT FOUND IN LOGS! turkerID:"+turker.turkerID+": turkWorkerID:"+turkWorkerID);
+				}
+				else{ 
+					//Accumulate all sessions found for that workerID 
+					for(WorkerSession logSession : logSessionsMap.values()){ 
+						foundSessionsInLog.put(extract(logSession.getId()), logSession );
+					}
+				}
+			}
+
+
+			//Now compare the sessions accumulated against the sessions in the hitMap 
+			for(String turkSession: turker.sessionMap.keySet()){
+				WorkerSession logSession = foundSessionsInLog.get(turkSession);
+				if(logSession==null){
+					System.out.println("Mismatching Session! turkerID:"+turker.turkerID+
+							": turkSession:"+turkSession);
+				}
+				else
+					foundSessionsInLog.remove(turkSession);
+			}
+
+			if(foundSessionsInLog.isEmpty()){
+				turker.printTurkerWorkerSessionLog();
+			}
+			else{
+				System.out.print("Turker incomplete, sessions not found in sessionLog HITMaps, turkerID :"+turker.turkerID+":");
+				for(String sessionID: foundSessionsInLog.keySet()){
+					System.out.print(sessionID+":");	
+				}	
+				System.out.println();
+				System.out.print("Turker incomplete, sessions not found in sessionLog HITMaps, turkerID :"+turker.turkerID+":");
+				for(String sessionID: foundSessionsInLog.keySet()){
+					WorkerSession session = foundSessionsInLog.get(sessionID);
+					System.out.print(session.getFileName()+":");	
+				}	
+				System.out.println();
+
+
+				System.out.print("Turker incomplete, sessions not found in sessionLog HITMaps, turkerID :"+turker.turkerID+":");
+				for(String sessionID: foundSessionsInLog.keySet()){
+					WorkerSession session = foundSessionsInLog.get(sessionID);
+					System.out.print(session.getWorkerId()+":");	
+				}	
+				System.out.println();
+
+				//Save the missing sessions to be inspected lated.
+				addMissingHITSessions(turker.turkerID, foundSessionsInLog);
+			}	
+		}
+	}
+
+	private void addMissingHITSessions(String turkerID,
+			HashMap<String, WorkerSession> foundSessionsInLog) {
+
+		if (this.missinHITSessionMap == null)
+			this.missinHITSessionMap = new HashMap<String,HashMap<String, WorkerSession>>();
+
+		this.missinHITSessionMap.put(turkerID, foundSessionsInLog);
+	}
+
+
+	/** Search in the AllHITs for sessions that were in the log, but were not in the HITs of Sessions-2
+	 * 
+	 * If not found, then turker did not reclaimed the sessionID
+	 * If found a session in a HIT, check if it is from the worker. 
+	 *	 If positive, has to merge worker code from Session-2 with the session corresponding to that HIT.
+	 * 			(I am not merging now, just checking)
+	 * 	 If negative, then turker did not reclaimed that ID
+	 * 
+	 * 
+	 */
+	public void findMissingHITSessions(){
+		
+		if(missinHITSessionMap!=null)
+			for(String turkerID: this.missinHITSessionMap.keySet()){
+				HashMap<String,WorkerSession> missingLogSessionsMap = this.missinHITSessionMap.get(turkerID);
+				for(String logSessionID: missingLogSessionsMap.keySet()){
+					WorkerSession logSession = missingLogSessionsMap.get(logSessionID);
+					if(!this.allTurkSessionsMap.containsKey(logSessionID)){
+						System.out.println("Not reclaimed, turkerID: "+ turkerID+":" +logSessionID+":"+logSession.getFileName());
+					}
+					else{
+						HashMap<String, Turker> turkerMap = this.allTurkSessionsMap.get(logSessionID);
+						if(!turkerMap.containsKey(turkerID)){
+							System.out.println("Not reclaimed, turkerID: "+ turkerID+":" +logSessionID+":"+logSession.getFileName());
+						}
+						else{
+							Turker foundTurker = turkerMap.get(turkerID);
+							String batchFile = foundTurker.sessionBatchMap.get(logSessionID);
+							System.out.println("Found ELSEWHERE logSession, turkerID: "+ turkerID+":" +logSessionID+":"+batchFile);
+						}
+					}
+				}
+
+			}
+
+	}
+
+	/** Check whether a worker has any extra session that is not in the HIT list of a Turker 
+	 * @param hitsMap */
+	private boolean workerHasExtraSessions(String workerID, Turker turker){
+		
+		HashMap<String,WorkerSession> workerSessionMap = this.workerSessionsMap.get(workerID);
+		for(WorkerSession composedSession: workerSessionMap.values()){
+			String workerSessionID = extract(composedSession.getId());
+			if(!turker.sessionMap.containsKey(workerSessionID)){
+
+				if((composedSession.getMicrotaskListSize()<3)) //Disconsider empty or incomplete sessions. 
+					return false;
+				else
+				if	(this.sessionID_Not_ClaimedByOtherTurkers(turker, workerSessionID))//Disconsider sessions that were not claimed by others (possibly worker did extra session), 
+					return false;  		//However, it might be ok even if a worker in a different logSession had claimed the same sessionID, the test in place now to check whether the 
+										//turker claimed the HIT in the wrong logSession.
+				else{
+					System.out.println("Invalid worker for turker:"+turker.turkerID+": worker:"+workerID+": session:"+workerSessionID+" HIT:"+composedSession.getFileName());
+					return true;
+				}
+			}
+		}
+		return false;
+
+	}
+
+
+	private boolean sessionID_Not_ClaimedByOtherTurkers(Turker turker, String sessionID){
+		HashMap<String, Turker> turkerMap = allTurkSessionsMap.get(sessionID);
+		if(turkerMap==null)//no turker claimed the session
+			return true;
+		else
+			if(turkerMap.size()<=1) //the only turker claiming it is the one being questioned 
+				return true;
+			else 
+				return false;
+	}
+
+	private String extract(String composedSessionID){
+		return composedSessionID.split(":")[0].trim();
+	}
+
+
+
+	//-----------------------------------------------------------------------------------------
+	// PRINTING METHODS
+
+	public void loadAllHITs(){
+		for(String batchFile: checker.mturkAllLogs){
+			this.hitsMapAll= importHITCodes(batchFile, this.hitsMapAll);		
+		}
+
+		System.out.println("Total HITs imported: "+this.hitsMapAll.size());
+	}
+
+	public void printToFileAllTurkerHITs(){
+
+		HashMap<String, Turker> allHITMap = new HashMap<String,Turker>();
+		for(String batchFile: checker.mturkLogs_S2){
+			allHITMap= importHITCodes(batchFile, allHITMap);		
+		}
+
+		System.out.println("TurkerID:HIT, number of workers: "+ allHITMap.size());
+		for(Turker turker: allHITMap.values()){
+			turker.printTurkerSessionHITs();
+		}
+	}
 
 	public void printTurkerWithDifferentWorkerID() {
 
@@ -285,6 +431,18 @@ public class TurkerWorkerMatcher {
 				hitsMap.put(turkerID, turker);
 
 
+				//Update allTurkSessionMap
+				if(this.allTurkSessionsMap.containsKey(code)){
+					HashMap<String, Turker> turkerMap = this.allTurkSessionsMap.get(code);
+					turkerMap.put(turkerID, turker);
+					this.allTurkSessionsMap.put(code, turkerMap);
+				}
+				else{
+					HashMap<String, Turker> turkerMap = new HashMap<String, Turker>();
+					turkerMap.put(turkerID, turker);
+					this.allTurkSessionsMap.put(code, turkerMap);
+				}
+
 				//Check if same code was used by more than worker
 				if(codeMap.containsKey(code)){
 					System.out.println("repeated: "+turkerID+":"+code);
@@ -310,9 +468,7 @@ public class TurkerWorkerMatcher {
 	}
 
 
-	public boolean hasMicrotasks(WorkerSession session){
-		return (session.getMicrotaskListSize()>0);
-	}
+
 
 
 	//----------------------------------------------------------------------------------------------------------------------------------
@@ -323,6 +479,22 @@ public class TurkerWorkerMatcher {
 		}
 		return false;
 	}
+
+
+	public static boolean checkAllNotClaimed(){
+
+		TurkerWorkerMatcher matcher = new TurkerWorkerMatcher();
+		matcher.loadAllHITs();
+		boolean flag= true;
+		for(String sessionID:notClaimedIDs ){
+			if(matcher.allTurkSessionsMap.containsKey(sessionID)){
+				System.out.println("actually claimed: "+sessionID);
+				flag = false;
+			}
+		}
+		return flag;
+	}
+
 
 	public static String[] quitWorkerID_S1 = {
 		"66GI-3E0i-4-83",
@@ -422,6 +594,170 @@ public class TurkerWorkerMatcher {
 		"509ag3C6G-120",
 	};
 
+
+	private static String[] notClaimedIDs = { 
+		"97gI6G0a19-4",
+		"944ec0G-8g-911",
+		"943ac-8i-3I5-42",
+		"942IE9e7E7-95",
+		"93aa2G4g627",
+		"930gg-1E7i0-5-8",
+		"92Aa8E8C18-3",
+		"929ia-7A-6c-87-5",
+		"927Eg7G2c-6-26",
+		"926eg1i3A-134",
+		"920CC-3g6C1-6-8",
+		"91Cc4i3a000",
+		"90Ca-3i-3E04-4",
+		"902gI-4G9e5-76",
+		"89GE6I-7G22-6",
+		"896Ic-5a0a1-8-7",
+		"88AC7i0C-8-1-8",
+		"86cg-4A-9E-118",
+		"862EG-5a2c9-12",
+		"860ce-8i0i6-26",
+		"85EG-7C-1c253",
+		"857iE1A-3E90-8",
+		"84EE7E2G71-1",
+		"78Eg9C0a-1-9-3",
+		"776cc-5E-8c-7-9-5",
+		"770cE9I-8g-1-4-4",
+		"766ie4g2a8-5-8",
+		"765ce-7a-9E-4-62",
+		"764EE7e3c-1-7-1",
+		"762gA-4A-2I-95-3",
+		"761Ea2g9A-6-70",
+		"759AG-3A-5a6-46",
+		"758CE-9g-9g1-8-2",
+		"756Ig-5G2I-7-2-3",
+		"752Gc-2E9A20-8",
+		"74IE5g1C5-97",
+		"749Ci-2C7G64-1",
+		"740II-8c3G-4-37",
+		"73iC-9C-6E061",
+		"735EA-5I-7C-2-7-3",
+		"733ii-2G2a-526",
+		"724CC7A7c9-6-7",
+		"720cE7a1C4-4-5",
+		"711gE8i-5c9-20",
+		"708Ai-6c-3A-45-7",
+		"705Ec-6E-4I108",
+		"703ca-4g-4G710",
+		"701Ge0E-1a-5-6-5",
+		"699Ia8i4A-4-87",
+		"698EE5A3C-6-79",
+		"697aE8i2I418",
+		"695CC4g-7g3-62",
+		"694cA0i9a-8-50",
+		"691IA-5C6I-71-3",
+		"689ca-9I-2G-455",
+		"686eC-2a8C-370",
+		"685cE-9a8A-412",
+		"684Ei7i9E84-6",
+		"683GC-9A-2g-702",
+		"682Ee-7E-2i-4-1-9",
+		"680ia-6e6a-9-7-9",
+		"679aI-1E-5I-84-8",
+		"676AI5I-9a27-5",
+		"671ai-9g-2a801",
+		"66cg6a9G7-9-8",
+		"669ee3i7g27-5",
+		"668AG3I-8E4-73",
+		"665ce-2E4E41-6",
+		"665ce-2E4E41-6",
+		"660gI4G9C3-29",
+		"657eG-1I5i346",
+		"656Eg-4I-5C-985",
+		"649cg-3e8A0-50",
+		"649cg-3e8A0-50",
+		"649cg-3e8A0-50",
+		"648iE-6C-4I01-2",
+		"646gC-5E-7G-5-8-3",
+		"643gE4i-1I75-9",
+		"642ca1i-2C4-72",
+		"639AI-1g6G808",
+		"638ea1c-9g-5-3-5",
+		"638ea1c-9g-5-3-5",
+		"637IC0I7g0-3-1",
+		"635iI1a-2A2-53",
+		"633Ce7G-8e-9-7-3",
+		"632cg-6G2g-5-1-7",
+		"631CG1A-6g4-7-7",
+		"629II-4G5A1-59",
+		"629II-4G5A1-59",
+		"627EE6g0A-193",
+		"621EI3G-5G-2-10",
+		"620eC8I3e7-23",
+		"618ge-5c4c3-52",
+		"616GI-2c7i6-58",
+		"615gg-1A-3E-7-4-9",
+		"614AG-1C7A35-6",
+		"613gE-9c7a007",
+		"611CC6e-7i903",
+		"609ic3A-5G03-8",
+		"608IC1c-3c-300",
+		"557ce0c2e-495",
+		"554Ig-4a3A-307",
+		"552eE7E4a-2-84",
+		"551IG-8a-9C8-57",
+		"550cc-6A-6I-1-8-2",
+		"54eg7E-6a0-35",
+		"53Ea3G0g-6-40",
+		"49Ge2A-3A97-4",
+		"48eA8I-5G8-1-5",
+		"437iG-6a-4G-7-79",
+		"435Gc-2g7e38-1",
+		"433AI-9c3e-2-5-6",
+		"425cg-3C-4I8-7-1",
+		"409ea6a7c-5-10",
+		"386aE0E-5i83-4",
+		"384aE1C0e-10-2",
+		"383gI4I6c4-7-7",
+		"356Ec7i-9C7-60",
+		"355Ig-2e-9g-284",
+		"352eG6G8I245",
+		"345Ce-8I8I-700",
+		"342gi5C6e-25-2",
+		"342gi5C6e-25-2",
+		"341Ec-3G1i8-2-4",
+		"340eI0a-3c-987",
+		"340eI0a-3c-987",
+		"339cC2A0a-78-9",
+		"336cA1I9C-6-32",
+		"333Gc3A7E-8-48",
+		"328Ge1G4c-8-3-1",
+		"313eC3g-8G74-4",
+		"306Ic2a-7a-1-6-5",
+		"304GG0c0I-429",
+		"296AC-9G7C-7-40",
+		"295ia-3A-8i-430",
+		"286Ii8g-8G5-11",
+		"284ac-6c-7g6-7-8",
+		"27gA7g9c-3-69",
+		"276Ec-3A-6a7-44",
+		"269CA-3c-9i1-64",
+		"24CI-5C3G-583",
+		"240ca9i-7e-96-3",
+		"230EA-4E-3E0-21",
+		"230EA-4E-3E0-21",
+		"226ei6e2E461",
+		"221gI-9E7a1-3-9",
+		"21gg-8e3a-2-93",
+		"197GG2g-9e6-9-8",
+		"197GG2g-9e6-9-8",
+		"195ga9I2e-3-3-2",
+		"191gg2G-4a-8-8-2",
+		"189ac6A2c22-7",
+		"188ac-7g-3E766",
+		"187IA-4i-9g0-3-1",
+		"184IC-2c-1a140",
+		"184IC-2c-1a140",
+		"183eI-8A-8c-8-96",
+		"182iC9c-3I71-5",
+		"16gE1g-5E64-7",
+		"103AC-6A0G-68-7",
+		"100ae0i-5c08-8",
+	};
 
 
 }
