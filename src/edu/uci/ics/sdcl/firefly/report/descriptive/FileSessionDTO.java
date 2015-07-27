@@ -154,6 +154,9 @@ public class FileSessionDTO extends SessionDTO{
 			//Add this microtask to the session
 			session.getMicrotaskList().add(microtask);
 		}
+		else{
+			System.out.println("ERROR SESSION NULL when adding Microtask, sessionID:"+sessionID);
+		}
 		
 		if(this.microtasks.get(microtaskID.toString()) == null)
 		{
