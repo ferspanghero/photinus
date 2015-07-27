@@ -17,4 +17,9 @@ public class AnswerDuration extends AnswerReport {
 		return "Duration in seconds";
 	}
 
+	@Override
+	public String getDataNature() {
+		return "Duration";
+	}
+
 }

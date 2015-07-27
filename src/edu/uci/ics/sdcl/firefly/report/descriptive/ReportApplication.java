@@ -6,7 +6,7 @@ public class ReportApplication {
 	private static DescriptiveReportBuilder builder;
 	
 	public static void main(String[] args) {
-		workerScoreReport(new ExcelExporter());
+		answerDurationReport(new ExcelExporter());
 		DescriptiveReport report = builder.generateDescriptiveReport();
 		report.exportReport(); // THIS SHOULD EXPORT ON AN EXCEL SPREADSHEET
 	}
@@ -29,8 +29,8 @@ public class ReportApplication {
 	private static void answerDurationReport(DescriptiveReportWriter exporter)
 	{
 		//TODO: the count report and the correctness report are different
-		throw new UnsupportedOperationException("The answerDuration report is not implemented yet");
-//		builder = new DescriptiveReportBuilder(new AnswerDuration(), new , correctness, exporter)
+//		throw new UnsupportedOperationException("The answerDuration report is not implemented yet");
+		builder = new DescriptiveReportBuilder(new AnswerDuration(), new AverageCount(), new RegularCorrectness(), exporter);
 	}
 	
 	private static void sizeOfExplanationReport(DescriptiveReportWriter exporter)

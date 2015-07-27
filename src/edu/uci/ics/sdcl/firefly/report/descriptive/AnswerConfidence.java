@@ -14,4 +14,9 @@ public class AnswerConfidence extends AnswerReport{
 		return "Levels of confidence of answers";
 	}
 
+	@Override
+	public String getDataNature() {
+		return "Confidence Counting";
+	}
+
 }

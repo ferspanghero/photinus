@@ -1,6 +1,5 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,9 +68,8 @@ public class DescriptiveReportBuilder {
 	 * the yellow parts of the tables.
 	 * @return: The CountReport containing the filtered data for the report type X
 	 */
-	private Map<String, List<String>> buildCountReport(Map<String, List<String>> content)
-	{
-		return counters.generateReport(content);
+	private Map<String, List<String>> buildCountReport(HeaderReport header, AnswerReport answers) {
+		return counters.generateReport(header,answers);
 	}
 	
 	/**
@@ -95,13 +93,11 @@ public class DescriptiveReportBuilder {
 		Map<String, List<String>> answerContent = buildAnswerReport(headerContent);
 		if(this.counters != null)
 		{
-			Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
-			content.putAll(headerContent);
-			content.putAll(answerContent);
-			buildCountReport(content);
+			buildCountReport(header,answers);
 		}
 		buildCorrectnessReport(headerContent,answerContent);
 		DescriptiveReport report = new DescriptiveReport(this.header, this.answers, this.counters, this.correctness, exporter);
 		return report;
 	}
+
 }

@@ -94,4 +94,9 @@ public class OrderDuration extends AnswerReport {
 		}
 	}
 
+	@Override
+	public String getDataNature() {
+		return "Duration";
+	}
+
 }

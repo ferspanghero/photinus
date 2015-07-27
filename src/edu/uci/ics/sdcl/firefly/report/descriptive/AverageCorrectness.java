@@ -1,7 +1,6 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +8,10 @@ import java.util.Map;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
-import edu.uci.ics.sdcl.firefly.WorkerSession;
 
 public class AverageCorrectness extends CorrectnessReport {
 	
-	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-log.log";
+	String consentLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
 
 	@Override
 	public Map<String, List<String>> generateReport(

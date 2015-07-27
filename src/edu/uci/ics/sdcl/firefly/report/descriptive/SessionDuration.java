@@ -77,4 +77,9 @@ public class SessionDuration extends AnswerReport {
 		}
 	}
 
+	@Override
+	public String getDataNature() {
+		return "Duration";
+	}
+
 }

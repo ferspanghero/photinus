@@ -19,4 +19,11 @@ public class AnswerDifficulty extends AnswerReport {
 		return "Difficulty of questions";
 	}
 
+	@Override
+	public String getDataNature() {
+		return "Difficulty counting";
+	}
+	
+	
+
 }

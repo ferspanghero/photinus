@@ -31,4 +31,9 @@ public class AnswerOption extends AnswerReport {
 		return "Answer option";
 	}
 
+	@Override
+	public String getDataNature() {
+		return "Answer Option Counting";
+	}
+
 }

@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,8 @@ public class ConfidenceCounting extends CountReport {
 	 * Generates the CountReport content part. 
 	 */
 	@Override
-	public Map<String, List<String>> generateReport( Map<String, List<String>> content) {
+	public Map<String, List<String>> generateReport( HeaderReport headerReport, AnswerReport answerReport) {
+		Map<String, List<String>> content = mergeContent(headerReport, answerReport);
 		List<String> questionIDList = content.get("Question ID");
 		List<List<String>> confidenceList = new ArrayList<List<String>>();
 		for (int i = 0; i < 6; i++) {
@@ -65,6 +67,14 @@ public class ConfidenceCounting extends CountReport {
 	@Override
 	public String getType() {
 		return "Derived Data - Counting";
+	}
+	
+	private Map<String, List<String>> mergeContent(HeaderReport headerReport, AnswerReport answerReport)
+	{
+		Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
+		content.putAll(headerReport.getContent());
+		content.putAll(answerReport.getContent());
+		return content;
 	}
 
 }

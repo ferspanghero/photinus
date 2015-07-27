@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ import edu.uci.ics.sdcl.firefly.Worker;
 
 public class AverageWorkerProfileReport extends CountReport{
 
-	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-log-TestSample.log";
+	String consentLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
 	
 	public AverageWorkerProfileReport() {
 		super();
@@ -22,7 +23,8 @@ public class AverageWorkerProfileReport extends CountReport{
 	}
 
 	@Override
-	public Map<String, List<String>> generateReport(Map<String, List<String>> content) {
+	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
+		Map<String, List<String>> content = mergeContent(headerReport, answerReport);
 		SessionDTO database = new FileSessionDTO();
 		Map<String, Microtask> microtasks = database.getMicrotasks();
 		List<String> questionIDList = content.get("Question ID"); // this is the data that came form the HeaderReport
@@ -57,6 +59,14 @@ public class AverageWorkerProfileReport extends CountReport{
 		this.countContent.put("Average worker years experience", averageYears);
 		this.countContent.put("Average worker perceived difficulty", averageDifficulties);
 		
+		return content;
+	}
+	
+	private Map<String, List<String>> mergeContent(HeaderReport headerReport, AnswerReport answerReport)
+	{
+		Map<String, List<String>> content = new LinkedHashMap<String, List<String>>();
+		content.putAll(headerReport.getContent());
+		content.putAll(answerReport.getContent());
 		return content;
 	}
 

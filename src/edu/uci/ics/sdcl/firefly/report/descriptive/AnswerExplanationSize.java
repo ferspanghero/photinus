@@ -14,4 +14,9 @@ public class AnswerExplanationSize extends AnswerReport {
 		return "Size of explanation (characters)";
 	}
 
+	@Override
+	public String getDataNature() {
+		return "Size";
+	}
+
 }

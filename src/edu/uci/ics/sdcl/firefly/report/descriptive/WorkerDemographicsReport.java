@@ -20,8 +20,8 @@ public class WorkerDemographicsReport {
 
 private String fileName = "WorkersDemographicsReport.xlsx";
 	
-	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-Pilot2-log.txt";
-	String sessionLogpath = "C:/var/lib/tomcat7/webapps/session-log.log";
+	String consentLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
+	String sessionLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample.log";
 
 	public WorkerDemographicsReport(){
 		writeToXlsx();

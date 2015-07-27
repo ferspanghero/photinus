@@ -35,7 +35,7 @@ public abstract class CountReport {
 	 * the Headers and the contents of the table.
 	 * @return: The map containing the columns and values of the table
 	 */
-	public abstract Map<String, List<String>> generateReport(Map<String, List<String>> content);
+	public abstract Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport);
 	
 	public abstract String getType();
 	

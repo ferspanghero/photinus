@@ -78,6 +78,8 @@ public abstract class AnswerReport {
 
 	public abstract String getType();
 	
+	public abstract String getDataNature();
+	
 	protected abstract String reportData(Answer answer);
 	
 }
