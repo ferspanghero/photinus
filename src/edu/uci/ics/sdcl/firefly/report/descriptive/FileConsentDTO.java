@@ -176,7 +176,7 @@ public class FileConsentDTO extends ConsentDTO{
 		if(worker != null)
 		{
 			for (int i = 0; i < result.length; i++) {
-				if(result[i].equalsIgnoreCase("answer"))
+				if(result[i].trim().equalsIgnoreCase("answer"))
 					worker.setQuitReason((i == (result.length -1)) ? "" : result[i+1]);
 			}
 		}
