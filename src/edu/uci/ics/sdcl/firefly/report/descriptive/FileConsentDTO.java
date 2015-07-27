@@ -89,13 +89,13 @@ public class FileConsentDTO extends ConsentDTO{
 	private void loadSurvey(String line)
 	{
 		String result[] = line.split("%");
-		String workerId = result[3];
+		String workerId = result[3].trim();
 		Worker worker = this.workers.get(workerId);
 		if(worker != null)
 		{
 			for(int i=6; i< result.length-1; i+=2)
 			{
-				worker.addSurveyAnswer(result[i], result[i+1]);
+				worker.addSurveyAnswer(result[i].trim(), result[i+1].trim());
 			}
 		}
 	}
@@ -109,19 +109,19 @@ public class FileConsentDTO extends ConsentDTO{
 	private void loadSkillTest(String line)
 	{
 		String[] result = line.split("%");
-		String workerId = result[3];
+		String workerId = result[3].trim();
 		Worker worker = this.workers.get(workerId);
 		if ((worker != null)) {
 			boolean[] gradeMap = new boolean[5];
 			for (int i=0, j=0; i < result.length; i++) {
-				if(result[i].equalsIgnoreCase("false") || result[i].equalsIgnoreCase("true"))
+				if(result[i].trim().equalsIgnoreCase("false") || result[i].trim().equalsIgnoreCase("true"))
 				{
-					gradeMap[j++] = Boolean.valueOf(result[i]);
+					gradeMap[j++] = Boolean.valueOf(result[i].trim());
 				}
 				else if(result[i].trim().equalsIgnoreCase("grade"))
-					worker.setGrade(Integer.parseInt(result[i+1]));
+					worker.setGrade(Integer.parseInt(result[i+1].trim()));
 				else if(result[i].trim().equalsIgnoreCase("testDuration"))
-					worker.setSkillTestDuration(result[i+1]);
+					worker.setSkillTestDuration(result[i+1].trim());
 			}
 			worker.setGradeMap(gradeMap);
 		}
@@ -135,9 +135,9 @@ public class FileConsentDTO extends ConsentDTO{
 	private void loadConsent(String line)
 	{
 		String[] result = line.split("%");
-		Worker worker = new Worker(result[3], result[5], null);
-		worker.setConsentDate(result[7]);
-		worker.setCurrentFileName(result[5]);
+		Worker worker = new Worker(result[3].trim(), result[5].trim(), null);
+		worker.setConsentDate(result[7].trim());
+		worker.setCurrentFileName(result[5].trim());
 		if(!(this.workers.containsKey(worker.getWorkerId())))
 		{
 			this.workers.put(worker.getWorkerId(), worker);
@@ -152,12 +152,12 @@ public class FileConsentDTO extends ConsentDTO{
 	private void loadFeedback(String line)
 	{
 		String[] result = line.split("%");
-		String workerId = result[3];
+		String workerId = result[3].trim();
 		Worker worker = this.workers.get(workerId);
 		if(worker != null)
 		{
 			for (int i = 0; i < result.length; i++) {
-				if(result[i].equalsIgnoreCase("feedback"))
+				if(result[i].trim().equalsIgnoreCase("feedback"))
 					worker.addSurveyAnswer("feedback", (i == (result.length -1)) ? "" : result[i+1]);
 			}
 		}
@@ -177,7 +177,7 @@ public class FileConsentDTO extends ConsentDTO{
 		{
 			for (int i = 0; i < result.length; i++) {
 				if(result[i].trim().equalsIgnoreCase("answer"))
-					worker.setQuitReason((i == (result.length -1)) ? "" : result[i+1]);
+					worker.setQuitReason((i == (result.length -1)) ? "" : result[i+1].trim());
 			}
 		}
 	}
