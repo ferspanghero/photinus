@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -15,8 +16,9 @@ import edu.uci.ics.sdcl.firefly.WorkerSession;
 
 public class FileSessionDTO extends SessionDTO{
 
-	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample.log";
-	
+	private String logPath = "C:/var/lib/tomcat7/webapps/session-log.txt";
+	private static int dayDate = 7; //July 7th
+	private static int lastHourRead = -1;
 	/**
 	 * CONSTRUCTOR
 	 * @param logPath: Full path of the log file. Ex.: myFolder/myFile.log
@@ -110,7 +112,7 @@ public class FileSessionDTO extends SessionDTO{
 	 */
 	private void loadMicrotask(String line) {
 		String[] result = line.split("%");
-		
+		String[] resultDate = line.split(" ");
 		Integer microtaskID = 0;
 		String sessionID = null;
 		String workerID = null;
@@ -122,10 +124,16 @@ public class FileSessionDTO extends SessionDTO{
 		Integer confidenceLevel = 0;
 		Integer diffculty = 0;
 		String questionType = null;
+		String questionTimestamp = null;
 		for (int i = 0; i < result.length; i++) {
 			String field = result[i];
 			field = field.replaceAll("\\s", "");
 			field = field.replaceAll("\n", "");
+			String date = null;
+			if(i==0){
+				date = result[i].split(" ")[0]; //gets the date on osition 0
+				field = "timestamp";
+			}
 			switch (field) {
 			case "workerId": workerID = result[i+1]; break;
 			case "explanation": explanation = (result.length == 18) ? result[i+1] : "";	break;
@@ -138,6 +146,7 @@ public class FileSessionDTO extends SessionDTO{
 			case "confidenceLevel":	confidenceLevel = Integer.parseInt(result[i+1]);break;
 			case "difficulty":diffculty = Integer.parseInt(result[i+1]);break;
 			case "questionType":questionType = result[i+1]; break;
+			case "timestamp": questionTimestamp = setTimeStampDate(date); break;
 			}
 		}
 		
@@ -217,5 +226,23 @@ public class FileSessionDTO extends SessionDTO{
 			}
 		}
 		return workerSessions;
+	}
+	
+	public String setTimeStampDate(String time){
+		final int MONTH = 6; //July
+		String[] times = time.split(":");
+		int hour = Integer.parseInt(times[0]);
+		int minute = Integer.parseInt(times[1]);
+		int second = (int) Double.parseDouble(times[2]);
+		if(lastHourRead == -1){
+			FileSessionDTO.lastHourRead = hour;
+		}else if(hour < lastHourRead){
+			FileSessionDTO.dayDate++;
+			FileSessionDTO.lastHourRead = hour;
+		}else{
+			FileSessionDTO.lastHourRead = hour;
+		}
+		Date date = new Date(2015, MONTH, dayDate,hour, minute,second);
+		return date.toString();
 	}
 }
