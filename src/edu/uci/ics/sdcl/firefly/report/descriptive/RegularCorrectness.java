@@ -15,7 +15,8 @@ public class RegularCorrectness extends CorrectnessReport {
 	}
 
 	@Override
-	public Map<String, List<String>> generateReport(Map<String, List<String>> headerContent, Map<String, List<String>> answerReport) {
+	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
+		Map<String,List<String>> headerContent = headerReport.getContent();
 		List<String> questions = headerContent.get("Question ID");
 		List<String> bugCoveringList = headerContent.get("Bug Covering");
 		

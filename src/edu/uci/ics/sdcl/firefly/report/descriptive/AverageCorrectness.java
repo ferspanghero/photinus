@@ -4,74 +4,95 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class AverageCorrectness extends CorrectnessReport {
-	
 	String consentLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
-
+	
 	@Override
-	public Map<String, List<String>> generateReport(
-			Map<String, List<String>> headerContent,
-			Map<String, List<String>> answerReport) {
+	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
 		
+		Map<String,List<String>> headerContent = headerReport.getContent();
+		Map<String, List<String>>  answerContent = answerReport.getContent();
 		SessionDTO database = new FileSessionDTO();
 		Map<String, Microtask> microtasks = database.getMicrotasks();
 		List<String> questionIDList = headerContent.get("Question ID"); // this is the data that came form the HeaderReport
-		int truePositive = 0;
-		int trueNegative = 0;
-		int falsePositive = 0;
-		int falseNegative = 0;
-		int idk=0;
 		List<String> averageTP = new ArrayList<String>();
 		List<String> averageTN = new ArrayList<String>();
 		List<String> averageFP = new ArrayList<String>();
 		List<String> averageFN = new ArrayList<String>();
+		List<String> averageIDK = new ArrayList<String>();
 
 
-		for (String questionID : questionIDList) {
-			List<String> workerIDs = microtasks.get(questionID).getWorkerIds();
-			if(workerIDs != null){
-				
-				for (String workerID : workerIDs) {
-					FileConsentDTO fc = new FileConsentDTO(consentLogpath);
-					Iterator<Worker> workersIter = fc.getWorkers().values().iterator();
-					while (workersIter.hasNext()) {
-						Worker worker = workersIter.next();
-						if(worker.getWorkerId().compareTo(workerID)==0){
-							Microtask microtask = microtasks.get(questionID);
-							Answer workerAnswer = microtasks.get(questionID).getAnswerByUserId(workerID);
-							String answerOption = workerAnswer.getOption();
-							boolean bugCovering = isBugCovering(microtask.getID());
-							if(answerOption!=null){
-								if (bugCovering && answerOption.equals(Answer.YES)) {
-									truePositive++;
-								} else if (!bugCovering && answerOption.equals(Answer.NO)) {
-									trueNegative++;
-								} else if (!bugCovering && answerOption.equals(Answer.YES)) {
-									falsePositive++;
-								} else if (bugCovering && answerOption.equals(Answer.NO)) {
-									falseNegative++;
-								} else {
-									idk++;
-								}
-							}
+		for (int i =0; i< questionIDList.size(); i++) {
+			double truePositiveAverage = 0;
+			double trueNegativeAverage = 0;
+			double falsePositiveAverage = 0;
+			double falseNegativeAverage = 0;
+			double idkAverage = 0;
+			int truePositiveSize = 0;
+			int trueNegativeSize = 0;
+			int falsePositiveSize = 0;
+			int falseNegativeSize = 0;
+			int idkSize = 0;
+			
+			Microtask question = microtasks.get(questionIDList.get(i));
+			List<Answer> answerList = question.getAnswerList();
+			Iterator<Entry<String, List<String>>> it = answerContent.entrySet().iterator();
+			for (int j =0; j < answerReport.getContent().size(); j++){
+				if((answerList.size()-1) >= j)
+				{
+					String text = (it.next().getValue().get(i));
+					String answerOption = answerList.get(j).getOption();
+					boolean bugCovering = isBugCovering(Integer.valueOf(questionIDList.get(i)));
+					if(answerOption!=null){
+						if (bugCovering && answerOption.equals(Answer.YES)) {
+							truePositiveAverage+= (text.equals("") ? 0 : Double.valueOf(text));
+							truePositiveSize++;
+						} else if (!bugCovering && answerOption.equals(Answer.NO)) {
+							trueNegativeAverage+= (text.equals("") ? 0 : Double.valueOf(text));
+							trueNegativeSize++;
+						} else if (!bugCovering && answerOption.equals(Answer.YES)) {
+							falsePositiveAverage+= (text.equals("") ? 0 : Double.valueOf(text));
+							falsePositiveSize++;
+						} else if (bugCovering && answerOption.equals(Answer.NO)) {
+							falseNegativeAverage+= (text.equals("") ? 0 : Double.valueOf(text));
+							falseNegativeSize++;
+						} else {
+							idkAverage += (text.equals("") ? 0 : Double.valueOf(text));
+							idkSize++;
 						}
 					}
 				}
-				averageTP.add(String.format("%.2f",((float) truePositive)/workerIDs.size()));
-				averageTN.add(String.format("%.2f",((float) trueNegative)/workerIDs.size()));
-				averageFP.add(String.format("%.2f",((float)falsePositive)/workerIDs.size()));
-				averageFN.add(String.format("%.2f",((float) falseNegative)/workerIDs.size()));
 			}
-			this.correctnessContent.put("Average worker score of True Positives", averageTP);
-			this.correctnessContent.put("Average worker score of True Negatives", averageTN);
-			this.correctnessContent.put("Average worker score of False Positives", averageFP);
-			this.correctnessContent.put("Average worker score of False Negatives", averageFN);
+			if(truePositiveSize != 0)
+				truePositiveAverage /= truePositiveSize;
+			if(trueNegativeSize != 0)
+				trueNegativeAverage /= trueNegativeSize;
+			if(falsePositiveSize != 0)
+				falsePositiveAverage /= falsePositiveSize;
+			if(falseNegativeSize != 0)
+				falseNegativeAverage /= falseNegativeSize;
+			if(idkSize != 0)
+				idkAverage /= idkSize;
+			
+			averageTP.add(String.format("%.2f",((float) truePositiveAverage)));
+			averageTN.add(String.format("%.2f",((float) trueNegativeAverage)));
+			averageFP.add(String.format("%.2f",((float)falsePositiveAverage)));
+			averageFN.add(String.format("%.2f",((float) falseNegativeAverage)));
+			averageIDK.add(String.format("%.2f",((float) idkAverage)));
 		}
+			
+		this.correctnessContent.put("Average "+ answerReport.getDataNature() +" of True Positives", averageTP);
+		this.correctnessContent.put("Average "+ answerReport.getDataNature() +" of True Negatives", averageTN);
+		this.correctnessContent.put("Average "+ answerReport.getDataNature() +" of False Positives", averageFP);
+		this.correctnessContent.put("Average "+ answerReport.getDataNature() +" of False Negatives", averageFN);
+		this.correctnessContent.put("Average "+ answerReport.getDataNature() +" of IDKs", averageIDK);
+		
 		return correctnessContent;
 	}
 		

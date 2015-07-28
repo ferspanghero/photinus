@@ -16,7 +16,7 @@ import edu.uci.ics.sdcl.firefly.WorkerSession;
 
 public class FileSessionDTO extends SessionDTO{
 
-	private String logPath = "C:/var/lib/tomcat7/webapps/session-log.txt";
+	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample.log";
 	private static int dayDate = 7; //July 7th
 	private static int lastHourRead = -1;
 	/**
@@ -136,7 +136,7 @@ public class FileSessionDTO extends SessionDTO{
 			}
 			switch (field) {
 			case "workerId": workerID = result[i+1]; break;
-			case "explanation": explanation = (result.length == 18) ? result[i+1] : "";	break;
+			case "explanation": explanation = ( i < result.length) ? result[i+1] : "";	break;
 			case "fileName": fileName = result[i+1]; break;
 			case "question": question = result[i+1]; break;
 			case "answer": answer = result[i+1]; break;

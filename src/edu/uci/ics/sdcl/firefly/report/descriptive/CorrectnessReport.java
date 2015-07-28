@@ -37,5 +37,5 @@ public abstract class CorrectnessReport {
 	 * the Headers and the contents of the table.
 	 * @return: The map containing the columns and values of the table
 	 */
-	public abstract Map<String, List<String>> generateReport(Map<String, List<String>> headerContent, Map<String, List<String>> answerReport);
+	public abstract Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport);
 }
