@@ -160,7 +160,12 @@ public class ExcelExporter implements DescriptiveReportWriter {
 			for (String key : keys) {
 				cell = row.createCell((cellNumber%table.size()));
 				cellNumber++;
-				cell.setCellValue(table.get(key).get(i));
+				String value = table.get(key).get(i);
+				if(isNumeric(value))
+					cell.setCellValue(Double.valueOf(value));
+				else
+					cell.setCellValue(value);
+				
 				if((cellNumber) <= 4)
 					cell.setCellStyle(dataReportColor(wb,189,215,238));
 				else if (cellNumber <= report.getAnswerReportSize() + 4){
@@ -217,6 +222,11 @@ public class ExcelExporter implements DescriptiveReportWriter {
 		mergeCells.append(endLetter);
 		mergeCells.append(1);
 		return mergeCells.toString();
+	}
+	
+	public static boolean isNumeric(String str)
+	{
+	  return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
 	}
 
 }
