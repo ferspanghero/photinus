@@ -1,14 +1,18 @@
 package edu.uci.ics.sdcl.firefly.util.mturk;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class Turker {
 
 	String turkerID;
+	
+	String turkerFinalWorkerID;
 
+	/** The number of run session in which the worker participated */
+	Integer nonEmptyRunSessions=0;
+	
 	HashMap<String, String> workerIDMap = new HashMap<String,String>();
 
 	/** SessionID, batchFile */
@@ -17,7 +21,16 @@ public class Turker {
 	/** SessionID, HIT Name */
 	HashMap<String, String> sessionMap = new HashMap<String, String>();
 
+	/** RunSession, sessionID (RunSession starts with 1 and goes up to 8) 
+	 *  RunSession is every time a new batch of WorkerSessions was generated */
+	HashMap<String, ArrayList<String>> runSessionMap = new HashMap<String, ArrayList<String>>();
+	
+	/** RunSession, workerID (RunSession starts with 1 and goes up to 8)
+	 *  RunSession is every time a new batch of WorkerSessions was generated */
+	HashMap<String, String> runWorkerIDMap = new HashMap<String, String>();
+	
 	String workerID = null;
+
 
 	public Turker(String turkerID, String sessionID, String batchFile){
 		this.turkerID = turkerID;
@@ -30,11 +43,11 @@ public class Turker {
 
 		if(workerID==null)
 			this.workerID = id.trim();
-		//else
-		//	if(!TurkerWorkerMatcher.checkQuit(id))
-		//		System.out.println("ATTENTION: TurkerID: "+turkerID+" already has workerIDs: "+workerID+". Trying to set to: "+ id);
-		//	else
-		//		System.out.println("OK QUIT: TurkerID: "+turkerID+" already has workerID: "+workerID+". But quitter is: "+ id);
+		else
+			if(!TurkerWorkerMatcher.checkQuit(id))
+				System.out.println("ATTENTION: TurkerID: "+turkerID+" already has workerIDs: "+workerID+". Trying to set to: "+ id);
+			else
+				System.out.println("OK QUIT: TurkerID: "+turkerID+" already has workerID: "+workerID+". But quitter is: "+ id);
 		
 		workerIDMap.put(id,sessionLog);
 	}
@@ -54,6 +67,7 @@ public class Turker {
 		}
 	}
 
+	
 	/** Print the sessionIDs attributed to this Turker 
 	 *  "TurkerID:SessionID:HIT";
 	 * */
@@ -66,11 +80,13 @@ public class Turker {
 		}
 	}
 
+	
 	public void addSession(String sessionID, String batchFile) {
 		this.sessionMap.put(sessionID, getHITName(batchFile));
 		this.sessionBatchMap.put(sessionID,batchFile);
 	}
 
+	
 	public String getHITName(String batchFileName){
 
 		String firstPart = batchFileName.split("_")[1];
@@ -79,6 +95,16 @@ public class Turker {
 		return firstPart + "_" + secondPart;
 	}
 
+	public void consolidadeID(){
+		
+		String tempID="";
+		for(String runWorkerID : this.runWorkerIDMap.values()){
+			if(runWorkerID!=null && runWorkerID.length()>0)
+				tempID = tempID.concat(runWorkerID+":");
+		}
+		this.turkerFinalWorkerID = tempID.substring(0, tempID.lastIndexOf(":"));
+	}
+	
 
 	public static void main(String[] args){
 
@@ -91,5 +117,9 @@ public class Turker {
 		else
 			System.out.println("Error");
 
+		String test = "id:id2:";
+		test = test.substring(0, test.lastIndexOf(":"));
+		System.out.println(test);
+		
 	}
 }

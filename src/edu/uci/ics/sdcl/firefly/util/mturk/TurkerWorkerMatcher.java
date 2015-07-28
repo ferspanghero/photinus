@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
@@ -41,40 +43,221 @@ public class TurkerWorkerMatcher {
 
 	private HashMap<String, HashMap<String, WorkerSession>> missinHITSessionMap;
 
+	/** Constructor */
+	public TurkerWorkerMatcher(){
+		this.checker = new MTurkSessions();
+	}
+
 	//-----------------------------------
 
 	public static void main(String[] args){
 
-		MTurkSessions checker = new MTurkSessions();
 		TurkerWorkerMatcher matcher = new TurkerWorkerMatcher();
 
-		matcher.loadAllHITs();
+		matcher.listTurkersRunSessions();
+	}
 
-		matcher.loadHITs(matcher.checker.mturkLogs_TP6,matcher.checker.mturkLogs_S2);
+	/** 
+	 * Look at each workerID to see if it is associated with two different turkers.
+	 * Prints the results in the console.
+	 */
+	public void checkTurkerHasSameWorkerID(){
 
-		matcher.loadSession(matcher.checker.crowddebugLogs[7]);
+		this.loadHITs(checker.mturkLogs_S1,checker.mturkLogs_S2);
 
-		matcher.matchWorkerIDs(checker.crowddebugLogs[7],matcher.hitsMap1);
+		this.matchWorkerIDs(checker.crowddebugLogs[0],hitsMap1);
+		this.matchWorkerIDs(checker.crowddebugLogs[1],hitsMap2);
 
-		matcher.matchSessions(matcher.hitsMap1);
+		this.printTurkersWithSameWorkerID();//Session (1,2,TP1, TP2, etc.), same workerID:  (TurkerID1:WorkerSession , TurkerID2:WorkerSession)
+	}
 
-		matcher.findMissingHITSessions();
+	/**
+	 * Look at same turker and check if this turker is associated with different workerIDs in different sessionLogs
+	 * Prints the results in the console.
+	 * 
+	 * Order of checking: Session (TP6 x TP5, TP65 x TP4, TP654x TP3, TP6453x TP1, TP x S1, TPS x S2)
+	 * 
+	 * Order of checking: S1 x S2
+	 */
+	public void checkSameTurkerWithDifferentWorkerID(){
 
-		//checkAllNotClaimed();
+		this.loadHITs(checker.mturkLogs_S1,checker.mturkLogs_S2);
 
-		//matcher.loadSessions(0,1);  //Load the sessions and populate turkers with respective workerIds.
+		this.matchWorkerIDs(checker.crowddebugLogs[0],hitsMap1);
+		this.matchWorkerIDs(checker.crowddebugLogs[1],hitsMap2);
 
-		//matcher.printToFileAllTurkerHITs();
+		this.printTurkerWithDifferentWorkerID();
+	}
 
-		//matcher.printTurkersWithSameWorkerID();//Session (1,2,TP1, TP2, etc.), same workerID:  (TurkerID1:WorkerSession , TurkerID2:WorkerSession)
+	/** 
+	 * Checks if:
+	 * - the code in the HIT exists in the session-log
+	 * - the worker associated with that code in the session-log is not associate with other codes 
+	 * that are actually from different workers 
+	 */
+	public void checkHITLogConsistency(){
 
-		//matcher.printTurkerWithDifferentWorkerID();
-		//Order of checking: Session (TP6 x TP5, TP65 x TP4, TP654x TP3, TP6453x TP1, TP x S1, TPS x S2 
+		this.loadAllHITs();
+
+		this.hitsMap1 = loadHIT(this.checker.mturkLogs_S1);
+
+		this.loadSession(this.checker.crowddebugLogs[0]);
+
+		this.matchWorkerIDs(checker.crowddebugLogs[0],this.hitsMap1);
+
+		this.matchSessions(this.hitsMap1);
+
+		this.findMissingHITSessions();
+
+		checkAllNotClaimed();
 	}
 
 
-	public TurkerWorkerMatcher(){
-		this.checker = new MTurkSessions();
+	/** 
+	 * List all turkers who have HITs across session logs.
+	 */
+	public void listTurkersRunSessions(){
+
+		this.loadAllHITs();
+
+		//For each turker, check if turker has 
+		for(String turkerStr : hitsMapAll.keySet()){
+			Turker turker = hitsMapAll.get(turkerStr);
+
+			int nonEmptyRunSessions = 0;
+			int runSession = 0;
+			for(int i=0; i<checker.mturkAllLogs.size();i++) {
+				runSession++;
+				String[] turkLogs = checker.mturkAllLogs.get(i);
+				ArrayList<String> turkerHITList = getHITList(turker.turkerID, turkLogs);
+				if(turkerHITList.size()>0)
+					nonEmptyRunSessions++;
+				//gets both the runSession number as the HITs in which the worker participated
+				turker.runSessionMap.put(new Integer(runSession).toString(),turkerHITList);					
+			}
+			turker.nonEmptyRunSessions = nonEmptyRunSessions;
+			hitsMapAll.put(turkerStr, turker);// saves turker back to the list
+		}
+		populateTurkerWorkerIDs();
+		consolidateTurkerIDs();
+		printRunWorkerIDMap();
+		//printTurkerRunSessions();
+	}
+
+	/** For each turker
+	 * Obtain the sessionID associated with at a HITName (uses the Turker.runSessionMap)
+	 * Obtains the sessionLog corresponding to the run
+	 * Opens the log and extracts the workerID associated with the sessionID 
+	 * Instantiates a new datastructure in Turker.runWorkerIDMap
+	 */
+	private void populateTurkerWorkerIDs(){
+
+		//For each turker, check if turker has 
+		for(String turkerStr : hitsMapAll.keySet()){
+			Turker turker = hitsMapAll.get(turkerStr);
+
+			for(String runID: turker.runSessionMap.keySet()){
+
+				ArrayList<String> sessionIDList = turker.runSessionMap.get(runID);
+				if(sessionIDList.size()>0){
+					String sessionID = sessionIDList.get(0); // The first element is sufficient to obtain the workerID.
+					Integer runIDInt = new Integer(runID);
+					HashMap<String, WorkerSession> workerSessionMap = checker.workerSessionMapList.get(runIDInt-1);
+					WorkerSession session = workerSessionMap.get(sessionID);
+					
+					if(session!=null){
+						String workerID = session.getWorkerId();
+						turker.runWorkerIDMap.put(runID, workerID);
+					}
+					else{
+						System.out.println("Session is null! Should not be, sessionID:"+sessionID);
+					}
+				}
+			}
+		}
+		
+	}
+
+	private void printRunWorkerIDMap(){
+
+		for(Turker turker : this.hitsMapAll.values()){
+			System.out.println();
+			System.out.print(turker.turkerID+";"+turker.nonEmptyRunSessions+";"+turker.turkerFinalWorkerID+";");
+
+			for(int i=1;i<9;i++){
+				String workerID = turker.runWorkerIDMap.get(new Integer(i).toString());
+				if(workerID==null)
+					System.out.print(i+";-");
+				else{
+					System.out.print(i+";");
+					System.out.print(workerID);
+				}
+				System.out.print(";");
+			}
+		}	
+	}
+
+	
+	private void consolidateTurkerIDs(){
+		for(String turkerStr : hitsMapAll.keySet()){
+			Turker turker = hitsMapAll.get(turkerStr);
+			turker.consolidadeID();
+			hitsMapAll.put(turkerStr,turker);
+		}
+	}
+
+	private ArrayList<String> getHITList(String turkerID, String[]turkerLogs){
+
+		ArrayList<String> HITList = new ArrayList<String>();
+
+		HashMap<String, Turker> hitMap = this.loadHIT(turkerLogs);
+
+		for(String turkID : hitMap.keySet()){
+			if(turkID.compareTo(turkerID)==0){
+				Turker turker = hitMap.get(turkID);
+				HITList.addAll(turker.sessionMap.keySet());
+			}
+		}	
+		return HITList;
+	}
+
+	/**
+	 * Prints for each turkerID the following string
+	 * The HITnames are within curly brackets.
+	 * 
+	 * TurkerID:1:{}2:{}:3:{}:4:{}:5:{}:6{}:7:{}:8:{}
+	 */
+	private void printTurkerRunSessions(){
+
+		for(Turker turker : this.hitsMapAll.values()){
+			System.out.print(turker.turkerID+":"+turker.nonEmptyRunSessions+":");
+
+			for(int i=1;i<9;i++){
+				ArrayList<String> list = turker.runSessionMap.get(new Integer(i).toString());
+				if(list==null)
+					System.out.print(i+":{}:");
+				else{
+					System.out.print(i+":{");
+					for(String hitname: list){
+						System.out.print(hitname+ ",");
+					}
+					System.out.print("}:");
+				}
+			}
+			System.out.println();
+		}
+	}
+
+
+
+	public HashMap<String, Turker> loadHIT(String[] sessionLog){
+
+		HashMap<String, Turker> hitMap = new HashMap<String,Turker>();
+
+		for(String batchFile: sessionLog){																	
+			hitMap= importHITCodes(batchFile, hitMap);		
+		}
+		return hitMap;
 	}
 
 	public void loadHITs(String[] firstLogs, String[] secondLogs){
@@ -84,18 +267,24 @@ public class TurkerWorkerMatcher {
 		}
 
 		for(String batchFile: secondLogs){
-			//this.hitsMap2= importHITCodes(batchFile, hitsMap2);		
+			this.hitsMap2= importHITCodes(batchFile, hitsMap2);		
 		}
 	}
 
 	public void loadSession(String crowdLog){
+
 		FileSessionDTO sessionDTO = new FileSessionDTO(this.folder+crowdLog);
 		this.sessionMap = sessionDTO.getSessions();
 		buildWorkerSessionsMap();
 	}
 
 
+	/** Builds a map with the following structure: 
+	 *  Key: workerID
+	 *  Value: HashMap<sessionID,session>
+	 */
 	private void buildWorkerSessionsMap(){
+
 		this.workerSessionsMap = new HashMap<String, HashMap<String,WorkerSession>>();
 		for(WorkerSession session: sessionMap.values()){
 			String workerID = session.getWorkerId();
@@ -109,8 +298,9 @@ public class TurkerWorkerMatcher {
 
 
 	public void matchSessions(int firstSession, int secondSession){
+
 		matchWorkerIDs(checker.crowddebugLogs[firstSession],hitsMap1); //Load the sessions and populate turkers with respective workerIds.
-		//matchWorkerIDs(checker.crowddebugLogs[secondSession],hitsMap2);
+		matchWorkerIDs(checker.crowddebugLogs[secondSession],hitsMap2);
 	}
 
 
@@ -244,7 +434,7 @@ public class TurkerWorkerMatcher {
 	 * 
 	 */
 	public void findMissingHITSessions(){
-		
+
 		if(missinHITSessionMap!=null)
 			for(String turkerID: this.missinHITSessionMap.keySet()){
 				HashMap<String,WorkerSession> missingLogSessionsMap = this.missinHITSessionMap.get(turkerID);
@@ -265,15 +455,13 @@ public class TurkerWorkerMatcher {
 						}
 					}
 				}
-
 			}
-
 	}
 
 	/** Check whether a worker has any extra session that is not in the HIT list of a Turker 
 	 * @param hitsMap */
 	private boolean workerHasExtraSessions(String workerID, Turker turker){
-		
+
 		HashMap<String,WorkerSession> workerSessionMap = this.workerSessionsMap.get(workerID);
 		for(WorkerSession composedSession: workerSessionMap.values()){
 			String workerSessionID = extract(composedSession.getId());
@@ -282,13 +470,13 @@ public class TurkerWorkerMatcher {
 				if((composedSession.getMicrotaskListSize()<3)) //Disconsider empty or incomplete sessions. 
 					return false;
 				else
-				if	(this.sessionID_Not_ClaimedByOtherTurkers(turker, workerSessionID))//Disconsider sessions that were not claimed by others (possibly worker did extra session), 
-					return false;  		//However, it might be ok even if a worker in a different logSession had claimed the same sessionID, the test in place now to check whether the 
-										//turker claimed the HIT in the wrong logSession.
-				else{
-					System.out.println("Invalid worker for turker:"+turker.turkerID+": worker:"+workerID+": session:"+workerSessionID+" HIT:"+composedSession.getFileName());
-					return true;
-				}
+					if	(this.sessionID_Not_ClaimedByOtherTurkers(turker, workerSessionID))//Disconsider sessions that were not claimed by others (possibly worker did extra session), 
+						return false;  		//However, it might be ok even if a worker in a different logSession had claimed the same sessionID, the test in place now to check whether the 
+				//turker claimed the HIT in the wrong logSession.
+					else{
+						System.out.println("Invalid worker for turker:"+turker.turkerID+": worker:"+workerID+": session:"+workerSessionID+" HIT:"+composedSession.getFileName());
+						return true;
+					}
 			}
 		}
 		return false;
@@ -317,9 +505,10 @@ public class TurkerWorkerMatcher {
 	// PRINTING METHODS
 
 	public void loadAllHITs(){
-		for(String batchFile: checker.mturkAllLogs){
-			this.hitsMapAll= importHITCodes(batchFile, this.hitsMapAll);		
-		}
+
+		for(String[] batchFileList : checker.mturkAllLogs)
+			for(String batchFile: batchFileList)
+				this.hitsMapAll= importHITCodes(batchFile, this.hitsMapAll);		
 
 		System.out.println("Total HITs imported: "+this.hitsMapAll.size());
 	}
@@ -390,7 +579,7 @@ public class TurkerWorkerMatcher {
 		BufferedReader log = null;
 		try {
 
-			System.out.println("Batch: "+path);
+			//System.out.println("Batch: "+path);
 			log = new BufferedReader(new FileReader(path));
 			String line = log.readLine(); //discards first line
 
@@ -466,7 +655,6 @@ public class TurkerWorkerMatcher {
 			return null;
 		}
 	}
-
 
 
 
