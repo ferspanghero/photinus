@@ -77,7 +77,7 @@ public class DescriptiveReportBuilder {
 	 * the orange parts of the tables.
 	 * @return: The CorrectnessReport containing the filtered data for the report type X
 	 */
-	private Map<String, List<String>> buildCorrectnessReport(Map<String, List<String>> headerReport, Map<String, List<String>> answerReport)
+	private Map<String, List<String>> buildCorrectnessReport(HeaderReport headerReport, AnswerReport answerReport)
 	{
 		return this.correctness.generateReport(headerReport, answerReport);
 	}
@@ -90,12 +90,12 @@ public class DescriptiveReportBuilder {
 	public DescriptiveReport generateDescriptiveReport()
 	{
 		Map<String, List<String>> headerContent = buildHeaderReport();
-		Map<String, List<String>> answerContent = buildAnswerReport(headerContent);
+		buildAnswerReport(headerContent);
 		if(this.counters != null)
 		{
 			buildCountReport(header,answers);
 		}
-		buildCorrectnessReport(headerContent,answerContent);
+		buildCorrectnessReport(header,answers);
 		DescriptiveReport report = new DescriptiveReport(this.header, this.answers, this.counters, this.correctness, exporter);
 		return report;
 	}

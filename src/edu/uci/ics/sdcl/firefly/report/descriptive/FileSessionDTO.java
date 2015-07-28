@@ -16,7 +16,7 @@ import edu.uci.ics.sdcl.firefly.WorkerSession;
 
 public class FileSessionDTO extends SessionDTO{
 
-	private String logPath = "C:/var/lib/tomcat7/webapps/session-log.txt";
+	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample.log";
 	private static int dayDate = 7; //July 7th
 	private static int lastHourRead = -1;
 	/**

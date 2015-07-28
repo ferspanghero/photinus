@@ -30,7 +30,7 @@ public class WorkerScoreReport extends AnswerReport{
 
 	@Override
 	public String getDataNature() {
-		return "Score";
+		return "Worker Score";
 	}
 
 }

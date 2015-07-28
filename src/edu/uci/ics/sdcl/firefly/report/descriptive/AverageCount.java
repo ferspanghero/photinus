@@ -10,17 +10,8 @@ import java.util.Map.Entry;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
-import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class AverageCount extends CountReport {
-	
-	private final int NUMBER_OF_ANSWERS;
- 
-	
-	public AverageCount() {
-		PropertyManager properties = PropertyManager.initializeSingleton();
-		this.NUMBER_OF_ANSWERS = properties.answersPerMicrotask;
-	}
 	
 	@Override
 	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
@@ -47,7 +38,7 @@ public class AverageCount extends CountReport {
 				String text = content.get(key).get(i);
 				if(!text.equals(""))
 				{
-					average += Integer.valueOf(text);
+					average += Double.valueOf(text);
 					size++;
 				}
 			}
@@ -77,12 +68,12 @@ public class AverageCount extends CountReport {
 			Microtask question = microtaks.get(questionID);
 			List<Answer> answerList = question.getAnswerList();
 			Iterator<Entry<String, List<String>>> it = content.entrySet().iterator();
-			for (int j =0; j < NUMBER_OF_ANSWERS; j++ ) {
+			for (int j =0; j < answerReport.getContent().size(); j++ ) {
 				if((answerList.size()-1) >= j)
 				{
 					Answer answer = answerList.get(j);
 					String text = (it.next().getValue().get(i));
-					confidenceAverage[answer.getConfidenceOption()] += (text.equals("") ? 0 : Integer.valueOf(text));
+					confidenceAverage[answer.getConfidenceOption()] += (text.equals("") ? 0 : Double.valueOf(text));
 					confidenceNumber[answer.getConfidenceOption()]++;
 				}
 			}
@@ -118,7 +109,7 @@ public class AverageCount extends CountReport {
 			Microtask question = microtaks.get(questionID);
 			List<Answer> answerList = question.getAnswerList();
 			Iterator<Entry<String, List<String>>> it = content.entrySet().iterator();
-			for (int j =0; j < NUMBER_OF_ANSWERS; j++ ) {
+			for (int j =0; j < answerReport.getContent().size(); j++ ) {
 				if((answerList.size()-1) >= j)
 				{
 					Answer answer = answerList.get(j);
