@@ -10,8 +10,18 @@ import java.util.Map.Entry;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class AverageCount extends CountReport {
+	
+	private final int NUMBER_OF_QUESTIONS;
+	private final int QUESTIONS_PER_SESSION;
+	
+	public AverageCount() {
+		PropertyManager property = PropertyManager.initializeSingleton();
+		this.NUMBER_OF_QUESTIONS = property.answersPerMicrotask;
+		this.QUESTIONS_PER_SESSION = property.microtasksPerSession;
+	}
 	
 	@Override
 	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
@@ -68,7 +78,8 @@ public class AverageCount extends CountReport {
 			Microtask question = microtaks.get(questionID);
 			List<Answer> answerList = question.getAnswerList();
 			Iterator<Entry<String, List<String>>> it = content.entrySet().iterator();
-			for (int j =0; j < answerReport.getContent().size(); j++ ) {
+			int answersLimitSize = (answerReport.getContent().size() == QUESTIONS_PER_SESSION) ? QUESTIONS_PER_SESSION : NUMBER_OF_QUESTIONS;
+			for (int j =0; j < answersLimitSize; j++ ) {
 				if((answerList.size()-1) >= j)
 				{
 					Answer answer = answerList.get(j);
@@ -109,7 +120,8 @@ public class AverageCount extends CountReport {
 			Microtask question = microtaks.get(questionID);
 			List<Answer> answerList = question.getAnswerList();
 			Iterator<Entry<String, List<String>>> it = content.entrySet().iterator();
-			for (int j =0; j < answerReport.getContent().size(); j++ ) {
+			int answersLimitSize = (answerReport.getContent().size() == QUESTIONS_PER_SESSION) ? QUESTIONS_PER_SESSION : NUMBER_OF_QUESTIONS;
+			for (int j =0; j < answersLimitSize; j++ ) {
 				if((answerList.size()-1) >= j)
 				{
 					Answer answer = answerList.get(j);

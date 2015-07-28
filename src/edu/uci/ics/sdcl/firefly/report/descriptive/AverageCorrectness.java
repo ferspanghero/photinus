@@ -11,7 +11,15 @@ import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class AverageCorrectness extends CorrectnessReport {
+	private final int NUMBER_OF_QUESTIONS;
+	private final int QUESTIONS_PER_SESSION;
 	String consentLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
+	
+	public AverageCorrectness() {
+		PropertyManager property = PropertyManager.initializeSingleton();
+		this.NUMBER_OF_QUESTIONS = property.answersPerMicrotask;
+		this.QUESTIONS_PER_SESSION = property.microtasksPerSession;
+	}
 	
 	@Override
 	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
@@ -43,7 +51,8 @@ public class AverageCorrectness extends CorrectnessReport {
 			Microtask question = microtasks.get(questionIDList.get(i));
 			List<Answer> answerList = question.getAnswerList();
 			Iterator<Entry<String, List<String>>> it = answerContent.entrySet().iterator();
-			for (int j =0; j < answerReport.getContent().size(); j++){
+			int answersLimitSize = (answerReport.getContent().size() == QUESTIONS_PER_SESSION) ? QUESTIONS_PER_SESSION : NUMBER_OF_QUESTIONS;
+			for (int j =0; j < answersLimitSize; j++){
 				if((answerList.size()-1) >= j)
 				{
 					String text = (it.next().getValue().get(i));
