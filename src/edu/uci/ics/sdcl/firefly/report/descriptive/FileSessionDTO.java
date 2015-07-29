@@ -151,7 +151,7 @@ public class FileSessionDTO extends SessionDTO{
 		}
 		
 		Vector<Answer> answerList = new Vector<Answer>();
-		answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, null,diffculty));
+		answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, questionTimestamp,diffculty));
 		Microtask microtask = new Microtask(question, microtaskID, answerList , fileName);
 		microtask.setQuestionType(questionType);
 		
@@ -244,5 +244,9 @@ public class FileSessionDTO extends SessionDTO{
 		}
 		Date date = new Date(2015, MONTH, dayDate,hour, minute,second);
 		return date.toString();
+	}
+	
+	public HashMap<String,WorkerSession> getClosedSessions(){
+		return this.closedSessions;
 	}
 }

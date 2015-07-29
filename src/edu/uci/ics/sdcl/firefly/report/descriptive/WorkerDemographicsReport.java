@@ -3,6 +3,8 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -20,8 +22,10 @@ public class WorkerDemographicsReport {
 
 private String fileName = "WorkersDemographicsReport.xlsx";
 	
-	String consentLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
-	String sessionLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample.log";
+	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-log-large.txt";
+	String sessionLogpath = "C:/var/lib/tomcat7/webapps/session-log-large.txt";
+	FileConsentDTO fc = new FileConsentDTO(consentLogpath);
+	FileSessionDTO fs = new FileSessionDTO(sessionLogpath);
 
 	public WorkerDemographicsReport(){
 		writeToXlsx();
@@ -59,20 +63,20 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		int cellNum = 0;
 		/* creating first header line */
 		Cell cell = row.createCell(cellNum);
-		workersSheet.addMergedRegion(CellRangeAddress.valueOf("A1:H1"));
+		workersSheet.addMergedRegion(CellRangeAddress.valueOf("A1:I1"));
 		cell.setCellValue("1 - Data Identifiers - (Worker Demographics)");
-		cell = row.createCell(8); //next cell starts at position 8
+		cell = row.createCell(9); //next cell starts at position 8
 
 		cell.setCellValue("2 - Load Factor");
-		workersSheet.addMergedRegion(CellRangeAddress.valueOf("I1:P1"));
-		cell = row.createCell(16);//next cell starts at position 13
+		workersSheet.addMergedRegion(CellRangeAddress.valueOf("J1:R1"));
+		cell = row.createCell(18);//next cell starts at position 13
 
 		cell.setCellValue("3 - Optimism Analisys");
-		workersSheet.addMergedRegion(CellRangeAddress.valueOf("Q1:T1"));
-		cell = row.createCell(20);//next cell starts at position 17
+		workersSheet.addMergedRegion(CellRangeAddress.valueOf("S1:V1"));
+		cell = row.createCell(22);//next cell starts at position 17
 
 		cell.setCellValue("4 - Quality");
-		workersSheet.addMergedRegion(CellRangeAddress.valueOf("U1:Z1"));
+		workersSheet.addMergedRegion(CellRangeAddress.valueOf("X1:Z1"));
 		
 	}
 	
@@ -83,6 +87,9 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		Cell cell;
 		cell = row.createCell(cellNum++);
 		cell.setCellValue("Worker Id");
+		cell = row.createCell(cellNum++);
+		
+		cell.setCellValue("User quit ?");
 		cell = row.createCell(cellNum++);
 
 		cell.setCellValue("Worker Score");
@@ -131,6 +138,8 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		cell.setCellValue("Answer Duration Average");
 		cell = row.createCell(cellNum++);
 		
+		cell.setCellValue("Answer Timestamp");
+		cell = row.createCell(cellNum++);
 		
 		//------------------------------------------//
 		//Optimism Analisys
@@ -167,7 +176,6 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 	}
 	
 	public void populateTable(XSSFSheet workersSheet){
-		FileConsentDTO fc = new FileConsentDTO(consentLogpath);
 		
 		int rownum = 2;
 		Row row = workersSheet.createRow(rownum);
@@ -184,38 +192,39 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 	}
 
 	public void populateDataIdentifiers(Row row, int cellNum, Worker worker) {
-
 		Cell cell;
 		cell = row.createCell(cellNum++);
 		cell.setCellValue(worker.getWorkerId());
 		
 		cell = row.createCell(cellNum++);
+		cell.setCellValue(hasQuit(worker));
+		
+		cell = row.createCell(cellNum++);
 		cell.setCellValue(worker.getGrade());
 		
 		cell = row.createCell(cellNum++);
-		cell.setCellValue(worker.getSurveyAnswer(" Experience"));
+		cell.setCellValue(worker.getSurveyAnswer("Experience"));
 		
 		cell = row.createCell(cellNum++);
-		cell.setCellValue(worker.getSurveyAnswer(" YearsProgramming"));
+		cell.setCellValue(worker.getSurveyAnswer("YearsProgramming"));
 		
 		cell = row.createCell(cellNum++);
-		cell.setCellValue(worker.getSurveyAnswer(" Gender"));
+		cell.setCellValue(worker.getSurveyAnswer("Gender"));
 		
 		cell = row.createCell(cellNum++);
-		cell.setCellValue(worker.getSurveyAnswer(" Country"));
+		cell.setCellValue(worker.getSurveyAnswer("Country"));
 		
 		cell = row.createCell(cellNum++);
-		cell.setCellValue(worker.getSurveyAnswer(" Language"));
+		cell.setCellValue(worker.getSurveyAnswer("Language"));
 		
 		cell = row.createCell(cellNum++);
-		cell.setCellValue(worker.getSurveyAnswer(" Learned"));
+		cell.setCellValue(worker.getSurveyAnswer("Learned"));
 		
 		populateLoadFactor(row, cellNum, worker);
 
 	}
 	
 	public void populateLoadFactor(Row row, int cellNum, Worker worker) {
-		FileSessionDTO fs = new FileSessionDTO(sessionLogpath);
 		ArrayList<WorkerSession> workerSessions = fs.getSessionsByWorkerID(worker.getWorkerId());
 		
 		int numberOfAnswers = 0;
@@ -272,11 +281,34 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		cell = row.createCell(cellNum++);
 		cell.setCellValue(durationAverage);
 		
+		int avDay = 0;
+		for (WorkerSession workerSession : workerSessions) {
+			Iterator<Microtask> iterMicrotask = workerSession.getMicrotaskList().iterator();
+			while(iterMicrotask.hasNext()){
+				Microtask microtask = iterMicrotask.next();
+				HashMap<Integer,Integer> days = new HashMap<Integer,Integer>();
+				Answer answer = microtask.getAnswerByUserId(worker.getWorkerId());
+				if(answer!=null){
+					
+					Date date = new Date(answer.getTimeStamp());
+					
+					if(!days.containsKey(date.getDate())){
+						days.put(date.getDate(), 1);
+					}else{
+						Integer value = days.get(date.getDate());
+						days.put(date.getDate(), value++);
+					}
+					avDay = getAverageDay(days);
+				};
+			}
+		}
+		cell = row.createCell(cellNum++);
+		cell.setCellValue(avDay);
+		
 		populateOptimismAnalysis(row,cellNum, worker, numberOfYes, numberOfNo);
 	}
 	
 	public void populateOptimismAnalysis(Row row, int cellNum, Worker worker, int numberOfYes, int numberOfNo){
-		FileSessionDTO fs = new FileSessionDTO(sessionLogpath);
 		ArrayList<WorkerSession> workerSessions = fs.getSessionsByWorkerID(worker.getWorkerId());
 		int totalAnswers= numberOfYes+numberOfNo;
 		int expectedYes = 0;
@@ -320,7 +352,6 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 	}
 	
 	private void populateQuality(Row row, int cellNum, Worker worker) {
-		FileSessionDTO fs = new FileSessionDTO(sessionLogpath);
 		ArrayList<WorkerSession> workerSessions = fs.getSessionsByWorkerID(worker.getWorkerId());
 		int truePositive = 0;
 		int trueNegative = 0;
@@ -443,5 +474,34 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 	
 	public static void main(String[] args) {
 		WorkerDemographicsReport wdr = new WorkerDemographicsReport();
+	}
+	
+	public boolean hasQuit(Worker worker){
+		Iterator<WorkerSession> it = fs.getClosedSessions().values().iterator();
+		while(it.hasNext()){
+			if(it.next().getWorkerId().equals(worker.getWorkerId())){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public int getAverageDay(HashMap<Integer,Integer> days){
+		int max = 0;
+		Iterator<Integer> it = days.values().iterator();
+		while(it.hasNext()){
+			int count = it.next();
+			if(count>max){
+				max = count; 
+			}
+		}
+		Iterator<Integer> itKeys = days.keySet().iterator();
+		while(itKeys.hasNext()){
+			int day = itKeys.next();
+			if(days.get(day)==max){
+				return day;
+			}
+		}
+		return -1;
 	}
 }
