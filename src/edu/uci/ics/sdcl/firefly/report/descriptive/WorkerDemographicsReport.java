@@ -22,8 +22,8 @@ public class WorkerDemographicsReport {
 
 private String fileName = "WorkersDemographicsReport.xlsx";
 	
-	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-log-large.txt";
-	String sessionLogpath = "C:/var/lib/tomcat7/webapps/session-log-large.txt";
+	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-log.txt";
+	String sessionLogpath = "C:/var/lib/tomcat7/webapps/session-log.txt";
 	FileConsentDTO fc = new FileConsentDTO(consentLogpath);
 	FileSessionDTO fs = new FileSessionDTO(sessionLogpath);
 
@@ -76,7 +76,7 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		cell = row.createCell(22);//next cell starts at position 17
 
 		cell.setCellValue("4 - Quality");
-		workersSheet.addMergedRegion(CellRangeAddress.valueOf("X1:Z1"));
+		workersSheet.addMergedRegion(CellRangeAddress.valueOf("W1:Z1"));
 		
 	}
 	
@@ -138,7 +138,7 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		cell.setCellValue("Answer Duration Average");
 		cell = row.createCell(cellNum++);
 		
-		cell.setCellValue("Answer Timestamp");
+		cell.setCellValue("Day of most answers");
 		cell = row.createCell(cellNum++);
 		
 		//------------------------------------------//
@@ -200,8 +200,11 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		cell.setCellValue(hasQuit(worker));
 		
 		cell = row.createCell(cellNum++);
-		cell.setCellValue(worker.getGrade());
-		
+		if(worker.getGrade()>-1){
+			cell.setCellValue(worker.getGrade()*20);
+		}else{
+			cell.setCellValue(worker.getGrade());
+		}
 		cell = row.createCell(cellNum++);
 		cell.setCellValue(worker.getSurveyAnswer("Experience"));
 		
@@ -303,7 +306,7 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 			}
 		}
 		cell = row.createCell(cellNum++);
-		cell.setCellValue(avDay);
+		cell.setCellValue(mapDayToString(avDay));
 		
 		populateOptimismAnalysis(row,cellNum, worker, numberOfYes, numberOfNo);
 	}
@@ -476,14 +479,21 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		WorkerDemographicsReport wdr = new WorkerDemographicsReport();
 	}
 	
-	public boolean hasQuit(Worker worker){
-		Iterator<WorkerSession> it = fs.getClosedSessions().values().iterator();
+	public String hasQuit(Worker worker){
+		Iterator<Worker> it = fc.getWorkers().values().iterator();
 		while(it.hasNext()){
-			if(it.next().getWorkerId().equals(worker.getWorkerId())){
-				return false;
+			Worker selectedWorker = it.next();
+			if(selectedWorker.getWorkerId().equals(worker.getWorkerId())){
+				if(selectedWorker.getQuitReason()!= null){
+					return "Quit";
+				}else if(selectedWorker.getSurveyAnswers().size() == 0){
+					return "Quit without reason";
+				}else if(selectedWorker.getGrade()<3){
+					return "Failed Test";
+				}
 			}
 		}
-		return true;
+		return "Completed Tasks";
 	}
 	
 	public int getAverageDay(HashMap<Integer,Integer> days){
@@ -503,5 +513,26 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 			}
 		}
 		return -1;
+	}
+	
+	public String mapDayToString(int day){
+		String dayString = null;
+		switch(day){
+	            case 7:  dayString = "1.0";
+	                     break;
+	            case 8:  dayString = "2.0";
+	                     break;
+	            case 9:  dayString = "3.0";
+	                     break;
+	            case 10:  dayString = "4.0";
+	                     break;
+	            case 11:  dayString = "5.0";
+	                     break;
+	            case 12:  dayString = "6.0";
+	                     break;
+	            case 13:  dayString = "7.0";
+	                     break;
+		}
+		return dayString;
 	}
 }
