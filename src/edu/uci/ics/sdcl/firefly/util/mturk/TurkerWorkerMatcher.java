@@ -26,8 +26,6 @@ import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
  */
 public class TurkerWorkerMatcher {
 
-	String folder = "C:/firefly/stage/";
-
 	//Alls maps, one indexed by turker other indexed by sessionsIDs
 	HashMap<String, Turker> hitsMapAll = new HashMap<String, Turker>(); 
 	HashMap<String, HashMap<String,Turker>>allTurkSessionsMap = new HashMap<String, HashMap<String,Turker>>();
@@ -37,15 +35,17 @@ public class TurkerWorkerMatcher {
 	HashMap<String, Turker> hitsMap2 = new HashMap<String, Turker>();
 	HashMap<String, WorkerSession> sessionMap = new HashMap<String, WorkerSession>();
 
-	MTurkSessions checker;
-
+	MTurkSessions checker; 
+	LogReadWriter logReadWriter;
+	
 	private HashMap<String, HashMap<String, WorkerSession>> workerSessionsMap;
 
 	private HashMap<String, HashMap<String, WorkerSession>> missinHITSessionMap;
-
+	
 	/** Constructor */
 	public TurkerWorkerMatcher(){
 		this.checker = new MTurkSessions();
+		this.logReadWriter = new LogReadWriter();
 	}
 
 	//-----------------------------------
@@ -116,7 +116,7 @@ public class TurkerWorkerMatcher {
 	/** 
 	 * List all turkers who have HITs across session logs.
 	 */
-	public void listTurkersRunSessions(){
+	public HashMap<String, Turker> listTurkersRunSessions(){
 
 		this.loadAllHITs();
 
@@ -140,8 +140,9 @@ public class TurkerWorkerMatcher {
 		}
 		populateTurkerWorkerIDs();
 		consolidateTurkerIDs();
-		printRunWorkerIDMap();
+		//printRunWorkerIDMap();
 		//printTurkerRunSessions();
+		return this.hitsMapAll;
 	}
 
 	/** For each turker
@@ -273,7 +274,7 @@ public class TurkerWorkerMatcher {
 
 	public void loadSession(String crowdLog){
 
-		FileSessionDTO sessionDTO = new FileSessionDTO(this.folder+crowdLog);
+		FileSessionDTO sessionDTO = new FileSessionDTO(this.logReadWriter.getPath(1)+crowdLog);
 		this.sessionMap = sessionDTO.getSessions();
 		buildWorkerSessionsMap();
 	}
@@ -572,7 +573,7 @@ public class TurkerWorkerMatcher {
 
 		int turkerIDPos = 0;
 		int sessionIDPos = 1;
-		String path = this.folder +  batchFile;
+		String path = checker.folder_MTurkLogs +  batchFile;
 
 		HashMap<String, String> codeMap = new HashMap<String, String>();
 

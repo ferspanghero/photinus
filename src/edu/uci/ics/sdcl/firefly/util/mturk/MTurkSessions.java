@@ -22,8 +22,10 @@ public class MTurkSessions {
 	/** All mturk log file names */
 	ArrayList<String[]> mturkAllLogs = new ArrayList<String[]>();
 
+	LogReadWriter logReadWriter = new LogReadWriter();
+	
 	public MTurkSessions(){
-
+		
 		//one list of MTurk Logs 
 		mturkAllLogs.add(this.mturkLogs_S1);  //0
 		mturkAllLogs.add(this.mturkLogs_S2);  //1
@@ -47,14 +49,14 @@ public class MTurkSessions {
 
 	/** Load all workers in memory */
 	private HashMap<String, Worker> loadWorkers (String consentFileName){
-		FileConsentDTO dto = new FileConsentDTO(folder+consentFileName);
+		FileConsentDTO dto = new FileConsentDTO(logReadWriter.getPath(1)+consentFileName);
 
 		return dto.getWorkers();			
 	}
 
 	/** Load all workerSessions in memory */
 	private HashMap<String, WorkerSession> loadSessions(String sessionFileName, Integer runID){
-		FileSessionDTO dto = new FileSessionDTO(folder+sessionFileName);
+		FileSessionDTO dto = new FileSessionDTO(logReadWriter.getPath(1)+sessionFileName);
 		return removeQuitSessions(dto.getSessions(),runID);
 	}
 
@@ -80,10 +82,6 @@ public class MTurkSessions {
 					WorkerSession prevCuratedSession = curatedSessionMap.get(sessionID);
 					duplicatedSessionMap.put(sessionID+":"+prevCuratedSession.getWorkerId().trim(),prevCuratedSession);
 					curatedSessionMap.remove(sessionID);
-
-					if(sessionID.compareTo("352eG6G8I245")==0){
-						System.out.println("duplicated session:"+sessionID+":worker:"+workerID+":"+prevCuratedSession.getWorkerId());
-					}
 				}
 				else
 					curatedSessionMap.put(sessionID, session);
@@ -167,7 +165,8 @@ public class MTurkSessions {
 
 
 
-	String folder = "C:/firefly/stage/logs/";
+	//String folder_CrowdDebugLogs = "C:/firefly/stage/logs/";
+	String folder_MTurkLogs = "C:/firefly/stage/";
 
 	String[] mturkLogs_TP6 = { 
 			"HIT_04_7_11_TP6.csv",
@@ -272,4 +271,5 @@ public class MTurkSessions {
 	ArrayList<HashMap<String,WorkerSession>> workerSessionMapList =new ArrayList<HashMap<String, WorkerSession>>();
 
 	ArrayList<HashMap<String,Worker>> workerMapList =new ArrayList<HashMap<String, Worker>>();
+
 }
