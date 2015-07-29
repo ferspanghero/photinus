@@ -3,6 +3,8 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 import java.util.List;
 import java.util.Map;
 
+import edu.uci.ics.sdcl.firefly.Microtask;
+
 
 /**
  * Provides an interface for different builders.
@@ -27,6 +29,12 @@ public class DescriptiveReportBuilder {
 		this.counters = counter;
 		this.correctness = correctness;
 		this.exporter = exporter;
+	}
+	
+	public void setFilter(Filter filter)
+	{
+		FileSessionDTO dto = new FileSessionDTO();
+		dto.setFilter(filter);
 	}
 	
 	public void setAnswerReport(AnswerReport answers) {

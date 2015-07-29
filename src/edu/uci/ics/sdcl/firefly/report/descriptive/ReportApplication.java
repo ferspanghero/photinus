@@ -6,7 +6,10 @@ public class ReportApplication {
 	private static DescriptiveReportBuilder builder;
 	
 	public static void main(String[] args) {
-		sessionDurationReport(new ExcelExporter());
+		difficultyLevelReport(new ExcelExporter());
+		Filter filter = new Filter();
+		filter.setAnswerDurationCriteria(-1, 30);
+		builder.setFilter(filter);
 		DescriptiveReport report = builder.generateDescriptiveReport();
 		report.exportReport(); // THIS SHOULD EXPORT ON AN EXCEL SPREADSHEET
 	}

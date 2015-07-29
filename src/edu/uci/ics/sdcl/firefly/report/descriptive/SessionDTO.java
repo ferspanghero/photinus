@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
@@ -20,19 +21,19 @@ public abstract class SessionDTO {
 	 * Will hold the data loaded from the database.
 	 * Necessary not to keep connecting to the database.
 	 */
-	protected HashMap<String, WorkerSession> openSessions = new HashMap<String, WorkerSession>();
+	protected Map<String, WorkerSession> openSessions = new HashMap<String, WorkerSession>();
 	
 	/**
 	 * Will hold the data loaded from the database.
 	 * Necessary not to keep connecting to the database.
 	 */
-	protected HashMap<String, WorkerSession> closedSessions = new HashMap<String, WorkerSession>();
+	protected Map<String, WorkerSession> closedSessions = new HashMap<String, WorkerSession>();
 	
 	/**
 	 * Will hold the data loaded from the database.
 	 * Necessary not to keep connecting to the database.
 	 */
-	protected HashMap<String, Microtask> microtasks = new HashMap<String, Microtask>();
+	protected Map<String, Microtask> microtasks = new HashMap<String, Microtask>();
 	
 	/**
 	 * Responsible for getting all the sessions
@@ -41,10 +42,10 @@ public abstract class SessionDTO {
 	 * content first.
 	 * @return: A list containing all the sessions on the database
 	 */
-	public abstract HashMap<String,WorkerSession> getSessions();
+	public abstract Map<String,WorkerSession> getSessions();
 	
 	
-	public abstract HashMap<String,Microtask> getMicrotasks();
+	public abstract Map<String,Microtask> getMicrotasks();
 	
 	/**
 	 * Responsible for loading data from the database

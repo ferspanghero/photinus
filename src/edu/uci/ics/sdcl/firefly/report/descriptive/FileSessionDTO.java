@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.Answer;
@@ -19,6 +21,8 @@ public class FileSessionDTO extends SessionDTO{
 	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample.log";
 	private static int dayDate = 7; //July 7th
 	private static int lastHourRead = -1;
+	private static Filter filter = null;
+	
 	/**
 	 * CONSTRUCTOR
 	 * @param logPath: Full path of the log file. Ex.: myFolder/myFile.log
@@ -31,26 +35,28 @@ public class FileSessionDTO extends SessionDTO{
 	}
 	
 	@Override
-	public HashMap<String, WorkerSession> getSessions() {
+	public Map<String, WorkerSession> getSessions() {
 		if((this.openSessions.isEmpty()) || (this.closedSessions.isEmpty()))
 			loadSessions();
-		HashMap<String, WorkerSession> conc = concatenateSessionTable();
+		Map<String, WorkerSession> conc = concatenateSessionTable();
 		return conc;
 	}
 
 	@Override
-	public HashMap<String, Microtask> getMicrotasks() {
+	public Map<String, Microtask> getMicrotasks() {
 		if((this.openSessions.isEmpty()) || (this.closedSessions.isEmpty()))
 			loadSessions();
+		if(this.filter != null)
+			return filter.apply(microtasks);
 		return microtasks;
 	}
 
 	@Override
 	protected void loadSessions() {
 		//CLEAN THE TABLES
-		this.closedSessions = new HashMap<String, WorkerSession>();
-		this.openSessions = new HashMap<String, WorkerSession>();
-		this.microtasks = new HashMap<String, Microtask>();
+		this.closedSessions = new LinkedHashMap<String, WorkerSession>();
+		this.openSessions = new LinkedHashMap<String, WorkerSession>();
+		this.microtasks = new LinkedHashMap<String, Microtask>();
 		
 		BufferedReader log = null;
 		try {
@@ -156,7 +162,7 @@ public class FileSessionDTO extends SessionDTO{
 		microtask.setQuestionType(questionType);
 		
 		// Bind the microtask with the session
-		HashMap<String, WorkerSession> conc = concatenateSessionTable();
+		Map<String, WorkerSession> conc = concatenateSessionTable();
 		WorkerSession session = conc.get(sessionID+ ":" + workerID);
 		if(session != null)
 		{
@@ -204,9 +210,9 @@ public class FileSessionDTO extends SessionDTO{
 	 * just one table.
 	 * @return: A hashMap containing all sessions.
 	 */
-	public HashMap<String, WorkerSession> concatenateSessionTable()
+	public Map<String, WorkerSession> concatenateSessionTable()
 	{
-		HashMap<String, WorkerSession> conc = new HashMap<String, WorkerSession>();
+		HashMap<String, WorkerSession> conc = new LinkedHashMap<String, WorkerSession>();
 		conc.putAll(openSessions);
 		conc.putAll(closedSessions);
 		return conc;
@@ -246,7 +252,11 @@ public class FileSessionDTO extends SessionDTO{
 		return date.toString();
 	}
 	
-	public HashMap<String,WorkerSession> getClosedSessions(){
+	public Map<String,WorkerSession> getClosedSessions(){
 		return this.closedSessions;
+	}
+	public void setFilter(Filter filter)
+	{
+		this.filter = filter;
 	}
 }
