@@ -10,7 +10,7 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class CSVExporter implements DescriptiveReportWriter {
 	private final String reportPath;
-	private final String reportFileName = "firefly_report.csv";
+	private String reportFileName = "firefly_report.csv";
 	
 	public CSVExporter() {
 		PropertyManager property = PropertyManager.initializeSingleton();
@@ -34,7 +34,7 @@ public class CSVExporter implements DescriptiveReportWriter {
 					file.write((data == null)? ";" : (data+";"));
 				}
 			}
-			System.out.println("\"firefly_report.csv\" written successfully on disk.");
+			System.out.println("\"" + reportFileName +" \" written successfully on disk.");
 		} catch (FileNotFoundException e) {
 			System.out.println("REPORT ERROR: Error trying to create a file.");
 			System.exit(0);
@@ -43,6 +43,13 @@ public class CSVExporter implements DescriptiveReportWriter {
 		{
 			file.close();
 		}
+	}
+
+
+
+	@Override
+	public void setReportName(String reportName) {
+		this.reportFileName = reportName + this.reportFileName;
 	}
 
 }

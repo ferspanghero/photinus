@@ -29,11 +29,32 @@ public class Filter {
 	private int[] workerScore = new int[2];
 	private double[] sessionDuration = new double[2];
 	
-/*	private boolean filterByAnswer = false;
-	private boolean filterByWorker = false;
-	private boolean filterBySession = false;*/
 	private Map<String, Integer> sessionDurationMap = new HashMap<String, Integer>();
 	
+	public int[] getExplanationSize() {
+		return explanationSize;
+	}
+
+	public int[] getConfidence() {
+		return confidence;
+	}
+
+	public int[] getDifficulty() {
+		return difficulty;
+	}
+
+	public double[] getAnswerDuration() {
+		return answerDuration;
+	}
+
+	public int[] getWorkerScore() {
+		return workerScore;
+	}
+
+	public double[] getSessionDuration() {
+		return sessionDuration;
+	}
+
 	public Filter() {
 		Arrays.fill(explanationSize, -1);
 		Arrays.fill(confidence, -1);

@@ -3,8 +3,6 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 import java.util.List;
 import java.util.Map;
 
-import edu.uci.ics.sdcl.firefly.Microtask;
-
 
 /**
  * Provides an interface for different builders.
@@ -23,6 +21,7 @@ public class DescriptiveReportBuilder {
 	private CountReport counters;
 	private CorrectnessReport correctness;
 	private DescriptiveReportWriter exporter;
+	String reportName = "";
 	
 	public DescriptiveReportBuilder(AnswerReport answer, CountReport counter, CorrectnessReport correctness, DescriptiveReportWriter exporter) {
 		this.answers = answer;
@@ -35,6 +34,14 @@ public class DescriptiveReportBuilder {
 	{
 		FileSessionDTO dto = new FileSessionDTO();
 		dto.setFilter(filter);
+		StringBuilder filterName = new StringBuilder();
+		filterName.append("answerDuration[ "+ filter.getAnswerDuration()[0] + " " + filter.getAnswerDuration()[1]+ " ] ");
+		filterName.append("explanationSize[ "+ filter.getExplanationSize()[0] + " " + filter.getExplanationSize()[1]+ " ] ");
+		filterName.append("confidence[ "+ filter.getConfidence()[0] + " " + filter.getConfidence()[1]+ " ] ");
+		filterName.append("difficulty[ "+ filter.getDifficulty()[0] + " " + filter.getDifficulty()[1]+ " ] ");
+		filterName.append("workerScore[ "+ filter.getWorkerScore()[0] + " " + filter.getWorkerScore()[1]+ " ] ");
+		filterName.append("sessionDuration[ "+ filter.getSessionDuration()[0] + " " + filter.getSessionDuration()[1]+ " ] ");
+		this.reportName = filterName.toString();
 	}
 	
 	public void setAnswerReport(AnswerReport answers) {
@@ -104,6 +111,7 @@ public class DescriptiveReportBuilder {
 			buildCountReport(header,answers);
 		}
 		buildCorrectnessReport(header,answers);
+		exporter.setReportName(reportName);
 		DescriptiveReport report = new DescriptiveReport(this.header, this.answers, this.counters, this.correctness, exporter);
 		return report;
 	}

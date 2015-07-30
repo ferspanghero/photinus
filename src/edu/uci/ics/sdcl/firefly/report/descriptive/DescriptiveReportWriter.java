@@ -15,4 +15,7 @@ public interface DescriptiveReportWriter {
 	 * external source.
 	 */
 	public void exportReport(DescriptiveReport report);
+	
+	public void setReportName(String reportName);
+
 }

@@ -22,7 +22,7 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class ExcelExporter implements DescriptiveReportWriter {
 	private final String reportPath;
-	private final String reportFileName = "firefly_report.xlsx";
+	private String reportFileName = "firefly_report.xlsx";
 	
 	public ExcelExporter() {
 		PropertyManager property = PropertyManager.initializeSingleton();
@@ -227,6 +227,11 @@ public class ExcelExporter implements DescriptiveReportWriter {
 	public static boolean isNumeric(String str)
 	{
 	  return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+	}
+
+	@Override
+	public void setReportName(String reportName) {
+		this.reportFileName = reportName + this.reportFileName;
 	}
 
 }
