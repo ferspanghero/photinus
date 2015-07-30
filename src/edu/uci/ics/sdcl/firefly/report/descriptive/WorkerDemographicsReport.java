@@ -24,8 +24,8 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 	
 	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-log.txt";
 	String sessionLogpath = "C:/var/lib/tomcat7/webapps/session-log.txt";
-	FileConsentDTO fc = new FileConsentDTO(consentLogpath);
-	FileSessionDTO fs = new FileSessionDTO(sessionLogpath);
+	FileConsentDTO fc = new FileConsentDTO();
+	FileSessionDTO fs = new FileSessionDTO();
 
 	public WorkerDemographicsReport(){
 		writeToXlsx();

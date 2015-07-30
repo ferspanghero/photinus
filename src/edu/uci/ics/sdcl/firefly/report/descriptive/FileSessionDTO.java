@@ -18,18 +18,12 @@ import edu.uci.ics.sdcl.firefly.WorkerSession;
 
 public class FileSessionDTO extends SessionDTO{
 
-	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample.log";
+	//Full path of the log file. Ex.: myFolder/myFile.lo
+	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample - Copy.log";
 	private static int dayDate = 7; //July 7th
 	private static int lastHourRead = -1;
 	private static Filter filter = null;
 	
-	/**
-	 * CONSTRUCTOR
-	 * @param logPath: Full path of the log file. Ex.: myFolder/myFile.log
-	 */
-	public FileSessionDTO(String logPath) {
-		this.logPath = logPath;
-	}
 	
 	public FileSessionDTO() {
 	}
@@ -46,7 +40,7 @@ public class FileSessionDTO extends SessionDTO{
 	public Map<String, Microtask> getMicrotasks() {
 		if((this.openSessions.isEmpty()) || (this.closedSessions.isEmpty()))
 			loadSessions();
-		if(this.filter != null)
+		if(filter != null)
 			return filter.apply(microtasks);
 		return microtasks;
 	}

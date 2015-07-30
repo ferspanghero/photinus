@@ -10,8 +10,6 @@ import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 
 public class AverageWorkerProfileReport extends CountReport{
-
-	String consentLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
 	
 	public AverageWorkerProfileReport() {
 		super();
@@ -40,7 +38,7 @@ public class AverageWorkerProfileReport extends CountReport{
 				int perceivedDifficulty = 0;
 				
 				for (String workerID : workerIDs) {
-					FileConsentDTO fc = new FileConsentDTO(consentLogpath);
+					FileConsentDTO fc = new FileConsentDTO();
 					Iterator<Worker> workersIter = fc.getWorkers().values().iterator();
 					while (workersIter.hasNext()) {
 						Worker worker = workersIter.next();

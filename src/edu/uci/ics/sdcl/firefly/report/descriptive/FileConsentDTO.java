@@ -10,23 +10,17 @@ import edu.uci.ics.sdcl.firefly.Worker;
 
 public class FileConsentDTO extends ConsentDTO{
 
+	//logPath: Should be path+fileName. Ex. "myFolder/myFile"
+	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
+	
 	/**
 	 * Will hold the data loaded from the database.
 	 * Necessary not to keep connecting to the database.
 	 */
 	protected HashMap<String, Worker> workers = new HashMap<String, Worker>();
 	
-	/**
-	 * Line containing the path of the log file
-	 */
-	private final String logPath;
-	
-	/**
-	 * CONSTRUCTOR
-	 * @param logPath: Should be path+fileName. Ex. "myFolder/myFile"
-	 */
-	public FileConsentDTO(String logPath) {
-		this.logPath = logPath;
+	public FileConsentDTO() {
+		
 	}
 	
 	@Override

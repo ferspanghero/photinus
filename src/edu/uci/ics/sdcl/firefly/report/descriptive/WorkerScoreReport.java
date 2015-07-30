@@ -7,8 +7,6 @@ import edu.uci.ics.sdcl.firefly.Worker;
 
 public class WorkerScoreReport extends AnswerReport{
 	
-	String consentLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
-	
 	@Override
 	public String getType() {
 		return "Workers Scores for each answer";
@@ -16,7 +14,7 @@ public class WorkerScoreReport extends AnswerReport{
 
 	@Override
 	protected String reportData(Answer answer) {
-		FileConsentDTO fc = new FileConsentDTO(consentLogpath);
+		FileConsentDTO fc = new FileConsentDTO();
 
 		Iterator<Worker> workersIter = fc.getWorkers().values().iterator();
 		while(workersIter.hasNext()){
