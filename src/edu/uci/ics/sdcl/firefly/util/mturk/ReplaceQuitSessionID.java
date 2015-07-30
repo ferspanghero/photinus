@@ -43,13 +43,13 @@ public class ReplaceQuitSessionID {
 			removeSmokeTestWorkers (smokeTestWorkerMap,checker.crowddebugLogs[i]);		
 			
 			//Obtain list of quit workers
-		//	HashMap<String, Worker> quitWorkerMap = listQuitWorkers(checker.crowddebugConsentLogs[i]); 
+			HashMap<String, Worker> quitWorkerMap = listQuitWorkers(checker.crowddebugConsentLogs[i]); 
 
 			//Discover which of their sessions are incomplete 
-			//HashMap<String, String> sessionWorkerIDMap = quitSessions(checker.crowddebugLogs[i], quitWorkerMap);
+			HashMap<String, String> sessionWorkerIDMap = quitSessions(checker.crowddebugLogs[i], quitWorkerMap);
 
 			//Replace these sessionID occurrences for new sessionIDs
-			//replaceSessionIDs(sessionWorkerIDMap,checker.crowddebugLogs[i]);
+			replaceSessionIDs(sessionWorkerIDMap,checker.crowddebugLogs[i]);
 		}
 	}
 
@@ -78,12 +78,13 @@ public class ReplaceQuitSessionID {
 				String line = buffer.get(i); 
 				if(line.contains(workerID)){
 					newBuffer.set(i,"\n");
-					System.out.println("Removing line: "+i+":worker:"+workerID+":worker:"+logFileName);
+					//System.out.println("Removing line: "+i+":worker:"+workerID+":worker:"+logFileName);
 				}
 			}
 		}		
 		this.logReadWriter.writeBackToBuffer(newBuffer, 1, logFileName);
 	}
+	
 	
 	private HashMap<String, Worker> listQuitWorkers(String consentFileName){
 
@@ -93,8 +94,10 @@ public class ReplaceQuitSessionID {
 		HashMap<String, Worker> workerMap = dto.getWorkers();
 
 		for(Worker worker: workerMap.values()){
-			if(worker.getQuitReason() !=null)
+			if(worker.getQuitReasonList() !=null){
 				quitWorkerMap.put(worker.getWorkerId(), worker);
+				//System.out.println("Quit worker:"+worker.getWorkerId()+":file:"+consentFileName);
+			}
 		}
 		return quitWorkerMap;
 	}
@@ -113,12 +116,13 @@ public class ReplaceQuitSessionID {
 		HashMap<String, String> quitSessionMap = new HashMap<String,String>();
 		
 		for(Worker worker: quitWorkerMap.values()){
-			if(worker.getQuitReason()!=null){
+			if(worker.getQuitReasonList()!=null){
 				for(WorkerSession session : sessionMap.values()){
 					if(session.getWorkerId().compareTo(worker.getWorkerId())==0)
 						if(session.getMicrotaskListSize()<3){
 							quitSessionMap.put(session.getId(),worker.getWorkerId());
-							System.out.println("added Worker Quit: "+worker.getWorkerId()+": session:"+session.getId());
+							System.out.println("Quit: "+worker.getWorkerId()+": session:"+session.getId()+" answers:"+
+							session.getMicrotaskListSize()+":"+sessionFileName+":"+worker.quitFileToString()+":"+worker.quitReasonToString());
 						}
 				}
 			}
@@ -134,7 +138,7 @@ public class ReplaceQuitSessionID {
 	private void replaceSessionIDs(HashMap<String, String> sessionWorkerIDMap, String sessionFileName){
 		ArrayList<String> buffer = this.logReadWriter.readToBuffer(2,sessionFileName);
 
-		System.out.println("replacing at: buffer size: "+buffer.size() + ": replace list: "+sessionWorkerIDMap.size());
+		//System.out.println("replacing at: buffer size: "+buffer.size() + ": replace list: "+sessionWorkerIDMap.size());
 		ArrayList<String> newBuffer = replaceQuitSessions(buffer,sessionWorkerIDMap);
 
 		this.logReadWriter.writeBackToBuffer(newBuffer, 2, sessionFileName);

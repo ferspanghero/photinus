@@ -175,11 +175,15 @@ public class FileConsentDTO extends ConsentDTO{
 		Worker worker = this.workers.get(workerId);
 		if(worker != null)
 		{
-			for (int i = 0; i < result.length; i++) {
-				if(result[i].trim().equalsIgnoreCase("answer"))
-					worker.setQuitReason((i == (result.length -1)) ? "" : result[i+1].trim());
-			}
+			//for (int i = 0; i < result.length; i++) {
+			//	if(result[i].trim().equalsIgnoreCase("answer"))
+			//		worker.addQuitReason((i == (result.length -1)) ? "" : result[i+1].trim());
+			//}
+			worker.addQuitFileList(result[5]);
+			worker.addQuitReason(result[7]);		
 		}
+		
+		
 	}
 
 }

@@ -484,7 +484,7 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 		while(it.hasNext()){
 			Worker selectedWorker = it.next();
 			if(selectedWorker.getWorkerId().equals(worker.getWorkerId())){
-				if(selectedWorker.getQuitReason()!= null){
+				if(selectedWorker.getQuitReasonList()!= null){
 					return "Quit";
 				}else if(selectedWorker.getSurveyAnswers().size() == 0){
 					return "Quit without reason";

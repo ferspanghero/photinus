@@ -152,7 +152,7 @@ public class MTurkSessions {
 			return true;
 		}
 		else
-			if(worker.getQuitReason()!=null){
+			if(worker.getQuitReasonList()!=null){
 				//System.out.println("quit reason: "+ workerID+ ":"+worker.getQuitReason());
 				return true;
 			}

@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -19,7 +20,8 @@ public class Worker implements Serializable{
 	private String currentFileName; //File name that the worker is requesting to work on. 
 	private Hashtable<String, Integer> fileHistory = new Hashtable<String, Integer>();
 	private Boolean answeredSurvey;
-	private String quitReason = null;
+	private ArrayList<String> quitReasonList = null;
+	private ArrayList<String> quitFileList = null; //Files in which the worker quit
 
 	public Worker(String workerId, String consentDateStr, String currentFileName) {
 		this.workerId = workerId;
@@ -180,14 +182,46 @@ public class Worker implements Serializable{
 			return false;
 	}
 
-	public String getQuitReason() {
-		return quitReason;
+	public ArrayList<String> getQuitReasonList() {
+		return quitReasonList;
 	}
 
-	public void setQuitReason(String quitReason) {
-		this.quitReason = quitReason;
+	public void addQuitReason(String quitReason) {
+		if(this.quitReasonList==null)
+			this.quitReasonList=new ArrayList<String>();
+		this.quitReasonList.add(quitReason);
+	}
+
+	public String quitReasonToString(){
+		if(this.quitReasonList==null) return null;
+		else{
+			String result="";
+			for(String reason: quitReasonList){
+				result = result +":"+ reason;
+			}
+			return result;
+		}
 	}
 	
-	
+	public ArrayList<String> getQuitFileList() {
+		return quitFileList;
+	}
 
+	public void addQuitFileList(String quitFile) {
+		if(this.quitFileList==null)
+			this.quitFileList=new ArrayList<String>();
+		this.quitFileList.add(quitFile);
+	}
+
+	public String quitFileToString(){
+		if(this.quitFileList==null) return null;
+		else{
+			String result="";
+			for(String file: quitFileList){
+				result = result +":"+ file;
+			}
+			return result;
+		}
+	}
+	
 }
