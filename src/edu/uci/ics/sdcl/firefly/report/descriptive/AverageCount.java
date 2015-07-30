@@ -46,13 +46,14 @@ public class AverageCount extends CountReport {
 			Double average = 0.0;
 			for (String key : content.keySet()) {
 				String text = content.get(key).get(i);
-				if(!text.equals(""))
+				if(!text.equals("") && (text != null))
 				{
 					average += Double.valueOf(text);
 					size++;
 				}
 			}
-			average /= size;
+			if( size != 0)
+				average /= size;
 			averageList.add(average.toString());
 		}
 		this.countContent.put("Average " + answerReport.getDataNature(), averageList);
