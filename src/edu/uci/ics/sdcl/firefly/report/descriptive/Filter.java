@@ -313,7 +313,7 @@ public class Filter {
 						values = new Integer[2];
 						Arrays.fill(values, 0);
 					}
-					values[0] += (answer.getOption() == Answer.I_DONT_KNOW) ? 1 : 0;
+					values[0] += (answer.getOption().equals(Answer.I_DONT_KNOW)) ? 1 : 0;
 					values[1]++;
 					aux.put(answer.getWorkerId(), values);
 				}
