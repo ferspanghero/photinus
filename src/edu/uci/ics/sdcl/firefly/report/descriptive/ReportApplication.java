@@ -6,10 +6,12 @@ public class ReportApplication {
 	private static DescriptiveReportBuilder builder;
 	
 	public static void main(String[] args) {
-		Filter filter = new Filter();
+		/*Filter filter = new Filter();
 		filter.setIDKPercentageCriteria(-1, 50);
 		SessionDTO dto = new FileSessionDTO();
-		filter.apply(dto.getMicrotasks());
+		filter.apply(dto.getMicrotasks());*/
+		workerScoreReport(new ExcelExporter());
+		builder.generateDescriptiveReport().exportReport();
 	}
 	
 	private static void answerOptionReport(DescriptiveReportWriter exporter)
