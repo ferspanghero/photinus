@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import sun.security.util.PendingException;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
@@ -28,8 +29,10 @@ public class Filter {
 	private double[] answerDuration = new double[2];
 	private int[] workerScore = new int[2];
 	private double[] sessionDuration = new double[2];
+	private double[] workerIDKPercentage = new double[2];
 	
-	private Map<String, Integer> sessionDurationMap = new HashMap<String, Integer>();
+	private static Map<String, Integer> sessionDurationMap = new HashMap<String, Integer>();
+	private static Map<String, Double> workerIDKMap = new HashMap<String, Double>();
 	
 	public int[] getExplanationSize() {
 		return explanationSize;
@@ -62,6 +65,7 @@ public class Filter {
 		Arrays.fill(answerDuration, -1);
 		Arrays.fill(workerScore, -1);
 		Arrays.fill(sessionDuration, -1);
+		Arrays.fill(workerIDKPercentage, -1);
 	}
 	
 	public void setExplanationSizeCriteria(int minimum, int maximum)
@@ -133,6 +137,18 @@ public class Filter {
 		else{
 			this.workerScore[0] = minimum;
 			this.workerScore[1] = maximum;
+		}
+	}
+	
+	public void setIDKPercentageCriteria(double minimum, double maximum)
+	{
+		if((minimum > maximum) && (maximum != -1))
+		{
+			System.out.println("The minimum value of the filter cannot be greater than the maximum");
+		}
+		else{
+			this.workerIDKPercentage[0] = minimum;
+			this.workerIDKPercentage[1] = maximum;
 		}
 	}
 	
@@ -233,7 +249,20 @@ public class Filter {
 						continue;
 					}
 				}
-				
+				if((workerIDKPercentage[0] != -1) || (workerIDKPercentage[1] != -1))
+				{
+					calculateWorkersIDK();
+					if( (workerIDKPercentage[0] != -1) && (workerIDKMap.get(answer.getWorkerId()) < workerIDKPercentage[0]))
+					{
+						removeIndex.add(i);
+						continue;
+					}
+					if( (workerIDKPercentage[1] != -1) && (workerIDKMap.get(answer.getWorkerId()) > workerIDKPercentage[1]))
+					{
+						removeIndex.add(i);
+						continue;
+					}
+				}
 			}
 			Collections.reverse(removeIndex);
 			for (Integer index : removeIndex) {
@@ -248,18 +277,53 @@ public class Filter {
 	
 	private void calculateSessionsDuration()
 	{
-		FileSessionDTO dto = new FileSessionDTO();
-		Map<String, WorkerSession> sessions = dto.getSessions();
-		for (WorkerSession session : sessions.values()) {
-			int total = 0;
-			for (Microtask question : session.getMicrotaskList()) {
-				Answer answer = question.getAnswerList().firstElement();
-				String firstNumber = answer.getElapsedTime().replaceFirst(".*?(\\d+).*", "$1");
-				total += (Integer.valueOf( firstNumber ) / 1000 );
+		if(sessionDurationMap.size() == 0)
+		{
+			FileSessionDTO dto = new FileSessionDTO();
+			Map<String, WorkerSession> sessions = dto.getSessions();
+			for (WorkerSession session : sessions.values()) {
+				int total = 0;
+				for (Microtask question : session.getMicrotaskList()) {
+					Answer answer = question.getAnswerList().firstElement();
+					String firstNumber = answer.getElapsedTime().replaceFirst(".*?(\\d+).*", "$1");
+					total += (Integer.valueOf( firstNumber ) / 1000 );
+				}
+				for (Microtask question : session.getMicrotaskList()) {
+					Answer answer = question.getAnswerList().firstElement();
+					sessionDurationMap.put((question.getID().toString() + ":" + answer.getWorkerId()), total );
+				}
 			}
-			for (Microtask question : session.getMicrotaskList()) {
-				Answer answer = question.getAnswerList().firstElement();
-				sessionDurationMap.put((question.getID().toString() + ":" + answer.getWorkerId()), total );
+		}
+	}
+	
+	private void calculateWorkersIDK()
+	{
+		if(workerIDKMap.size() == 0)
+		{
+			FileSessionDTO sessionDTO = new FileSessionDTO();
+			Map<String, Microtask> questions = sessionDTO.getMicrotasks();
+			Map<String, Integer[]> aux = new HashMap<String, Integer[]>();
+			for (Microtask question : questions.values()) {
+				for (Answer answer : question.getAnswerList()) {
+					Integer[] values = null;
+					if(aux.containsKey(answer.getWorkerId()))
+						values = aux.get(answer.getWorkerId());
+					else
+					{
+						values = new Integer[2];
+						Arrays.fill(values, 0);
+					}
+					values[0] += (answer.getOption() == Answer.I_DONT_KNOW) ? 1 : 0;
+					values[1]++;
+					aux.put(answer.getWorkerId(), values);
+				}
+			}
+			for (String workerID : aux.keySet()) {
+				Integer[] values = aux.get(workerID);
+				Double percentage = 0.0;
+				if(values[1] != 0)
+					percentage = (((double)(100 * values[0])) / values[1]);
+				workerIDKMap.put(workerID, percentage);
 			}
 		}
 	}

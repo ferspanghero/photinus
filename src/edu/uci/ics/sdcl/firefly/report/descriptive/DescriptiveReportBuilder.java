@@ -30,7 +30,7 @@ public class DescriptiveReportBuilder {
 		this.exporter = exporter;
 	}
 	
-	public void setFilter(Filter filter)
+	/*public void setFilter(Filter filter)
 	{
 		FileSessionDTO dto = new FileSessionDTO();
 		dto.setFilter(filter);
@@ -42,7 +42,7 @@ public class DescriptiveReportBuilder {
 		filterName.append("workerScore[ "+ filter.getWorkerScore()[0] + " " + filter.getWorkerScore()[1]+ " ] ");
 		filterName.append("sessionDuration[ "+ filter.getSessionDuration()[0] + " " + filter.getSessionDuration()[1]+ " ] ");
 		this.reportName = filterName.toString();
-	}
+	}*/
 	
 	public void setAnswerReport(AnswerReport answers) {
 		this.answers = answers;

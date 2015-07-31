@@ -22,7 +22,6 @@ public class FileSessionDTO extends SessionDTO{
 	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample - Copy.log";
 	private static int dayDate = 7; //July 7th
 	private static int lastHourRead = -1;
-	private static Filter filter = null;
 	
 	
 	public FileSessionDTO() {
@@ -45,8 +44,6 @@ public class FileSessionDTO extends SessionDTO{
 	public Map<String, Microtask> getMicrotasks() {
 		if((this.openSessions.isEmpty()) || (this.closedSessions.isEmpty()))
 			loadSessions();
-		if(filter != null)
-			return filter.apply(microtasks);
 		return microtasks;
 	}
 
@@ -253,9 +250,5 @@ public class FileSessionDTO extends SessionDTO{
 	
 	public Map<String,WorkerSession> getClosedSessions(){
 		return this.closedSessions;
-	}
-	public void setFilter(Filter filter)
-	{
-		this.filter = filter;
 	}
 }
