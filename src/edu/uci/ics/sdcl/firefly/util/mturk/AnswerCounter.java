@@ -59,7 +59,7 @@ public class AnswerCounter {
 	public static void addMicrotasks(String sessionFile){
 		
 		FileSessionDTO sessionDTO = new FileSessionDTO(logPath+sessionFile);
-		HashMap<String, WorkerSession> sessionMap_2 = sessionDTO.getSessions();
+		HashMap<String, WorkerSession> sessionMap_2 = (HashMap<String, WorkerSession>)sessionDTO.getSessions();
 		System.out.println(sessionFile+" number of sessions: "+ sessionMap_2.size());
 		
 		//Count consumed sessions
@@ -72,7 +72,7 @@ public class AnswerCounter {
 		
 		//get microtasks for Session-2
 		
-		HashMap<String, Microtask> microtaskMap = sessionDTO.getMicrotasks();
+		HashMap<String, Microtask> microtaskMap = (HashMap<String, Microtask>) sessionDTO.getMicrotasks();
 		System.out.println("number of answers: "+ microtaskMap.size());
 
 		Iterator<String> iter = microtaskMap.keySet().iterator();
@@ -140,10 +140,10 @@ public class AnswerCounter {
 		String sessionFile = firstSession; 
 		
 		FileSessionDTO sessionDTO_1 = new FileSessionDTO(logPath+sessionFile);
-		HashMap<String, WorkerSession> sessionMap_1 = sessionDTO_1.getSessions();
+		HashMap<String, WorkerSession> sessionMap_1 = (HashMap<String, WorkerSession>) sessionDTO_1.getSessions();
 		System.out.println("sessionMap_1 size: "+ sessionMap_1.size());
 		
-		HashMap<String, Microtask> microtaskMap_1 = sessionDTO_1.getMicrotasks();
+		HashMap<String, Microtask> microtaskMap_1 = (HashMap<String, Microtask>) sessionDTO_1.getMicrotasks();
 		System.out.println("microtaskMap_1 size: "+ microtaskMap_1.size());
 			
 		Iterator<String> iter = microtaskMap_1.keySet().iterator();
@@ -158,7 +158,7 @@ public class AnswerCounter {
 		String secondSession = "session-log-28.log";
 		
 		FileSessionDTO sessionDTO_2 = new FileSessionDTO(logPath+secondSession);
-		HashMap<String, WorkerSession> sessionMap_2 = sessionDTO_2.getSessions();
+		HashMap<String, WorkerSession> sessionMap_2 = (HashMap<String, WorkerSession> )sessionDTO_2.getSessions();
 		System.out.println("sessionMap_2 size: "+ sessionMap_2.size());
 		
 		//Count consumed sessions
@@ -171,7 +171,7 @@ public class AnswerCounter {
 		
 		//get microtasks for Session-2
 		
-		HashMap<String, Microtask> microtaskMap_2 = sessionDTO_2.getMicrotasks();
+		HashMap<String, Microtask> microtaskMap_2 =  (HashMap<String, Microtask>) sessionDTO_2.getMicrotasks();
 		System.out.println("microtaskMap_2 size: "+ microtaskMap_2.size());
 
 		Iterator<String> iter2 = microtaskMap_2.keySet().iterator();

@@ -22,10 +22,11 @@ import java.util.ArrayList;
 public class LogReadWriter {
 
 	String path = "C:/firefly/stage/logs/";
-	String original = "\\0.original\\";
+	String original = "\\original\\";
+	String step0_folder = "\\0.unCookied\\";  //consolidated two workers who removed cookies
 	String step1_folder = "\\1.unSmoked\\";
 	String step2_folder = "\\2.unQuit\\";
-	String step3_folder = "\\3.consolidate\\";
+	String step3_folder = "\\3.consolidated\\";
 
 	/** 
 	 * Flush the buffer back to the file
@@ -36,6 +37,7 @@ public class LogReadWriter {
 
 		String folder = "";
 		switch(step){
+			case 0: folder = this.step0_folder; break;
 			case 1: folder = this.step1_folder; break;
 			case 2: folder = this.step2_folder; break;
 			case 3: folder = this.step3_folder; break;
@@ -55,7 +57,8 @@ public class LogReadWriter {
 
 		String folder = "";
 		switch(step){
-			case 1: folder = this.original; break;
+			case 0: folder = this.original; break;
+			case 1: folder = this.step0_folder; break;
 			case 2: folder = this.step1_folder; break;
 			case 3: folder = this.step2_folder; break;
 			default: folder = null;
@@ -116,7 +119,8 @@ public class LogReadWriter {
 	public String getPath(int step) {
 
 		switch(step){
-			case 1: return path + original;
+			case 0: return path + original;
+			case 1: return path + step0_folder;
 			case 2: return path + step1_folder; 
 			case 3: return path + step2_folder; 
 			default: return null;

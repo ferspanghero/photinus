@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
@@ -104,8 +105,8 @@ public class HITApprovalUtil {
 		
 	
 		FileSessionDTO sessionDTO = new FileSessionDTO(logPath+sessionFile);
-		HashMap<String, WorkerSession> sessionMap = sessionDTO.getSessions();
-		//System.out.println("sessionMap size: "+ sessionMap.size());
+		HashMap<String, WorkerSession> sessionMap = (HashMap<String, WorkerSession>) sessionDTO.getSessions();
+		System.out.println("sessionMap size: "+ sessionMap.size());
 		
 		
 		String mturkHITFile = "HIT04_7 11_TP6.csv";

@@ -49,15 +49,15 @@ public class MTurkSessions {
 
 	/** Load all workers in memory */
 	private HashMap<String, Worker> loadWorkers (String consentFileName){
-		FileConsentDTO dto = new FileConsentDTO(logReadWriter.getPath(1)+consentFileName);
+		FileConsentDTO dto = new FileConsentDTO(logReadWriter.getPath(0)+consentFileName);
 
 		return dto.getWorkers();			
 	}
 
 	/** Load all workerSessions in memory */
 	private HashMap<String, WorkerSession> loadSessions(String sessionFileName, Integer runID){
-		FileSessionDTO dto = new FileSessionDTO(logReadWriter.getPath(1)+sessionFileName);
-		return removeQuitSessions(dto.getSessions(),runID);
+		FileSessionDTO dto = new FileSessionDTO(logReadWriter.getPath(0)+sessionFileName);
+		return removeQuitSessions((HashMap<String, WorkerSession>)dto.getSessions(),runID);
 	}
 
 	/**

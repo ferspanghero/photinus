@@ -89,9 +89,24 @@ public class ReplaceWorkerID {
 
 
 	private void replaceIDConsentLogs(HashMap<String, Turker> hitsMapAll){
-		//TODO implement it 
+		for(int i=0; i<8;i++){
+			HashMap<String,String> queryReplace = this.obtainTurkersInRunSession(new Integer (i+1).toString(),hitsMapAll);
+
+			String consentLogFile = this.checker.crowddebugConsentLogs[i];
+			ArrayList<String> buffer = logReadWriter.readToBuffer(3,consentLogFile);
+
+			System.out.println("replacing at:" +i+": buffer size: "+buffer.size() + ": replace list: "+queryReplace.size());
+			ArrayList<String> newBuffer = replace(buffer,queryReplace);
+
+			String destFileName = consentLogFile.substring(0,consentLogFile.indexOf("."));
+			destFileName = destFileName+"_curated.txt";
+
+			logReadWriter.writeBackToBuffer(newBuffer, 3, destFileName);
+		}
 	}
 
+
+	
 	//-------------------------------------------------------------------------------
 	public static void main(String[] args){
 		

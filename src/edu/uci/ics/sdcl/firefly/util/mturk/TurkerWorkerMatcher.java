@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
 
@@ -141,7 +142,7 @@ public class TurkerWorkerMatcher {
 		populateTurkerWorkerIDs();
 		consolidateTurkerIDs();
 		//printRunWorkerIDMap();
-		//printTurkerRunSessions();
+		printTurkerRunSessions();
 		return this.hitsMapAll;
 	}
 
@@ -274,8 +275,8 @@ public class TurkerWorkerMatcher {
 
 	public void loadSession(String crowdLog){
 
-		FileSessionDTO sessionDTO = new FileSessionDTO(this.logReadWriter.getPath(1)+crowdLog);
-		this.sessionMap = sessionDTO.getSessions();
+		FileSessionDTO sessionDTO = new FileSessionDTO(this.logReadWriter.getPath(2)+crowdLog);
+		this.sessionMap = (HashMap<String, WorkerSession>) sessionDTO.getSessions();
 		buildWorkerSessionsMap();
 	}
 
