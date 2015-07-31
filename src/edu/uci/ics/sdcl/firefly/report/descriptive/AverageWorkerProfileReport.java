@@ -44,7 +44,8 @@ public class AverageWorkerProfileReport extends CountReport{
 						Worker worker = workersIter.next();
 						if(worker.getWorkerId().compareTo(workerID)==0){
 							workerScore += worker.getGrade();
-							yearsProgramming += Double.parseDouble((worker.getSurveyAnswer(" YearsProgramming")));
+							String value = worker.getSurveyAnswer(" YearsProgramming");
+							yearsProgramming += Double.parseDouble((value != null) ? value : "0.0");
 							perceivedDifficulty += microtasks.get(questionID).getAnswerByUserId(workerID).getDifficulty();
 						}
 					}
