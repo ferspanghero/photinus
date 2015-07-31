@@ -22,6 +22,11 @@ public class FileConsentDTO extends ConsentDTO{
 	public FileConsentDTO() {
 		
 	}
+
+	public FileConsentDTO(String path) {
+		this.logPath = path;
+	}
+
 	
 	@Override
 	public HashMap<String, Worker> getWorkers() {

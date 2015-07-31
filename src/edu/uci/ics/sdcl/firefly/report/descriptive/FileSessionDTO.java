@@ -28,6 +28,11 @@ public class FileSessionDTO extends SessionDTO{
 	public FileSessionDTO() {
 	}
 	
+	public FileSessionDTO(String path) {
+		this.logPath = path;
+	}
+	
+	
 	@Override
 	public Map<String, WorkerSession> getSessions() {
 		if((this.openSessions.isEmpty()) || (this.closedSessions.isEmpty()))
