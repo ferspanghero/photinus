@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class FileConsentDTO extends ConsentDTO{
 
 	//logPath: Should be path+fileName. Ex. "myFolder/myFile"
-	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
+	private String logPath;// = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
 	
 	/**
 	 * Will hold the data loaded from the database.
@@ -19,8 +20,10 @@ public class FileConsentDTO extends ConsentDTO{
 	 */
 	protected HashMap<String, Worker> workers = new HashMap<String, Worker>();
 	
-	public FileConsentDTO() {
-		
+	public FileConsentDTO(){
+		PropertyManager manager = PropertyManager.initializeSingleton();
+		this.logPath = manager.reportPath + manager.consentLogFileName;
+		System.out.println("consentDTO, logPath: "+logPath);
 	}
 
 	public FileConsentDTO(String path) {

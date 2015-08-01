@@ -162,6 +162,8 @@ public class Filter {
 		Map<String, Microtask> aux = new LinkedHashMap<String, Microtask>();
 		aux.putAll(content);
 		List<Integer> removeIndex = new ArrayList<Integer>();
+		ConsentDTO workerDTO = new FileConsentDTO();
+		
 		
 		for (String questionID : aux.keySet()) {
 			Vector<Answer> answerList = aux.get(questionID).getAnswerList();
@@ -221,15 +223,17 @@ public class Filter {
 				}
 				if((workerScore[0] != -1) || (workerScore[1] != -1) )
 				{
-					ConsentDTO workerDTO = new FileConsentDTO();
+					
 					Map<String, Worker> workers = workerDTO.getWorkers();
 					Worker worker = workers.get(answer.getWorkerId());
-					if( (workerScore[0] != -1) && (worker.getGrade() < workerScore[0]))
+					//if(worker==null)
+						//System.out.println("worker null answer.getWorkerId"+answer.getWorkerId());
+					if(worker!=null && (workerScore[0] != -1) && (worker.getGrade() < workerScore[0]))
 					{
 						removeIndex.add(i);
 						continue;
 					}
-					if( (workerScore[1] != -1) && (worker.getGrade() > workerScore[1]))
+					if( worker!=null && (workerScore[1] != -1) && (worker.getGrade() > workerScore[1]))
 					{
 						removeIndex.add(i);
 						continue;

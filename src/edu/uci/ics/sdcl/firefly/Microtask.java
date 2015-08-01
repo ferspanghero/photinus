@@ -298,5 +298,12 @@ public class Microtask implements Serializable
 		this.questionType = questionType;
 	}
 	
+	public ArrayList<String> getAnswerOptions(){
+		ArrayList<String> list = new ArrayList<String>();
+		for(Answer answer : this.answerList){
+			list.add(answer.getOption());
+		}
+		return list;
+	}
 	
 }

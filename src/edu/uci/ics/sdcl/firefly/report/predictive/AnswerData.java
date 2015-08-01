@@ -3,6 +3,8 @@ package edu.uci.ics.sdcl.firefly.report.predictive;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import edu.uci.ics.sdcl.firefly.Answer;
+
 /** Holds all answers for each question for a Java Method */
 public class AnswerData {
 	
@@ -16,10 +18,10 @@ public class AnswerData {
 	HashMap<String, String> bugCoveringMap;
 
 	public AnswerData(String hitFileName,
-			HashMap<String, ArrayList<String>> answerMap,
+			HashMap<String, ArrayList<String>> answers,
 			HashMap<String, String> bugCoveringMap) {
 		this.hitFileName = hitFileName;
-		this.answerMap = answerMap;
+		this.answerMap = answers;
 		this.bugCoveringMap = bugCoveringMap;
 	}
 

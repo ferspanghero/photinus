@@ -2,6 +2,8 @@ package edu.uci.ics.sdcl.firefly.report.predictive;
 
 import java.util.HashMap;
 
+import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
+
 /** 
  * Class responsible to keep the multiple filter combinations and the respective outcome of
  * computing predictors with the data produced by a concrete filter combination.
@@ -11,6 +13,14 @@ import java.util.HashMap;
  */
 public class FilterCombination {
 
+	public static final String ANSWER_DURATION = "ANSWER_DURATION";
+	public static final String SESSION_DURATION = "SESSION_DURATION";
+	public static final String CONFIDENCE_LEVEL = "CONFIDENCE_LEVEL";
+	public static final String DIFFICULTY_LEVEL = "DIFFICULTY_LEVEL";
+	public static final String WORKER_SCORE = "WORKER_SCORE";
+	public static final String EXPLANATION_SIZE = "EXPLANATION_SIZE";
+	public static final String WORKER_IDK = "WORKER_IDK";
+	
 	public HashMap<String,Range> combinationMap;
 	
 	/** Holds the outcome of predictors for the data associated with this filter */
@@ -64,5 +74,49 @@ public class FilterCombination {
 		}
 		return result;
 	}
+	
+	
+	public Filter getFilter(){
+		
+		Filter filter = new Filter();
+		
+		for(String filterName: this.combinationMap.keySet()){
+			
+			int min = this.combinationMap.get(filterName).min.intValue();
+			int max = this.combinationMap.get(filterName).max.intValue();
+			
+			if(filterName.compareTo(FilterCombination.ANSWER_DURATION)==0){
+				filter.setAnswerDurationCriteria(new Double(min), new Double(max));
+			}
+			else
+				if(filterName.compareTo(FilterCombination.SESSION_DURATION)==0){
+					filter.setSessionDurationCriteria(new Double(min), new Double(max));
+				}
+				else
+					if(filterName.compareTo(FilterCombination.CONFIDENCE_LEVEL)==0){
+						filter.setConfidenceCriteria(min, max);
+					}
+					else
+						if(filterName.compareTo(FilterCombination.DIFFICULTY_LEVEL)==0){
+							filter.setDifficultyCriteria(min, max);
+						}
+						else 
+							if(filterName.compareTo(FilterCombination.EXPLANATION_SIZE)==0){
+								filter.setExplanationSizeCriteria(min, max);
+							}
+							else 
+								if(filterName.compareTo(FilterCombination.WORKER_SCORE)==0){
+									filter.setWorkerScoreCriteria(min, max);
+								}
+								else
+									if(filterName.compareTo(FilterCombination.WORKER_IDK)==0){
+										filter.setIDKPercentageCriteria(new Double(min), new Double(max));
+									}
+			}
+		
+		return filter;	
+				
+		}
+		
 	
 }

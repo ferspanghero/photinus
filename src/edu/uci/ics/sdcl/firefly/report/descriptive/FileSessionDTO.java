@@ -15,16 +15,20 @@ import java.util.Vector;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class FileSessionDTO extends SessionDTO{
 
 	//Full path of the log file. Ex.: myFolder/myFile.lo
-	private String logPath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample - Copy.log";
+	private String logPath;// = //"C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample - Copy.log";
 	private static int dayDate = 7; //July 7th
 	private static int lastHourRead = -1;
 	
 	
 	public FileSessionDTO() {
+		PropertyManager manager = PropertyManager.initializeSingleton();
+		this.logPath = manager.reportPath + manager.sessionLogFileName;
+		System.out.println("sessionDTO, logPath: "+logPath);
 	}
 	
 	public FileSessionDTO(String path) {

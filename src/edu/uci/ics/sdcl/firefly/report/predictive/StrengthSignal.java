@@ -16,6 +16,10 @@ public class StrengthSignal extends Predictor{
 		return this.name;
 	}
 	
+	
+	public StrengthSignal(){
+		super();
+	}
 	//----------------------------------------------------------------------------------------------------------
 	
 	/**
@@ -30,9 +34,11 @@ public class StrengthSignal extends Predictor{
 			ArrayList<String> optionList = questionOptionsMap.get(questionID);
 			int counter = 0;
 			for(String option : optionList){
-				if(option.compareTo("YES")==0)
+				//System.out.println(option);
+				if(option.compareTo("YES, THERE IS AN ISSUE")==0)
 					counter++;
 			}
+			//System.out.println("counter:"+counter);
 			questionYESCountMap.put(questionID, new Integer(counter));
 		}
 		return questionYESCountMap;
@@ -86,32 +92,33 @@ public class StrengthSignal extends Predictor{
 		HashMap<String, ArrayList<String>> answerMap = new HashMap<String, ArrayList<String>>();
 		
 		ArrayList<String> answerList = new ArrayList<String>();//2 yes's
-		answerList.add("YES");
+		answerList.add("YES, THERE IS AN ISSUE");
 		answerList.add("NO");
 		answerList.add("IDK");
-		answerList.add("YES");
+		answerList.add("YES, THERE IS AN ISSUE");
 		answerMap.put("0",answerList);
 		
 		answerList = new ArrayList<String>();//1 yes
-		answerList.add("YES");
+		answerList.add("YES, THERE IS AN ISSUE");
 		answerList.add("NO");
 		answerList.add("NO");
 		answerList.add("NO");
 		answerMap.put("1",answerList);
 		
 		answerList = new ArrayList<String>();//2 yes's
-		answerList.add("YES");
-		answerList.add("YES");
+		answerList.add("YES, THERE IS AN ISSUE");
+		answerList.add("YES, THERE IS AN ISSUE");
 		answerList.add("NO");
 		answerList.add("NO");
 		answerMap.put("2",answerList);
 		
 		answerList = new ArrayList<String>();//4 yes's
-		answerList.add("YES");
-		answerList.add("YES");
-		answerList.add("YES");
-		answerList.add("YES");
+		answerList.add("YES, THERE IS AN ISSUE");
+		answerList.add("YES, THERE IS AN ISSUE");
+		answerList.add("YES, THERE IS AN ISSUE");
+		answerList.add("YES, THERE IS AN ISSUE");
 		answerMap.put("3",answerList);
+
 		
 		String hitFileName = "HIT00_0";
 		
