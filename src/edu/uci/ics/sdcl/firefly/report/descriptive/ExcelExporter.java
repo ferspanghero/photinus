@@ -161,7 +161,7 @@ public class ExcelExporter implements DescriptiveReportWriter {
 				cell = row.createCell((cellNumber%table.size()));
 				cellNumber++;
 				String value = table.get(key).get(i);
-				if(isNumeric(value))
+				if(value!=null && isNumeric(value))
 					cell.setCellValue(Double.valueOf(value));
 				else
 					cell.setCellValue(value);

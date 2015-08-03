@@ -29,7 +29,8 @@ public class AverageWorkerProfileReport extends CountReport{
 		List<String> averageWorkerScores = new ArrayList<String>();
 		List<String> averageYears = new ArrayList<String>();
 		List<String> averageDifficulties = new ArrayList<String>();
-
+		FileConsentDTO fc = new FileConsentDTO();
+		
 		for (String questionID : questionIDList) {
 			List<String> workerIDs = microtasks.get(questionID).getWorkerIds();
 			if(workerIDs != null){
@@ -37,8 +38,7 @@ public class AverageWorkerProfileReport extends CountReport{
 				int yearsProgramming = 0;
 				int perceivedDifficulty = 0;
 				
-				for (String workerID : workerIDs) {
-					FileConsentDTO fc = new FileConsentDTO();
+				for (String workerID : workerIDs) {	
 					Iterator<Worker> workersIter = fc.getWorkers().values().iterator();
 					while (workersIter.hasNext()) {
 						Worker worker = workersIter.next();
@@ -49,7 +49,8 @@ public class AverageWorkerProfileReport extends CountReport{
 							perceivedDifficulty += microtasks.get(questionID).getAnswerByUserId(workerID).getDifficulty();
 						}
 					}
-				}averageWorkerScores.add(String.format("%.2f",((float)workerScore)/workerIDs.size()));
+				}
+				averageWorkerScores.add(String.format("%.2f",((float)workerScore)/workerIDs.size()));
 				averageYears.add(String.format("%.2f", (float)yearsProgramming/workerIDs.size()));
 				averageDifficulties.add(String.format("%.2f", (float)perceivedDifficulty/workerIDs.size()));
 			}

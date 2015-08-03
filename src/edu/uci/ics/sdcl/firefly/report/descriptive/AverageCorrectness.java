@@ -13,17 +13,16 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 public class AverageCorrectness extends CorrectnessReport {
 	private final int NUMBER_OF_QUESTIONS;
 	private final int QUESTIONS_PER_SESSION;
-	String consentLogpath = "C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/consent-log-TestSample.log";
-	
+
 	public AverageCorrectness() {
 		PropertyManager property = PropertyManager.initializeSingleton();
 		this.NUMBER_OF_QUESTIONS = property.answersPerMicrotask;
 		this.QUESTIONS_PER_SESSION = property.microtasksPerSession;
 	}
-	
+
 	@Override
 	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
-		
+
 		Map<String,List<String>> headerContent = headerReport.getContent();
 		Map<String, List<String>>  answerContent = answerReport.getContent();
 		SessionDTO database = new FileSessionDTO();
@@ -47,7 +46,7 @@ public class AverageCorrectness extends CorrectnessReport {
 			int falsePositiveSize = 0;
 			int falseNegativeSize = 0;
 			int idkSize = 0;
-			
+
 			Microtask question = microtasks.get(questionIDList.get(i));
 			List<Answer> answerList = question.getAnswerList();
 			Iterator<Entry<String, List<String>>> it = answerContent.entrySet().iterator();
@@ -56,24 +55,28 @@ public class AverageCorrectness extends CorrectnessReport {
 				if((answerList.size()-1) >= j)
 				{
 					String text = (it.next().getValue().get(i));
-					String answerOption = answerList.get(j).getOption();
-					boolean bugCovering = isBugCovering(Integer.valueOf(questionIDList.get(i)));
-					if(answerOption!=null){
-						if (bugCovering && answerOption.equals(Answer.YES)) {
-							truePositiveAverage+= (text.equals("") ? 0 : Double.valueOf(text));
-							truePositiveSize++;
-						} else if (!bugCovering && answerOption.equals(Answer.NO)) {
-							trueNegativeAverage+= (text.equals("") ? 0 : Double.valueOf(text));
-							trueNegativeSize++;
-						} else if (!bugCovering && answerOption.equals(Answer.YES)) {
-							falsePositiveAverage+= (text.equals("") ? 0 : Double.valueOf(text));
-							falsePositiveSize++;
-						} else if (bugCovering && answerOption.equals(Answer.NO)) {
-							falseNegativeAverage+= (text.equals("") ? 0 : Double.valueOf(text));
-							falseNegativeSize++;
-						} else {
-							idkAverage += (text.equals("") ? 0 : Double.valueOf(text));
-							idkSize++;
+					if(text==null)
+						System.out.println("null text for:"+ questionIDList.get(i));
+					else{
+						String answerOption = answerList.get(j).getOption();
+						boolean bugCovering = isBugCovering(Integer.valueOf(questionIDList.get(i)));
+						if(answerOption!=null){
+							if (bugCovering && answerOption.equals(Answer.YES)) {
+								truePositiveAverage+= (text.equals("") ? 0 : Double.valueOf(text));
+								truePositiveSize++;
+							} else if (!bugCovering && answerOption.equals(Answer.NO)) {
+								trueNegativeAverage+= (text.equals("") ? 0 : Double.valueOf(text));
+								trueNegativeSize++;
+							} else if (!bugCovering && answerOption.equals(Answer.YES)) {
+								falsePositiveAverage+= (text.equals("") ? 0 : Double.valueOf(text));
+								falsePositiveSize++;
+							} else if (bugCovering && answerOption.equals(Answer.NO)) {
+								falseNegativeAverage+= (text.equals("") ? 0 : Double.valueOf(text));
+								falseNegativeSize++;
+							} else {
+								idkAverage += (text.equals("") ? 0 : Double.valueOf(text));
+								idkSize++;
+							}
 						}
 					}
 				}
@@ -88,35 +91,35 @@ public class AverageCorrectness extends CorrectnessReport {
 				falseNegativeAverage /= falseNegativeSize;
 			if(idkSize != 0)
 				idkAverage /= idkSize;
-			
+
 			averageTP.add(String.format("%.2f",((float) truePositiveAverage)));
 			averageTN.add(String.format("%.2f",((float) trueNegativeAverage)));
 			averageFP.add(String.format("%.2f",((float)falsePositiveAverage)));
 			averageFN.add(String.format("%.2f",((float) falseNegativeAverage)));
 			averageIDK.add(String.format("%.2f",((float) idkAverage)));
 		}
-			
+
 		this.correctnessContent.put("Average "+ answerReport.getDataNature() +" of True Positives", averageTP);
 		this.correctnessContent.put("Average "+ answerReport.getDataNature() +" of True Negatives", averageTN);
 		this.correctnessContent.put("Average "+ answerReport.getDataNature() +" of False Positives", averageFP);
 		this.correctnessContent.put("Average "+ answerReport.getDataNature() +" of False Negatives", averageFN);
 		this.correctnessContent.put("Average "+ answerReport.getDataNature() +" of IDKs", averageIDK);
-		
+
 		return correctnessContent;
 	}
-		
-		public boolean isBugCovering(int microtaskID){
-			Integer[] bugCoveringQuestions = {72,73,78,79,84,92,95,97,102,104,119,123,126};
-			for(int i=0; i<bugCoveringQuestions.length; i++){
-				if(microtaskID == bugCoveringQuestions[i]){
-					return true;
-				}
+
+	public boolean isBugCovering(int microtaskID){
+		Integer[] bugCoveringQuestions = {72,73,78,79,84,92,95,97,102,104,119,123,126};
+		for(int i=0; i<bugCoveringQuestions.length; i++){
+			if(microtaskID == bugCoveringQuestions[i]){
+				return true;
 			}
-			return false;
 		}
-		
-		public String getType() {
-			return "Correct/Wrong Answers";
-		}
+		return false;
+	}
+
+	public String getType() {
+		return "Correct/Wrong Answers";
+	}
 
 }

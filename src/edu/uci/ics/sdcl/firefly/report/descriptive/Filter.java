@@ -30,6 +30,7 @@ public class Filter {
 	private int[] workerScore = new int[2];
 	private double[] sessionDuration = new double[2];
 	private double[] workerIDKPercentage = new double[2];
+	FileConsentDTO workerDTO = new FileConsentDTO();
 	
 	private static Map<String, Integer> sessionDurationMap = new HashMap<String, Integer>();
 	private static Map<String, Double> workerIDKMap = new HashMap<String, Double>();
@@ -162,7 +163,7 @@ public class Filter {
 		Map<String, Microtask> aux = new LinkedHashMap<String, Microtask>();
 		aux.putAll(content);
 		List<Integer> removeIndex = new ArrayList<Integer>();
-		ConsentDTO workerDTO = new FileConsentDTO();
+		
 		
 		
 		for (String questionID : aux.keySet()) {
