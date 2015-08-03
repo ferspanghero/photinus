@@ -17,17 +17,28 @@ import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class WorkerDemographicsReport {
 
-private String fileName = "WorkersDemographicsReport.xlsx";
+	private String fileName = "WorkersDemographicsReport.xlsx";
 	
-	String consentLogpath = "C:/var/lib/tomcat7/webapps/consent-log.txt";
-	String sessionLogpath = "C:/var/lib/tomcat7/webapps/session-log.txt";
 	FileConsentDTO fc = new FileConsentDTO();
 	FileSessionDTO fs = new FileSessionDTO();
 
+	ArrayList<Integer> bugCoveringIDList = new ArrayList<Integer>();
+	
 	public WorkerDemographicsReport(){
+
+		PropertyManager manager = PropertyManager.initializeSingleton();
+		String[] bugCoveringList = manager.bugCoveringList.split(";");
+		
+		for(String id:bugCoveringList){
+			bugCoveringIDList.add(new Integer(id));
+		}
+		
+		this.fileName = manager.reportPath + fileName;
+		
 		writeToXlsx();
 	}
 	
@@ -405,9 +416,9 @@ private String fileName = "WorkersDemographicsReport.xlsx";
 	}
 
 	public boolean isBugCovering(int microtaskID){
-		Integer[] bugCoveringQuestions = {72,73,78,79,84,92,95,97,102,104,119,123,126};
-		for(int i=0; i<bugCoveringQuestions.length; i++){
-			if(microtaskID == bugCoveringQuestions[i]){
+
+		for(int i=0; i<bugCoveringIDList.size(); i++){
+			if(microtaskID == bugCoveringIDList.get(i).intValue()){
 				return true;
 			}
 		}
