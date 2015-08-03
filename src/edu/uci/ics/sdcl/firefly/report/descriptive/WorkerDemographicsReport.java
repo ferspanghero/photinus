@@ -319,12 +319,12 @@ public class WorkerDemographicsReport {
 		cell = row.createCell(cellNum++);
 		cell.setCellValue(mapDayToString(avDay));
 		
-		populateOptimismAnalysis(row,cellNum, worker, numberOfYes, numberOfNo);
+		populateOptimismAnalysis(row,cellNum, worker, numberOfYes, numberOfNo, numberOfIDK);
 	}
 	
-	public void populateOptimismAnalysis(Row row, int cellNum, Worker worker, int numberOfYes, int numberOfNo){
+	public void populateOptimismAnalysis(Row row, int cellNum, Worker worker, int numberOfYes, int numberOfNo, int numberOfIDK){
 		ArrayList<WorkerSession> workerSessions = fs.getSessionsByWorkerID(worker.getWorkerId());
-		int totalAnswers= numberOfYes+numberOfNo;
+		int totalAnswers= numberOfYes+numberOfNo+numberOfIDK;
 		int expectedYes = 0;
 		int expectedNo = 0;
 		for (WorkerSession workerSession : workerSessions) {
