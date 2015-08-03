@@ -10,7 +10,8 @@ public class ReportApplication {
 		filter.setIDKPercentageCriteria(-1, 50);
 		SessionDTO dto = new FileSessionDTO();
 		filter.apply(dto.getMicrotasks());*/
-		workerScoreReport(new ExcelExporter());
+		answerOptionReport(new ExcelExporter());
+		//workerScoreReport(new ExcelExporter());
 		builder.generateDescriptiveReport().exportReport();
 	}
 	

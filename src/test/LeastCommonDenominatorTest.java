@@ -68,5 +68,21 @@ public class LeastCommonDenominatorTest {
 		
 		
 	}
+	
+	
+	
+	//Testing for bugs 51 and 54
+	public static void main(String[] args){
+		
+		//Bug 54
+		char char3='-';
+		if(char3<'A' || char3> 'Z')
+			System.out.println("char3 out of range");
+		
+		//Bug 51
+		double x = -0.0;
+		long value = (long) x;
+		System.out.println("expected: "+String.valueOf(x) + ", actual:"+String.valueOf(value));
+	}
 
 }
