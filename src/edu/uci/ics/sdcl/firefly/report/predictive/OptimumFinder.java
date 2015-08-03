@@ -20,7 +20,7 @@ import edu.uci.ics.sdcl.firefly.util.PropertyManager;
  *
  */
 public class OptimumFinder {
-
+	
 
 	ArrayList<HashMap<FilterCombination,AnswerData>> dataList;
 

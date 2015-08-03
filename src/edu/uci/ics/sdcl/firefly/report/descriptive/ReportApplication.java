@@ -9,10 +9,11 @@ public class ReportApplication {
 		/*Filter filter = new Filter();
 		filter.setIDKPercentageCriteria(-1, 50);
 		SessionDTO dto = new FileSessionDTO();
-		filter.apply(dto.getMicrotasks());*/
-		answerOptionReport(new ExcelExporter());
+		*/
+		//answerOptionReport(new ExcelExporter());
 		//workerScoreReport(new ExcelExporter());
-		builder.generateDescriptiveReport().exportReport();
+		//workerDemographicsReport();
+		//builder.generateDescriptiveReport().exportReport();
 	}
 	
 	private static void answerOptionReport(DescriptiveReportWriter exporter)

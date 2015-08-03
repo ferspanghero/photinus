@@ -9,19 +9,19 @@ public class FilterGenerator {
 	static int maxSessionDuration = 60*60*3;//2h max
 	static int maxAnswerDuration = 60*60*3;//2h max
 	static int maxConfidence = -1;
-	static int maxExplanationSize = -1;//1000;
-	static int maxWorkerScore = -1;
+	static int maxExplanationSize =-1;//1000;
+	static int maxWorkerScore = 5;
 
 	//Min values
-	static int minDifficulty = -1;//0;
-	static int minWorkerIDKPercentage = -1;//0;
+	static int minDifficulty = 0;//0;
+	static int minWorkerIDKPercentage = 0;//0;
 
 	static int[] sessionDurationList = {120, 180, 240, 360, 420, 480, 600};
 	static int[] answerDurationList = {-1};//0, 15, 30, 45, 60, 120, 240};
 	static int[] confidenceList = {-1};//{1,2,3,4,5};
 	static int[] difficulytList =  {-1};//2, 3, 4,5};//0,1,2,3,4,5};
 	static int[] explanationSizeList ={-1};//0,25,50};//, 75, 100};
-	static int[] workerScoreList= {-1};//3, 4, 5};
+	static int[] workerScoreList= {5}; //3, 4, 5};
 	static int[] IDKpercentageList = {-1};//{0,50,100}; 
 
 	
