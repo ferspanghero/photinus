@@ -27,6 +27,7 @@ public class LogReadWriter {
 	String step1_folder = "\\1.unSmoked\\";
 	String step2_folder = "\\2.unQuit\\";
 	String step3_folder = "\\3.consolidated\\";
+	String step4_folder = "\\4.cut\\";
 
 	/** 
 	 * Flush the buffer back to the file
@@ -40,7 +41,8 @@ public class LogReadWriter {
 			case 0: folder = this.step0_folder; break;
 			case 1: folder = this.step1_folder; break;
 			case 2: folder = this.step2_folder; break;
-			case 3: folder = this.step3_folder; break;
+			case 3: folder = this.step3_folder; break;	
+			case 4: folder = this.step4_folder; break;
 			default: folder = null;
 		}
 
@@ -61,6 +63,7 @@ public class LogReadWriter {
 			case 1: folder = this.step0_folder; break;
 			case 2: folder = this.step1_folder; break;
 			case 3: folder = this.step2_folder; break;
+			case 4: folder = this.step3_folder; break;
 			default: folder = null;
 		}
 
@@ -123,6 +126,7 @@ public class LogReadWriter {
 			case 1: return path + step0_folder;
 			case 2: return path + step1_folder; 
 			case 3: return path + step2_folder; 
+			case 4: return path + step3_folder; 
 			default: return null;
 		}
 		
