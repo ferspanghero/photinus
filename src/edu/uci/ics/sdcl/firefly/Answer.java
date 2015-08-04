@@ -52,7 +52,19 @@ public class Answer implements Serializable{
 		this.timeStamp = timeStamp;
 	}
 
-
+	public String getShortOption(){
+		String option = this.getOption();
+		if(option.compareTo("YES, THERE IS AN ISSUE")==0)
+			return "YES";
+		else
+			if(option.compareTo("NO, THERE IS NOT AN ISSUE")==0)
+				return "NO";
+			else
+				if(option.compareTo("I DON'T KNOW")==0)
+					return "IDK";
+				else
+					return "ERROR";
+	}
 
 	public String getOption() {
 		return option;
