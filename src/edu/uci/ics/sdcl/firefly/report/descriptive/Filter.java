@@ -32,6 +32,9 @@ public class Filter {
 	private double[] workerIDKPercentage = new double[2];
 	FileConsentDTO workerDTO = new FileConsentDTO();
 	
+	/** this is a list of scores that must be excluded */
+	private HashMap<String, Integer> workerScoreExclusionList = new HashMap<String,Integer>();
+	
 	private static Map<String, Integer> sessionDurationMap = new HashMap<String, Integer>();
 	private static Map<String, Double> workerIDKMap = new HashMap<String, Double>();
 	
@@ -81,6 +84,8 @@ public class Filter {
 		}
 	}
 
+	
+	
 	public void setConfidenceCriteria(int minimum, int maximum)
 	{
 		if((minimum > maximum) && (maximum != -1))
@@ -136,7 +141,7 @@ public class Filter {
 			System.out.println("The minimum value of the filter cannot be greater than the maximum");
 		}
 		else{
-			this.workerScore[0] = minimum;
+			this.workerScore[0] 	= minimum;
 			this.workerScore[1] = maximum;
 		}
 	}
@@ -150,6 +155,13 @@ public class Filter {
 		else{
 			this.workerIDKPercentage[0] = minimum;
 			this.workerIDKPercentage[1] = maximum;
+		}
+	}
+	
+	public void setWorkerScoreExclusionList(int [] exclusionList)
+	{
+		for(int score : exclusionList){
+			this.workerScoreExclusionList.put(new Integer(score).toString(), score);
 		}
 	}
 	
@@ -224,7 +236,6 @@ public class Filter {
 				}
 				if((workerScore[0] != -1) || (workerScore[1] != -1) )
 				{
-					
 					Map<String, Worker> workers = workerDTO.getWorkers();
 					Worker worker = workers.get(answer.getWorkerId());
 					//if(worker==null)
@@ -238,6 +249,10 @@ public class Filter {
 					{
 						removeIndex.add(i);
 						continue;
+					}
+					if(worker!=null && this.workerScoreExclusionList.containsKey(worker.getGrade().toString()) )
+					{
+							removeIndex.add(i);
 					}
 				}
 				if((sessionDuration[0] != -1) || (sessionDuration[1] != -1) )

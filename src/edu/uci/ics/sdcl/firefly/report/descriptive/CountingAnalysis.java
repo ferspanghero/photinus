@@ -80,7 +80,7 @@ public class CountingAnalysis {
 			}
 			
 			for(String level: this.difficultyLevels ){
-				line = line + ":"+  confidenceCountMap.get(level).toString(); 
+				line = line + ":"+  difficultyCountMap.get(level).toString(); 
 			}
 			
 			return line;
@@ -117,9 +117,7 @@ public class CountingAnalysis {
 				addOptionCount(fileName,answer.getShortOption());
 			}
 		}
-		this.printResults();
-		return this.hitMap;
-		
+		return this.hitMap;	
 	}
 	
 	
@@ -170,7 +168,7 @@ public class CountingAnalysis {
 	public static void main(String[] args){
 		CountingAnalysis counter = new CountingAnalysis();
 		counter.count();
-		//counter.printResults();
+		counter.printResults();
 	}
 	
 }

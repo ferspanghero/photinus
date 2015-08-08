@@ -18,8 +18,10 @@ public class FilterCombination {
 	public static final String CONFIDENCE_LEVEL = "CONFIDENCE_LEVEL";
 	public static final String DIFFICULTY_LEVEL = "DIFFICULTY_LEVEL";
 	public static final String WORKER_SCORE = "WORKER_SCORE";
+	public static final String WORKER_SCORE_EXCLUSION = "WORKER_SCORE_EXCLUSION";
 	public static final String EXPLANATION_SIZE = "EXPLANATION_SIZE";
 	public static final String WORKER_IDK = "WORKER_IDK";
+	
 	
 	public HashMap<String,Range> combinationMap;
 	
@@ -30,14 +32,22 @@ public class FilterCombination {
 	public class Range{
 		Integer max;
 		Integer min;
+		int[] list;
 		
 		public String toString(){
-			return "["+min.toString()+","+max.toString()+"]";
+			if(max==null && min==null)
+				return "[excluded" +list[0]+  "]";
+			else
+				return "["+min.toString()+","+max.toString()+"]";
 		}
 		
 		public Range(int minValue, int maxValue){
 			this.min = new Integer(minValue);
 			this.max =  new Integer(maxValue);
+		}
+
+		public Range(int[] workerExclusionList) {
+			this.list = workerExclusionList;
 		}
 	}
 	
@@ -81,9 +91,14 @@ public class FilterCombination {
 		Filter filter = new Filter();
 		
 		for(String filterName: this.combinationMap.keySet()){
+
+			int min=-1;
+			int max=-1;
 			
-			int min = this.combinationMap.get(filterName).min.intValue();
-			int max = this.combinationMap.get(filterName).max.intValue();
+			if(this.combinationMap.get(filterName).min!=null){
+				min = this.combinationMap.get(filterName).min.intValue();
+				max = this.combinationMap.get(filterName).max.intValue();
+			}
 			
 			if(filterName.compareTo(FilterCombination.ANSWER_DURATION)==0){
 				filter.setAnswerDurationCriteria(new Double(min), new Double(max));
@@ -109,14 +124,23 @@ public class FilterCombination {
 									filter.setWorkerScoreCriteria(min, max);
 								}
 								else
+									if(filterName.compareTo(FilterCombination.WORKER_SCORE_EXCLUSION)==0){
+										filter.setWorkerScoreExclusionList(this.combinationMap.get(filterName).list);
+									}
+								else
 									if(filterName.compareTo(FilterCombination.WORKER_IDK)==0){
 										filter.setIDKPercentageCriteria(new Double(min), new Double(max));
 									}
 			}
-		
 		return filter;	
-				
 		}
+
+	public void addFilterParam(String workerScoreExclusion,
+			int[] workerExclusionList) {
+		if(combinationMap==null)
+			combinationMap = new HashMap<String, Range>();
+		combinationMap.put(workerScoreExclusion, new Range(workerExclusionList));
+	}
 		
 	
 }

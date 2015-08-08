@@ -21,11 +21,13 @@ public class FilterGenerator {
 	static int[] confidenceList = {-1};//{1,2,3,4,5};
 	static int[] difficulytList =  {-1};//2, 3, 4,5};//0,1,2,3,4,5};
 	static int[] explanationSizeList ={-1};//0,25,50};//, 75, 100};
-	static int[] workerScoreList= {5}; //3, 4, 5};
+	static int[] workerScoreList= {3}; //3, 4, 5};
+	static int[] workerExclusionList = {4};
+	
 	static int[] IDKpercentageList = {-1};//{0,50,100}; 
 
 	
-	
+	/** Filter answers by session duration */
 	public static ArrayList<FilterCombination> generateSessionFilterCombinations(){
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
@@ -41,6 +43,7 @@ public class FilterGenerator {
 								combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, maxConfidence, minConfidence);
 								combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty, minDifficulty);
 								combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, maxExplanationSize, minExplanationSize);
+								combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, workerExclusionList);
 								combination.addFilterParam(FilterCombination.WORKER_SCORE, maxWorkerScore, minWorkerScore);
 								combination.addFilterParam(FilterCombination.WORKER_IDK,maxWorkerIDKPercentage,minWorkerIDKPercentage);
 								filterList.add(combination);
@@ -56,7 +59,7 @@ public class FilterGenerator {
 
 
 
-
+	/** Filter answers by answer duration */
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
@@ -74,6 +77,7 @@ public class FilterGenerator {
 								combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, maxConfidence, minConfidence);
 								combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty, minDifficulty);
 								combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, maxExplanationSize, minExplanationSize);
+								combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, workerExclusionList);
 								combination.addFilterParam(FilterCombination.WORKER_SCORE, maxWorkerScore, minWorkerScore);
 								combination.addFilterParam(FilterCombination.WORKER_IDK,maxWorkerIDKPercentage,minWorkerIDKPercentage);
 								filterList.add(combination);
