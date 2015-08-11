@@ -35,8 +35,8 @@ public class Filter {
 	/** this is a list of scores that must be excluded */
 	private HashMap<String, Integer> workerScoreExclusionList = new HashMap<String,Integer>();
 	
-	private static Map<String, Integer> sessionDurationMap = new HashMap<String, Integer>();
-	private static Map<String, Double> workerIDKMap = new HashMap<String, Double>();
+	private  Map<String, Integer> sessionDurationMap = new HashMap<String, Integer>();
+	private  Map<String, Double> workerIDKMap = new HashMap<String, Double>();
 	
 	public int[] getExplanationSize() {
 		return explanationSize;
@@ -170,13 +170,12 @@ public class Filter {
 	 * @param content: Desired content to be filtered
 	 * @return: The filtered content
 	 */
-	public Map<String, Microtask> apply(Map<String, Microtask> content)
+	public Map<String, Microtask> apply(HashMap<String, Microtask> microtaskMap)
 	{
+		Map<String, Microtask> content = (Map<String, Microtask>)  microtaskMap.clone();
 		Map<String, Microtask> aux = new LinkedHashMap<String, Microtask>();
 		aux.putAll(content);
-		List<Integer> removeIndex = new ArrayList<Integer>();
-		
-		
+		List<Integer> removeIndex = new ArrayList<Integer>();	
 		
 		for (String questionID : aux.keySet()) {
 			Vector<Answer> answerList = aux.get(questionID).getAnswerList();
@@ -274,11 +273,13 @@ public class Filter {
 					calculateWorkersIDK();
 					if( (workerIDKPercentage[0] != -1) && (workerIDKMap.get(answer.getWorkerId()) < workerIDKPercentage[0]))
 					{
+						System.out.println("min IDK: "+ workerIDKPercentage[0] +" Removig worker: "+answer.getWorkerId());
 						removeIndex.add(i);
 						continue;
 					}
 					if( (workerIDKPercentage[1] != -1) && (workerIDKMap.get(answer.getWorkerId()) > workerIDKPercentage[1]))
 					{
+						System.out.println("max IDK: "+ workerIDKPercentage[1] +" Removig worker: "+answer.getWorkerId());
 						removeIndex.add(i);
 						continue;
 					}
@@ -290,10 +291,10 @@ public class Filter {
 				question.getAnswerList().removeElementAt(index);
 			}
 			removeIndex.clear();
-		}
-		
+		}		
 		return content;
 	}
+	
 	
 	private void calculateSessionsDuration()
 	{
@@ -341,8 +342,10 @@ public class Filter {
 			for (String workerID : aux.keySet()) {
 				Integer[] values = aux.get(workerID);
 				Double percentage = 0.0;
-				if(values[1] != 0)
+				if(values[1] != 0){
 					percentage = (((double)(100 * values[0])) / values[1]);
+					//System.out.println("IDK percentage: "+ percentage );
+				}
 				workerIDKMap.put(workerID, percentage);
 			}
 		}

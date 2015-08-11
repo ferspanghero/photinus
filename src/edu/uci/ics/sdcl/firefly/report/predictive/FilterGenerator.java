@@ -10,7 +10,7 @@ public class FilterGenerator {
 	static int maxAnswerDuration = 60*60*3;//2h max
 	static int maxConfidence = -1;
 	static int maxExplanationSize =-1;//1000;
-	static int maxWorkerScore = 5;
+	static int maxWorkerScore = -1;
 
 	//Min values
 	static int minDifficulty = 0;//0;
@@ -21,10 +21,10 @@ public class FilterGenerator {
 	static int[] confidenceList = {-1};//{1,2,3,4,5};
 	static int[] difficulytList =  {-1};//2, 3, 4,5};//0,1,2,3,4,5};
 	static int[] explanationSizeList ={-1};//0,25,50};//, 75, 100};
-	static int[] workerScoreList= {3}; //3, 4, 5};
-	static int[] workerExclusionList = {4};
+	static int[] workerScoreList= {-1}; //3, 4, 5};
+	static int[] workerExclusionList = {};//{4};
 	
-	static int[] IDKpercentageList = {-1};//{0,50,100}; 
+	static int[] IDKpercentageList = {33}; 
 
 	
 	/** Filter answers by session duration */

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap; 
 
 
+import java.util.Map;
+
 import edu.uci.ics.sdcl.firefly.Microtask; 
 import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
@@ -83,14 +85,10 @@ public class OptimumFinder {
 			if(task.getFileName().compareTo(fileName)==0)
 				resultMap.put(task.getID().toString(),task.getAnswerOptions());
 		}
-
 		return resultMap;
-
 	}
 
 	public static void main(String[] args){
-
-
 
 		//Obtain bugcovering question list
 		PropertyManager manager = PropertyManager.initializeSingleton();
@@ -103,21 +101,19 @@ public class OptimumFinder {
 		//Produce the list of filters
 		ArrayList<FilterCombination> filterList = FilterGenerator.generateAnswerFilterCombinations();
 
-
-		//Filter answers
-		FileSessionDTO sessionDTO = new FileSessionDTO();
-		HashMap<String, Microtask> microtaskMap = (HashMap<String, Microtask>) sessionDTO.getMicrotasks();
-
 		String[] fileNameList = {"HIT01_8", "HIT02_24", "HIT03_6", "HIT04_7",
-				"HIT05_35","HIT06_51","HIT07_33","HIT08_54"};
+								"HIT05_35","HIT06_51","HIT07_33","HIT08_54"};
 
 		ArrayList<HashMap<FilterCombination,AnswerData>> processingList = new 	ArrayList<HashMap<FilterCombination,AnswerData>> ();
 
 		//Apply filter and extract data by fileName
 		for(FilterCombination combination :  filterList){
 			//FilterCombination combination =  filterList.get(0);
-
+			FileSessionDTO sessionDTO = new FileSessionDTO();
+			HashMap<String, Microtask> microtaskMap = (HashMap<String, Microtask>) sessionDTO.getMicrotasks();
+			
 			Filter filter = combination.getFilter();
+
 			HashMap<String, Microtask> filteredMicrotaskMap = (HashMap<String, Microtask>) filter.apply(microtaskMap);
 		
 			for(String fileName: fileNameList){
@@ -130,18 +126,10 @@ public class OptimumFinder {
 			}
 		}
 
-
-
-
-
 		OptimumFinder finder =  new OptimumFinder(processingList);
 		finder.addPredictor(new StrengthSignal());
 		finder.run();
 		finder.printResults();
-
-
-
-
 	}
 
 }
