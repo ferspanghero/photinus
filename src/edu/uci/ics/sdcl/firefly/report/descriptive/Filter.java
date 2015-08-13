@@ -22,7 +22,7 @@ import edu.uci.ics.sdcl.firefly.WorkerSession;
  *
  */
 public class Filter {
-	
+
 	private int[] explanationSize = new int[2];
 	private int[] confidence = new int[2];
 	private int[] difficulty = new int[2];
@@ -30,14 +30,16 @@ public class Filter {
 	private int[] workerScore = new int[2];
 	private double[] sessionDuration = new double[2];
 	private double[] workerIDKPercentage = new double[2];
-	FileConsentDTO workerDTO = new FileConsentDTO();
-	
+
+	/** map of professions to be accepted */
+	private HashMap<String, String> workerProfessionMap = new HashMap<String, String> (); //Hobbyist, Professional Programmer, Undergrad, Graduate, Others
+
 	/** this is a list of scores that must be excluded */
-	private HashMap<String, Integer> workerScoreExclusionList = new HashMap<String,Integer>();
-	
+	private HashMap<String, Integer> workerScoreExclusionMap = new HashMap<String,Integer>();
+
 	private  Map<String, Integer> sessionDurationMap = new HashMap<String, Integer>();
 	private  Map<String, Double> workerIDKMap = new HashMap<String, Double>();
-	
+
 	public int[] getExplanationSize() {
 		return explanationSize;
 	}
@@ -62,6 +64,10 @@ public class Filter {
 		return sessionDuration;
 	}
 
+	public HashMap<String, String>  getWorkerProfessionMap(){
+		return workerProfessionMap;
+	}
+
 	public Filter() {
 		Arrays.fill(explanationSize, -1);
 		Arrays.fill(confidence, -1);
@@ -71,7 +77,7 @@ public class Filter {
 		Arrays.fill(sessionDuration, -1);
 		Arrays.fill(workerIDKPercentage, -1);
 	}
-	
+
 	public void setExplanationSizeCriteria(int minimum, int maximum)
 	{
 		if((minimum > maximum) && (maximum != -1))
@@ -84,8 +90,6 @@ public class Filter {
 		}
 	}
 
-	
-	
 	public void setConfidenceCriteria(int minimum, int maximum)
 	{
 		if((minimum > maximum) && (maximum != -1))
@@ -121,7 +125,7 @@ public class Filter {
 			this.answerDuration[1] = maximum;
 		}
 	}
-	
+
 	public void setSessionDurationCriteria(double minimum, double maximum)
 	{
 		if((minimum > maximum) && (maximum != -1))
@@ -133,7 +137,7 @@ public class Filter {
 			this.sessionDuration[1] = maximum;
 		}
 	}
-	
+
 	public void setWorkerScoreCriteria(int minimum, int maximum)
 	{
 		if((minimum > maximum) && (maximum != -1))
@@ -145,7 +149,7 @@ public class Filter {
 			this.workerScore[1] = maximum;
 		}
 	}
-	
+
 	public void setIDKPercentageCriteria(double minimum, double maximum)
 	{
 		if((minimum > maximum) && (maximum != -1))
@@ -157,14 +161,21 @@ public class Filter {
 			this.workerIDKPercentage[1] = maximum;
 		}
 	}
-	
+
 	public void setWorkerScoreExclusionList(int [] exclusionList)
 	{
 		for(int score : exclusionList){
-			this.workerScoreExclusionList.put(new Integer(score).toString(), score);
+			this.workerScoreExclusionMap.put(new Integer(score).toString(), score);
 		}
 	}
-	
+
+	public void setWorkerProfessionMap(String[] list) 
+	{
+		for(String profession : list){			
+			this.workerProfessionMap.put(profession, profession);
+		}
+	}
+
 	/**
 	 * Applies the filter on the desired content.
 	 * @param content: Desired content to be filtered
@@ -176,126 +187,159 @@ public class Filter {
 		Map<String, Microtask> aux = new LinkedHashMap<String, Microtask>();
 		aux.putAll(content);
 		List<Integer> removeIndex = new ArrayList<Integer>();	
-		
+		FileConsentDTO workerDTO = new FileConsentDTO();
+		HashMap<String,Worker> workerMap = workerDTO.getWorkers();
 		for (String questionID : aux.keySet()) {
 			Vector<Answer> answerList = aux.get(questionID).getAnswerList();
 			for (int i = 0; i < answerList.size(); i++) {				
 				Answer answer = answerList.get(i);
-				if((explanationSize[0] != -1) || (explanationSize[1] != -1))
-				{
-					if( (explanationSize[0] != -1) && (answer.getExplanation().length() < explanationSize[0]))
+				String workerID = answer.getWorkerId();
+				Worker worker = workerMap.get(workerID);
+				if(worker!=null){ //Does not accept answers from workers who are not in the ConsentLog.
+					if((explanationSize[0] != -1) || (explanationSize[1] != -1))
 					{
-						removeIndex.add(i);
-						continue;
-					}
-					if( (explanationSize[1] != -1) && (answer.getExplanation().length() > explanationSize[1]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-				}
-				if((confidence[0] != -1) || (confidence[1] != -1))
-				{
-					if( (confidence[0] != -1) && (answer.getConfidenceOption() < confidence[0]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-					if( (confidence[1] != -1) && (answer.getConfidenceOption() > confidence[1]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-				}
-				if((difficulty[0] != -1) || (difficulty[1] != -1))
-				{
-					if( (difficulty[0] != -1) && (answer.getDifficulty() < difficulty[0]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-					if( (difficulty[1] != -1) && (answer.getDifficulty() > difficulty[1]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-				}
-				if((answerDuration[0] != -1) || (answerDuration[1] != -1))
-				{
-					if( (answerDuration[0] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) < answerDuration[0]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-					if( (answerDuration[1] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) > answerDuration[1]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-				}
-				if((workerScore[0] != -1) || (workerScore[1] != -1) )
-				{
-					Map<String, Worker> workers = workerDTO.getWorkers();
-					Worker worker = workers.get(answer.getWorkerId());
-					//if(worker==null)
-						//System.out.println("worker null answer.getWorkerId"+answer.getWorkerId());
-					if(worker!=null && (workerScore[0] != -1) && (worker.getGrade() < workerScore[0]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-					if( worker!=null && (workerScore[1] != -1) && (worker.getGrade() > workerScore[1]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-					if(worker!=null && this.workerScoreExclusionList.containsKey(worker.getGrade().toString()) )
-					{
+						if( (explanationSize[0] != -1) && (answer.getExplanation().length() < explanationSize[0]))
+						{
 							removeIndex.add(i);
+							continue;
+						}
+						if( (explanationSize[1] != -1) && (answer.getExplanation().length() > explanationSize[1]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+					}
+					if((confidence[0] != -1) || (confidence[1] != -1))
+					{
+						if( (confidence[0] != -1) && (answer.getConfidenceOption() < confidence[0]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+						if( (confidence[1] != -1) && (answer.getConfidenceOption() > confidence[1]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+					}
+					if((difficulty[0] != -1) || (difficulty[1] != -1))
+					{
+						if( (difficulty[0] != -1) && (answer.getDifficulty() < difficulty[0]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+						if( (difficulty[1] != -1) && (answer.getDifficulty() > difficulty[1]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+					}
+					if((answerDuration[0] != -1) || (answerDuration[1] != -1))
+					{
+						if( (answerDuration[0] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) < answerDuration[0]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+						if( (answerDuration[1] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) > answerDuration[1]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+					}
+					if((workerScore[0] != -1) || (workerScore[1] != -1) )
+					{
+
+						//FileConsentDTO workerDTO = new FileConsentDTO();
+					//	Map<String, Worker> workers = workerDTO.getWorkers();
+						//Worker worker = workers.get(answer.getWorkerId());
+						//if(worker==null)
+						//System.out.println("worker null answer.getWorkerId"+answer.getWorkerId());
+						if(worker!=null && (workerScore[0] != -1) && (worker.getGrade() < workerScore[0]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+						if( worker!=null && (workerScore[1] != -1) && (worker.getGrade() > workerScore[1]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+						if(worker!=null && this.workerScoreExclusionMap.containsKey(worker.getGrade().toString()) )
+						{
+							removeIndex.add(i);
+						}
+					}
+					if((sessionDuration[0] != -1) || (sessionDuration[1] != -1) )
+					{
+						calculateSessionsDuration();
+						if( (sessionDuration[0] != -1) && (sessionDurationMap.get(questionID+":"+answer.getWorkerId()) < sessionDuration[0]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+						if( (sessionDuration[1] != -1) && (sessionDurationMap.get(questionID+":"+answer.getWorkerId()) > sessionDuration[1]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+					}
+					if((workerIDKPercentage[0] != -1) || (workerIDKPercentage[1] != -1))
+					{
+						calculateWorkersIDK();
+						if( (workerIDKPercentage[0] != -1) && (workerIDKMap.get(answer.getWorkerId()) < workerIDKPercentage[0]))
+						{
+							System.out.println("min IDK: "+ workerIDKPercentage[0] +" Removig worker: "+answer.getWorkerId());
+							removeIndex.add(i);
+							continue;
+						}
+						if( (workerIDKPercentage[1] != -1) && (workerIDKMap.get(answer.getWorkerId()) > workerIDKPercentage[1]))
+						{
+							System.out.println("max IDK: "+ workerIDKPercentage[1] +" Removig worker: "+answer.getWorkerId());
+							removeIndex.add(i);
+							continue;
+						}
+					}
+					if(workerProfessionMap.size()>0)
+					{
+						//FileConsentDTO workerDTO = new FileConsentDTO();
+						//Map<String, Worker> workers = workerDTO.getWorkers();
+						//String id = answer.getWorkerId();
+						//Worker worker = workers.get(id);
+						String workerProfession = worker.getSurveyAnswer("Experience");
+						if(workerProfession.contains("Other"))
+							workerProfession = "Other";
+						if( (workerProfessionMap.containsKey(workerProfession)))
+						{
+							System.out.println("profession: "+ workerProfession +" Removig worker: "+answer.getWorkerId());
+							removeIndex.add(i);
+							continue;
+						}
+						if( (workerProfessionMap.containsKey(workerProfession)))
+						{
+							System.out.println("profession: "+ workerProfession +" Removig worker: "+answer.getWorkerId());
+							removeIndex.add(i);
+							continue;
+						}
 					}
 				}
-				if((sessionDuration[0] != -1) || (sessionDuration[1] != -1) )
-				{
-					calculateSessionsDuration();
-					if( (sessionDuration[0] != -1) && (sessionDurationMap.get(questionID+":"+answer.getWorkerId()) < sessionDuration[0]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-					if( (sessionDuration[1] != -1) && (sessionDurationMap.get(questionID+":"+answer.getWorkerId()) > sessionDuration[1]))
-					{
-						removeIndex.add(i);
-						continue;
-					}
-				}
-				if((workerIDKPercentage[0] != -1) || (workerIDKPercentage[1] != -1))
-				{
-					calculateWorkersIDK();
-					if( (workerIDKPercentage[0] != -1) && (workerIDKMap.get(answer.getWorkerId()) < workerIDKPercentage[0]))
-					{
-						System.out.println("min IDK: "+ workerIDKPercentage[0] +" Removig worker: "+answer.getWorkerId());
-						removeIndex.add(i);
-						continue;
-					}
-					if( (workerIDKPercentage[1] != -1) && (workerIDKMap.get(answer.getWorkerId()) > workerIDKPercentage[1]))
-					{
-						System.out.println("max IDK: "+ workerIDKPercentage[1] +" Removig worker: "+answer.getWorkerId());
-						removeIndex.add(i);
-						continue;
-					}
-				}
-			}
+				else
+					System.out.print("Worker not in ConsentLog: "+ workerID);
+			}//for
+			
+
 			Collections.reverse(removeIndex);
 			for (Integer index : removeIndex) {
 				Microtask question = content.get(questionID);
 				question.getAnswerList().removeElementAt(index);
 			}
 			removeIndex.clear();
-		}		
+		}//for		
 		return content;
 	}
-	
-	
+
+
 	private void calculateSessionsDuration()
 	{
 		if(sessionDurationMap.size() == 0)
@@ -316,7 +360,7 @@ public class Filter {
 			}
 		}
 	}
-	
+
 	private void calculateWorkersIDK()
 	{
 		if(workerIDKMap.size() == 0)
@@ -350,4 +394,6 @@ public class Filter {
 			}
 		}
 	}
+
+
 }
