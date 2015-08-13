@@ -3,6 +3,22 @@ package edu.uci.ics.sdcl.firefly.report.predictive;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Strength Signal calculates the number of YES's answers that enable a fault to be located.
+ * This number is called "Threshold". 
+ * 
+ * The threshold is the number of YES's that is larger than the one received by 
+ * any non-bug-Covering questions and still smaller or equal to at
+ * least one bug-covering question.
+ *  
+ * If the maxNumber of YES's for Bug-Covering is not larger than the one for Non-Bug-Covering,
+ * then returns the difference of YES's between the tow top Bug-Covering and Non-Bug-Covering questions.
+ * This difference will be negative and show how many more YES's answers were necessary for the Bug-Covering to be
+ * unambiguously distinguished from Non-Bug-Covering questions.
+ * 
+ * @author adrianoc
+ *
+ */
 public class StrengthSignal extends Predictor{
 
 	private String name = "Strength Signal";
