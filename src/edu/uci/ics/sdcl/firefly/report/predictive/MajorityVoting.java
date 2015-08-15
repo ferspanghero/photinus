@@ -3,6 +3,8 @@ package edu.uci.ics.sdcl.firefly.report.predictive;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import edu.uci.ics.sdcl.firefly.Answer;
+
 /**
  * Each question has a vote count which is basically Number of YES's minus the Number of NO's.
  * 
@@ -17,21 +19,98 @@ public class MajorityVoting extends Predictor{
 	
 	private AnswerData data;
 
-	public Integer compute(AnswerData data){
+	/** The number of bug covering questions that were actually found */
+	@Override
+	public Boolean computeSignal(AnswerData data){
 		this.data = data;
 		HashMap<String, Integer> questionYESCountMap = this.computeNumberOfYES(data.getAnswerMap());
 		HashMap<String, Integer> questionNoCountMap = this.computeNumberOfNO(data.getAnswerMap());
 		this.voteMap = this.computeQuestionVoteMap(questionYESCountMap,questionNoCountMap); 
-		return this.computeLocatedBugFinding(voteMap,data.getBugCoveringMap());	
+	
+		if(this.computeNumberOfCorrectBugCoveringFound()>0)
+			return true;
+		else
+			return false;
 	}
 
-	public Integer getFalsePositives(){
+	@Override
+	public Double computeSignalStrength(AnswerData data){
+		if(voteMap==null)
+			this.computeSignal(data);
+
+		Integer extraVotes=0;
+		
+		for(String questionID: data.bugCoveringMap.keySet()){
+			
+			Integer vote = voteMap.get(questionID);
+			if(vote!=null && vote>0){
+				extraVotes = extraVotes + vote-1;
+			}
+		}
+
+		Double truePositiveRate = this.computeTruePositiveRate();
+
+		return truePositiveRate * extraVotes;
+	}
+
+	
+	@Override
+	public Integer computeNumberOfWorkers(AnswerData data) {
+		int maxAnswers=0; 
+		for(ArrayList<String> answerList :  data.answerMap.values()){
+			if(answerList.size()>maxAnswers)
+				maxAnswers = answerList.size();
+		}
+		return maxAnswers;
+	}
+	
+	
+	/** Same result as function compute */
+	@Override
+	public Integer getTruePositives(){
 		if(this.voteMap!=null)
-			return computeFalsePositives(this.voteMap, data.getBugCoveringMap());
+			return this.computeNumberOfCorrectBugCoveringFound();
 		else
 			return null;
 	}
 	
+	@Override
+	public Integer getFalsePositives(){
+		if(this.voteMap!=null)
+			return computeFalsePositives();
+		else
+			return null;
+	}
+	
+	@Override
+	public Integer getFalseNegatives(){
+		if(this.voteMap!=null)
+			return computeFalseNegatives();
+		else
+			return null;
+	}
+	
+	@Override
+	public Integer getTrueNegatives(){
+		if(this.voteMap!=null)
+			return computeTrueNegatives();
+		else
+			return null;
+	}
+	
+	/** Relies on matching the bugCovering list with the list of questions
+	 * sent, which should be only the ones pertaining one HIT (e.g., HIT01_8).
+	 * @return
+	 */
+	@Override
+	public Integer getNumberBugCoveringQuestions(){
+		if(this.voteMap!=null)
+			return countBugCovering();
+		else
+			return null;
+	}
+
+	@Override
 	public String getName(){
 		return this.name;
 	}
@@ -55,10 +134,10 @@ public class MajorityVoting extends Predictor{
 			int counter = 0;
 			for(String option : optionList){
 				//System.out.println(option);
-				if(option.compareTo("YES, THERE IS AN ISSUE")==0)
+				if(option.compareTo(Answer.YES)==0)
 					counter++;
 			}
-			//System.out.println("counter:"+counter);
+			//System.out.println("questionID: "+ questionID+"counter:"+counter);
 			questionYESCountMap.put(questionID, new Integer(counter));
 		}
 		return questionYESCountMap;
@@ -78,10 +157,10 @@ public class MajorityVoting extends Predictor{
 			int counter = 0;
 			for(String option : optionList){
 				//System.out.println(option);
-				if(option.compareTo("NO, THERE IS NOT AN ISSUE")==0)
+				if(option.compareTo(Answer.NO)==0)
 					counter++;
 			}
-			//System.out.println("counter:"+counter);
+			System.out.println("questionID: "+ questionID+"counter:"+counter);
 			questionNOCountMap.put(questionID, new Integer(counter));
 		}
 		return questionNOCountMap;
@@ -102,48 +181,90 @@ public class MajorityVoting extends Predictor{
 		for(String questionID : questionYESCountMap.keySet()){
 			Integer yesCount = questionYESCountMap.get(questionID);
 			Integer noCount = questionNOCountMap.get(questionID);
-
 			Integer vote = yesCount - noCount;
+			
 			voteMap.put(questionID, vote);
 		}
-
 		return voteMap;
 	}
 
-	private Integer computeLocatedBugFinding(HashMap<String, Integer> voteMap,
-			HashMap<String, String> bugCoveringMap) {
+	private Integer computeNumberOfCorrectBugCoveringFound() {
 		
 		Integer quantityLocated=0;
-		Integer totalBugCoveringInVoteMap=0;
-		
-		for(String questionID: bugCoveringMap.keySet()){
+	
+		for(String questionID: data.bugCoveringMap.keySet()){
 			Integer vote = voteMap.get(questionID);
 			if(vote!=null){
-				totalBugCoveringInVoteMap++;
 				if(vote>0)
 					quantityLocated++;
 			}
 		}
-		
-		return totalBugCoveringInVoteMap!=0 ? quantityLocated/totalBugCoveringInVoteMap: 0;
+		return quantityLocated;
 	}
 	
 	
-	private Integer computeFalsePositives(HashMap<String, Integer> voteMap,
-			HashMap<String, String> bugCoveringMap) {
+	private Integer computeFalsePositives() {
 		
 		Integer quantityFalsePositives=0;
 
 		for(String questionID: voteMap.keySet()){
-			if(!bugCoveringMap.containsKey(questionID)){
+			if(!data.bugCoveringMap.containsKey(questionID)){
 				Integer vote = voteMap.get(questionID);
-				if(vote!=null && vote<0)
+				if(vote!=null && vote>0)
 					quantityFalsePositives = quantityFalsePositives +1;
 			}
 		}
 		return quantityFalsePositives;
 	}
 
+	private Integer computeFalseNegatives() {
+		
+		Integer quantityFalseNegatives=0;
+
+		for(String questionID: voteMap.keySet()){
+			if(data.bugCoveringMap.containsKey(questionID)){
+				Integer vote = voteMap.get(questionID);
+				if(vote!=null && vote<=0)
+					quantityFalseNegatives = quantityFalseNegatives +1;
+			}
+		}
+		return quantityFalseNegatives;
+	}
+	
+	private Integer computeTrueNegatives() {
+		
+		Integer quantityTrueNegatives=0;
+
+		for(String questionID: voteMap.keySet()){
+			if(!data.bugCoveringMap.containsKey(questionID)){
+				Integer vote = voteMap.get(questionID);
+				if(vote!=null && vote<=0)
+					quantityTrueNegatives = quantityTrueNegatives +1;
+			}
+		}
+		return quantityTrueNegatives;
+	}
+	
+	private Integer countBugCovering(){
+			
+		Integer count=0;
+
+		for(String questionID: voteMap.keySet()){
+		if(data.bugCoveringMap.containsKey(questionID))			
+			count ++;
+		
+		}
+		return count;
+	}
+
+	private Double computeTruePositiveRate(){
+		Double numberOfBugCovering = this.getNumberBugCoveringQuestions().doubleValue();
+		Double numberOfTruePositives = this.getTruePositives().doubleValue();
+		return numberOfTruePositives / numberOfBugCovering;
+	}
+	
+	//-----------------------------------------------------------------------------------
+	
 	/** Used to test the Majority voting functions */
 	public static void main(String[] args){
 		
@@ -154,32 +275,32 @@ public class MajorityVoting extends Predictor{
 		
 		HashMap<String, ArrayList<String>> answerMap = new HashMap<String, ArrayList<String>>();
 		
-		ArrayList<String> answerList = new ArrayList<String>();//2 yes's
-		answerList.add("YES, THERE IS AN ISSUE");
-		answerList.add("NO");
+		ArrayList<String> answerList = new ArrayList<String>();//2 yes's TRUE NEGATIVE
+		answerList.add(Answer.NO);
+		answerList.add(Answer.NO);
 		answerList.add("IDK");
-		answerList.add("YES, THERE IS AN ISSUE");
+		answerList.add(Answer.YES);
 		answerMap.put("0",answerList);
 		
-		answerList = new ArrayList<String>();//1 yes
-		answerList.add("YES, THERE IS AN ISSUE");
-		answerList.add("NO");
-		answerList.add("NO");
-		answerList.add("NO");
+		answerList = new ArrayList<String>();//1 yes BUG COVERING FALSE NEGATIVE
+		answerList.add(Answer.YES);
+		answerList.add(Answer.NO);
+		answerList.add(Answer.NO);
+		answerList.add(Answer.NO);
 		answerMap.put("1",answerList);
 		
-		answerList = new ArrayList<String>();//2 yes's
-		answerList.add("YES, THERE IS AN ISSUE");
-		answerList.add("YES, THERE IS AN ISSUE");
-		answerList.add("NO");
-		answerList.add("NO");
+		answerList = new ArrayList<String>();//2 yes's NON-BUG COVERING FALSE POSITIVE
+		answerList.add(Answer.YES);
+		answerList.add(Answer.YES);
+		answerList.add(Answer.YES);
+		answerList.add(Answer.NO);
 		answerMap.put("2",answerList);
 		
-		answerList = new ArrayList<String>();//4 yes's
-		answerList.add("YES, THERE IS AN ISSUE");
-		answerList.add("YES, THERE IS AN ISSUE");
-		answerList.add("YES, THERE IS AN ISSUE");
-		answerList.add("YES, THERE IS AN ISSUE");
+		answerList = new ArrayList<String>();//4 yes's BUG COVERING TRUE POSITIVE
+		answerList.add(Answer.YES);
+		answerList.add(Answer.YES);
+		answerList.add(Answer.YES);
+		answerList.add(Answer.NO);
 		answerMap.put("3",answerList);
 		
 		String hitFileName = "HIT00_0";
@@ -188,17 +309,28 @@ public class MajorityVoting extends Predictor{
 		
 		MajorityVoting predictor = new MajorityVoting();
 		
-		Integer bugCoveringQuestionsLocated = predictor.compute(data);
-		Integer totalBugCovering = 2;
+		Double bugCoveringQuestionsLocated =  predictor.getTruePositives().doubleValue();
+		Double totalBugCovering = 2.0;
 		
 		Double percentageFaults = new Double( bugCoveringQuestionsLocated/totalBugCovering) * 100;
 		
-		System.out.println("expected: 500% bug covering question located, actual: "+ percentageFaults.toString());
+		System.out.println("expected: 50% bug covering question located, actual: "+ percentageFaults.toString());
 		
 		
 		Integer falsePositives = predictor.getFalsePositives();
 		System.out.println("expected: 1, actual: "+ falsePositives.toString());
+		
+		Integer falseNegatives = predictor.getFalseNegatives();
+		System.out.println("expected: 1, actual: "+ falseNegatives.toString());
+		
+		Integer trueNegatives = predictor.getTrueNegatives();
+		System.out.println("expected: 1, actual: "+ trueNegatives.toString());
 	}
+
+
+	
+	
+	
 	
 	
 }

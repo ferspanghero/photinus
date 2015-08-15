@@ -46,7 +46,7 @@ public class OptimumFinder {
 				AnswerData answerData = map.get(filter);
 				for(Predictor predictor: predictorList){
 					String outcomeKey = predictor.getName()+":"+answerData.getHitFileName();
-					filter.addOutcome(outcomeKey, predictor.compute(answerData));
+					filter.addOutcome(outcomeKey, predictor.computeSignal(answerData));
 				}
 				filterOutcomeList.add(filter);
 			}
@@ -127,7 +127,7 @@ public class OptimumFinder {
 		}
 
 		OptimumFinder finder =  new OptimumFinder(processingList);
-		finder.addPredictor(new StrengthSignal());
+		finder.addPredictor(new PositiveVoting());
 		finder.run();
 		finder.printResults();
 	}

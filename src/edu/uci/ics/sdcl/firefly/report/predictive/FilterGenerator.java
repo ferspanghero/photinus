@@ -20,10 +20,10 @@ public class FilterGenerator {
 	static int[] confidenceList = {-1};//{1,2,3,4,5};
 	static int[] difficulytList =  {-1};//2, 3, 4,5};//0,1,2,3,4,5};
 	static int[] explanationSizeList ={-1};//0,25,50};//, 75, 100};
-	static int[] workerScoreList= {-1}; //3, 4, 5};
-	static int[] workerExclusionList = {};//{4};
+	static int[] workerScoreList= {5}; //3, 4, 5};
+	static int[] workerScoreExclusionList = {};//{4};
 	static int[] IDKpercentageList = {-1}; //{33};
-	static String[] professionExclusionList = {"Graduate_Student","Undergraduate_Student"};//{, "Hobbyist","Professional_Developer"};//{,,"Other",,"Graduate_Student", };
+	static String[] professionExclusionList = {};//{"Graduate_Student","Undergraduate_Student"};//{, "Hobbyist","Professional_Developer"};//{,,"Other",,"Graduate_Student", };
 
 	/** Filter answers by session duration */
 	public static ArrayList<FilterCombination> generateSessionFilterCombinations(){
@@ -41,7 +41,7 @@ public class FilterGenerator {
 								combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, maxConfidence, minConfidence);
 								combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty, minDifficulty);
 								combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, maxExplanationSize, minExplanationSize);
-								combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, workerExclusionList);
+								combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, workerScoreExclusionList);
 								combination.addFilterParam(FilterCombination.WORKER_SCORE, maxWorkerScore, minWorkerScore);
 								combination.addFilterParam(FilterCombination.WORKER_IDK, maxWorkerIDKPercentage, minWorkerIDKPercentage);
 								combination.addFilterParam(FilterCombination.WORKER_PROFESSION, professionExclusionList);
@@ -74,7 +74,7 @@ public class FilterGenerator {
 								combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, maxConfidence, minConfidence);
 								combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty, minDifficulty);
 								combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, maxExplanationSize, minExplanationSize);
-								combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, workerExclusionList);
+								combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, workerScoreExclusionList);
 								combination.addFilterParam(FilterCombination.WORKER_SCORE, maxWorkerScore, minWorkerScore);
 								combination.addFilterParam(FilterCombination.WORKER_IDK, maxWorkerIDKPercentage,minWorkerIDKPercentage);
 								combination.addFilterParam(FilterCombination.WORKER_PROFESSION, professionExclusionList);
