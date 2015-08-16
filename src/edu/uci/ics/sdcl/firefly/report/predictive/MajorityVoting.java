@@ -13,11 +13,12 @@ import edu.uci.ics.sdcl.firefly.Answer;
  */
 public class MajorityVoting extends Predictor{
 
-	private String name = "Majority Voting";
+	public static String name = "Majority Voting";
 	
 	private HashMap<String, Integer> voteMap;
 	
 	private AnswerData data;
+	
 
 	/** The number of bug covering questions that were actually found */
 	@Override
@@ -38,6 +39,9 @@ public class MajorityVoting extends Predictor{
 		if(voteMap==null)
 			this.computeSignal(data);
 
+		if(getTruePositives()==0)
+			return -1.0;
+		
 		Integer extraVotes=0;
 		
 		for(String questionID: data.bugCoveringMap.keySet()){
@@ -64,6 +68,30 @@ public class MajorityVoting extends Predictor{
 		return maxAnswers;
 	}
 	
+	@Override
+	/**
+	 * 
+	 * @return number of YES of the bug covering question that has the smallest positive vote. If the fault was not found returns 0.
+	 */
+	public Integer getThreshold(){
+		
+		if (voteMap==null){
+			if(!this.computeSignal(data))
+				return 0;
+		}
+		
+		int smallestVote = this.computeNumberOfWorkers(data); //starts with the maximum possible.
+		
+		//find the number of YES of the bug covering question that has the smallest positive vote
+		for(String questionID: this.voteMap.keySet()){
+			if(data.bugCoveringMap.containsKey(questionID)){
+				Integer vote = this.voteMap.get(questionID);
+				if(vote!=null && vote>0 && vote<smallestVote)
+					smallestVote = vote;
+			}
+		}
+		return smallestVote;
+	}
 	
 	/** Same result as function compute */
 	@Override
@@ -112,7 +140,7 @@ public class MajorityVoting extends Predictor{
 
 	@Override
 	public String getName(){
-		return this.name;
+		return MajorityVoting.name;
 	}
 
 
@@ -160,7 +188,7 @@ public class MajorityVoting extends Predictor{
 				if(option.compareTo(Answer.NO)==0)
 					counter++;
 			}
-			System.out.println("questionID: "+ questionID+"counter:"+counter);
+			//System.out.println("questionID: "+ questionID+"counter:"+counter);
 			questionNOCountMap.put(questionID, new Integer(counter));
 		}
 		return questionNOCountMap;
@@ -305,7 +333,7 @@ public class MajorityVoting extends Predictor{
 		
 		String hitFileName = "HIT00_0";
 		
-		AnswerData data = new AnswerData(hitFileName,answerMap,bugCoveringMap);
+		AnswerData data = new AnswerData(hitFileName,answerMap,bugCoveringMap,4);
 		
 		MajorityVoting predictor = new MajorityVoting();
 		

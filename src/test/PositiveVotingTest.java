@@ -54,7 +54,7 @@ public class PositiveVotingTest {
 
 		String hitFileName = "HIT00_0";
 
-		data = new AnswerData(hitFileName,answerMap,bugCoveringMap);		
+		data = new AnswerData(hitFileName,answerMap,bugCoveringMap,4);		
 	}
 	
 	@Test
@@ -63,7 +63,7 @@ public class PositiveVotingTest {
 		PositiveVoting predictor = new PositiveVoting();
 		
 		assertTrue(predictor.computeSignal(this.data));
-		assertEquals(3,predictor.getFinalThreshold().intValue());	
+		assertEquals(3,predictor.getThreshold().intValue());	
 
 		
 		assertEquals(0, predictor.getFalsePositives().intValue());
@@ -118,7 +118,7 @@ public class PositiveVotingTest {
 
 		String hitFileName = "HIT00_0";
 
-		data = new AnswerData(hitFileName,answerMap,bugCoveringMap);		
+		data = new AnswerData(hitFileName,answerMap,bugCoveringMap,4);		
 	}
 	
 	
@@ -128,7 +128,7 @@ public class PositiveVotingTest {
 		PositiveVoting predictor = new PositiveVoting();
 		
 		assertTrue(predictor.computeSignal(this.data));
-		assertEquals(2,predictor.getFinalThreshold().intValue());	
+		assertEquals(2,predictor.getThreshold().intValue());	
 				
 		assertEquals(1, predictor.getFalsePositives().intValue());
 		assertEquals(1, predictor.getTruePositives().intValue());

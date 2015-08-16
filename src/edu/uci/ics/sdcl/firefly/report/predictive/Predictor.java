@@ -11,7 +11,9 @@ public abstract class Predictor {
 	public abstract Double computeSignalStrength(AnswerData data);
 	
 	public abstract Integer computeNumberOfWorkers(AnswerData data);
-	
+
+	public abstract Integer getThreshold();
+
 	public abstract Integer getTruePositives();
 	
 	public abstract Integer getTrueNegatives();

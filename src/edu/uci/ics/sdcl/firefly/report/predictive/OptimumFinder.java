@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import java.util.Map;
 
+import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask; 
 import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
@@ -28,7 +29,9 @@ public class OptimumFinder {
 
 	ArrayList<Predictor> predictorList;
 
-	ArrayList<FilterCombination> filterOutcomeList = new ArrayList<FilterCombination>();
+	ArrayList<Outcome> filterOutcomeList = new ArrayList<Outcome>();
+	
+	ArrayList<String> hitFileNameList = new 	ArrayList<String>();
 
 	public OptimumFinder(ArrayList<HashMap<FilterCombination,AnswerData>> dataList){
 		this.dataList = dataList;
@@ -41,14 +44,30 @@ public class OptimumFinder {
 	}
 
 	public void run(){
-		for(HashMap<FilterCombination,AnswerData> map : dataList){
-			for(FilterCombination filter : map.keySet()){
+		
+		for(HashMap<FilterCombination,AnswerData> map : dataList){ //one for each file (8)
+			for(FilterCombination filter : map.keySet()){ //one time
 				AnswerData answerData = map.get(filter);
-				for(Predictor predictor: predictorList){
-					String outcomeKey = predictor.getName()+":"+answerData.getHitFileName();
-					filter.addOutcome(outcomeKey, predictor.computeSignal(answerData));
+				
+				for(Predictor predictor: predictorList){ //one time
+					
+					Outcome outcome = new Outcome(filter,
+							answerData.getHitFileName(),
+							predictor.getName(),
+							predictor.computeSignal(answerData),
+							predictor.computeSignalStrength(answerData),
+							predictor.computeNumberOfWorkers(answerData),
+							predictor.getThreshold(),
+							predictor.getTruePositives(),
+							predictor.getTrueNegatives(),
+							predictor.getFalsePositives(),
+							predictor.getFalseNegatives(),
+							answerData.getWorkerCount());
+						
+					//filter.addOutcome(outcomeKey, outcome.toString());
+					filterOutcomeList.add(outcome);					
+					//System.out.println(outcome.toString());
 				}
-				filterOutcomeList.add(filter);
 			}
 		}
 	}
@@ -60,8 +79,11 @@ public class OptimumFinder {
 		BufferedWriter log;
 		try {
 			log = new BufferedWriter(new FileWriter(destination));
-			for(FilterCombination filter: this.filterOutcomeList){
-				String line= filter.toString()+":"+filter.printOutcome();
+			//Print file header
+
+			log.write(getHeader()+"\n");
+			for(Outcome outcome: this.filterOutcomeList){
+				String line= outcome.filter.toString(FilterGenerator.headerList)+":"+outcome.toString();
 				log.write(line+"\n");
 			}
 			log.close();
@@ -72,9 +94,16 @@ public class OptimumFinder {
 			e.printStackTrace();
 		}
 	}
+	
 
-
-
+	
+	
+	private String getHeader(){
+	
+		return FilterGenerator.getFilterHeaders() + Outcome.getHeader();
+	}
+	
+	
 	private static HashMap<String, ArrayList<String>>  extractAnswersForFileName(
 			HashMap<String, Microtask> microtaskMap,String fileName){
 
@@ -88,6 +117,22 @@ public class OptimumFinder {
 		return resultMap;
 	}
 
+	private static Integer countWorkers(
+			HashMap<String, Microtask> filteredMicrotaskMap, String fileName) {
+	
+		HashMap<String,String> workerMap = new HashMap<String, String>();
+		for(Microtask task: filteredMicrotaskMap.values()){
+			if(task.getFileName().compareTo(fileName)==0){
+				for(Answer answer:task.getAnswerList()){
+					String workerID = answer.getWorkerId();
+					workerMap.put(workerID, workerID);
+				}
+			}
+		}
+		return workerMap.size();
+	}
+
+	
 	public static void main(String[] args){
 
 		//Obtain bugcovering question list
@@ -107,6 +152,7 @@ public class OptimumFinder {
 		ArrayList<HashMap<FilterCombination,AnswerData>> processingList = new 	ArrayList<HashMap<FilterCombination,AnswerData>> ();
 
 		//Apply filter and extract data by fileName
+		//System.out.println("FilterList size: "+ filterList.size());
 		for(FilterCombination combination :  filterList){
 			//FilterCombination combination =  filterList.get(0);
 			FileSessionDTO sessionDTO = new FileSessionDTO();
@@ -117,19 +163,23 @@ public class OptimumFinder {
 			HashMap<String, Microtask> filteredMicrotaskMap = (HashMap<String, Microtask>) filter.apply(microtaskMap);
 		
 			for(String fileName: fileNameList){
-				//String fileName = "HIT01_8";
 				HashMap<String, ArrayList<String>> answerMap = extractAnswersForFileName(filteredMicrotaskMap,fileName);
-				AnswerData data = new AnswerData(fileName,answerMap,bugCoveringMap);
+				Integer workerCount = countWorkers(filteredMicrotaskMap,fileName);
+				AnswerData data = new AnswerData(fileName,answerMap,bugCoveringMap,workerCount);
 				HashMap<FilterCombination, AnswerData> map = new HashMap<FilterCombination, AnswerData>();
 				map.put(combination, data);
 				processingList.add(map);
 			}
+			//System.out.println("ProcessingList size: "+ processingList.size());
+
 		}
 
 		OptimumFinder finder =  new OptimumFinder(processingList);
 		finder.addPredictor(new PositiveVoting());
+		finder.addPredictor(new MajorityVoting());
 		finder.run();
 		finder.printResults();
 	}
+
 
 }

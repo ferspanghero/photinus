@@ -54,7 +54,7 @@ public class MajorityVotingTest {
 
 		String hitFileName = "HIT00_0";
 
-		data = new AnswerData(hitFileName,answerMap,bugCoveringMap);		
+		data = new AnswerData(hitFileName,answerMap,bugCoveringMap,4);		
 	}
 	
 	@Test
@@ -116,7 +116,7 @@ public class MajorityVotingTest {
 
 		String hitFileName = "HIT00_0";
 
-		data = new AnswerData(hitFileName,answerMap,bugCoveringMap);		
+		data = new AnswerData(hitFileName,answerMap,bugCoveringMap,4);		
 	}
 	
 	

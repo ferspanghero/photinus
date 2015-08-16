@@ -20,7 +20,7 @@ public class FilterGenerator {
 	static int[] confidenceList = {-1};//{1,2,3,4,5};
 	static int[] difficulytList =  {-1};//2, 3, 4,5};//0,1,2,3,4,5};
 	static int[] explanationSizeList ={-1};//0,25,50};//, 75, 100};
-	static int[] workerScoreList= {5}; //3, 4, 5};
+	static int[] workerScoreList= {-1};//3,4,5}; //3, 4, 5};
 	static int[] workerScoreExclusionList = {};//{4};
 	static int[] IDKpercentageList = {-1}; //{33};
 	static String[] professionExclusionList = {};//{"Graduate_Student","Undergraduate_Student"};//{, "Hobbyist","Professional_Developer"};//{,,"Other",,"Graduate_Student", };
@@ -87,7 +87,26 @@ public class FilterGenerator {
 		}
 		return filterList;
 	}
-
-
+	
+	public static String[] headerList = { FilterCombination.ANSWER_DURATION,
+			FilterCombination.CONFIDENCE_LEVEL,
+			FilterCombination.DIFFICULTY_LEVEL,
+			FilterCombination.EXPLANATION_SIZE,
+			FilterCombination.WORKER_SCORE_EXCLUSION,
+			FilterCombination.WORKER_SCORE,
+			FilterCombination.WORKER_IDK,
+			FilterCombination.WORKER_PROFESSION
+	};
+	
+	public static String getFilterHeaders(){
+		String result="";
+		for(String name:headerList){
+		  if(result.length()==0) 
+			  result = name+":";
+		  else
+			  result = result + name+":";
+		}
+		return result;
+	}
 
 }

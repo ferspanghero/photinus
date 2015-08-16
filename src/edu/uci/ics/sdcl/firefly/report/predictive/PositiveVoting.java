@@ -26,7 +26,7 @@ import edu.uci.ics.sdcl.firefly.Answer;
  * Goal of SecondThrehold: obtain at least one true positive with minimal number of false positives. This goal recognizes that 
  * the crowd did not draw a consensus over the fault, but at least two possible faults.
  *
- *HOW THRESHOLDS ARE CALCULATED?
+ *HOW ARE THRESHOLDS CALCULATED?
  * FirstThreshold - Threshold at which most bug covering questions are above it and any non-bug covering question is above it.
  *  
  * If the maxNumber of YES's for Bug-Covering is not larger than the one for Non-Bug-Covering,
@@ -77,9 +77,13 @@ public class PositiveVoting extends Predictor{
 	@Override
 	public Boolean computeSignal(AnswerData data){
 
+		this.maxYES_BugCovering = 0;
+		this.maxYES_NonBugCovering = 0;
+
 		this.data = data;
 		this.questionYESCountMap = this.computeNumberOfAnswers(Answer.YES);
 		finalThreshold =  this.computeFirstThreshold();
+	//	System.out.println(data.getHitFileName()+":"+finalThreshold+":"+getTruePositives());
 
 		if(finalThreshold<0){
 			finalThreshold = this.computeSecondThreshold();
@@ -91,10 +95,10 @@ public class PositiveVoting extends Predictor{
 			return false;
 	}
 
-	public Integer getFinalThreshold(){
+	public Integer getThreshold(){
 		return this.finalThreshold;
 	}
-	
+
 	public Integer getFirstThreshold(){
 		return this.firstThreshold;
 	}
@@ -109,10 +113,10 @@ public class PositiveVoting extends Predictor{
 	 * threshold is zero, then return -1.0
 	 */
 	public Double computeSignalStrength(AnswerData data) {
-		
+
 		if(this.finalThreshold==null)
 			this.computeSignal(data);
-		
+
 		if(finalThreshold>0){	
 			Double truePositiveRate = this.computeTruePositiveRate();
 			Integer extraVotes = this.maxYES_BugCovering - this.finalThreshold;
@@ -134,7 +138,7 @@ public class PositiveVoting extends Predictor{
 
 	@Override
 	public Integer getTruePositives() {
-		
+
 		if(this.finalThreshold<=0)
 			return 0;
 		else{
@@ -142,7 +146,7 @@ public class PositiveVoting extends Predictor{
 			for(String questionID: this.questionYESCountMap.keySet()){
 				if(data.bugCoveringMap.containsKey(questionID)){
 					Integer yesCount = this.questionYESCountMap.get(questionID);
-					if(yesCount>=this.finalThreshold){
+					if(yesCount!=null && yesCount>=this.finalThreshold){
 						count++;
 					}
 				}
@@ -153,7 +157,7 @@ public class PositiveVoting extends Predictor{
 
 	@Override
 	public Integer getTrueNegatives() {
-		
+
 		if(this.finalThreshold<=0)
 			return 0;
 		else{
@@ -172,50 +176,42 @@ public class PositiveVoting extends Predictor{
 
 	@Override
 	public Integer getFalsePositives() {
-		
-		if(this.finalThreshold<=0)
-			return 0;
-		else{
-			int count=0;
-			for(String questionID: this.questionYESCountMap.keySet()){
-				if(!data.bugCoveringMap.containsKey(questionID)){
-					Integer yesCount = this.questionYESCountMap.get(questionID);
-					if(yesCount>=this.finalThreshold){
-						count++;
-					}
+
+		int count=0;
+		for(String questionID: this.questionYESCountMap.keySet()){
+			if(!data.bugCoveringMap.containsKey(questionID)){
+				Integer yesCount = this.questionYESCountMap.get(questionID);
+				if(yesCount>=this.finalThreshold || this.finalThreshold<=0){
+					count++;
 				}
 			}
-			return count;
 		}
+		return count;
 	}
 
 	@Override
 	public Integer getFalseNegatives() {
-		
-		if(this.finalThreshold<=0)
-			return 0;
-		else{
-			int count=0;
-			for(String questionID: this.questionYESCountMap.keySet()){
-				if(data.bugCoveringMap.containsKey(questionID)){
-					Integer yesCount = this.questionYESCountMap.get(questionID);
-					if(yesCount<this.finalThreshold){
-						count++;
-					}
+
+		int count=0;
+		for(String questionID: this.questionYESCountMap.keySet()){
+			if(data.bugCoveringMap.containsKey(questionID)){
+				Integer yesCount = this.questionYESCountMap.get(questionID);
+				if(yesCount<this.finalThreshold || this.finalThreshold<=0){
+					count++;
 				}
 			}
-			return count;
 		}
+		return count;
 	}
 
 	@Override
 	public Integer getNumberBugCoveringQuestions(){
-		
+
 		Integer count=0;
 
 		for(String questionID: this.questionYESCountMap.keySet()){
-		if(data.bugCoveringMap.containsKey(questionID))			
-			count ++;
+			if(data.bugCoveringMap.containsKey(questionID))			
+				count ++;
 		}
 		return count;
 	}
@@ -261,17 +257,29 @@ public class PositiveVoting extends Predictor{
 	 * @return if number of max
 	 */
 	private Integer computeFirstThreshold(){
+		//this.maxYES_BugCovering = 0;
+		//this.maxYES_NonBugCovering = 0;
 
 		//Compute Max YES among Bug Covering
 		for(String questionID: this.questionYESCountMap.keySet()){
 			int yesCount = this.questionYESCountMap.get(questionID).intValue();
+			//if(this.data.getHitFileName().compareTo("HIT06_51")==0)
+			//System.out.println(questionID+":"+yesCount);
+
 			if(data.bugCoveringMap.containsKey(questionID)){
-				maxYES_BugCovering = (maxYES_BugCovering < yesCount) ? yesCount: maxYES_BugCovering;
+				if(maxYES_BugCovering < yesCount)
+					maxYES_BugCovering = yesCount;
 			}
 			else{
 				maxYES_NonBugCovering = (maxYES_NonBugCovering < yesCount) ? yesCount: maxYES_NonBugCovering;
 			}
 		}
+
+		//if(this.data.getHitFileName().compareTo("HIT06_51")==0){
+			//System.out.println(maxYES_BugCovering+":"+maxYES_NonBugCovering);
+
+		//}
+
 
 		if( maxYES_BugCovering > maxYES_NonBugCovering)
 			this.firstThreshold = maxYES_NonBugCovering +1;
@@ -288,7 +296,7 @@ public class PositiveVoting extends Predictor{
 			this.secondThreshold = this.maxYES_BugCovering;
 		else
 			this.secondThreshold = -1; //There is not a viable threshold 
-		
+
 		return this.secondThreshold;		
 	}
 
@@ -300,10 +308,10 @@ public class PositiveVoting extends Predictor{
 	 * @return true if found a non-bug covering with more YES's than maxYes_Covering, otherwise, false.
 	 */
 	private boolean isThere_NonBugCoveringBelow(Integer maxYES_BugCovering) {
-		
+
 		Iterator<String> iter = this.questionYESCountMap.keySet().iterator();
 		boolean found = false;
-		
+
 		while(iter.hasNext() && !found){
 			String questionID= iter.next();
 			if(!data.bugCoveringMap.containsKey(questionID)){
@@ -322,7 +330,7 @@ public class PositiveVoting extends Predictor{
 		for(String questionID: questionYESCountMap.keySet()){
 			if(data.bugCoveringMap.containsKey(questionID)){
 				Integer vote = questionYESCountMap.get(questionID);
-				if(vote!=null && vote>this.maxYES_NonBugCovering){
+				if(vote!=null && vote>=this.finalThreshold){
 					count++;
 				}
 			}
@@ -345,8 +353,8 @@ public class PositiveVoting extends Predictor{
 		}	
 		return count;
 	}
-	
-	
+
+
 	private Double computeTruePositiveRate(){
 		Double numberOfBugCovering = this.getNumberBugCoveringQuestions().doubleValue();
 		Double numberOfTruePositives = this.getTruePositives().doubleValue();
@@ -424,7 +432,7 @@ public class PositiveVoting extends Predictor{
 
 		String hitFileName = "HIT00_0";
 
-		AnswerData data = new AnswerData(hitFileName,answerMap,bugCoveringMap);
+		AnswerData data = new AnswerData(hitFileName,answerMap,bugCoveringMap,4);
 
 		PositiveVoting predictor = new PositiveVoting();
 
