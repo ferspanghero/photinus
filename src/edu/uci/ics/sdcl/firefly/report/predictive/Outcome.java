@@ -18,9 +18,11 @@ public class Outcome {
 	
 	Double signalStrength;
 	
+	/** Maximum different workers per question for this HIT */
 	Integer maxWorkerPerQuestion;
 	
-	Integer threshold; //minimal number of YES's (has different definitions for MajorityVoting and Positive Voting
+	/** Minimal number of YES's (has different definitions for MajorityVoting and Positive Voting */
+	Integer threshold; 
 	
 	Integer truePositives;
 	
@@ -30,12 +32,16 @@ public class Outcome {
 	
 	Integer falseNegatives;
 	
-	Integer totalDifferentWorkers;
+	/** Total workers that contributed to one HIT after applying the combined filter */
+	Integer differentWorkersPerHIT;
+	
+	/** Total workers that remained after applying the combined filter */
+	Integer differentWorkersAmongHITs;
 		
 	public Outcome(FilterCombination filter, String fileName, String predictorType, Boolean faultLocated,
 			Double signalStrength, Integer maxWorkerPerQuestion, Integer threshold,
 			Integer truePositives, Integer trueNegatives,
-			Integer falsePositives, Integer falseNegatives,Integer totalDifferentWorkers) {
+			Integer falsePositives, Integer falseNegatives,Integer differentWorkersPerHIT, Integer differentWorkersAmongHITs) {
 		super();
 		this.filter = filter;
 		this.fileName = fileName;
@@ -48,21 +54,24 @@ public class Outcome {
 		this.trueNegatives = trueNegatives;
 		this.falsePositives = falsePositives;
 		this.falseNegatives = falseNegatives;
-		this.totalDifferentWorkers = totalDifferentWorkers;
+		this.differentWorkersPerHIT = differentWorkersPerHIT;
+		this.differentWorkersAmongHITs = differentWorkersAmongHITs;
 	}
 
 
 	public static String getHeader(){
 		
 		return "HIT : Predictor : Fault located? : Signal strength : # Workers per question : #YES needed :"+
-				"True positives : True negatives : False positives : False negatives : Total different workers";	
+				"True positives : True negatives : False positives : False negatives : Different workers in HIT :"+
+				"Different Workers among all HITs";	
 	}
 
 	
 	public String toString(){
 		
 			return  fileName +":"+ predictorType +":"+ faultLocated +":"+ signalStrength +":"+ maxWorkerPerQuestion +":"+ threshold +":"+
-					truePositives +":"+ trueNegatives +":"+ falsePositives +":"+ falseNegatives +":"+ totalDifferentWorkers;	
+					truePositives +":"+ trueNegatives +":"+ falsePositives +":"+ falseNegatives +":"+ differentWorkersPerHIT +":"+
+					differentWorkersAmongHITs;	
 	}
 	
 }

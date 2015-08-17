@@ -12,7 +12,7 @@ public class ReportApplication {
 		*/
 		//answerOptionReport(new ExcelExporter());
 		//workerScoreReport(new ExcelExporter());
-		//workerDemographicsReport();
+		workerDemographicsReport();
 		//builder.generateDescriptiveReport().exportReport();
 	}
 	

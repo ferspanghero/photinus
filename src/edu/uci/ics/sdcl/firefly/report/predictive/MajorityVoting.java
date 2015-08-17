@@ -17,6 +17,8 @@ public class MajorityVoting extends Predictor{
 	
 	private HashMap<String, Integer> voteMap;
 	
+	private HashMap<String, Integer> questionYESCountMap;
+	
 	private AnswerData data;
 	
 
@@ -24,7 +26,7 @@ public class MajorityVoting extends Predictor{
 	@Override
 	public Boolean computeSignal(AnswerData data){
 		this.data = data;
-		HashMap<String, Integer> questionYESCountMap = this.computeNumberOfYES(data.getAnswerMap());
+		this.questionYESCountMap = this.computeNumberOfYES(data.getAnswerMap());
 		HashMap<String, Integer> questionNoCountMap = this.computeNumberOfNO(data.getAnswerMap());
 		this.voteMap = this.computeQuestionVoteMap(questionYESCountMap,questionNoCountMap); 
 	
@@ -77,20 +79,27 @@ public class MajorityVoting extends Predictor{
 		
 		if (voteMap==null){
 			if(!this.computeSignal(data))
-				return 0;
+				return -1;
 		}
 		
 		int smallestVote = this.computeNumberOfWorkers(data); //starts with the maximum possible.
+		String questionIDSmallestVote=null;
 		
 		//find the number of YES of the bug covering question that has the smallest positive vote
 		for(String questionID: this.voteMap.keySet()){
 			if(data.bugCoveringMap.containsKey(questionID)){
 				Integer vote = this.voteMap.get(questionID);
-				if(vote!=null && vote>0 && vote<smallestVote)
+				if(vote!=null && vote>0 && vote<smallestVote){
 					smallestVote = vote;
+					questionIDSmallestVote = new String(questionID);
+				}
 			}
 		}
-		return smallestVote;
+		
+		if(questionIDSmallestVote!=null)
+			return this.questionYESCountMap.get(questionIDSmallestVote);
+		else 
+			return -1;
 	}
 	
 	/** Same result as function compute */
@@ -333,7 +342,7 @@ public class MajorityVoting extends Predictor{
 		
 		String hitFileName = "HIT00_0";
 		
-		AnswerData data = new AnswerData(hitFileName,answerMap,bugCoveringMap,4);
+		AnswerData data = new AnswerData(hitFileName,answerMap,bugCoveringMap,4,4);
 		
 		MajorityVoting predictor = new MajorityVoting();
 		

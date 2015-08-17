@@ -30,6 +30,7 @@ public class Filter {
 	private int[] workerScore = new int[2];
 	private double[] sessionDuration = new double[2];
 	private double[] workerIDKPercentage = new double[2];
+	private double[] yearsOfExperience = new double[2];
 
 	/** map of professions to be accepted */
 	private HashMap<String, String> workerProfessionMap = new HashMap<String, String> (); //Hobbyist, Professional Programmer, Undergrad, Graduate, Others
@@ -76,6 +77,7 @@ public class Filter {
 		Arrays.fill(workerScore, -1);
 		Arrays.fill(sessionDuration, -1);
 		Arrays.fill(workerIDKPercentage, -1);
+		Arrays.fill(yearsOfExperience,-1.0);
 	}
 
 	public void setExplanationSizeCriteria(int minimum, int maximum)
@@ -176,6 +178,18 @@ public class Filter {
 		}
 	}
 
+	public void setYearsOfExperience(double minimum, double maximum)
+	{
+		if((minimum > maximum) && (maximum != -1.0))
+		{
+			System.out.println("The minimum value of the filter cannot be greater than the maximum");
+		}
+		else{
+			this.yearsOfExperience[0] 	= minimum;
+			this.yearsOfExperience[1] = maximum;
+		}
+	}
+	
 	/**
 	 * Applies the filter on the desired content.
 	 * @param content: Desired content to be filtered
@@ -195,7 +209,9 @@ public class Filter {
 				Answer answer = answerList.get(i);
 				String workerID = answer.getWorkerId();
 				Worker worker = workerMap.get(workerID);
-				if(worker!=null){ //Does not accept answers from workers who are not in the ConsentLog.
+				if(worker==null){ //Does not accept answers from workers who are not in the ConsentLog.
+						System.out.print("Worker not in ConsentLog: "+ workerID);				
+				}else{
 					if((explanationSize[0] != -1) || (explanationSize[1] != -1))
 					{
 						if( (explanationSize[0] != -1) && (answer.getExplanation().length() < explanationSize[0]))
@@ -250,12 +266,6 @@ public class Filter {
 					}
 					if((workerScore[0] != -1) || (workerScore[1] != -1) )
 					{
-
-						//FileConsentDTO workerDTO = new FileConsentDTO();
-					//	Map<String, Worker> workers = workerDTO.getWorkers();
-						//Worker worker = workers.get(answer.getWorkerId());
-						//if(worker==null)
-						//System.out.println("worker null answer.getWorkerId"+answer.getWorkerId());
 						if(worker!=null && (workerScore[0] != -1) && (worker.getGrade() < workerScore[0]))
 						{
 							removeIndex.add(i);
@@ -303,10 +313,6 @@ public class Filter {
 					}
 					if(workerProfessionMap.size()>0)
 					{
-						//FileConsentDTO workerDTO = new FileConsentDTO();
-						//Map<String, Worker> workers = workerDTO.getWorkers();
-						//String id = answer.getWorkerId();
-						//Worker worker = workers.get(id);
 						String workerProfession = worker.getSurveyAnswer("Experience");
 						if(workerProfession.contains("Other"))
 							workerProfession = "Other";
@@ -323,9 +329,26 @@ public class Filter {
 							continue;
 						}
 					}
+					//System.out.println(yearsOfExperience[0] + ": "+yearsOfExperience[1]);
+					if((yearsOfExperience[0] != -1.0) || (yearsOfExperience[1] != -1.0) )
+					{
+	
+						Double workerYearsOfExperience = new Double(worker.getSurveyAnswer("YearsProgramming"));
+					//	System.out.println(workerYearsOfExperience);
+						
+						if(worker!=null && (yearsOfExperience[0] != -1) && ( workerYearsOfExperience.doubleValue()< yearsOfExperience[0]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+						if( worker!=null && (yearsOfExperience[1] != -1) && (workerYearsOfExperience.doubleValue() > yearsOfExperience[1]))
+						{
+							removeIndex.add(i);
+							continue;
+						}
+					}			
 				}
-				else
-					System.out.print("Worker not in ConsentLog: "+ workerID);
+				
 			}//for
 			
 

@@ -432,7 +432,7 @@ public class PositiveVoting extends Predictor{
 
 		String hitFileName = "HIT00_0";
 
-		AnswerData data = new AnswerData(hitFileName,answerMap,bugCoveringMap,4);
+		AnswerData data = new AnswerData(hitFileName,answerMap,bugCoveringMap,4,4);
 
 		PositiveVoting predictor = new PositiveVoting();
 

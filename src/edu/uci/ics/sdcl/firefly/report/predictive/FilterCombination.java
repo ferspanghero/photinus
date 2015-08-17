@@ -1,6 +1,5 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
@@ -14,81 +13,59 @@ import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
  */
 public class FilterCombination {
 
-	public static final String ANSWER_DURATION = "ANSWER_DURATION";
-	public static final String SESSION_DURATION = "SESSION_DURATION";
-	public static final String CONFIDENCE_LEVEL = "CONFIDENCE_LEVEL";
-	public static final String DIFFICULTY_LEVEL = "DIFFICULTY_LEVEL";
-	public static final String WORKER_SCORE = "WORKER_SCORE";
-	public static final String WORKER_SCORE_EXCLUSION = "WORKER_SCORE_EXCLUSION"; //List of professions to be considered
-	public static final String EXPLANATION_SIZE = "EXPLANATION_SIZE";
-	public static final String WORKER_IDK = "WORKER_IDK";
-	public static final String WORKER_PROFESSION = "WORKER_PROFESSION"; //List of professions to be considered.
-
+	public static final String ANSWER_DURATION = "ANSWER DURATION RANGE";
+	public static final String SESSION_DURATION = "SESSION DURATION RANGE";
+	public static final String CONFIDENCE_LEVEL = "CONFIDENCE LEVEL RANGE";
+	public static final String DIFFICULTY_LEVEL = "DIFFICULTY LEVEL RANGE";
+	public static final String WORKER_SCORE = "WORKER SCORE RANGE";
+	public static final String WORKER_SCORE_EXCLUSION = "WORKER SCORES EXCLUDED"; //List of professions to be considered
+	public static final String EXPLANATION_SIZE = "EXPLANATION SIZE RANGE";
+	public static final String WORKER_IDK = "WORKER %IDK RANGE";
+	public static final String WORKER_PROFESSION = "WORKER PROFESSION"; //List of professions to be considered.
+	public static final String WORKER_YEARS_OF_EXEPERIENCE = "WORKER YEARS OF EXPERIENCE"; //List of professions to be considered.
 
 	public HashMap<String,Range> combinationMap;
 
-	/** Internal public class to hold the values of a filter */
-	public class Range{
-		Integer max=-2;
-		Integer min=-2;
-		int[] list;
-		String[] professionExclusionList;
 
-		public Range(int minValue, int maxValue){
-			this.min = new Integer(minValue);
-			this.max =  new Integer(maxValue);
-		}
-
-		public Range(int[] workerExclusionList) {
-			this.list = workerExclusionList.clone();
-		}
-		
-		public Range(String[] professionList){
-			this.professionExclusionList = professionList.clone();
-		}
-		
-		public String toString(){
-			if(list!=null && list.length>0)
-				return "[excluded" +listToString(list)+  "]";
-			else
-				if(professionExclusionList!=null && professionExclusionList.length>0) 
-					return "[excluded" +listToString(professionExclusionList)+  "]";
-				else
-					return "["+min.toString()+","+max.toString()+"]";
-		}
-
-		private String listToString(String[] list){
-			String result ="";
-			for(String value: list){
-				result = result + ","+value;
-			}
-			result = result.substring(0, result.length()-1);
-			return result;
-		}
-
-		
-		private String listToString(int[] list){
-			String result ="";
-			for(int value: list){
-				String valueStr = new Integer(value).toString();
-				result = result + ","+valueStr;
-			}
-			result = result.substring(0, result.length()-1);
-			return result;
-		}
-	}
-	//-------------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------
+	//FOR REPORT GENERATION
 	
+	public static String[] headerList = { 
+		
+		ANSWER_DURATION,
+		CONFIDENCE_LEVEL,
+		DIFFICULTY_LEVEL,
+		EXPLANATION_SIZE,
+		WORKER_SCORE_EXCLUSION,
+		WORKER_SCORE,
+		WORKER_IDK,
+		WORKER_PROFESSION,
+		WORKER_YEARS_OF_EXEPERIENCE
+	};
+
+	public static String getFilterHeaders(){
+		String result="";
+		for(String name:headerList){
+			if(result.length()==0) 
+				result = name+":";
+			else
+				result = result + name+":";
+		}
+		return result;
+	}
+
+
+
 
 	public String toString(String[] headerList){
 		String result="";
 		for(String name : headerList){
 			Range range = combinationMap.get(name);
+			//System.out.println(name);
 			if(result.length()==0)				
 				result = range.toString();
 			else
 				result = result+":"+range.toString();
-			//result = result+"_"+name+combinationMap.get(name).toString();
 		}
 		return result;
 	}
@@ -154,6 +131,11 @@ public class FilterCombination {
 											if(filterName.compareTo(FilterCombination.WORKER_PROFESSION)==0){
 												filter.setWorkerProfessionMap(this.combinationMap.get(filterName).professionExclusionList);
 											}
+											else
+												if(filterName.compareTo(FilterCombination.WORKER_YEARS_OF_EXEPERIENCE)==0){
+													Range range = this.combinationMap.get(filterName);
+													filter.setYearsOfExperience(range.minD, range.maxD);
+												}
 		}
 		return filter;	
 	}
@@ -169,6 +151,16 @@ public class FilterCombination {
 		if(combinationMap==null)
 			combinationMap = new HashMap<String, Range>();
 		combinationMap.put(workerProfession, new Range(workerProfessionList));
+	}
+
+
+
+
+	public void addFilterParam(String workerYearsOfExeperienceProfession,
+			double maxYearsOfExperience, double minYearsOfExperience) {
+		if(combinationMap==null)
+			combinationMap = new HashMap<String, Range>();
+		combinationMap.put(workerYearsOfExeperienceProfession, new Range(minYearsOfExperience,maxYearsOfExperience));		
 	}
 
 

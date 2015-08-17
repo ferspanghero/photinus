@@ -13,6 +13,9 @@ public class AnswerData {
 	/** the total different workers in this data set */
 	Integer workerCount;
 	
+	/** Total workers that remained after applying the combined filter */
+	Integer differentWorkersAmongHITs;
+	
 	/** questionID, list of answer as YES, NO, IDK */
 	HashMap<String, ArrayList<String>> answerMap;
 	
@@ -21,11 +24,12 @@ public class AnswerData {
 
 	public AnswerData(String hitFileName,
 			HashMap<String, ArrayList<String>> answers,
-			HashMap<String, String> bugCoveringMap, Integer workerCount) {
+			HashMap<String, String> bugCoveringMap, Integer workerCount, Integer differentWorkersAmongHITs) {
 		this.hitFileName = hitFileName;
 		this.answerMap = answers;
 		this.bugCoveringMap = bugCoveringMap;
 		this.workerCount = workerCount;
+		this.differentWorkersAmongHITs = differentWorkersAmongHITs;
 	}
 
 	public String getHitFileName() {
@@ -36,6 +40,11 @@ public class AnswerData {
 		return this.workerCount;
 	}
 	
+	
+	public Integer getDifferentWorkersAmongHITs() {
+		return this.differentWorkersAmongHITs;
+	}
+
 	public HashMap<String, ArrayList<String>> getAnswerMap() {
 		return answerMap;
 	}
