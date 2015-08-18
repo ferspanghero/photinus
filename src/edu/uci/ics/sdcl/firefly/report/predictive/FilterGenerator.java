@@ -9,8 +9,8 @@ public class FilterGenerator {
 	/** Filter answers by answer duration */
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
 
-		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupYearsExperienceRangeFilters();
-		CombinedFilterRange range = map.get("years of experience programming");		
+		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupNoFilters();
+		CombinedFilterRange range = map.get(NO_FILTERS);		
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 
@@ -43,14 +43,43 @@ public class FilterGenerator {
 		return filterList;
 	}
 
+	private static String NO_FILTERS = "no filters";
+	private static String WORKER_YEARS_OF_EXPERIENCE = "years of experience programming";
+	private static String WORKER_PERCENT_IDK = "25%, 50%, 75% IDK max";
+	private static String WORKER_SCORE_100 ="100% score worker only";
+	private static String WORKER_SCORE_80 ="80% score worker only";
+	private static String WORKER_SCORE_60 ="60% score worker only";
+	private static String WORKER_SCORE_100_80 ="100% and 80% score workers";
+	private static String WORKER_SCORE_80_60 ="80% and 60% score workers";
+	private static String WORKER_PROFESSIONAL_PROGRAMMER ="Professional Developer Only";
+	
+	private static String WORKER_GRADUATE_STUDENT ="Graduate Student Only";
+	private static String WORKER_UNDERGRADUATE_STUDENT ="Undergraduate Student Only";
+	private static String WORKER_HOBBYIST ="Hobbyist Only";
+	private static String WORKER_OTHER ="Other Only";
+	private static String WORKER_NON_STUDENT ="Non-Student Only";
+	private static String WORKER_STUDENT ="Student Only";
+	
+	
+	private static HashMap<String,CombinedFilterRange> setupNoFilters(){
 
+		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
+
+		CombinedFilterRange range = new CombinedFilterRange();
+		range.setRangeName(NO_FILTERS);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		return rangeMap;
+	}
+	
 	private static HashMap<String,CombinedFilterRange> setupScoreRangeFilters(){
 
 		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
 
 		//WorkerScore
 		CombinedFilterRange range = new CombinedFilterRange();
-		range.setRangeName("100% score worker only");
+		range.setRangeName(WORKER_SCORE_100);
 		range.setMaxWorkerScore(5);
 		range.setWorkerScoreExclusionList(new int[] {3,4});
 		range.setWorkerScoreList(new int[]{5});
@@ -58,7 +87,7 @@ public class FilterGenerator {
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("80% score worker only");
+		range.setRangeName(WORKER_SCORE_80);
 		range.setMaxWorkerScore(4);
 		range.setWorkerScoreExclusionList(new int[] {3});
 		range.setWorkerScoreList(new int[]{4});
@@ -66,14 +95,14 @@ public class FilterGenerator {
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("60% score worker only");
+		range.setRangeName(WORKER_SCORE_60);
 		range.setMaxWorkerScore(3);
 		range.setWorkerScoreList(new int[]{3});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("100% and 80% score worker only");
+		range.setRangeName(WORKER_SCORE_100_80);
 		range.setMaxWorkerScore(5);
 		range.setWorkerScoreExclusionList(new int[] {3});
 		range.setWorkerScoreList(new int[]{4,5});
@@ -81,7 +110,7 @@ public class FilterGenerator {
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("80% and 60% score worker only");
+		range.setRangeName(WORKER_SCORE_80_60);
 		range.setMaxWorkerScore(4);
 		range.setWorkerScoreExclusionList(new int[] {5});
 		range.setWorkerScoreList(new int[]{3,4});
@@ -97,43 +126,43 @@ public class FilterGenerator {
 		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
 
 		CombinedFilterRange range = new CombinedFilterRange();
-		range.setRangeName("Professional Developer Only");
+		range.setRangeName("WORKER_PROFESSSIONAL_DEVELOPER");
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("Graduate Student Only");
+		range.setRangeName("WORKER_GRADUATE_STUDENT");
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Undergraduate_Student","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("Undergraduate Student Only");
+		range.setRangeName("WORKER_UNDERGRADUATE_STUDENT");
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Graduate_Student","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("Hobbyist Only");
+		range.setRangeName("WORKER_HOBBYIST");
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Graduate_Student","Undergraduate_Student","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("Other Only");
+		range.setRangeName("WORKER_OTHER");
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Graduate_Student","Undergraduate_Student","Hobbyist"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("Non-Students Only");
+		range.setRangeName("WORKER_NON_STUDENT"); 
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("Students Only");
+		range.setRangeName("WORKER_STUDENT");
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
@@ -147,7 +176,7 @@ public class FilterGenerator {
 		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
 
 		CombinedFilterRange range = new CombinedFilterRange();
-		range.setRangeName("25%, 50%, 75% IDK max");
+		range.setRangeName(WORKER_PERCENT_IDK);
 		range.setIDKpercentageList(new int[] {25,50,75});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
@@ -160,7 +189,7 @@ public class FilterGenerator {
 		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
 
 		CombinedFilterRange range = new CombinedFilterRange();
-		range.setRangeName("years of experience programming");
+		range.setRangeName(WORKER_YEARS_OF_EXPERIENCE);
 		range.setMaxWorkerYearsOfExperience(50.0);
 		range.setYearsOfExperienceList(new double[] {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 10.0, 15.0, 20.0 ,25.0, 30.0, 35.0, 40.0});
 		range.setUndefinedWithDefault();
@@ -171,7 +200,7 @@ public class FilterGenerator {
 
 
 
-
+//--------------------------------------------------------------------------------------------------------------------
 	/** Filter answers by session duration */
 	/*public static ArrayList<FilterCombination> generateSessionFilterCombinations(){
 

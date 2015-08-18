@@ -1,8 +1,11 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 
@@ -55,6 +58,8 @@ public class PositiveVoting extends Predictor{
 	private Integer maxYES_BugCovering=0;
 
 	private Integer maxYES_NonBugCovering=0;
+	
+	private Integer maxYES=0;
 
 	private HashMap<String, Integer> questionYESCountMap;
 
@@ -76,6 +81,22 @@ public class PositiveVoting extends Predictor{
 
 	@Override
 	public Boolean computeSignal(AnswerData data){
+
+		this.maxYES_BugCovering = 0;
+		this.maxYES_NonBugCovering = 0;
+
+		this.data = data;
+		this.questionYESCountMap = this.computeNumberOfAnswers(Answer.YES);
+		finalThreshold =  this.computeThreshold(2);
+		
+		if(finalThreshold>0)
+			return true;
+		else
+			return false;
+	}
+	
+	
+	public Boolean oldComputeSignal(AnswerData data){
 
 		this.maxYES_BugCovering = 0;
 		this.maxYES_NonBugCovering = 0;
@@ -119,7 +140,7 @@ public class PositiveVoting extends Predictor{
 
 		if(finalThreshold>0){	
 			Double truePositiveRate = this.computeTruePositiveRate();
-			Integer extraVotes = this.maxYES_BugCovering - this.finalThreshold;
+			Integer extraVotes = this.maxYES - this.finalThreshold;
 			return truePositiveRate * extraVotes;
 		}
 		else
@@ -241,7 +262,57 @@ public class PositiveVoting extends Predictor{
 		return countMap;
 	}
 
+	private Integer computeThreshold(int calibrationLevel){
+		
+		Integer threshold=0;
+	
+		TreeMap<String, Integer> sortedYESMap = this.sortByValue(this.questionYESCountMap);
+		this.maxYES = this.questionYESCountMap.get(sortedYESMap.firstKey());
+				
+		String questionID_at_Level="";
+		Integer yesCount_at_Level=0;
+		int i=1;
+		for(String questionID: sortedYESMap.navigableKeySet()){
+			Integer yesCount = this.questionYESCountMap.get(questionID);
+			//System.out.println("questionID: "+questionID+":"+yesCount);
+			i++;
+			if(i>calibrationLevel) {
+				questionID_at_Level = new String(questionID);
+				yesCount_at_Level = new Integer(yesCount);
+				break;
+			}
+		}
+		
+		if(yesCount_at_Level>0)
+			return yesCount_at_Level;
+		else
+			return -1;
+	}
+	
+	private  TreeMap<String, Integer> sortByValue(HashMap<String, Integer> map) {
+		ValueComparator vc =  new ValueComparator(map);
+		TreeMap<String,Integer> sortedMap = new TreeMap<String,Integer>(vc);
+		sortedMap.putAll(map);
+		return sortedMap;
+	}
 
+	public class ValueComparator implements Comparator<String> {
+		 
+	    Map<String, Integer> map;
+	 
+	    public ValueComparator(Map<String, Integer> base) {
+	        this.map = base;
+	    }
+	 
+	    public int compare(String a, String b) {
+	        if (map.get(a) >= map.get(b)) {
+	            return -1;
+	        } else {
+	            return 1;
+	        } // returning 0 would merge keys 
+	    }
+	}
+	
 	/**
 	 * The threshold is the number of YES's that is larger than the one received by 
 	 * any non-bug-Covering questions and still smaller or equal to at
@@ -416,10 +487,10 @@ public class PositiveVoting extends Predictor{
 		answerList.add(Answer.NO);
 		answerMap.put("1",answerList);
 
-		answerList = new ArrayList<String>();//2 yes's
+		answerList = new ArrayList<String>();//3 yes's
 		answerList.add(Answer.YES);
 		answerList.add(Answer.YES);
-		answerList.add(Answer.NO);
+		answerList.add(Answer.YES);
 		answerList.add(Answer.NO);
 		answerMap.put("2",answerList);
 
@@ -436,7 +507,10 @@ public class PositiveVoting extends Predictor{
 
 		PositiveVoting predictor = new PositiveVoting();
 
-		System.out.println("expected: 3, actual: "+ predictor.computeSignal(data).toString());	
+		System.out.println("expected: true, actual: "+ predictor.computeSignal(data).toString());
+		System.out.println("expected: 3, actual: "+ predictor.getThreshold().toString());
+
+		
 	}
 
 

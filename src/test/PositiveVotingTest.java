@@ -38,7 +38,7 @@ public class PositiveVotingTest {
 		answerList.add(Answer.NO);
 		answerMap.put("1",answerList);
 
-		answerList = new ArrayList<String>();//2 yes's True Negative
+		answerList = new ArrayList<String>();//2 yes's True Positive
 		answerList.add(Answer.YES);
 		answerList.add(Answer.YES);
 		answerList.add(Answer.NO);
@@ -63,15 +63,15 @@ public class PositiveVotingTest {
 		PositiveVoting predictor = new PositiveVoting();
 		
 		assertTrue(predictor.computeSignal(this.data));
-		assertEquals(3,predictor.getThreshold().intValue());	
+		assertEquals(2,predictor.getThreshold().intValue());	
 
 		
-		assertEquals(0, predictor.getFalsePositives().intValue());
+		assertEquals(2, predictor.getFalsePositives().intValue());
 		assertEquals(1, predictor.getTruePositives().intValue());
 		assertEquals(1, predictor.getFalseNegatives().intValue());
-		assertEquals(2, predictor.getTrueNegatives().intValue());
+		assertEquals(0, predictor.getTrueNegatives().intValue());
 		
-		double extraVote = 1;
+		double extraVote = 2;
 		double rateOfTP =0.5;
 		double expectedSignalStrength = extraVote* rateOfTP;
 		System.out.println(predictor.computeSignalStrength(data).doubleValue());
@@ -135,7 +135,7 @@ public class PositiveVotingTest {
 		assertEquals(1, predictor.getFalseNegatives().intValue());
 		assertEquals(1, predictor.getTrueNegatives().intValue());
 		
-		double extraVote = 0.0;
+		double extraVote = 2.0;
 		double rateOfTP = 0.5;
 		double expectedSignalStrength = extraVote* rateOfTP;
 		assertEquals("Signal Strength",expectedSignalStrength, predictor.computeSignalStrength(data).doubleValue(),0.0);
