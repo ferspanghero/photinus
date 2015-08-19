@@ -44,7 +44,7 @@ public class Outcome {
 			Integer falsePositives, Integer falseNegatives,Integer differentWorkersPerHIT, Integer differentWorkersAmongHITs) {
 		super();
 		this.filter = filter;
-		this.fileName = fileName;
+		this.fileName = new String(fileName.replace("HIT0", "J").replace("_","."));
 		this.predictorType = predictorType;
 		this.faultLocated = faultLocated;
 		this.signalStrength = signalStrength;
@@ -61,8 +61,8 @@ public class Outcome {
 
 	public static String getHeader(){
 		
-		return "HIT : Predictor : Fault located? : Signal strength : # Workers per question : #YES needed :"+
-				"True positives : True negatives : False positives : False negatives : Different workers in HIT :"+
+		return "HIT:Predictor:Fault located?:Signal strength:# Workers per question:#YES needed :"+
+				"True positives:True negatives:False positives:False negatives:Different workers in HIT:"+
 				"Different Workers among all HITs";	
 	}
 

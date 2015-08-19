@@ -53,7 +53,7 @@ import edu.uci.ics.sdcl.firefly.Answer;
  */
 public class PositiveVoting extends Predictor{
 
-	private String name = "Positive Voting";
+	private String name = "Positive vote";
 
 	private Integer maxYES_BugCovering=0;
 

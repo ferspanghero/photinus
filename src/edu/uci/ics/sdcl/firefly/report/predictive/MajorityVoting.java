@@ -13,7 +13,7 @@ import edu.uci.ics.sdcl.firefly.Answer;
  */
 public class MajorityVoting extends Predictor{
 
-	public static String name = "Majority Voting";
+	public static String name = "Majority vote";
 	
 	private HashMap<String, Integer> voteMap;
 	
