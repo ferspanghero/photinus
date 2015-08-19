@@ -9,8 +9,8 @@ public class FilterGenerator {
 	/** Filter answers by answer duration */
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
 
-		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupNoFilters();
-		CombinedFilterRange range = map.get(NO_FILTERS);		
+		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupYearsExperienceRangeFilters();
+		CombinedFilterRange range = map.get(FilterGenerator.WORKER_YEARS_OF_EXPERIENCE);		
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 
@@ -51,8 +51,8 @@ public class FilterGenerator {
 	private static String WORKER_SCORE_60 ="60% score worker only";
 	private static String WORKER_SCORE_100_80 ="100% and 80% score workers";
 	private static String WORKER_SCORE_80_60 ="80% and 60% score workers";
-	private static String WORKER_PROFESSIONAL_PROGRAMMER ="Professional Developer Only";
 	
+	private static String WORKER_PROFESSIONAL_PROGRAMMER ="Professional Developer Only";
 	private static String WORKER_GRADUATE_STUDENT ="Graduate Student Only";
 	private static String WORKER_UNDERGRADUATE_STUDENT ="Undergraduate Student Only";
 	private static String WORKER_HOBBYIST ="Hobbyist Only";
@@ -105,7 +105,7 @@ public class FilterGenerator {
 		range.setRangeName(WORKER_SCORE_100_80);
 		range.setMaxWorkerScore(5);
 		range.setWorkerScoreExclusionList(new int[] {3});
-		range.setWorkerScoreList(new int[]{4,5});
+		range.setWorkerScoreList(new int[]{4});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
@@ -126,50 +126,49 @@ public class FilterGenerator {
 		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
 
 		CombinedFilterRange range = new CombinedFilterRange();
-		range.setRangeName("WORKER_PROFESSSIONAL_DEVELOPER");
+		range.setRangeName(WORKER_PROFESSIONAL_PROGRAMMER);
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("WORKER_GRADUATE_STUDENT");
+		range.setRangeName(WORKER_GRADUATE_STUDENT);
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Undergraduate_Student","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("WORKER_UNDERGRADUATE_STUDENT");
+		range.setRangeName(WORKER_UNDERGRADUATE_STUDENT);
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Graduate_Student","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("WORKER_HOBBYIST");
+		range.setRangeName(WORKER_HOBBYIST);
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Graduate_Student","Undergraduate_Student","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("WORKER_OTHER");
+		range.setRangeName(WORKER_OTHER);
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Graduate_Student","Undergraduate_Student","Hobbyist"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("WORKER_NON_STUDENT"); 
+		range.setRangeName(WORKER_NON_STUDENT); 
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		range = new CombinedFilterRange();
-		range.setRangeName("WORKER_STUDENT");
+		range.setRangeName(WORKER_STUDENT);
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		return rangeMap;
 	}
-
 
 	private static HashMap<String,CombinedFilterRange> setupIDKRangeFilters(){
 
