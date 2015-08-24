@@ -29,8 +29,10 @@ public class WorkerSamplePerformance {
 		Integer score;
 		String gender;
 		String fileName;
-		String yearsOfExperience;
+		String yearsOfProgramming;
 		Integer IDKLevel;
+		String country;
+		String programmingLanguage;
 
 		public WorkerOutcome(Worker worker, String fileName, Integer IDKLevel, HashMap<String,Integer> correctnessMap){
 
@@ -41,21 +43,34 @@ public class WorkerSamplePerformance {
 			this.FN = correctnessMap.get("FN");
 
 			this.profession = worker.getSurveyAnswer("Experience").replace(";"," ");
+			if(profession.contains("Other"))
+					this.profession = "Other";
 			this.score = worker.getGrade();
-			this.fileName = fileName;
+			this.fileName = fileName.replace("HIT0","J").replace("_",".");
 			this.IDKLevel = IDKLevel;
 			this.gender = worker.getSurveyAnswer("Gender");
+			this.yearsOfProgramming = worker.getSurveyAnswer( "YearsProgramming");
+			this.country = worker.getSurveyAnswer("Country").replace(".","");
+			if(this.country.toUpperCase().contains("US") || (this.country.toUpperCase().contains("UNITED STATES")))
+				this.country = "US";
+			
+			if(this.country.toUpperCase().contains("INDIA") || (this.country.toUpperCase().contains("INDIAN")))
+				this.country = "INDIA";
+			
+			this.programmingLanguage = worker.getSurveyAnswer("Language");
+			if(this.programmingLanguage.toUpperCase().contains("JAVA"))
+				this.programmingLanguage = "JAVA";
 		}
 
 		public String toString(){
-			return workerID +";"+fileName+";"+score+";"+profession+";"+gender+";"+IDKLevel+";"+ TP +";"+ TN +";"+ FP +";"+ FN;
+			return workerID +";"+fileName+";"+score+";"+profession+";"+gender+";"+yearsOfProgramming+";"+country+";"+programmingLanguage+";"+IDKLevel+";"+ TP +";"+ TN +";"+ FP +";"+ FN;
 		}	
 
 
 	}
 
 	public String getHeader(){
-		return "workerID;fileName;score;profession;gender;IDKLevel;TP;TN;FP;FN";
+		return "workerID;fileName;score;profession;gender;yearsOfProgramming;country;programmingLanguage;IDKLevel;TP;TN;FP;FN";
 	}
 
 	/**
@@ -76,9 +91,8 @@ public class WorkerSamplePerformance {
 
 				ArrayList<WorkerSession> sessionList = sessionDTO.getSessionsByWorkerID(worker.getWorkerId());
 				if(sessionList!=null && sessionList.size()>0){
-					WorkerSession session = sessionList.get(0); //Test to check if sessions are order
-					Vector<Microtask> microtaskList = session.getMicrotaskList();
-					if(microtaskList!=null && microtaskList.size()>0){
+					WorkerSession session = this.getFirstNonEmptySession(worker,sessionDTO);
+					if(session!=null){
 						HashMap<String, Integer> correctnessMap = computeCorrectness(session);
 						Integer idkLevel = computerIDKLevel(session);
 						WorkerOutcome outcome = new WorkerOutcome(worker, session.getFileName(), idkLevel, correctnessMap);	
@@ -87,11 +101,28 @@ public class WorkerSamplePerformance {
 				}		
 			}
 		}
-
 		return workerOutputMap;
 	}
 
 
+	private WorkerSession getFirstNonEmptySession(Worker worker, FileSessionDTO sessionDTO){
+		
+		int i=0;
+		ArrayList<WorkerSession> sessionList = sessionDTO.getSessionsByWorkerID(worker.getWorkerId());
+		WorkerSession session=null;
+		Vector<Microtask> microtaskList =null;
+		while((i<sessionList.size()) && (microtaskList==null || microtaskList.size()==0)){
+			session = sessionList.get(i); //Test to check if sessions are order
+			microtaskList = session.getMicrotaskList();
+			i++;
+		}
+		
+		if(microtaskList!=null && microtaskList.size()>0)
+			return session;
+		else 
+			return null;
+	}
+	
 	private Integer computerIDKLevel(WorkerSession session) {
 
 		int idkLevel=0;
@@ -129,12 +160,14 @@ public class WorkerSamplePerformance {
 				if(answerOption.compareTo(Answer.YES)==0)
 					tp++;
 				else
-					fn++;
+					if(answerOption.compareTo(Answer.NO)==0)
+						fn++;
 			}
 			else{
 				if(answerOption.compareTo(Answer.NO)==0)
 					tn++;
 				else
+					if(answerOption.compareTo(Answer.YES)==0)					
 					fp++;
 			}
 		}
@@ -185,7 +218,7 @@ public class WorkerSamplePerformance {
 
 
 	public static void main(String[] args){
-
+		
 		WorkerSamplePerformance performance = new WorkerSamplePerformance();
 		HashMap<String,WorkerOutcome> outcomeMap = performance.printOneWorkerSessionSessionOutcomes();
 		performance.printResults(outcomeMap);

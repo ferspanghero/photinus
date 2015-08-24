@@ -11,6 +11,7 @@ public class CombinedFilterRange {
 	private int maxExplanationSize =-1;//1000
 	private int maxWorkerScore= -1; //5, 4, 3
 	private double maxYearsOfExperience=-1;
+	private int maxWorkerIDKPercentage =100; //
 
 	//Min values
 	private int minDifficulty=0;//0;
@@ -28,6 +29,8 @@ public class CombinedFilterRange {
 	private int[] IDKpercentageList; //{25,50,75}; //{33};
 	private String[] professionExclusionList;
 	private double[] yearsOfExperienceList; //0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40
+
+
 
 	
 	
@@ -150,6 +153,13 @@ public class CombinedFilterRange {
 		return this.maxYearsOfExperience;
 	}
 
+	public void setMaxWorkerIDKPercentage(int i) {
+		this.maxWorkerIDKPercentage = i;
+	}
+	
+	public int getMaxWorkerIDKPercentage() {
+		return this.maxWorkerIDKPercentage;	
+	}
 	
 	public void setUndefinedWithDefault(){
 		
@@ -168,5 +178,6 @@ public class CombinedFilterRange {
 		if(professionExclusionList==null) professionExclusionList = new String[]{};
 		if(yearsOfExperienceList==null)yearsOfExperienceList = new double[] {-1.0}; //{25,50,75}; //{33};	
 	}
+	
 
 }

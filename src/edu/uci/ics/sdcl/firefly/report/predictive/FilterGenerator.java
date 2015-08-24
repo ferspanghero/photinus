@@ -12,8 +12,8 @@ public class FilterGenerator {
 	/** Filter answers by answer duration */
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
 
-		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupCombineScoreProfession();
-		CombinedFilterRange range = map.get(FilterGenerator.WORKER_SCORE60_80_STUDENT);		
+		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupIDKRangeFilters();
+		CombinedFilterRange range = map.get(FilterGenerator.WORKER_PERCENT_IDK_0);		
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 
@@ -22,33 +22,30 @@ public class FilterGenerator {
 				for(int maxDifficulty : range.getDifficulytList()){
 					for(int minExplanationSize : range.getExplanationSizeList()){
 						for(int minWorkerScore : range.getWorkerScoreList()){
-							for(int maxWorkerIDKPercentage : range.getIDKpercentageList()){ 
-								for(double minYearsOfExperience : range.getYearsOfExperienceList()){ 
-
-									FilterCombination combination = new FilterCombination();
-									combination.addFilterParam(FilterCombination.ANSWER_DURATION, range.getMaxAnswerDuration(), minDuration);
-									combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, range.getMaxConfidence(), minConfidence);
-									combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty,range.getMinDifficulty());
-									combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, range.getMaxExplanationSize(), minExplanationSize);
-									combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, range.getWorkerScoreExclusionList());
-									combination.addFilterParam(FilterCombination.WORKER_SCORE, range.getMaxWorkerScore(), minWorkerScore);
-									combination.addFilterParam(FilterCombination.WORKER_IDK, maxWorkerIDKPercentage,range.getMinWorkerIDKPercentage());
-									combination.addFilterParam(FilterCombination.WORKER_PROFESSION, range.getProfessionExclusionList());
-									combination.addFilterParam(FilterCombination.WORKER_YEARS_OF_EXEPERIENCE, range.getMaxYearsOfExperience(), minYearsOfExperience);
-									filterList.add(combination);
-								}
+							for(double minYearsOfExperience : range.getYearsOfExperienceList()){ 
+								FilterCombination combination = new FilterCombination();
+								combination.addFilterParam(FilterCombination.ANSWER_DURATION, range.getMaxAnswerDuration(), minDuration);
+								combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, range.getMaxConfidence(), minConfidence);
+								combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty,range.getMinDifficulty());
+								combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, range.getMaxExplanationSize(), minExplanationSize);
+								combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, range.getWorkerScoreExclusionList());
+								combination.addFilterParam(FilterCombination.WORKER_SCORE, range.getMaxWorkerScore(), minWorkerScore);
+								combination.addFilterParam(FilterCombination.WORKER_IDK, range.getMaxWorkerIDKPercentage(),range.getMinWorkerIDKPercentage());
+								combination.addFilterParam(FilterCombination.WORKER_PROFESSION, range.getProfessionExclusionList());
+								combination.addFilterParam(FilterCombination.WORKER_YEARS_OF_EXEPERIENCE, range.getMaxYearsOfExperience(), minYearsOfExperience);
+								filterList.add(combination);
 							}
 						}
 					}
 				}
 			}
 		}
+
 		return filterList;
 	}
 
 	private static String NO_FILTERS = "no filters";
 	private static String WORKER_YEARS_OF_EXPERIENCE = "years of experience programming";
-	private static String WORKER_PERCENT_IDK = "33%, 66%, 99% IDK max";
 	private static String WORKER_SCORE_100 ="100% score worker only";
 	private static String WORKER_SCORE_80 ="80% score worker only";
 	private static String WORKER_SCORE_60 ="60% score worker only";
@@ -71,7 +68,13 @@ public class FilterGenerator {
 	private static final String WORKER_SCORE60_STUDENT = "Score 60% and Students";
 	private static final String WORKER_SCORE60_80_NON_STUDENT = "Score 60% to 80% and Non-Students";
 	private static final String WORKER_SCORE60_80_STUDENT = "Score 60% to 80% and Students";
-	
+
+	private static final String WORKER_PERCENT_IDK_1_34 = "WORKER_PERCENT_IDK_1_34";
+	private static final String WORKER_PERCENT_IDK_35_67 = "WORKER_PERCENT_IDK_35_67";
+	private static final String WORKER_PERCENT_IDK_68_100 = "WORKER_PERCENT_IDK_68_100";
+	private static final String WORKER_PERCENT_IDK_0 = "WORKER_PERCENT_IDK_0";
+
+
 	private static HashMap<String,CombinedFilterRange> setupNoFilters(){
 
 		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
@@ -186,8 +189,30 @@ public class FilterGenerator {
 		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
 
 		CombinedFilterRange range = new CombinedFilterRange();
-		range.setRangeName(WORKER_PERCENT_IDK);
-		range.setIDKpercentageList(new int[] {33,66,99});
+		range.setRangeName(WORKER_PERCENT_IDK_1_34);
+		range.setMaxWorkerIDKPercentage(34);
+		range.setMinWorkerIDKPercentage(1);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_PERCENT_IDK_35_67);
+		range.setMaxWorkerIDKPercentage(67);
+		range.setMinWorkerIDKPercentage(35);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_PERCENT_IDK_68_100);
+		range.setMaxWorkerIDKPercentage(100);
+		range.setMinWorkerIDKPercentage(68);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_PERCENT_IDK_0);
+		range.setMaxWorkerIDKPercentage(0);
+		range.setMinWorkerIDKPercentage(0);
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
@@ -208,7 +233,7 @@ public class FilterGenerator {
 		return rangeMap;
 	} 
 
-	
+
 	private static HashMap<String,CombinedFilterRange> setupCombineScoreProfession(){
 
 		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
@@ -216,100 +241,100 @@ public class FilterGenerator {
 		//----------------------------------
 		CombinedFilterRange range = new CombinedFilterRange();
 		range.setRangeName(WORKER_SCORE_NON_STUDENT);
-		
+
 		range.setMaxWorkerScore(5);
 		range.setWorkerScoreExclusionList(new int[] {});
 		range.setWorkerScoreList(new int[]{3,4,5});
-		
+
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
-		
+
 		//----------------------------------
-		 range = new CombinedFilterRange();
+		range = new CombinedFilterRange();
 		range.setRangeName(WORKER_SCORE80_NON_STUDENT);
-		
+
 		range.setMaxWorkerScore(4);
 		range.setWorkerScoreExclusionList(new int[] {3,5});
 		range.setWorkerScoreList(new int[]{4});
-		
+
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
-		
+
 		//----------------------------------
-		 range = new CombinedFilterRange();
+		range = new CombinedFilterRange();
 		range.setRangeName(WORKER_SCORE60_NON_STUDENT);
-		
+
 		range.setMaxWorkerScore(3);
 		range.setWorkerScoreExclusionList(new int[] {4,5});
 		range.setWorkerScoreList(new int[]{3});
-		
+
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
-		
-		//----------------------------------
-		 range = new CombinedFilterRange();
-			range.setRangeName(WORKER_SCORE60_80_NON_STUDENT);
-			
-			range.setMaxWorkerScore(4);
-			range.setWorkerScoreExclusionList(new int[] {5});
-			range.setWorkerScoreList(new int[]{3});
-			
-			range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
-			range.setUndefinedWithDefault();
-			rangeMap.put(range.getRangeName(),range);
 
 		//----------------------------------
-				 range = new CombinedFilterRange();
-				range.setRangeName(WORKER_SCORE80_STUDENT);
-				
-				range.setMaxWorkerScore(4);
-				range.setWorkerScoreExclusionList(new int[] {3,5});
-				range.setWorkerScoreList(new int[]{4});
-				
-				range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
-				range.setUndefinedWithDefault();
-				rangeMap.put(range.getRangeName(),range);
-		
-				
-				//----------------------------------
-				 range = new CombinedFilterRange();
-				range.setRangeName(WORKER_SCORE60_STUDENT);
-				
-				range.setMaxWorkerScore(3);
-				range.setWorkerScoreExclusionList(new int[] {4,5});
-				range.setWorkerScoreList(new int[]{3});
-				
-				range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
-				range.setUndefinedWithDefault();
-				rangeMap.put(range.getRangeName(),range);
-				
-				
-				//----------------------------------
-				 range = new CombinedFilterRange();
-				range.setRangeName(WORKER_SCORE60_80_STUDENT);
-				
-				range.setMaxWorkerScore(4);
-				range.setWorkerScoreExclusionList(new int[] {5});
-				range.setWorkerScoreList(new int[]{3});
-				
-				range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
-				range.setUndefinedWithDefault();
-				rangeMap.put(range.getRangeName(),range);
-		
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_SCORE60_80_NON_STUDENT);
+
+		range.setMaxWorkerScore(4);
+		range.setWorkerScoreExclusionList(new int[] {5});
+		range.setWorkerScoreList(new int[]{3});
+
+		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_SCORE80_STUDENT);
+
+		range.setMaxWorkerScore(4);
+		range.setWorkerScoreExclusionList(new int[] {3,5});
+		range.setWorkerScoreList(new int[]{4});
+
+		range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_SCORE60_STUDENT);
+
+		range.setMaxWorkerScore(3);
+		range.setWorkerScoreExclusionList(new int[] {4,5});
+		range.setWorkerScoreList(new int[]{3});
+
+		range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_SCORE60_80_STUDENT);
+
+		range.setMaxWorkerScore(4);
+		range.setWorkerScoreExclusionList(new int[] {5});
+		range.setWorkerScoreList(new int[]{3});
+
+		range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
 		//-----------------------------------
 		range = new CombinedFilterRange();
 		range.setRangeName(WORKER_SCORE_STUDENT);
 		range.setMaxWorkerScore(5);
 		range.setWorkerScoreExclusionList(new int[] {});
 		range.setWorkerScoreList(new int[]{3,4,5});
-		
+
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
-		
+
 		return rangeMap;
 	}
 
