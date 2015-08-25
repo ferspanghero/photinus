@@ -38,8 +38,7 @@ public class AnswerData {
 
 	public Integer getWorkerCount(){
 		return this.workerCount;
-	}
-	
+	}	
 	
 	public Integer getDifferentWorkersAmongHITs() {
 		return this.differentWorkersAmongHITs;

@@ -92,7 +92,7 @@ public class MicrotaskServlet extends HttpServlet {
 		boolean success=false;
 		if(this.worker.getSessionId()!=null && microtaskId!=null){
 			success = storage.updateMicrotaskAnswer(this.worker.getSessionId(), new Integer(microtaskId),
-				new Answer(Answer.mapOptionToString(answer), confidenceAnswer,explanation, this.worker.getWorkerId(), elapsedTime, timeStamp, difficulty));
+				new Answer(Answer.mapOptionToString(answer), confidenceAnswer,explanation, this.worker.getWorkerId(), elapsedTime, timeStamp, difficulty,0));
 		}
 		
 		if(!success){

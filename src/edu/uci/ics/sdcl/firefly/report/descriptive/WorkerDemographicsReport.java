@@ -115,6 +115,9 @@ public class WorkerDemographicsReport {
 		cell.setCellValue("Worker Gender");
 		cell = row.createCell(cellNum++);
 		
+		cell.setCellValue("Worker Age");
+		cell = row.createCell(cellNum++);
+		
 		cell.setCellValue("Worker Country");
 		cell = row.createCell(cellNum++);
 		
@@ -224,6 +227,9 @@ public class WorkerDemographicsReport {
 		
 		cell = row.createCell(cellNum++);
 		cell.setCellValue(worker.getSurveyAnswer("Gender"));
+		
+		cell = row.createCell(cellNum++);
+		cell.setCellValue(worker.getSurveyAnswer("Age"));
 		
 		cell = row.createCell(cellNum++);
 		cell.setCellValue(worker.getSurveyAnswer("Country"));

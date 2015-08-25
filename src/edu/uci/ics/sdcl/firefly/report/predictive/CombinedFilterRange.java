@@ -6,7 +6,9 @@ public class CombinedFilterRange {
 
 	//Max values
 	private int maxSessionDuration = 60*60*3; //default is 2h 
-	private int maxAnswerDuration = 60*60*3;; //default is 2h 
+	private int maxFirstAnswerDuration = 60*60*3;; //First answer
+	private int maxSecondThirdAnswerDuration = 60*60*3; //Second and Third answerss 
+
 	private int maxConfidence= -1; //5
 	private int maxExplanationSize =-1;//1000
 	private int maxWorkerScore= -1; //5, 4, 3
@@ -16,6 +18,11 @@ public class CombinedFilterRange {
 	//Min values
 	private int minDifficulty=0;//0;
 	private int minWorkerIDKPercentage =0;//0;
+	private double minWorkerYearsOfExperience=0; //0
+	private double minFirstAnswerDuration = 0;
+	private double minSecondThirdAnswerDuration = 0;
+	
+
 	
 	//Range sets. There are two types. One is for setting the valid range and other to 
 	//explicity excluding items that lie within that range.
@@ -31,8 +38,6 @@ public class CombinedFilterRange {
 	private double[] yearsOfExperienceList; //0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40
 
 
-
-	
 	
 	public String getRangeName() {
 		return rangeName;
@@ -46,11 +51,20 @@ public class CombinedFilterRange {
 	public void setMaxSessionDuration(int maxSessionDuration) {
 		this.maxSessionDuration = maxSessionDuration;
 	}
-	public int getMaxAnswerDuration() {
-		return maxAnswerDuration;
+	public int getMaxFirstAnswerDuration() {
+		return maxFirstAnswerDuration;
 	}
-	public void setMaxAnswerDuration(int maxAnswerDuration) {
-		this.maxAnswerDuration = maxAnswerDuration;
+	public void setMaxFirstAnswerDuration(int maxAnswerDuration) {
+		this.maxFirstAnswerDuration = maxAnswerDuration;
+	}
+	
+	
+	
+	public int getMaxSecondThirdAnswerDuration() {
+		return maxSecondThirdAnswerDuration;
+	}
+	public void setMaxSecondThirdAnswerDuration(int maxAnswerDuration) {
+		this.maxSecondThirdAnswerDuration = maxAnswerDuration;
 	}
 	public int getMaxConfidence() {
 		return maxConfidence;
@@ -70,6 +84,23 @@ public class CombinedFilterRange {
 	public void setMaxWorkerScore(int maxWorkerScore) {
 		this.maxWorkerScore = maxWorkerScore;
 	}
+	
+	public double getMinFirstAnswerDuration() {
+		return this.minFirstAnswerDuration;
+	}
+	
+	public double setMinFirstAnswerDuration(double duration) {
+		return this.minFirstAnswerDuration = duration;
+	}
+	
+	public double getMinSecondThirdAnswerDuration() {
+		return this.minSecondThirdAnswerDuration;
+	}
+	
+	public double setMinSecondThirdAnswerDuration(double duration) {
+		return this.minSecondThirdAnswerDuration = duration;
+	}
+	
 	public int getMinDifficulty() {
 		return minDifficulty;
 	}
@@ -161,6 +192,14 @@ public class CombinedFilterRange {
 		return this.maxWorkerIDKPercentage;	
 	}
 	
+	public void setMinWorkerYearsOfExperience(double d) {
+		this.minWorkerYearsOfExperience = d;
+	}
+	
+	public double getMinWorkerYearsOfExperience() {
+		return minWorkerYearsOfExperience;
+	}
+	
 	public void setUndefinedWithDefault(){
 		
 		if(rangeName==null) rangeName = "ALL";
@@ -178,6 +217,8 @@ public class CombinedFilterRange {
 		if(professionExclusionList==null) professionExclusionList = new String[]{};
 		if(yearsOfExperienceList==null)yearsOfExperienceList = new double[] {-1.0}; //{25,50,75}; //{33};	
 	}
+	
+	
 	
 
 }

@@ -19,10 +19,11 @@ public class Answer implements Serializable{
 	private String elapsedTime; // duration of the answer
 	private String timeStamp;
 	private int difficulty;
+	private int orderInWorkerSession; //1 = first, 2=second, 3=third. T
 	
 	
 	public Answer(String option, int confidenceOption, String explanation, String workerId, 
-			String elapsedTime, String timeStamp, int difficulty){
+			String elapsedTime, String timeStamp, int difficulty, int orderInWorkerSession){
 		this.option = option;
 		this.confidenceOption = confidenceOption;
 		this.explanation = explanation;
@@ -30,6 +31,7 @@ public class Answer implements Serializable{
 		this.elapsedTime = elapsedTime;
 		this.timeStamp = timeStamp;
 		this.difficulty = difficulty;
+		this.orderInWorkerSession = orderInWorkerSession;
 	}
 	
 	
@@ -93,7 +95,11 @@ public class Answer implements Serializable{
 	public int getDifficulty(){
 		return difficulty;
 	}
-
+	
+	public int getOrderInWorkerSession(){
+		return orderInWorkerSession;
+	}
+	
 	public static String mapOptionToString(int number){
 		switch(number){
 		case 1: return Answer.YES; 

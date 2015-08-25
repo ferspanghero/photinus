@@ -32,6 +32,10 @@ public class Filter {
 	private double[] workerIDKPercentage = new double[2];
 	private double[] yearsOfExperience = new double[2];
 
+	private double[] FirstAnswerDuration = new double[2];
+	private double[] SecondThirdAnswerDuration = new double[2];
+
+
 	/** map of professions to be accepted */
 	private HashMap<String, String> workerProfessionMap = new HashMap<String, String> (); //Hobbyist, Professional Programmer, Undergrad, Graduate, Others
 
@@ -40,6 +44,8 @@ public class Filter {
 
 	private  Map<String, Integer> sessionDurationMap = new HashMap<String, Integer>();
 	private  Map<String, Double> workerIDKMap = new HashMap<String, Double>();
+
+
 
 	public int[] getExplanationSize() {
 		return explanationSize;
@@ -189,7 +195,7 @@ public class Filter {
 			this.yearsOfExperience[1] = maximum;
 		}
 	}
-	
+
 	/**
 	 * Applies the filter on the desired content.
 	 * @param content: Desired content to be filtered
@@ -210,7 +216,7 @@ public class Filter {
 				String workerID = answer.getWorkerId();
 				Worker worker = workerMap.get(workerID);
 				if(worker==null){ //Does not accept answers from workers who are not in the ConsentLog.
-						System.out.print("Worker not in ConsentLog: "+ workerID);				
+					System.out.print("Worker not in ConsentLog: "+ workerID);				
 				}else{
 					if((explanationSize[0] != -1) || (explanationSize[1] != -1))
 					{
@@ -251,17 +257,36 @@ public class Filter {
 							continue;
 						}
 					}
-					if((answerDuration[0] != -1) || (answerDuration[1] != -1))
+					if((FirstAnswerDuration[0] != -1) || (FirstAnswerDuration[1] != -1))
 					{
-						if( (answerDuration[0] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) < answerDuration[0]))
-						{
-							removeIndex.add(i);
-							continue;
+						if(answer.getOrderInWorkerSession()==1){
+							if( (FirstAnswerDuration[0] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) < FirstAnswerDuration[0]))
+							{
+								System.out.println("removing first, duration:"+FirstAnswerDuration[0]+":value: "+Double.valueOf(answer.getElapsedTime())/1000);
+								removeIndex.add(i);
+								continue;
+							}
+							if( (FirstAnswerDuration[1] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) > FirstAnswerDuration[1]))
+							{
+								removeIndex.add(i);
+								continue;
+							}
 						}
-						if( (answerDuration[1] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) > answerDuration[1]))
-						{
-							removeIndex.add(i);
-							continue;
+					}
+					if((SecondThirdAnswerDuration[0] != -1) || (SecondThirdAnswerDuration[1] != -1))
+					{
+						if(answer.getOrderInWorkerSession()==2 || answer.getOrderInWorkerSession()==3){
+							if( (SecondThirdAnswerDuration[0] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) < SecondThirdAnswerDuration[0]))
+							{
+								System.out.println("removing second/third, duration:"+SecondThirdAnswerDuration[0]);
+								removeIndex.add(i);
+								continue;
+							}
+							if( (SecondThirdAnswerDuration[1] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) > SecondThirdAnswerDuration[1]))
+							{
+								removeIndex.add(i);
+								continue;
+							}
 						}
 					}
 					if((workerScore[0] != -1) || (workerScore[1] != -1) )
@@ -332,10 +357,10 @@ public class Filter {
 					//System.out.println(yearsOfExperience[0] + ": "+yearsOfExperience[1]);
 					if((yearsOfExperience[0] != -1.0) || (yearsOfExperience[1] != -1.0) )
 					{
-	
+
 						Double workerYearsOfExperience = new Double(worker.getSurveyAnswer("YearsProgramming"));
-					//	System.out.println(workerYearsOfExperience);
-						
+						//	System.out.println(workerYearsOfExperience);
+
 						if(worker!=null && (yearsOfExperience[0] != -1) && ( workerYearsOfExperience.doubleValue()< yearsOfExperience[0]))
 						{
 							removeIndex.add(i);
@@ -348,9 +373,9 @@ public class Filter {
 						}
 					}			
 				}
-				
+
 			}//for
-			
+
 
 			Collections.reverse(removeIndex);
 			for (Integer index : removeIndex) {
@@ -416,6 +441,34 @@ public class Filter {
 				workerIDKMap.put(workerID, percentage);
 			}
 		}
+	}
+
+	public void FirstAnswerDurationCriteria(double minD, double maxD) {
+		{
+			if((minD > maxD) && (maxD != -1.0))
+			{
+				System.out.println("The minimum value of the filter cannot be greater than the maximum");
+			}
+			else{
+				this.FirstAnswerDuration[0] = minD;
+				this.FirstAnswerDuration[1] = maxD;
+			}
+		}
+	}
+
+	public void setSecondThirdAnswerDurationCriteria(double minD,
+			double maxD) {
+		{
+			if((minD > maxD) && (maxD != -1.0))
+			{
+				System.out.println("The minimum value of the filter cannot be greater than the maximum");
+			}
+			else{
+				this.SecondThirdAnswerDuration[0] = minD;
+				this.SecondThirdAnswerDuration[1] = maxD;
+			}
+		}
+
 	}
 
 

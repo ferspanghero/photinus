@@ -23,6 +23,8 @@ public class FilterCombination {
 	public static final String WORKER_IDK = "WORKER %IDK RANGE";
 	public static final String WORKER_PROFESSION = "WORKER PROFESSION"; //List of professions to be considered.
 	public static final String WORKER_YEARS_OF_EXEPERIENCE = "WORKER YEARS OF EXPERIENCE"; //List of professions to be considered.
+	public static final String FIRST_ANSWER_DURATION = "FIRST_ANSWER_DURATION";
+	public static final String SECOND_THIRD_ANSWER_DURATION = "SECOND_THIRD_ANSWER_DURATION";
 
 	public HashMap<String,Range> combinationMap;
 
@@ -32,7 +34,8 @@ public class FilterCombination {
 	
 	public static String[] headerList = { 
 		
-		ANSWER_DURATION,
+		FIRST_ANSWER_DURATION,
+		SECOND_THIRD_ANSWER_DURATION,
 		CONFIDENCE_LEVEL,
 		DIFFICULTY_LEVEL,
 		EXPLANATION_SIZE,
@@ -96,10 +99,16 @@ public class FilterCombination {
 				max = this.combinationMap.get(filterName).max.intValue();
 			}
 
-			if(filterName.compareTo(FilterCombination.ANSWER_DURATION)==0){
-				filter.setAnswerDurationCriteria(new Double(min), new Double(max));
+			if(filterName.compareTo(FilterCombination.FIRST_ANSWER_DURATION)==0){
+				Range range = this.combinationMap.get(filterName);
+				filter.FirstAnswerDurationCriteria(range.minD.doubleValue(), range.maxD.doubleValue());
 			}
 			else
+				if(filterName.compareTo(FilterCombination.SECOND_THIRD_ANSWER_DURATION)==0){
+					Range range = this.combinationMap.get(filterName);
+					filter.setSecondThirdAnswerDurationCriteria(range.minD.doubleValue(), range.maxD.doubleValue());
+				}
+				else
 				if(filterName.compareTo(FilterCombination.SESSION_DURATION)==0){
 					filter.setSessionDurationCriteria(new Double(min), new Double(max));
 				}

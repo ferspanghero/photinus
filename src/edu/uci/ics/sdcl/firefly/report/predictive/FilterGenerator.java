@@ -5,37 +5,30 @@ import java.util.HashMap;
 
 public class FilterGenerator {
 
-
-
-
-
 	/** Filter answers by answer duration */
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
 
-		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupIDKRangeFilters();
-		CombinedFilterRange range = map.get(FilterGenerator.WORKER_PERCENT_IDK_0);		
+		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupAnswerDurations();
+		CombinedFilterRange range = map.get(FilterGenerator.ANSWER_DURATION_MIN_30_15);		
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 
-		for(int minDuration: range.getAnswerDurationList()){
-			for(int minConfidence : range.getConfidenceList()){
-				for(int maxDifficulty : range.getDifficulytList()){
-					for(int minExplanationSize : range.getExplanationSizeList()){
-						for(int minWorkerScore : range.getWorkerScoreList()){
-							for(double minYearsOfExperience : range.getYearsOfExperienceList()){ 
-								FilterCombination combination = new FilterCombination();
-								combination.addFilterParam(FilterCombination.ANSWER_DURATION, range.getMaxAnswerDuration(), minDuration);
-								combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, range.getMaxConfidence(), minConfidence);
-								combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty,range.getMinDifficulty());
-								combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, range.getMaxExplanationSize(), minExplanationSize);
-								combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, range.getWorkerScoreExclusionList());
-								combination.addFilterParam(FilterCombination.WORKER_SCORE, range.getMaxWorkerScore(), minWorkerScore);
-								combination.addFilterParam(FilterCombination.WORKER_IDK, range.getMaxWorkerIDKPercentage(),range.getMinWorkerIDKPercentage());
-								combination.addFilterParam(FilterCombination.WORKER_PROFESSION, range.getProfessionExclusionList());
-								combination.addFilterParam(FilterCombination.WORKER_YEARS_OF_EXEPERIENCE, range.getMaxYearsOfExperience(), minYearsOfExperience);
-								filterList.add(combination);
-							}
-						}
+		for(int minConfidence : range.getConfidenceList()){
+			for(int maxDifficulty : range.getDifficulytList()){
+				for(int minExplanationSize : range.getExplanationSizeList()){
+					for(int minWorkerScore : range.getWorkerScoreList()){
+						FilterCombination combination = new FilterCombination();
+						combination.addFilterParam(FilterCombination.FIRST_ANSWER_DURATION, range.getMaxFirstAnswerDuration(), range.getMinFirstAnswerDuration());
+						combination.addFilterParam(FilterCombination.SECOND_THIRD_ANSWER_DURATION, range.getMaxSecondThirdAnswerDuration(), range.getMinSecondThirdAnswerDuration());
+						combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, range.getMaxConfidence(), minConfidence);
+						combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty,range.getMinDifficulty());
+						combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, range.getMaxExplanationSize(), minExplanationSize);
+						combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, range.getWorkerScoreExclusionList());
+						combination.addFilterParam(FilterCombination.WORKER_SCORE, range.getMaxWorkerScore(), minWorkerScore);
+						combination.addFilterParam(FilterCombination.WORKER_IDK, range.getMaxWorkerIDKPercentage(),range.getMinWorkerIDKPercentage());
+						combination.addFilterParam(FilterCombination.WORKER_PROFESSION, range.getProfessionExclusionList());
+						combination.addFilterParam(FilterCombination.WORKER_YEARS_OF_EXEPERIENCE, range.getMaxYearsOfExperience(), range.getMinWorkerYearsOfExperience());
+						filterList.add(combination);
 					}
 				}
 			}
@@ -45,7 +38,6 @@ public class FilterGenerator {
 	}
 
 	private static String NO_FILTERS = "no filters";
-	private static String WORKER_YEARS_OF_EXPERIENCE = "years of experience programming";
 	private static String WORKER_SCORE_100 ="100% score worker only";
 	private static String WORKER_SCORE_80 ="80% score worker only";
 	private static String WORKER_SCORE_60 ="60% score worker only";
@@ -73,6 +65,29 @@ public class FilterGenerator {
 	private static final String WORKER_PERCENT_IDK_35_67 = "WORKER_PERCENT_IDK_35_67";
 	private static final String WORKER_PERCENT_IDK_68_100 = "WORKER_PERCENT_IDK_68_100";
 	private static final String WORKER_PERCENT_IDK_0 = "WORKER_PERCENT_IDK_0";
+
+	private static final String WORKER_YEARS_OF_EXPERIENCE_0_1 = "WORKER_YEARS_OF_EXPERIENCE_0_1";
+	private static final String WORKER_YEARS_OF_EXPERIENCE_1_5 = "WORKER_YEARS_OF_EXPERIENCE_1_5";
+	private static final String WORKER_YEARS_OF_EXPERIENCE_5_10 = "WORKER_YEARS_OF_EXPERIENCE_5_10";
+	private static final String WORKER_YEARS_OF_EXPERIENCE_10_15 = "WORKER_YEARS_OF_EXPERIENCE_10_15";
+	private static final String WORKER_YEARS_OF_EXPERIENCE_15_50 = "WORKER_YEARS_OF_EXPERIENCE_15_50";
+
+	private static final String SESSION_DURATION_0_2 = "SESSION_DURATION_0_2";
+	private static final String SESSION_DURATION_2_4 = "SESSION_DURATION_2_4";
+	private static final String SESSION_DURATION_4_8 = "SESSION_DURATION_4_8";
+
+	//First answer 1st Qu.= 160.93s //Second Third answers  1st Qu.:  69.387s
+	//FILTER both first and second-third answers 
+	private static final String ANSWER_DURATION_MIN_0_0  = "ANSWER_DURATION_MIN_0_0"; 
+	private static final String ANSWER_DURATION_MIN_30_15 = "ANSWER_DURATION_MIN_30_15"; 
+	private static final String ANSWER_DURATION_MIN_60_30 = "ANSWER_DURATION_MIN_60_30";
+	private static final String ANSWER_DURATION_MIN_120_60 = "ANSWER_DURATION_MIN_120_60";
+	private static final String ANSWER_DURATION_MIN_180_60 = "ANSWER_DURATION_MIN_180_60";
+
+	//Second Third answers  1st Qu.:  69.387s
+	private static final String SECOND_THIRD_ANSWER_DURATION_MIN_15s = "SECOND_THIRD_ANSWER_DURATION_MIN_15s"; 
+	private static final String SECOND_THIRD_ANSWER_DURATION_MIN_30s = "SECOND_THIRD_ANSWER_DURATION_MIN_30s";
+	private static final String SECOND_THIRD_ANSWER_DURATION_MIN_60s = "SECOND_THIRD_ANSWER_DURATION_MIN_60s";
 
 
 	private static HashMap<String,CombinedFilterRange> setupNoFilters(){
@@ -224,9 +239,37 @@ public class FilterGenerator {
 		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
 
 		CombinedFilterRange range = new CombinedFilterRange();
-		range.setRangeName(WORKER_YEARS_OF_EXPERIENCE);
+		range.setRangeName(WORKER_YEARS_OF_EXPERIENCE_0_1);
+		range.setMaxWorkerYearsOfExperience(1.0);
+		range.setMinWorkerYearsOfExperience(0.0);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_YEARS_OF_EXPERIENCE_1_5);
+		range.setMaxWorkerYearsOfExperience(5.0);
+		range.setMinWorkerYearsOfExperience(1.1);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_YEARS_OF_EXPERIENCE_5_10);
+		range.setMaxWorkerYearsOfExperience(10.0);
+		range.setMinWorkerYearsOfExperience(5.1);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_YEARS_OF_EXPERIENCE_10_15);
+		range.setMaxWorkerYearsOfExperience(15.0);
+		range.setMinWorkerYearsOfExperience(10.1);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_YEARS_OF_EXPERIENCE_15_50);
 		range.setMaxWorkerYearsOfExperience(50.0);
-		range.setYearsOfExperienceList(new double[] {1.0, 2.0, 3.0, 4.0, 5.0, 10.0, 15.0, 20.0 ,25.0, 30.0, 35.0, 40.0});
+		range.setMinWorkerYearsOfExperience(15.1);
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
@@ -338,6 +381,80 @@ public class FilterGenerator {
 		return rangeMap;
 	}
 
+
+	private static HashMap<String,CombinedFilterRange> setupAnswerDurations(){
+
+		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
+
+		//----------------------------------
+		CombinedFilterRange range = new CombinedFilterRange();
+		range.setRangeName(ANSWER_DURATION_MIN_0_0); //NO FILTER
+
+		range.setMaxFirstAnswerDuration(600);//1hour 3rd quartile
+		range.setMinFirstAnswerDuration(0);
+		range.setMaxSecondThirdAnswerDuration(300);//1hour 3rd quartile
+		range.setMinSecondThirdAnswerDuration(0);
+
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+		
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(ANSWER_DURATION_MIN_30_15);
+
+		range.setMaxFirstAnswerDuration(1800);//1hour
+		range.setMinFirstAnswerDuration(30);
+		range.setMaxSecondThirdAnswerDuration(1800);//1hour
+		range.setMinSecondThirdAnswerDuration(15);
+
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+		
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(ANSWER_DURATION_MIN_60_30);
+
+		range.setMaxFirstAnswerDuration(1800);//1hour
+		range.setMinFirstAnswerDuration(60);
+
+		range.setMaxSecondThirdAnswerDuration(1800);//1hour
+		range.setMinSecondThirdAnswerDuration(30);
+
+
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(ANSWER_DURATION_MIN_120_60);
+
+		range.setMaxFirstAnswerDuration(1800);//1hour
+		range.setMinFirstAnswerDuration(120);
+
+		range.setMaxSecondThirdAnswerDuration(1800);//1hour
+		range.setMinSecondThirdAnswerDuration(60);
+
+
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(ANSWER_DURATION_MIN_180_60);
+
+		range.setMaxFirstAnswerDuration(1800);//1hour
+		range.setMinFirstAnswerDuration(180);
+
+		range.setMaxSecondThirdAnswerDuration(1800);//1hour
+		range.setMinSecondThirdAnswerDuration(60);
+
+
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		return rangeMap;
+	}
 
 	//--------------------------------------------------------------------------------------------------------------------
 	/** Filter answers by session duration */

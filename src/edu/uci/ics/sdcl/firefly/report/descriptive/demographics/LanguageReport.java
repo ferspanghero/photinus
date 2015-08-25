@@ -33,7 +33,7 @@ public class LanguageReport {
 
 	public void countProgrammingLanguages(){
 
-		FileConsentDTO consentDTO = new FileConsentDTO(path+consentFile);	
+		FileConsentDTO consentDTO = new FileConsentDTO();	
 		HashMap<String, Worker> workerMap = consentDTO.getWorkers();
 
 		this.langCountMap.put("other", new Integer(0));
