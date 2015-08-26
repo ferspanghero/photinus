@@ -9,7 +9,7 @@ public class FilterGenerator {
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
 
 		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupAnswerDurations();
-		CombinedFilterRange range = map.get(FilterGenerator.ANSWER_DURATION_MIN_30_15);		
+		CombinedFilterRange range = map.get(FilterGenerator.ANSWER_DURATION_MIN_q1_q3);		
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 
@@ -82,7 +82,8 @@ public class FilterGenerator {
 	private static final String ANSWER_DURATION_MIN_30_15 = "ANSWER_DURATION_MIN_30_15"; 
 	private static final String ANSWER_DURATION_MIN_60_30 = "ANSWER_DURATION_MIN_60_30";
 	private static final String ANSWER_DURATION_MIN_120_60 = "ANSWER_DURATION_MIN_120_60";
-	private static final String ANSWER_DURATION_MIN_180_60 = "ANSWER_DURATION_MIN_180_60";
+	private static final String ANSWER_DURATION_MIN_q1_q1 = "ANSWER_DURATION_MIN_q1_q1";
+	private static final String ANSWER_DURATION_MIN_q1_q3 = "ANSWER_DURATION_MIN_q1_q3";
 
 	//Second Third answers  1st Qu.:  69.387s
 	private static final String SECOND_THIRD_ANSWER_DURATION_MIN_15s = "SECOND_THIRD_ANSWER_DURATION_MIN_15s"; 
@@ -397,7 +398,7 @@ public class FilterGenerator {
 
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
-		
+
 		//----------------------------------
 		range = new CombinedFilterRange();
 		range.setRangeName(ANSWER_DURATION_MIN_30_15);
@@ -409,7 +410,7 @@ public class FilterGenerator {
 
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
-		
+
 		//----------------------------------
 		range = new CombinedFilterRange();
 		range.setRangeName(ANSWER_DURATION_MIN_60_30);
@@ -420,10 +421,8 @@ public class FilterGenerator {
 		range.setMaxSecondThirdAnswerDuration(1800);//1hour
 		range.setMinSecondThirdAnswerDuration(30);
 
-
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
-
 
 		//----------------------------------
 		range = new CombinedFilterRange();
@@ -435,20 +434,30 @@ public class FilterGenerator {
 		range.setMaxSecondThirdAnswerDuration(1800);//1hour
 		range.setMinSecondThirdAnswerDuration(60);
 
-
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
 		//----------------------------------
 		range = new CombinedFilterRange();
-		range.setRangeName(ANSWER_DURATION_MIN_180_60);
+		range.setRangeName(ANSWER_DURATION_MIN_q1_q1);
 
-		range.setMaxFirstAnswerDuration(1800);//1hour
-		range.setMinFirstAnswerDuration(180);
+		range.setMaxFirstAnswerDuration(3600);//1hour
+		range.setMinFirstAnswerDuration(167.4);
 
-		range.setMaxSecondThirdAnswerDuration(1800);//1hour
-		range.setMinSecondThirdAnswerDuration(60);
+		range.setMaxSecondThirdAnswerDuration(3600);//1hour
+		range.setMinSecondThirdAnswerDuration(69.9);
 
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(ANSWER_DURATION_MIN_q1_q3);
+
+		range.setMaxFirstAnswerDuration(683.90);//1hour
+		range.setMinFirstAnswerDuration(167.4);
+
+		range.setMaxSecondThirdAnswerDuration(228.700);//1hour  
+		range.setMinSecondThirdAnswerDuration(69.9);
 
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);

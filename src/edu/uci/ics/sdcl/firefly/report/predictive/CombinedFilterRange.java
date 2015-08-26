@@ -5,9 +5,9 @@ public class CombinedFilterRange {
 	private String rangeName;
 
 	//Max values
-	private int maxSessionDuration = 60*60*3; //default is 2h 
-	private int maxFirstAnswerDuration = 60*60*3;; //First answer
-	private int maxSecondThirdAnswerDuration = 60*60*3; //Second and Third answerss 
+	private double maxSessionDuration = 60*60*3; //default is 3h 
+	private double maxFirstAnswerDuration = 60*60*3;; //First answer
+	private double maxSecondThirdAnswerDuration = 60*60*3; //Second and Third answerss 
 
 	private int maxConfidence= -1; //5
 	private int maxExplanationSize =-1;//1000
@@ -45,26 +45,26 @@ public class CombinedFilterRange {
 	public void setRangeName(String rangeName) {
 		this.rangeName = rangeName;
 	}
-	public int getMaxSessionDuration() {
+	public double getMaxSessionDuration() {
 		return maxSessionDuration;
 	}
 	public void setMaxSessionDuration(int maxSessionDuration) {
 		this.maxSessionDuration = maxSessionDuration;
 	}
-	public int getMaxFirstAnswerDuration() {
+	public double getMaxFirstAnswerDuration() {
 		return maxFirstAnswerDuration;
 	}
-	public void setMaxFirstAnswerDuration(int maxAnswerDuration) {
-		this.maxFirstAnswerDuration = maxAnswerDuration;
+	public void setMaxFirstAnswerDuration(double d) {
+		this.maxFirstAnswerDuration = d;
 	}
 	
 	
 	
-	public int getMaxSecondThirdAnswerDuration() {
+	public double getMaxSecondThirdAnswerDuration() {
 		return maxSecondThirdAnswerDuration;
 	}
-	public void setMaxSecondThirdAnswerDuration(int maxAnswerDuration) {
-		this.maxSecondThirdAnswerDuration = maxAnswerDuration;
+	public void setMaxSecondThirdAnswerDuration(double d) {
+		this.maxSecondThirdAnswerDuration = d;
 	}
 	public int getMaxConfidence() {
 		return maxConfidence;
