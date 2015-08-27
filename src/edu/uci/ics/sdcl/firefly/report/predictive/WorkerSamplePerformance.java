@@ -112,7 +112,7 @@ public class WorkerSamplePerformance {
 		WorkerSession session=null;
 		Vector<Microtask> microtaskList =null;
 		while((i<sessionList.size()) && (microtaskList==null || microtaskList.size()==0)){
-			session = sessionList.get(i); //Test to check if sessions are order
+			session = sessionList.get(i);  
 			microtaskList = session.getMicrotaskList();
 			i++;
 		}

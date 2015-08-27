@@ -9,6 +9,7 @@ import java.util.Vector;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
+import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 public class AnswerConfidenceCounter {
@@ -30,7 +31,7 @@ public class AnswerConfidenceCounter {
 		int confidence=-1;
 		int difficulty=-1;
 
-		int explanationSize=0;
+		int explanationSize=-1;
 		public int correct;
 		public String filename;
 		public String questionID;
@@ -39,7 +40,7 @@ public class AnswerConfidenceCounter {
 
 			
 
-			return (filename+","+questionID+","+confidence+","+difficulty+","+TP+","+TN+","+FN+","+FP+","+correct);
+			return (filename+","+questionID+","+confidence+","+difficulty+","+explanationSize+","+TP+","+TN+","+FN+","+FP+","+correct);
 		}
 	}
 
@@ -79,6 +80,7 @@ public class AnswerConfidenceCounter {
 				output = checkCorrectness(microtask.getID().toString(),answer.getOption(),output);
 				output.filename = microtask.getFileName();
 				output.questionID = microtask.getID().toString();
+				output.explanationSize = answer.getExplanation().length();
 				this.correctnessList.add(output);
 			}
 		}
@@ -121,13 +123,13 @@ public class AnswerConfidenceCounter {
 
 
 	private String getHeader(){
-		return "filename,questionID,confidence,difficulty,TP,TN,FN,FP,correct";
+		return "filename,questionID,confidence,difficulty,explanationSize,TP,TN,FN,FP,correct";
 	}
 
 
 	public void printConfidenceMap(){	
 
-		String destination = "C://firefly//answerConfidence.csv";
+		String destination = "C://firefly//answerExplanation.csv";
 		BufferedWriter log;
 
 		try {
@@ -157,15 +159,28 @@ public class AnswerConfidenceCounter {
 		}
 	}
 
+	
+	
 	public static void main(String[] args){
 
+		
+		
 		AnswerConfidenceCounter counter = new AnswerConfidenceCounter();
 		FileSessionDTO sessionDTO = new FileSessionDTO();
+		
+		//Produce the list of filters
+		ArrayList<FilterCombination> filterList = FilterGenerator.generateAnswerFilterCombinations();
+		FilterCombination combination =  filterList.get(0);
+		Filter filter = combination.getFilter();
+	
 		HashMap<String,Microtask> microtaskMap =  (HashMap<String, Microtask>) sessionDTO.getMicrotasks();
-		counter.buildMaps(microtaskMap);
+		
+		HashMap<String, Microtask> filteredMicrotaskMap = (HashMap<String, Microtask>) filter.apply(microtaskMap);
+		
+		counter.buildMaps(filteredMicrotaskMap);
 		counter.printConfidenceMap();
 
-		counter.printCombinationMap();
+		//counter.printCombinationMap();
 	}
 
 }

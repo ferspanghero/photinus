@@ -8,8 +8,8 @@ public class FilterGenerator {
 	/** Filter answers by answer duration */
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
 
-		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupAnswerDurations();
-		CombinedFilterRange range = map.get(FilterGenerator.ANSWER_DURATION_MIN_q1_q3);		
+		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupConfidenceDifficulty();
+		CombinedFilterRange range = map.get(FilterGenerator.CONFIDENCE_DIFFICULTY_UP_3_PERCENT);		
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 
@@ -18,8 +18,10 @@ public class FilterGenerator {
 				for(int minExplanationSize : range.getExplanationSizeList()){
 					for(int minWorkerScore : range.getWorkerScoreList()){
 						FilterCombination combination = new FilterCombination();
+
 						combination.addFilterParam(FilterCombination.FIRST_ANSWER_DURATION, range.getMaxFirstAnswerDuration(), range.getMinFirstAnswerDuration());
 						combination.addFilterParam(FilterCombination.SECOND_THIRD_ANSWER_DURATION, range.getMaxSecondThirdAnswerDuration(), range.getMinSecondThirdAnswerDuration());
+						combination.addFilterParam(FilterCombination.CONFIDENCE_DIFFICULTY_PAIRS,range.getConfidenceDifficultyPairList());
 						combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, range.getMaxConfidence(), minConfidence);
 						combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty,range.getMinDifficulty());
 						combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, range.getMaxExplanationSize(), minExplanationSize);
@@ -33,7 +35,6 @@ public class FilterGenerator {
 				}
 			}
 		}
-
 		return filterList;
 	}
 
@@ -89,6 +90,16 @@ public class FilterGenerator {
 	private static final String SECOND_THIRD_ANSWER_DURATION_MIN_15s = "SECOND_THIRD_ANSWER_DURATION_MIN_15s"; 
 	private static final String SECOND_THIRD_ANSWER_DURATION_MIN_30s = "SECOND_THIRD_ANSWER_DURATION_MIN_30s";
 	private static final String SECOND_THIRD_ANSWER_DURATION_MIN_60s = "SECOND_THIRD_ANSWER_DURATION_MIN_60s";
+
+	private static final String CONFIDENCE_DIFFICULTY_UP_3_PERCENT = "CONFIDENCE_DIFFICULTY_UP_3PERCENT";
+	private static final String CONFIDENCE_DIFFICULTY_HIGH_CONFIDENCE = "CONFIDENCE_DIFFICULTY_HIGH_CONFIDENCE";
+	private static final String CONFIDENCE_DIFFICULTY_LOW_DIFFICULTY = "CONFIDENCE_DIFFICULTY_LOW_DIFFICULTY";
+
+	private static final String EXPLANATION_1QT_0_53 = "EXPLANATION_1QT_0_57";
+	private static final String EXPLANATION_2QT_53_99= "EXPLANATION_2QT_53_99";
+	private static final String EXPLANATION_3QT_99_171 = "EXPLANATION_4QT_180_2600";
+	private static final String EXPLANATION_4_QT_171_2383 = "EXPLANATION_2_3_QT_57_180";
+	private static final String COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT = "COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT";
 
 
 	private static HashMap<String,CombinedFilterRange> setupNoFilters(){
@@ -401,7 +412,7 @@ public class FilterGenerator {
 
 		//----------------------------------
 		range = new CombinedFilterRange();
-		range.setRangeName(ANSWER_DURATION_MIN_30_15);
+		range.setRangeName(ANSWER_DURATION_MIN_30_15); 
 
 		range.setMaxFirstAnswerDuration(1800);//1hour
 		range.setMinFirstAnswerDuration(30);
@@ -439,9 +450,9 @@ public class FilterGenerator {
 
 		//----------------------------------
 		range = new CombinedFilterRange();
-		range.setRangeName(ANSWER_DURATION_MIN_q1_q1);
+		range.setRangeName(ANSWER_DURATION_MIN_q1_q1);  //Remove first QUARTILE
 
-		range.setMaxFirstAnswerDuration(3600);//1hour
+		range.setMaxFirstAnswerDuration(3600);//1hour 
 		range.setMinFirstAnswerDuration(167.4);
 
 		range.setMaxSecondThirdAnswerDuration(3600);//1hour
@@ -465,41 +476,161 @@ public class FilterGenerator {
 		return rangeMap;
 	}
 
-	//--------------------------------------------------------------------------------------------------------------------
-	/** Filter answers by session duration */
-	/*public static ArrayList<FilterCombination> generateSessionFilterCombinations(){
+	private static HashMap<String,CombinedFilterRange> setupConfidenceDifficulty(){
 
-		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
+		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
 
-		for(int minDuration: sessionDurationList){
-			for(int minConfidence : confidenceList){
-				for(int maxDifficulty : difficulytList){
-					for(int minExplanationSize : explanationSizeList){
-						for(int minWorkerScore : workerScoreList){
-							for(int maxWorkerIDKPercentage : IDKpercentageList){
-								FilterCombination combination = new FilterCombination();
-								combination.addFilterParam(FilterCombination.SESSION_DURATION, maxSessionDuration, minDuration);
-								combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, maxConfidence, minConfidence);
-								combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty, minDifficulty);
-								combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, maxExplanationSize, minExplanationSize);
-								combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, workerScoreExclusionList);
-								combination.addFilterParam(FilterCombination.WORKER_SCORE, maxWorkerScore, minWorkerScore);
-								combination.addFilterParam(FilterCombination.WORKER_IDK, maxWorkerIDKPercentage, minWorkerIDKPercentage);
-								combination.addFilterParam(FilterCombination.WORKER_PROFESSION, professionExclusionList);
-								filterList.add(combination);
-							}
-						}
-					}
-				}
-			}
-		}
-		return filterList;
-	}*/
+		//----------------------------------
+		CombinedFilterRange range = new CombinedFilterRange();
+		range.setRangeName(CONFIDENCE_DIFFICULTY_UP_3_PERCENT);  
+
+		HashMap<String, Tuple>  map = Tuple.generateAllCombinations(5, 5);
+		map.remove(new Tuple(5,1).toString());
+		map.remove(new Tuple(5,2).toString());
+		map.remove(new Tuple(5,3).toString());
+		map.remove(new Tuple(4,2).toString());
+		map.remove(new Tuple(4,3).toString());
+		map.remove(new Tuple(4,4).toString());
+		map.remove(new Tuple(3,3).toString());
+		map.remove(new Tuple(3,4).toString());
+		//map.remove(new Tuple(0,4).toString()); don't need to consider IDK answers
+		//map.remove(new Tuple(0,5).toString());
+
+		System.out.println("Size of exclusion map:" + map.size());
+		range.setConfidenceDifficultyPairMap(map);
+
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(CONFIDENCE_DIFFICULTY_HIGH_CONFIDENCE); 
+		map = Tuple.generateAllCombinations(5, 5);
+
+		map.remove(new Tuple(5,1).toString());
+		map.remove(new Tuple(5,2).toString());
+		map.remove(new Tuple(5,3).toString());
+		map.remove(new Tuple(5,4).toString());
+		map.remove(new Tuple(5,5).toString());
+
+		range.setConfidenceDifficultyPairMap(map);
+
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(CONFIDENCE_DIFFICULTY_LOW_DIFFICULTY);   
+
+		map = Tuple.generateAllCombinations(5, 5);
+		map.remove(new Tuple(0,1).toString());
+		map.remove(new Tuple(1,1).toString());
+		map.remove(new Tuple(2,1).toString());
+		map.remove(new Tuple(3,1).toString());
+		map.remove(new Tuple(4,1).toString());
+		map.remove(new Tuple(5,1).toString());
 
 
+		range.setConfidenceDifficultyPairMap(map);
+
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		return rangeMap;
+	}
+
+	private static HashMap<String,CombinedFilterRange> setupExplanationSize(){
+
+		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
+
+		//----------------------------------
+		CombinedFilterRange range = new CombinedFilterRange();
+		range.setRangeName(EXPLANATION_1QT_0_53) ;  //  1st Qu.:  53.0
+
+		int[] explanationSizeList_1 = {0};
+		range.setMaxExplanationSize(53);
+		range.setExplanationSizeList(explanationSizeList_1);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(EXPLANATION_2QT_53_99) ;  // Median :  99.0       
+
+		int[] explanationSizeList_2 = {53};
+		range.setMaxExplanationSize(99);
+		range.setExplanationSizeList(explanationSizeList_2);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		//----------------------------------
+
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(EXPLANATION_3QT_99_171) ;  // 3rd Qu.: 171.0 
+		int[] explanationSizeList_3 = {99};
+		range.setMaxExplanationSize(171);
+		range.setExplanationSizeList(explanationSizeList_3);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(EXPLANATION_4_QT_171_2383) ;  //  Max 2383           
+
+		int[] explanationSizeList_4 = {171};
+
+		range.setMaxExplanationSize(2383);
+
+		range.setExplanationSizeList(explanationSizeList_4);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
 
 
+		return rangeMap;
+
+	}
+
+	private static HashMap<String,CombinedFilterRange> setupCombinedDurationConfidenceDifficultyExplanationSize(){
+
+		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
+
+		//----------------------------------
+		CombinedFilterRange range = new CombinedFilterRange();
+		range.setRangeName(COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT) ;  //  Exclude 1q and consider only 3% confidence, difficulty cells.
 
 
+		//Duration
+		range.setMaxFirstAnswerDuration(3600);//1hour 
+		range.setMinFirstAnswerDuration(167.4);
+
+		range.setMaxSecondThirdAnswerDuration(3600);//1hour
+		range.setMinSecondThirdAnswerDuration(69.9);
+
+
+		//Confidence,Difficulty
+		HashMap<String, Tuple>  map = Tuple.generateAllCombinations(5, 5);
+		map.remove(new Tuple(5,1).toString());
+		map.remove(new Tuple(5,2).toString());
+		map.remove(new Tuple(5,3).toString());
+		map.remove(new Tuple(4,2).toString());
+		map.remove(new Tuple(4,3).toString());
+		map.remove(new Tuple(4,4).toString());
+		map.remove(new Tuple(3,3).toString());
+		map.remove(new Tuple(3,4).toString());
+		map.remove(new Tuple(0,4).toString());
+		map.remove(new Tuple(0,5).toString());
+
+		range.setConfidenceDifficultyPairMap(map);
+
+		//ExplanationSize
+		int[] explanationSizeList_1 = {53}; //Minimal
+		range.setExplanationSizeList(explanationSizeList_1);
+
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		return rangeMap;
+	}
 
 }

@@ -1,5 +1,8 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Internal package class to hold the values of a filter 
  * @author adrianoc
@@ -12,6 +15,7 @@ class Range {
 		Double minD=-1.0;
 		int[] list;
 		String[] professionExclusionList;
+		HashMap<String, Tuple> confidenceDifficultyPairMap;
 
 		public Range(int minValue, int maxValue){
 			this.min = new Integer(minValue);
@@ -23,18 +27,25 @@ class Range {
 			this.maxD =  new Double(maxValue);
 		}
 		
-		public Range(int[] workerExclusionList) {
-			this.list = workerExclusionList.clone();
+		public Range(HashMap<String, Tuple> hashMap) {
+			this.confidenceDifficultyPairMap = hashMap;
 		}
 
 		public Range(String[] professionList){
 			this.professionExclusionList = professionList.clone();
 		}
 
+		public Range(int[] workerExclusionList) {
+			this.list = workerExclusionList;
+		}
+
 		public String toString(){
 			if(list!=null && list.length>0)
 				return "[excluded" +listToString(list)+  "]";
 			else
+				if(this.confidenceDifficultyPairMap!=null && confidenceDifficultyPairMap.size()>0) 
+					return "[excluded" +listToString(confidenceDifficultyPairMap)+  "]";
+				else
 				if(professionExclusionList!=null && professionExclusionList.length>0) 
 					return "[excluded" +listToString(professionExclusionList)+  "]";
 				else
@@ -42,6 +53,7 @@ class Range {
 						return "["+minD.toString()+","+maxD.toString()+"]";
 					else
 						return "["+min.toString()+","+max.toString()+"]";
+				
 		}
 
 		private String listToString(String[] list){
@@ -59,6 +71,16 @@ class Range {
 				//System.out.println("value"+value);
 				String valueStr = new Integer(value).toString();
 				result = result + ","+valueStr;
+			}
+			result = result.substring(0, result.length());
+			return result;
+		}
+		
+		private String listToString(HashMap<String, Tuple> map){
+			String result = "";
+			for(Tuple tuple: map.values()){
+				String tupleStr = tuple.toString();
+				result = result + ","+tupleStr;
 			}
 			result = result.substring(0, result.length());
 			return result;

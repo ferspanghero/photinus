@@ -1,5 +1,6 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
@@ -25,6 +26,7 @@ public class FilterCombination {
 	public static final String WORKER_YEARS_OF_EXEPERIENCE = "WORKER YEARS OF EXPERIENCE"; //List of professions to be considered.
 	public static final String FIRST_ANSWER_DURATION = "FIRST_ANSWER_DURATION";
 	public static final String SECOND_THIRD_ANSWER_DURATION = "SECOND_THIRD_ANSWER_DURATION";
+	public static final String CONFIDENCE_DIFFICULTY_PAIRS = "CONFIDENCE_DIFFICULTY_PAIRS";
 
 	public HashMap<String,Range> combinationMap;
 
@@ -43,7 +45,8 @@ public class FilterCombination {
 		WORKER_SCORE,
 		WORKER_IDK,
 		WORKER_PROFESSION,
-		WORKER_YEARS_OF_EXEPERIENCE
+		WORKER_YEARS_OF_EXEPERIENCE,
+		CONFIDENCE_DIFFICULTY_PAIRS
 	};
 
 	public static String getFilterHeaders(){
@@ -145,15 +148,21 @@ public class FilterCombination {
 													Range range = this.combinationMap.get(filterName);
 													filter.setYearsOfExperience(range.minD, range.maxD);
 												}
+												else
+													if(filterName.compareTo(FilterCombination.CONFIDENCE_DIFFICULTY_PAIRS)==0){
+														Range range = this.combinationMap.get(filterName);
+														filter.setConfidenceDifficultyPairList(range.confidenceDifficultyPairMap);
+													}
 		}
 		return filter;	
 	}
 
+	
 	public void addFilterParam(String workerScoreExclusion,
-			int[] workerExclusionList) {
+			int[] workerScoreExclusionList) {
 		if(combinationMap==null)
 			combinationMap = new HashMap<String, Range>();
-		combinationMap.put(workerScoreExclusion, new Range(workerExclusionList));
+		combinationMap.put(workerScoreExclusion, new Range(workerScoreExclusionList));
 	}
 
 	public void addFilterParam(String workerProfession, String[] workerProfessionList) {
@@ -170,6 +179,14 @@ public class FilterCombination {
 		if(combinationMap==null)
 			combinationMap = new HashMap<String, Range>();
 		combinationMap.put(workerYearsOfExeperienceProfession, new Range(minYearsOfExperience,maxYearsOfExperience));		
+	}
+
+	public void addFilterParam(String confidenceDifficultyPairs,
+			HashMap<String,Tuple> confidenceDifficultyPairMap) {
+		if(combinationMap==null)
+			combinationMap = new HashMap<String, Range>();
+		combinationMap.put(confidenceDifficultyPairs, new Range(confidenceDifficultyPairMap));	
+		
 	}
 
 

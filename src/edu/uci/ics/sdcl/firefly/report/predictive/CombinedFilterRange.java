@@ -1,5 +1,8 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class CombinedFilterRange {
 
 	private String rangeName;
@@ -36,6 +39,8 @@ public class CombinedFilterRange {
 	private int[] IDKpercentageList; //{25,50,75}; //{33};
 	private String[] professionExclusionList;
 	private double[] yearsOfExperienceList; //0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40
+
+	private HashMap<String, Tuple> confidenceDiffcultyPairMap;
 
 
 	
@@ -200,6 +205,15 @@ public class CombinedFilterRange {
 		return minWorkerYearsOfExperience;
 	}
 	
+	public void setConfidenceDifficultyPairMap(
+			HashMap<String, Tuple> map) {
+		this.confidenceDiffcultyPairMap = map;
+	}
+	
+	public HashMap<String,Tuple> getConfidenceDifficultyPairList() {
+		return this.confidenceDiffcultyPairMap;
+	}
+	
 	public void setUndefinedWithDefault(){
 		
 		if(rangeName==null) rangeName = "ALL";
@@ -215,8 +229,10 @@ public class CombinedFilterRange {
 		if(workerScoreExclusionList==null)workerScoreExclusionList = new int[] {};//{4};
 		if(IDKpercentageList==null)IDKpercentageList = new int[] {-1}; //{25,50,75}; //{33};
 		if(professionExclusionList==null) professionExclusionList = new String[]{};
-		if(yearsOfExperienceList==null)yearsOfExperienceList = new double[] {-1.0}; //{25,50,75}; //{33};	
+		if(yearsOfExperienceList==null)yearsOfExperienceList = new double[] {-1.0}; //{25,50,75}; //{33};
+		if(confidenceDiffcultyPairMap==null) confidenceDiffcultyPairMap = new HashMap<String,Tuple>();
 	}
+	
 	
 	
 	

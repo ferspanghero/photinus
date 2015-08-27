@@ -14,6 +14,7 @@ import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
+import edu.uci.ics.sdcl.firefly.report.predictive.Tuple;
 
 /**
  * Responsible for filter a collection of Sessions.
@@ -35,6 +36,9 @@ public class Filter {
 	private double[] FirstAnswerDuration = new double[2];
 	private double[] SecondThirdAnswerDuration = new double[2];
 
+
+	/** map of confidence, difficulty pairs */
+	private HashMap<String, Tuple> confidenceDifficultyPairMap = new HashMap<String, Tuple>();
 
 	/** map of professions to be accepted */
 	private HashMap<String, String> workerProfessionMap = new HashMap<String, String> (); //Hobbyist, Professional Programmer, Undergrad, Graduate, Others
@@ -209,6 +213,7 @@ public class Filter {
 		List<Integer> removeIndex = new ArrayList<Integer>();	
 		FileConsentDTO workerDTO = new FileConsentDTO();
 		HashMap<String,Worker> workerMap = workerDTO.getWorkers();
+ 
 		for (String questionID : aux.keySet()) {
 			Vector<Answer> answerList = aux.get(questionID).getAnswerList();
 			for (int i = 0; i < answerList.size(); i++) {				
@@ -371,16 +376,35 @@ public class Filter {
 							removeIndex.add(i);
 							continue;
 						}
-					}			
+					}
+					if(confidenceDifficultyPairMap.size()>0){
+
+						
+						for(Tuple tuple: confidenceDifficultyPairMap.values()){
+							//System.out.println(tuple.toString()+": answer:"+answer.getConfidenceOption()+","+answer.getDifficulty());
+							
+							if(( (tuple.confidence != -1) && (answer.getConfidenceOption() == tuple.confidence)) &&
+							((tuple.difficulty != -1) && (answer.getDifficulty() == tuple.difficulty)))
+							{
+								//System.out.print("removed ["+answer.getConfidenceOption()+","+answer.getDifficulty()+"]");
+								removeIndex.add(i);
+							 
+								continue;
+							}
+						 
+						}
+						
+
+					}
 				}
 
 			}//for
-
-
+		 
 			Collections.reverse(removeIndex);
 			for (Integer index : removeIndex) {
 				Microtask question = content.get(questionID);
-				question.getAnswerList().removeElementAt(index);
+				if(question.getAnswerList().size()>index) //Might happen to try to remove twice due to a pair filter (e.g., confidence/difficulty)
+					question.getAnswerList().removeElementAt(index);
 			}
 			removeIndex.clear();
 		}//for		
@@ -470,6 +494,13 @@ public class Filter {
 		}
 
 	}
+
+	public void setConfidenceDifficultyPairList(
+			HashMap<String, Tuple> confidenceDifficultyPairMap) {
+		this.confidenceDifficultyPairMap = confidenceDifficultyPairMap;
+	}
+	
+	
 
 
 }
