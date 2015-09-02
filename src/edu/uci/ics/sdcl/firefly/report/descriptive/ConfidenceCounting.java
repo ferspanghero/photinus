@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class ConfidenceCounting extends CountReport {
 	 * Generates the CountReport content part. 
 	 */
 	@Override
-	public Map<String, List<String>> generateReport( HeaderReport headerReport, AnswerReport answerReport) {
+	public Map<String, List<String>> generateReport( HeaderReport headerReport, AnswerReport answerReport, Filter filter) {
 		Map<String, List<String>> content = mergeContent(headerReport, answerReport);
 		List<String> questionIDList = content.get("Question ID");
 		List<List<String>> confidenceList = new ArrayList<List<String>>();
@@ -34,7 +35,7 @@ public class ConfidenceCounting extends CountReport {
 		if(questionIDList != null)
 		{
 			SessionDTO dto = new FileSessionDTO();
-			Map<String, Microtask> microtasks = dto.getMicrotasks();
+			Map<String, Microtask> microtasks = filter.apply((HashMap<String, Microtask>) dto.getMicrotasks());
 			int[] confidence = null;
 			for (String questionID : questionIDList) {
 				confidence = new int[6];

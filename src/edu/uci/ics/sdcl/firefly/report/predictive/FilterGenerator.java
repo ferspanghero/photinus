@@ -95,10 +95,12 @@ public class FilterGenerator {
 	private static final String CONFIDENCE_DIFFICULTY_HIGH_CONFIDENCE = "CONFIDENCE_DIFFICULTY_HIGH_CONFIDENCE";
 	private static final String CONFIDENCE_DIFFICULTY_LOW_DIFFICULTY = "CONFIDENCE_DIFFICULTY_LOW_DIFFICULTY";
 
-	private static final String EXPLANATION_1QT_0_53 = "EXPLANATION_1QT_0_57";
-	private static final String EXPLANATION_2QT_53_99= "EXPLANATION_2QT_53_99";
-	private static final String EXPLANATION_3QT_99_171 = "EXPLANATION_4QT_180_2600";
-	private static final String EXPLANATION_4_QT_171_2383 = "EXPLANATION_2_3_QT_57_180";
+	private static final String EXPLANATION_1QT_0_53 = "EXPLANATION_1QT_0_53";
+	private static final String EXPLANATION_2QT_53_99 = "EXPLANATION_2QT_53_99";
+	private static final String EXPLANATION_3QT_99_171 = "EXPLANATION_3QT_99_171";
+	private static final String EXPLANATION_4_QT_171_2383 = "EXPLANATION_4_QT_171_2383";
+	private static final String EXPLANATION_2_3_4_QT_57_2383 = "EXPLANATION_2_3_4_QT_57_2383";
+	
 	private static final String COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT = "COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT";
 
 
@@ -587,6 +589,19 @@ public class FilterGenerator {
 		rangeMap.put(range.getRangeName(),range);
 
 
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(EXPLANATION_2_3_4_QT_57_2383) ;  // REMOVED 1Quartile          
+
+		int[] explanationSizeList = {57};
+
+		range.setMaxExplanationSize(2383);
+
+		range.setExplanationSizeList(explanationSizeList);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
+
+		
 		return rangeMap;
 
 	}

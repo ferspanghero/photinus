@@ -11,18 +11,18 @@ import edu.uci.ics.sdcl.firefly.WorkerSession;
 
 public class SessionDuration extends AnswerReport {
 	private Map<String, Integer> sessionDuration = new HashMap<String, Integer>();
-	
+
 	@Override
 	public String getType() {
 		return "Session duration (in seconds)";
 	}
 
 	@Override
-	public Map<String, List<String>> generateReport( Map<String, List<String>> content) {
-		calculateSessionsDuration();
-		
+	public Map<String, List<String>> generateReport( Map<String, List<String>> content, Filter filter) {
+		calculateSessionsDuration(filter);
+
 		SessionDTO database = new FileSessionDTO();
-		Map<String, Microtask> microtasks = database.getMicrotasks();
+		Map<String, Microtask> microtasks = filter.apply((HashMap<String, Microtask>) database.getMicrotasks());
 		List<String> questionIDList = content.get("Question ID"); // this is the data that came form the HeaderReport
 
 		if(questionIDList != null) // auto defense, just to make sure I don't get a null pointer exception
@@ -49,30 +49,34 @@ public class SessionDuration extends AnswerReport {
 			System.out.println("Invalid question ID came from the HeaderReport");
 			System.exit(0);
 		}
-		
+
 		return this.answerContent;
 	}
-	
+
 	@Override
 	protected String reportData(Answer answer) {
 		Integer test = sessionDuration.get(answer.getTimeStamp());
 		return test.toString();
 	}
-	
-	private void calculateSessionsDuration()
+
+	private void calculateSessionsDuration(Filter filter)
 	{
 		FileSessionDTO dto = new FileSessionDTO();
 		Map<String, WorkerSession> sessions = dto.getSessions();
 		for (WorkerSession session : sessions.values()) {
 			int total = 0;
 			for (Microtask question : session.getMicrotaskList()) {
-				Answer answer = question.getAnswerList().firstElement();
-				String firstNumber = answer.getElapsedTime().replaceFirst(".*?(\\d+).*", "$1");
-				total += (Integer.valueOf( firstNumber ) / 1000 );
+				if(filter.validMicrotask(question)){
+					Answer answer = question.getAnswerList().firstElement();
+					String firstNumber = answer.getElapsedTime().replaceFirst(".*?(\\d+).*", "$1");
+					total += (Integer.valueOf( firstNumber ) / 1000 );
+				}
 			}
 			for (Microtask question : session.getMicrotaskList()) {
-				Answer answer = question.getAnswerList().firstElement();
-				sessionDuration.put((question.getID().toString() + ":" + answer.getWorkerId()), total );
+				if(filter.validMicrotask(question)){
+					Answer answer = question.getAnswerList().firstElement();
+					sessionDuration.put((question.getID().toString() + ":" + answer.getWorkerId()), total );
+				}
 			}
 		}
 	}

@@ -3,60 +3,75 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 public class ReportApplication {
 
-	private static DescriptiveReportBuilder builder;
+	private DescriptiveReportBuilder builder;
+	private Filter filter;
+	private DescriptiveReportWriter exporter;
 	
 	public static void main(String[] args) {
-		/*Filter filter = new Filter();
-		filter.setIDKPercentageCriteria(-1, 50);
-		SessionDTO dto = new FileSessionDTO();
-		*/
-		//answerOptionReport(new ExcelExporter());
-		//workerScoreReport(new ExcelExporter());
-		workerDemographicsReport();
-		//builder.generateDescriptiveReport().exportReport();
+
+		ReportApplication application = new ReportApplication(new Filter(),new ExcelExporter());
+		application.runAnswerOptionReport(); //Instantiates with an empty (no effect) filter
+		
+		//workers demographics is different
+		//workerDemographicsReport();
 	}
 	
-	private static void answerOptionReport(DescriptiveReportWriter exporter)
+	
+	public ReportApplication(Filter filter, DescriptiveReportWriter exporter)
 	{
-		builder = new DescriptiveReportBuilder(new AnswerOption(), null , new RegularCorrectness(), exporter);
+		this.filter = filter;
+		this.exporter = exporter;
 	}
 	
-	private static void confidenceLevelReport(DescriptiveReportWriter exporter)
+	public void runAnswerOptionReport()
 	{
-		builder = new DescriptiveReportBuilder(new AnswerConfidence(), new ConfidenceCounting(), new RegularCorrectness(), exporter);
+		builder = new DescriptiveReportBuilder(new AnswerOption(), null , new RegularCorrectness(), exporter, filter);
+		builder.generateDescriptiveReport().exportReport();
 	}
 	
-	private static void difficultyLevelReport(DescriptiveReportWriter exporter)
+	public void runConfidenceLevelReport()
 	{
-		builder = new DescriptiveReportBuilder(new AnswerDifficulty(), new ConfidenceCounting(), new RegularCorrectness(), exporter);
+		builder = new DescriptiveReportBuilder(new AnswerConfidence(), new ConfidenceCounting(), new RegularCorrectness(), exporter, filter);
+		builder.generateDescriptiveReport().exportReport();
 	}
 	
-	private static void answerDurationReport(DescriptiveReportWriter exporter)
+	public void runDifficultyLevelReport()
 	{
-		builder = new DescriptiveReportBuilder(new AnswerDuration(), new AverageCount(), new AverageCorrectness(), exporter);
+		builder = new DescriptiveReportBuilder(new AnswerDifficulty(), new ConfidenceCounting(), new RegularCorrectness(), exporter,filter);
+		builder.generateDescriptiveReport().exportReport();
 	}
 	
-	private static void sizeOfExplanationReport(DescriptiveReportWriter exporter)
+	public void runAnswerDurationReport()
 	{
-		builder = new DescriptiveReportBuilder(new AnswerExplanationSize(), new AverageCount(), new AverageCorrectness(), exporter);
+		builder = new DescriptiveReportBuilder(new AnswerDuration(), new AverageCount(), new AverageCorrectness(), exporter, filter);
+		builder.generateDescriptiveReport().exportReport();
 	}
 	
-	private static void durationOfAnswersAgroupedByOrder(DescriptiveReportWriter exporter)
+	public void runSizeOfExplanationReport()
 	{
-		builder = new DescriptiveReportBuilder(new OrderDuration(), new AverageCount(), new AverageCorrectness(), exporter);
+		builder = new DescriptiveReportBuilder(new AnswerExplanationSize(), new AverageCount(), new AverageCorrectness(), exporter, filter);
+		builder.generateDescriptiveReport().exportReport();
 	}
 	
-	private static void sessionDurationReport(DescriptiveReportWriter exporter)
+	public void runDurationOfAnswersAgroupedByOrder()
 	{
-		builder = new DescriptiveReportBuilder(new SessionDuration(), new AverageCount(), new AverageCorrectness(), exporter);
+		builder = new DescriptiveReportBuilder(new OrderDuration(), new AverageCount(), new AverageCorrectness(), exporter, filter);
+		builder.generateDescriptiveReport().exportReport();
 	}
 	
-	private static void workerScoreReport(DescriptiveReportWriter exporter)
+	public void runSessionDurationReport()
 	{
-		builder = new DescriptiveReportBuilder(new WorkerScoreReport(), new AverageWorkerProfileReport(), new AverageCorrectness(), exporter);
+		builder = new DescriptiveReportBuilder(new SessionDuration(), new AverageCount(), new AverageCorrectness(), exporter, filter);
+		builder.generateDescriptiveReport().exportReport();
 	}
 	
-	private static void workerDemographicsReport()
+	public void runWorkerScoreReport()
+	{
+		builder = new DescriptiveReportBuilder(new WorkerScoreReport(), new AverageWorkerProfileReport(), new AverageCorrectness(), exporter, filter);
+		builder.generateDescriptiveReport().exportReport();
+	}
+	
+	public void workerDemographicsReport()
 	{
 		new WorkerDemographicsReport();
 	}

@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,13 +16,13 @@ public class RegularCorrectness extends CorrectnessReport {
 	}
 
 	@Override
-	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
+	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport, Filter filter) {
 		Map<String,List<String>> headerContent = headerReport.getContent();
 		List<String> questions = headerContent.get("Question ID");
 		List<String> bugCoveringList = headerContent.get("Bug Covering");
 		
 		SessionDTO dto = new FileSessionDTO();
-		Map<String, Microtask> microtasks = dto.getMicrotasks();
+		Map<String, Microtask> microtasks = filter.apply((HashMap<String, Microtask>) dto.getMicrotasks());
 		
 		List<String> truePositive = new ArrayList<String>();
 		List<String> falsePositive = new ArrayList<String>();

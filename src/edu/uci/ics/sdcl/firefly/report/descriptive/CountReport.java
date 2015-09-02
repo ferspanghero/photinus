@@ -33,9 +33,10 @@ public abstract class CountReport {
 	/**
 	 * Filters the content and returns the HashMap containing
 	 * the Headers and the contents of the table.
+	 * @param filter 
 	 * @return: The map containing the columns and values of the table
 	 */
-	public abstract Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport);
+	public abstract Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport, Filter filter);
 	
 	public abstract String getType();
 	

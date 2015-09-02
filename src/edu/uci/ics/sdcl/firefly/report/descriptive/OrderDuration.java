@@ -34,12 +34,13 @@ public class OrderDuration extends AnswerReport {
 	}
 	
 	@Override
-	public Map<String, List<String>> generateReport( Map<String, List<String>> content) {
+	public Map<String, List<String>> generateReport( Map<String, List<String>> content,Filter filter) {
+		
 		List<String> questionIDList = content.get("Question ID"); // this is the data that came form the HeaderReport
 		
 		if(questionIDList != null) // auto defense, just to make sure I don't get a null pointer exception
 		{
-			obtainMicrotasksDurationByOrder();
+			obtainMicrotasksDurationByOrder(filter);
 			
 			// NOW CALCULATES THE AVERAGE AND PUT ON REPORT
 			for (int i = 0; i < QUESTIONS_PER_SESSION; i++) {
@@ -61,33 +62,37 @@ public class OrderDuration extends AnswerReport {
 		return this.answerContent;
 	}
 	
-	private void obtainMicrotasksDurationByOrder()
+	private void obtainMicrotasksDurationByOrder(Filter filter)
 	{
 		SessionDTO dto = new FileSessionDTO();
 		Map<String, WorkerSession> sessions = dto.getSessions();
 		for (WorkerSession session : sessions.values()) {
 			Vector<Microtask> questions = session.getMicrotaskList();
 			for (int i = 0; i < questions.size(); i++) {
-				Integer[] order = answerOrder.get(questions.get(i).getID());
+				Microtask microtask = questions.get(i);
+				if(!filter.validMicrotask(microtask))
+					break; //don't continue in the loop, because microtask was filtered.
+				
+				Integer[] order = answerOrder.get(microtask.getID());
 				if(order == null)
 				{
 					order = new Integer[QUESTIONS_PER_SESSION];
 					Arrays.fill(order, 0);
-					String number = reportData(questions.get(i).getAnswerList().elementAt(0));
+					String number = reportData(microtask.getAnswerList().elementAt(0));
 					String firstNumber = number.replaceFirst(".*?(\\d+).*", "$1");
 					order[i] += Integer.valueOf(firstNumber);
-					answerOrder.put(questions.get(i).getID().toString(), order);
+					answerOrder.put(microtask.getID().toString(), order);
 					Integer[] size = new Integer[QUESTIONS_PER_SESSION];
 					Arrays.fill(size, 0);
 					size[i]++;
-					length.put(questions.get(i).getID().toString(), size);
+					length.put(microtask.getID().toString(), size);
 				}
 				else
 				{
-					String number = reportData(questions.get(i).getAnswerList().elementAt(0));
+					String number = reportData(microtask.getAnswerList().elementAt(0));
 					String firstNumber = number.replaceFirst(".*?(\\d+).*", "$1");
 					order[i] += Integer.parseInt(firstNumber);
-					Integer[] size = length.get(questions.get(i).getID());
+					Integer[] size = length.get(microtask.getID());
 					size[i]++;
 				}
 			}

@@ -88,6 +88,8 @@ public class Filter {
 		Arrays.fill(sessionDuration, -1);
 		Arrays.fill(workerIDKPercentage, -1);
 		Arrays.fill(yearsOfExperience,-1.0);
+		Arrays.fill(FirstAnswerDuration, -1.0);
+		Arrays.fill(SecondThirdAnswerDuration, -1.0);
 	}
 
 	public void setExplanationSizeCriteria(int minimum, int maximum)
@@ -391,15 +393,14 @@ public class Filter {
 							 
 								continue;
 							}
-						 
 						}
-						
-
 					}
 				}
 
 			}//for
 		 
+			System.out.println("Filter, removeIndex size: "+removeIndex.size());
+			
 			Collections.reverse(removeIndex);
 			for (Integer index : removeIndex) {
 				Microtask question = content.get(questionID);
@@ -411,6 +412,18 @@ public class Filter {
 		return content;
 	}
 
+	
+	public boolean validMicrotask(Microtask microtask){
+				
+		HashMap<String, Microtask> map = new HashMap<String,Microtask>();
+		map.put(microtask.getID().toString(), microtask);
+		HashMap<String,Microtask> filteredMap = (HashMap<String, Microtask>) this.apply(map);
+		if(filteredMap.size()==0)
+			return false;
+		else 
+			return true;
+	}
+	
 
 	private void calculateSessionsDuration()
 	{

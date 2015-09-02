@@ -132,6 +132,10 @@ public class OptimumFinder {
 	}
 
 	
+	public void generateReport(Filter filter){
+		
+	}
+	
 	public static void main(String[] args){
 
 		//Obtain bug covering question list

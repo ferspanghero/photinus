@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,10 +22,10 @@ public class AverageWorkerProfileReport extends CountReport{
 	}
 
 	@Override
-	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
+	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport, Filter filter) {
 		Map<String, List<String>> content = mergeContent(headerReport, answerReport);
 		SessionDTO database = new FileSessionDTO();
-		Map<String, Microtask> microtasks = database.getMicrotasks();
+		Map<String, Microtask> microtasks = filter.apply((HashMap<String, Microtask>) database.getMicrotasks());
 		List<String> questionIDList = content.get("Question ID"); // this is the data that came form the HeaderReport
 		List<String> averageWorkerScores = new ArrayList<String>();
 		List<String> averageYears = new ArrayList<String>();

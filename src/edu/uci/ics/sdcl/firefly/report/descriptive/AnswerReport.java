@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +36,13 @@ public abstract class AnswerReport {
 	/**
 	 * Filters the content and returns the HashMap containing
 	 * the Headers and the contents of the table.
+	 * @param filter 
 	 * @return: The map containing the columns and values of the table
 	 */
-	public Map<String, List<String>> generateReport( Map<String, List<String>> content)
+	public Map<String, List<String>> generateReport( Map<String, List<String>> content, Filter filter)
 	{
 		SessionDTO database = new FileSessionDTO();
-		Map<String, Microtask> microtasks = database.getMicrotasks();
+		Map<String, Microtask> microtasks = filter.apply((HashMap<String, Microtask>) database.getMicrotasks());
 		List<String> questionIDList = content.get("Question ID"); // this is the data that came form the HeaderReport
 
 		if(questionIDList != null) // auto defense, just to make sure I don't get a null pointer exception

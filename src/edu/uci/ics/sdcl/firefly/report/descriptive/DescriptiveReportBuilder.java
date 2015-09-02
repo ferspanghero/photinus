@@ -1,7 +1,10 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import edu.uci.ics.sdcl.firefly.Microtask;
 
 
 /**
@@ -11,7 +14,8 @@ import java.util.Map;
  * are separated and permitted to vary on concrete implementations
  * of this class.
  *
- * @author igMoreira
+ * @author igMoreira 
+ * @author adrianoc
  *
  */
 public class DescriptiveReportBuilder {
@@ -21,28 +25,16 @@ public class DescriptiveReportBuilder {
 	private CountReport counters;
 	private CorrectnessReport correctness;
 	private DescriptiveReportWriter exporter;
+	private Filter filter;
 	String reportName = "";
 	
-	public DescriptiveReportBuilder(AnswerReport answer, CountReport counter, CorrectnessReport correctness, DescriptiveReportWriter exporter) {
+	public DescriptiveReportBuilder(AnswerReport answer, CountReport counter, CorrectnessReport correctness, DescriptiveReportWriter exporter, Filter filter) {
 		this.answers = answer;
 		this.counters = counter;
 		this.correctness = correctness;
 		this.exporter = exporter;
+		this.filter = filter;
 	}
-	
-	/*public void setFilter(Filter filter)
-	{
-		FileSessionDTO dto = new FileSessionDTO();
-		dto.setFilter(filter);
-		StringBuilder filterName = new StringBuilder();
-		filterName.append("answerDuration[ "+ filter.getAnswerDuration()[0] + " " + filter.getAnswerDuration()[1]+ " ] ");
-		filterName.append("explanationSize[ "+ filter.getExplanationSize()[0] + " " + filter.getExplanationSize()[1]+ " ] ");
-		filterName.append("confidence[ "+ filter.getConfidence()[0] + " " + filter.getConfidence()[1]+ " ] ");
-		filterName.append("difficulty[ "+ filter.getDifficulty()[0] + " " + filter.getDifficulty()[1]+ " ] ");
-		filterName.append("workerScore[ "+ filter.getWorkerScore()[0] + " " + filter.getWorkerScore()[1]+ " ] ");
-		filterName.append("sessionDuration[ "+ filter.getSessionDuration()[0] + " " + filter.getSessionDuration()[1]+ " ] ");
-		this.reportName = filterName.toString();
-	}*/
 	
 	public void setAnswerReport(AnswerReport answers) {
 		this.answers = answers;
@@ -64,18 +56,19 @@ public class DescriptiveReportBuilder {
 	private Map<String, List<String>> buildHeaderReport()
 	{
 		SessionDTO database = new FileSessionDTO();
-		this.header = new HeaderReport(database.getMicrotasks());
+		this.header = new HeaderReport(this.filter.apply((HashMap<String, Microtask>) database.getMicrotasks()));
 		return header.generateReport();
 	}
 	
 	/**
 	 * Responsible for building the AnswerReport,
 	 * the green parts of the tables.
+	 * @param filter 
 	 * @return: The AnswerReport containing the filtered data for the report type X
 	 */
-	private Map<String, List<String>> buildAnswerReport(Map<String, List<String>> content)
+	private Map<String, List<String>> buildAnswerReport(Map<String, List<String>> content, Filter filter)
 	{
-		return answers.generateReport(content);
+		return answers.generateReport(content,filter);
 	}
 	
 	/**
@@ -83,8 +76,8 @@ public class DescriptiveReportBuilder {
 	 * the yellow parts of the tables.
 	 * @return: The CountReport containing the filtered data for the report type X
 	 */
-	private Map<String, List<String>> buildCountReport(HeaderReport header, AnswerReport answers) {
-		return counters.generateReport(header,answers);
+	private Map<String, List<String>> buildCountReport(HeaderReport header, AnswerReport answers, Filter filter) {
+		return counters.generateReport(header,answers, filter);
 	}
 	
 	/**
@@ -92,9 +85,9 @@ public class DescriptiveReportBuilder {
 	 * the orange parts of the tables.
 	 * @return: The CorrectnessReport containing the filtered data for the report type X
 	 */
-	private Map<String, List<String>> buildCorrectnessReport(HeaderReport headerReport, AnswerReport answerReport)
+	private Map<String, List<String>> buildCorrectnessReport(HeaderReport headerReport, AnswerReport answerReport, Filter filter)
 	{
-		return this.correctness.generateReport(headerReport, answerReport);
+		return this.correctness.generateReport(headerReport, answerReport, filter);
 	}
 	
 	/**
@@ -105,12 +98,12 @@ public class DescriptiveReportBuilder {
 	public DescriptiveReport generateDescriptiveReport()
 	{
 		Map<String, List<String>> headerContent = buildHeaderReport();
-		buildAnswerReport(headerContent);
+		buildAnswerReport(headerContent,filter);
 		if(this.counters != null)
 		{
-			buildCountReport(header,answers);
+			buildCountReport(header,answers, filter);
 		}
-		buildCorrectnessReport(header,answers);
+		buildCorrectnessReport(header,answers,filter);
 		exporter.setReportName(reportName);
 		DescriptiveReport report = new DescriptiveReport(this.header, this.answers, this.counters, this.correctness, exporter);
 		return report;

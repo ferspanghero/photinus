@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,19 +22,18 @@ public class AverageCorrectness extends CorrectnessReport {
 	}
 
 	@Override
-	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
+	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport, Filter filter) {
 
 		Map<String,List<String>> headerContent = headerReport.getContent();
 		Map<String, List<String>>  answerContent = answerReport.getContent();
 		SessionDTO database = new FileSessionDTO();
-		Map<String, Microtask> microtasks = database.getMicrotasks();
+		Map<String, Microtask> microtasks = filter.apply((HashMap<String, Microtask>) database.getMicrotasks());
 		List<String> questionIDList = headerContent.get("Question ID"); // this is the data that came form the HeaderReport
 		List<String> averageTP = new ArrayList<String>();
 		List<String> averageTN = new ArrayList<String>();
 		List<String> averageFP = new ArrayList<String>();
 		List<String> averageFN = new ArrayList<String>();
 		List<String> averageIDK = new ArrayList<String>();
-
 
 		for (int i =0; i< questionIDList.size(); i++) {
 			double truePositiveAverage = 0;
@@ -108,10 +108,12 @@ public class AverageCorrectness extends CorrectnessReport {
 		return correctnessContent;
 	}
 
-	public boolean isBugCovering(int microtaskID){
-		Integer[] bugCoveringQuestions = {72,73,78,79,84,92,95,97,102,104,119,123,126};
-		for(int i=0; i<bugCoveringQuestions.length; i++){
-			if(microtaskID == bugCoveringQuestions[i]){
+	public boolean isBugCovering(Integer microtaskID){
+		PropertyManager manager = PropertyManager.initializeSingleton();
+		String[] bugCoveringQuestionList = manager.bugCoveringList.split(";");
+		
+		for(int i=0; i<bugCoveringQuestionList.length; i++){
+			if(microtaskID.toString().compareTo(bugCoveringQuestionList[i])==0){
 				return true;
 			}
 		}

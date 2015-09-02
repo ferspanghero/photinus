@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ public class AverageCount extends CountReport {
 	
 	private final int NUMBER_OF_QUESTIONS;
 	private final int QUESTIONS_PER_SESSION;
+	private Filter filter;
 	
 	public AverageCount() {
 		PropertyManager property = PropertyManager.initializeSingleton();
@@ -24,10 +26,11 @@ public class AverageCount extends CountReport {
 	}
 	
 	@Override
-	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport) {
+	public Map<String, List<String>> generateReport(HeaderReport headerReport, AnswerReport answerReport, Filter filter) {
 		answerReportAverage(headerReport,answerReport);
 		answerOptionAverage(headerReport,answerReport);
 		confidenceAverage(headerReport, answerReport);
+		this.filter = filter;
 		return this.countContent;
 	}
 	
@@ -70,7 +73,7 @@ public class AverageCount extends CountReport {
 		Integer[] confidenceNumber = new Integer[6];
 		List<String> questionIDList = headerReport.getContent().get("Question ID");
 		SessionDTO dto = new FileSessionDTO();
-		Map<String, Microtask> microtaks = dto.getMicrotasks();
+		Map<String, Microtask> microtaks = filter.apply((HashMap<String, Microtask>) dto.getMicrotasks());
 		Map<String, List<String>> content = answerReport.getContent();
 		for (int i = 0; i < questionIDList.size(); i++) {
 			String questionID = questionIDList.get(i);
@@ -104,7 +107,7 @@ public class AverageCount extends CountReport {
 	{	
 		List<String> questionIDList = headerReport.getContent().get("Question ID");
 		SessionDTO dto = new FileSessionDTO();
-		Map<String, Microtask> microtaks = dto.getMicrotasks();
+		Map<String, Microtask> microtaks = filter.apply((HashMap<String, Microtask>) dto.getMicrotasks());
 		Map<String, List<String>> content = answerReport.getContent();
 		Map<String, Double> optionsAverage = null;
 		Map<String, Integer> optionsSize = null;

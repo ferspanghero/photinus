@@ -1,6 +1,5 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
@@ -28,7 +27,7 @@ public class FilterCombination {
 	public static final String SECOND_THIRD_ANSWER_DURATION = "SECOND_THIRD_ANSWER_DURATION";
 	public static final String CONFIDENCE_DIFFICULTY_PAIRS = "CONFIDENCE_DIFFICULTY_PAIRS";
 
-	public HashMap<String,Range> combinationMap;
+	public HashMap<String,Range> combinationMap = new HashMap<String,Range>();
 
 
 	//-----------------------------------------------------------------------------------------------------
@@ -60,9 +59,6 @@ public class FilterCombination {
 		return result;
 	}
 
-
-
-
 	public String toString(String[] headerList){
 		String result="";
 		for(String name : headerList){
@@ -76,7 +72,6 @@ public class FilterCombination {
 		return result;
 	}
 
-
 	public void addFilterParam(String filterName, int max, int min){
 		if(combinationMap==null)
 			combinationMap = new HashMap<String, Range>();
@@ -87,10 +82,11 @@ public class FilterCombination {
 		return this.combinationMap.get(filterName);
 	}
 
-
+	/** Instantiates a filter with the combined configurations */
 	public Filter getFilter(){
 
 		Filter filter = new Filter();
+		
 
 		for(String filterName: this.combinationMap.keySet()){
 
@@ -156,7 +152,6 @@ public class FilterCombination {
 		}
 		return filter;	
 	}
-
 	
 	public void addFilterParam(String workerScoreExclusion,
 			int[] workerScoreExclusionList) {
@@ -170,9 +165,6 @@ public class FilterCombination {
 			combinationMap = new HashMap<String, Range>();
 		combinationMap.put(workerProfession, new Range(workerProfessionList));
 	}
-
-
-
 
 	public void addFilterParam(String workerYearsOfExeperienceProfession,
 			double maxYearsOfExperience, double minYearsOfExperience) {
