@@ -8,8 +8,8 @@ public class FilterGenerator {
 	/** Filter answers by answer duration */
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
 
-		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupConfidenceDifficulty();
-		CombinedFilterRange range = map.get(FilterGenerator.CONFIDENCE_DIFFICULTY_UP_3_PERCENT);		
+		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupNoFilters();
+		CombinedFilterRange range = map.get(FilterGenerator.NO_FILTERS);		
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 

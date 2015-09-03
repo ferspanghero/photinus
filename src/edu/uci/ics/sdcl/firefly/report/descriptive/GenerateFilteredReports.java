@@ -28,7 +28,7 @@ public class GenerateFilteredReports {
 
 	public static void main(String[] args){
 		GenerateFilteredReports report = new GenerateFilteredReports();
-		report.generate_ConfidenceDifficulty_UP_3_PERCENT();
+		report.generate_AllWorkers();
 	}
 
 	public void generate_AllNonStudents(){

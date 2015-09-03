@@ -4,10 +4,13 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
+import edu.uci.ics.sdcl.firefly.Worker;
+import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.report.predictive.FilterCombination;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
@@ -165,10 +168,51 @@ public class CountingAnalysis {
 		}
 	}
 	
+	/** 
+	 * Returns the worker who divides the workers in the middle. Only count 
+	 * workers who have taken at least one microtask.
+	 * 
+	 * @return workerID
+	 */
+	public String getFirstPercentWorker(int position){
+		
+		HashMap<String, Worker> countWorkerMap = new HashMap<String, Worker>();
+		ArrayList<String> workerList = new ArrayList<String>();
+		
+		FileSessionDTO sessionDTO = new FileSessionDTO();
+		HashMap<String, WorkerSession> workerSessionMap = (HashMap<String, WorkerSession>) sessionDTO.getSessions();
+		
+		FileConsentDTO consentDTO =  new FileConsentDTO();
+		HashMap<String, Worker> workerMap =  consentDTO.getWorkers();
+		
+		for(WorkerSession session: workerSessionMap.values()){
+			if(session.getMicrotaskListSize()>0){
+				String workerID = session.getWorkerId();
+				Worker worker = workerMap.get(workerID);
+				if(!countWorkerMap.containsKey(workerID)){
+					countWorkerMap.put(workerID,worker);
+					workerList.add(workerID);
+				}
+			}
+		}
+		
+		int size  = countWorkerMap.size();
+		
+		System.out.println("countWorkerMap size: "+size+", position: "+position);
+
+
+		return workerList.get(size-position);
+		
+	}
+	
 	public static void main(String[] args){
 		CountingAnalysis counter = new CountingAnalysis();
-		counter.count();
-		counter.printResults();
+		//counter.count();
+		//counter.printResults();
+		
+		System.out.println("last 25% worker: "+ counter.getFirstPercentWorker(125));
+		//System.out.println("50% worker: "+ counter.getFirstPercentWorker(2));
+		
 	}
 	
 }
