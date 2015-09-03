@@ -21,6 +21,9 @@ public class Outcome {
 	/** Maximum different workers per question for this HIT */
 	Integer maxWorkerPerQuestion;
 	
+	/** All the YES, NO, IDK for all different questions in the same HIT */
+	Integer totalAnswersObtained;
+	
 	/** Minimal number of YES's (has different definitions for MajorityVoting and Positive Voting */
 	Integer threshold; 
 	
@@ -39,7 +42,7 @@ public class Outcome {
 	Integer differentWorkersAmongHITs;
 		
 	public Outcome(FilterCombination filter, String fileName, String predictorType, Boolean faultLocated,
-			Double signalStrength, Integer maxWorkerPerQuestion, Integer threshold,
+			Double signalStrength, Integer maxWorkerPerQuestion, Integer totalAnswers, Integer threshold,
 			Integer truePositives, Integer trueNegatives,
 			Integer falsePositives, Integer falseNegatives,Integer differentWorkersPerHIT, Integer differentWorkersAmongHITs) {
 		super();
@@ -49,6 +52,7 @@ public class Outcome {
 		this.faultLocated = faultLocated;
 		this.signalStrength = signalStrength;
 		this.maxWorkerPerQuestion = maxWorkerPerQuestion;
+		this.totalAnswersObtained = totalAnswers;
 		this.threshold = threshold; 
 		this.truePositives = truePositives;
 		this.trueNegatives = trueNegatives;
@@ -61,7 +65,7 @@ public class Outcome {
 
 	public static String getHeader(){
 		
-		return "HIT:Predictor:Fault located?:Signal strength:# Workers per question:#YES needed :"+
+		return "HIT:Predictor:Fault located?:Signal strength:#Maximum workers per question:#Total answers obtained: #YES needed :"+
 				"True positives:True negatives:False positives:False negatives:Different workers in HIT:"+
 				"Different Workers among all HITs";	
 	}
@@ -69,9 +73,9 @@ public class Outcome {
 	
 	public String toString(){
 		
-			return  fileName +":"+ predictorType +":"+ faultLocated +":"+ signalStrength +":"+ maxWorkerPerQuestion +":"+ threshold +":"+
-					truePositives +":"+ trueNegatives +":"+ falsePositives +":"+ falseNegatives +":"+ differentWorkersPerHIT +":"+
-					differentWorkersAmongHITs;	
+			return  fileName +":"+ predictorType +":"+ faultLocated +":"+ signalStrength +":"+ maxWorkerPerQuestion +":"+ totalAnswersObtained+
+					":"+threshold +":"+	truePositives +":"+ trueNegatives +":"+ falsePositives +":"+ falseNegatives +":"+ differentWorkersPerHIT +
+					":"+differentWorkersAmongHITs;	
 	}
 	
 }

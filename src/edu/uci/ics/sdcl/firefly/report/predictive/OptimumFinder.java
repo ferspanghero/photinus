@@ -57,6 +57,7 @@ public class OptimumFinder {
 							predictor.computeSignal(answerData),
 							predictor.computeSignalStrength(answerData),
 							predictor.computeNumberOfWorkers(answerData),
+							answerData.getTotalAnswers(),
 							predictor.getThreshold(),
 							predictor.getTruePositives(),
 							predictor.getTrueNegatives(),
@@ -106,13 +107,17 @@ public class OptimumFinder {
 	private static HashMap<String, ArrayList<String>>  extractAnswersForFileName(
 			HashMap<String, Microtask> microtaskMap,String fileName){
 
+		int answerCount = 0;
 		HashMap<String, ArrayList<String>> resultMap = new HashMap<String, ArrayList<String>>();
 
 		for(Microtask task:microtaskMap.values() ){
 			//System.out.println("fileName: "+fileName+":"+task.getFileName());
-			if(task.getFileName().compareTo(fileName)==0)
+			if(task.getFileName().compareTo(fileName)==0){
 				resultMap.put(task.getID().toString(),task.getAnswerOptions());
+				answerCount = answerCount+task.getAnswerOptions().size();
+			}
 		}
+		System.out.println(fileName+" has "+answerCount+" answers");
 		return resultMap;
 	}
 
@@ -129,11 +134,6 @@ public class OptimumFinder {
 			}
 		}
 		return workerMap.size();
-	}
-
-	
-	public void generateReport(Filter filter){
-		
 	}
 	
 	public static void main(String[] args){

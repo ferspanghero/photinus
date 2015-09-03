@@ -51,6 +51,15 @@ public class AnswerData {
 	public HashMap<String, String> getBugCoveringMap() {
 		return bugCoveringMap;
 	}
+
+	public Integer getTotalAnswers() {
+		int answerCount = 0;
+		for(String questionID: this.answerMap.keySet()){
+			ArrayList<String> answerList = answerMap.get(questionID);
+			answerCount = answerCount + answerList.size();
+		}
+		return answerCount;
+	}
 	
 	
 	
