@@ -8,22 +8,22 @@ public class CombinedFilterRange {
 	private String rangeName;
 
 	//Max values
-	private double maxSessionDuration = 60*60*3; //default is 3h 
-	private double maxFirstAnswerDuration = 60*60*3;; //First answer
-	private double maxSecondThirdAnswerDuration = 60*60*3; //Second and Third answerss 
+	private double maxSessionDuration = -1; //default is 3h 
+	private double maxFirstAnswerDuration = -1; //First answer
+	private double maxSecondThirdAnswerDuration = -1; //Second and Third answerss 
 
 	private int maxConfidence= -1; //5
 	private int maxExplanationSize =-1;//1000
 	private int maxWorkerScore= -1; //5, 4, 3
 	private double maxYearsOfExperience=-1;
-	private int maxWorkerIDKPercentage =100; //
+	private int maxWorkerIDKPercentage =-1; //
 
 	//Min values
-	private int minDifficulty=0;//0;
-	private int minWorkerIDKPercentage =0;//0;
-	private double minWorkerYearsOfExperience=0; //0
-	private double minFirstAnswerDuration = 0;
-	private double minSecondThirdAnswerDuration = 0;
+	private int minDifficulty=-1;//0;
+	private int minWorkerIDKPercentage =-1;//0;
+	private double minWorkerYearsOfExperience=-1; //0
+	private double minFirstAnswerDuration = -1;
+	private double minSecondThirdAnswerDuration = -1;
 	
 
 	
@@ -219,7 +219,7 @@ public class CombinedFilterRange {
 		if(rangeName==null) rangeName = "ALL";
 
 		//Range sets. There are two types. One is for setting the valid range and other to 
-		//explicity excluding items that lie within that range.
+		//explicitly excluding items that lie within that range.
 		if(sessionDurationList==null) sessionDurationList= new int[] {-1};//{120, 180, 240, 360, 420, 480, 600};
 		if(answerDurationList==null) answerDurationList = new int[] {-1};//0, 15, 30, 45, 60, 120, 240};
 		if(confidenceList==null) confidenceList = new int[] {-1};//{1,2,3,4,5};
