@@ -2,8 +2,10 @@ package edu.uci.ics.sdcl.firefly.report.predictive;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class FilterGenerator {
+
 
 	/** Filter answers by answer duration */
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
@@ -30,6 +32,8 @@ public class FilterGenerator {
 						combination.addFilterParam(FilterCombination.WORKER_IDK, range.getMaxWorkerIDKPercentage(),range.getMinWorkerIDKPercentage());
 						combination.addFilterParam(FilterCombination.WORKER_PROFESSION, range.getProfessionExclusionList());
 						combination.addFilterParam(FilterCombination.WORKER_YEARS_OF_EXEPERIENCE, range.getMaxYearsOfExperience(), range.getMinWorkerYearsOfExperience());
+						combination.addFilterParam(FilterCombination.EXCLUDED_QUESTIONS, range.getQuestionsToExcludeMap());
+
 						filterList.add(combination);
 					}
 				}
@@ -55,12 +59,14 @@ public class FilterGenerator {
 
 	private static final String WORKER_SCORE_NON_STUDENT = "Scores and Non-Students";
 	private static final String WORKER_SCORE_STUDENT = "Scores and Students";
-	private static final String WORKER_SCORE80_NON_STUDENT = "Score 80% and Non-Students";
+	private static final String WORKER_SCORE_80_NON_STUDENT = "Score 80% and Non-Students";
 	private static final String WORKER_SCORE80_STUDENT = "Score 80% and Students";
 	private static final String WORKER_SCORE60_NON_STUDENT = "Score 60% and Non-Students";
 	private static final String WORKER_SCORE60_STUDENT = "Score 60% and Students";
 	private static final String WORKER_SCORE60_80_NON_STUDENT = "Score 60% to 80% and Non-Students";
 	private static final String WORKER_SCORE60_80_STUDENT = "Score 60% to 80% and Students";
+	private static final String WORKER_SCORE_100_NON_STUDENT = "WORKER_SCORE_100_NON_STUDENT";
+	private static final String WORKER_SCORE_100_80_NON_STUDENT = "WORKER_SCORE_100_80_NON_STUDENT";
 
 	private static final String WORKER_PERCENT_IDK_1_34 = "WORKER_PERCENT_IDK_1_34";
 	private static final String WORKER_PERCENT_IDK_35_67 = "WORKER_PERCENT_IDK_35_67";
@@ -102,6 +108,7 @@ public class FilterGenerator {
 	private static final String EXPLANATION_2_3_4_QT_57_2383 = "EXPLANATION_2_3_4_QT_57_2383";
 	
 	private static final String COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT = "COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT";
+	private static final String CONDITIONAL_CLAUSE_ABOVE_3LINES = "CONDITIONAL_CLAUSE_ABOVE_3LINES";
 
 
 	private static HashMap<String,CombinedFilterRange> setupNoFilters(){
@@ -309,7 +316,7 @@ public class FilterGenerator {
 
 		//----------------------------------
 		range = new CombinedFilterRange();
-		range.setRangeName(WORKER_SCORE80_NON_STUDENT);
+		range.setRangeName(WORKER_SCORE_80_NON_STUDENT);
 
 		range.setMaxWorkerScore(4);
 		range.setWorkerScoreExclusionList(new int[] {3,5});
@@ -318,7 +325,34 @@ public class FilterGenerator {
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
+		
+		
+		//----------------------------------
+				range = new CombinedFilterRange();
+				range.setRangeName(WORKER_SCORE_100_NON_STUDENT);
 
+				range.setMaxWorkerScore(5);
+				range.setWorkerScoreExclusionList(new int[] {3,4});
+				range.setWorkerScoreList(new int[]{5});
+
+				range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
+				range.setUndefinedWithDefault();
+				rangeMap.put(range.getRangeName(),range);
+
+
+				//----------------------------------
+				range = new CombinedFilterRange();
+				range.setRangeName(WORKER_SCORE_100_80_NON_STUDENT);
+
+				range.setMaxWorkerScore(5);
+				range.setWorkerScoreExclusionList(new int[] {3});
+				range.setWorkerScoreList(new int[]{4});
+
+				range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
+				range.setUndefinedWithDefault();
+				rangeMap.put(range.getRangeName(),range);
+
+				
 		//----------------------------------
 		range = new CombinedFilterRange();
 		range.setRangeName(WORKER_SCORE60_NON_STUDENT);
@@ -600,10 +634,8 @@ public class FilterGenerator {
 		range.setExplanationSizeList(explanationSizeList);
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
-
 		
 		return rangeMap;
-
 	}
 
 	private static HashMap<String,CombinedFilterRange> setupCombinedDurationConfidenceDifficultyExplanationSize(){
@@ -645,6 +677,30 @@ public class FilterGenerator {
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 
+		return rangeMap;
+	}
+	
+	
+	private static HashMap<String,CombinedFilterRange> setupQuestionsToExclude(){
+		
+		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
+		
+		//----------------------------------
+		CombinedFilterRange range = new CombinedFilterRange();
+		range.setRangeName(CONDITIONAL_CLAUSE_ABOVE_3LINES) ;  // REMOVED QUESTIONS COVERING MORE THAN THREE LOCS       
+
+		int[] excludeQuestions = {7,26,40,44,48,55,62,66,82,84,88,92,98,115,124};//Conditional clause questions with more than 3 Lines of code
+
+		TreeMap<String, String> excludedQuestionMap;
+
+		excludedQuestionMap = new TreeMap<String,String>();
+		for(int excluded : excludeQuestions){
+			String questionID = new Integer(excluded).toString();
+			excludedQuestionMap.put(questionID, questionID);
+		}	
+		range.setQuestionsToExcludeMap(excludedQuestionMap);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
 		return rangeMap;
 	}
 

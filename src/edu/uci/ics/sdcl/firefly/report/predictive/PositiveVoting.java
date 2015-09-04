@@ -266,6 +266,9 @@ public class PositiveVoting extends Predictor{
 		
 		Integer threshold=0;
 	
+		if(this.questionYESCountMap.isEmpty())
+			return -1;
+		
 		TreeMap<String, Integer> sortedYESMap = this.sortByValue(this.questionYESCountMap);
 		this.maxYES = this.questionYESCountMap.get(sortedYESMap.firstKey());
 				

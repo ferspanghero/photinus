@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
 
@@ -26,6 +27,7 @@ public class FilterCombination {
 	public static final String FIRST_ANSWER_DURATION = "FIRST_ANSWER_DURATION";
 	public static final String SECOND_THIRD_ANSWER_DURATION = "SECOND_THIRD_ANSWER_DURATION";
 	public static final String CONFIDENCE_DIFFICULTY_PAIRS = "CONFIDENCE_DIFFICULTY_PAIRS";
+	public static final String EXCLUDED_QUESTIONS = "EXCLUDED_QUESTIONS";
 
 	public HashMap<String,Range> combinationMap = new HashMap<String,Range>();
 
@@ -45,7 +47,8 @@ public class FilterCombination {
 		WORKER_IDK,
 		WORKER_PROFESSION,
 		WORKER_YEARS_OF_EXEPERIENCE,
-		CONFIDENCE_DIFFICULTY_PAIRS
+		CONFIDENCE_DIFFICULTY_PAIRS,
+		EXCLUDED_QUESTIONS
 	};
 
 	public static String getFilterHeaders(){
@@ -100,7 +103,7 @@ public class FilterCombination {
 
 			if(filterName.compareTo(FilterCombination.FIRST_ANSWER_DURATION)==0){
 				Range range = this.combinationMap.get(filterName);
-				filter.FirstAnswerDurationCriteria(range.minD.doubleValue(), range.maxD.doubleValue());
+				filter.setFirstAnswerDurationCriteria(range.minD.doubleValue(), range.maxD.doubleValue());
 			}
 			else
 				if(filterName.compareTo(FilterCombination.SECOND_THIRD_ANSWER_DURATION)==0){
@@ -149,6 +152,11 @@ public class FilterCombination {
 														Range range = this.combinationMap.get(filterName);
 														filter.setConfidenceDifficultyPairList(range.confidenceDifficultyPairMap);
 													}
+													else
+														if(filterName.compareTo(FilterCombination.EXCLUDED_QUESTIONS)==0){
+															Range range = this.combinationMap.get(filterName);
+															filter.setQuestionToExcludeMap(range.questionsToExcludeMap);
+														}
 		}
 		return filter;	
 	}
@@ -181,5 +189,13 @@ public class FilterCombination {
 		
 	}
 
+	public void addFilterParam(String questionExclusion,
+			TreeMap<String,String> questionToExcludeMap) {
+		if(combinationMap==null)
+			combinationMap = new HashMap<String, Range>();
+		combinationMap.put(questionExclusion, new Range(questionToExcludeMap));	
+		
+	}
+	
 
 }

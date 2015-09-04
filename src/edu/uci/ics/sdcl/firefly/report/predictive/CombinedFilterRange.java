@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.report.predictive;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class CombinedFilterRange {
 
@@ -42,7 +43,7 @@ public class CombinedFilterRange {
 
 	private HashMap<String, Tuple> confidenceDiffcultyPairMap;
 
-
+	private TreeMap<String,String> questionsToExcludeMap;
 	
 	public String getRangeName() {
 		return rangeName;
@@ -214,6 +215,15 @@ public class CombinedFilterRange {
 		return this.confidenceDiffcultyPairMap;
 	}
 	
+	public TreeMap<String,String> getQuestionsToExcludeMap(){
+		return this.questionsToExcludeMap;
+	}
+	
+	public void setQuestionsToExcludeMap(TreeMap<String,String>  map){
+		this.questionsToExcludeMap = map;
+	}
+	
+	
 	public void setUndefinedWithDefault(){
 		
 		if(rangeName==null) rangeName = "ALL";
@@ -231,6 +241,7 @@ public class CombinedFilterRange {
 		if(professionExclusionList==null) professionExclusionList = new String[]{};
 		if(yearsOfExperienceList==null)yearsOfExperienceList = new double[] {-1.0}; //{25,50,75}; //{33};
 		if(confidenceDiffcultyPairMap==null) confidenceDiffcultyPairMap = new HashMap<String,Tuple>();
+		if(questionsToExcludeMap==null) questionsToExcludeMap = new TreeMap<String,String>();
 	}
 	
 	

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import sun.security.util.PendingException;
@@ -35,6 +36,7 @@ public class Filter {
 
 	private double[] FirstAnswerDuration = new double[2];
 	private double[] SecondThirdAnswerDuration = new double[2];
+	
 
 
 	/** map of confidence, difficulty pairs */
@@ -45,11 +47,12 @@ public class Filter {
 
 	/** this is a list of scores that must be excluded */
 	private HashMap<String, Integer> workerScoreExclusionMap = new HashMap<String,Integer>();
+	
+	/** list of questionIDs to be ignored */
+	private TreeMap<String, String> questionToExcludeMap = new TreeMap<String,String>();
 
 	private  Map<String, Integer> sessionDurationMap = new HashMap<String, Integer>();
 	private  Map<String, Double> workerIDKMap = new HashMap<String, Double>();
-
-
 
 	public int[] getExplanationSize() {
 		return explanationSize;
@@ -202,6 +205,16 @@ public class Filter {
 		}
 	}
 
+	private Map<String, Microtask>  excludeQuestions(Map<String, Microtask>  aux){
+		for(String questionID : this.questionToExcludeMap.keySet()){
+			if(aux.containsKey(questionID)){
+				aux.remove(questionID);
+				System.out.println("key removed: "+questionID);
+			}
+		}
+		return aux;
+	}
+	
 	/**
 	 * Applies the filter on the desired content.
 	 * @param content: Desired content to be filtered
@@ -210,13 +223,23 @@ public class Filter {
 	public Map<String, Microtask> apply(HashMap<String, Microtask> microtaskMap)
 	{
 		Map<String, Microtask> content = (Map<String, Microtask>)  microtaskMap.clone();
+		
+		//Remove questions that should be excluded
+		if(this.questionToExcludeMap !=null && this.questionToExcludeMap.size()>0)
+			content = excludeQuestions(content);
+		
 		Map<String, Microtask> aux = new LinkedHashMap<String, Microtask>();
 		aux.putAll(content);
 		List<Integer> removeIndex = new ArrayList<Integer>();	
 		FileConsentDTO workerDTO = new FileConsentDTO();
 		HashMap<String,Worker> workerMap = workerDTO.getWorkers();
  
+		//Remove questions that should be excluded
+		if(this.questionToExcludeMap !=null && this.questionToExcludeMap.size()>0)
+			aux = excludeQuestions(aux);
+		
 		for (String questionID : aux.keySet()) {
+			
 			Vector<Answer> answerList = aux.get(questionID).getAnswerList();
 			for (int i = 0; i < answerList.size(); i++) {				
 				Answer answer = answerList.get(i);
@@ -408,6 +431,7 @@ public class Filter {
 					question.getAnswerList().removeElementAt(index);
 			}
 			removeIndex.clear();
+
 		}//for		
 		return content;
 	}
@@ -480,7 +504,7 @@ public class Filter {
 		}
 	}
 
-	public void FirstAnswerDurationCriteria(double minD, double maxD) {
+	public void setFirstAnswerDurationCriteria(double minD, double maxD) {
 		{
 			if((minD > maxD) && (maxD != -1.0))
 			{
@@ -513,6 +537,9 @@ public class Filter {
 		this.confidenceDifficultyPairMap = confidenceDifficultyPairMap;
 	}
 	
+	public void setQuestionToExcludeMap(TreeMap<String, String> questionsToExcludeMap){
+		this.questionToExcludeMap = questionsToExcludeMap;
+	}
 	
 
 

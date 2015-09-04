@@ -1,7 +1,7 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * Internal package class to hold the values of a filter 
@@ -16,6 +16,7 @@ class Range {
 		int[] list;
 		String[] professionExclusionList;
 		HashMap<String, Tuple> confidenceDifficultyPairMap;
+		TreeMap<String, String> questionsToExcludeMap;
 
 		public Range(int minValue, int maxValue){
 			this.min = new Integer(minValue);
@@ -30,6 +31,10 @@ class Range {
 		public Range(HashMap<String, Tuple> hashMap) {
 			this.confidenceDifficultyPairMap = hashMap;
 		}
+		
+		public Range(TreeMap<String, String> map) {
+			this.questionsToExcludeMap = map;
+		}
 
 		public Range(String[] professionList){
 			this.professionExclusionList = professionList.clone();
@@ -43,6 +48,9 @@ class Range {
 			if(list!=null && list.length>0)
 				return "[excluded" +listToString(list)+  "]";
 			else
+				if(this.questionsToExcludeMap!=null && this.questionsToExcludeMap.size()>0) 
+					return "[excluded" +listToString(questionsToExcludeMap)+  "]";
+				else
 				if(this.confidenceDifficultyPairMap!=null && confidenceDifficultyPairMap.size()>0) 
 					return "[excluded" +listToString(confidenceDifficultyPairMap)+  "]";
 				else
@@ -54,6 +62,17 @@ class Range {
 					else
 						return "["+min.toString()+","+max.toString()+"]";
 				
+		}
+
+		private String listToString(
+				TreeMap<String, String> map) {
+			String result = "";
+			for(String tuple: map.values()){
+				String tupleStr = tuple.toString();
+				result = result + ","+tupleStr;
+			}
+			result = result.substring(0, result.length());
+			return result;
 		}
 
 		private String listToString(String[] list){
