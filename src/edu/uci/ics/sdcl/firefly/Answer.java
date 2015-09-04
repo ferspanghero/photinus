@@ -1,8 +1,13 @@
 package edu.uci.ics.sdcl.firefly;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-public class Answer implements Serializable{
+public class Answer implements Serializable, Comparable{
 
 	/**
 	 * 
@@ -20,10 +25,12 @@ public class Answer implements Serializable{
 	private String timeStamp;
 	private int difficulty;
 	private int orderInWorkerSession; //1 = first, 2=second, 3=third. T
-	
-	
+	private Date timeStampDate;
+
+
 	public Answer(String option, int confidenceOption, String explanation, String workerId, 
 			String elapsedTime, String timeStamp, int difficulty, int orderInWorkerSession){
+		
 		this.option = option;
 		this.confidenceOption = confidenceOption;
 		this.explanation = explanation;
@@ -32,9 +39,29 @@ public class Answer implements Serializable{
 		this.timeStamp = timeStamp;
 		this.difficulty = difficulty;
 		this.orderInWorkerSession = orderInWorkerSession;
+
+		this.timeStampDate = convertDateTime(timeStamp);
 	}
-	
-	
+
+	private Date convertDateTime(String tStamp){
+		
+		Date dateStamp= null;
+		if(tStamp!=null && tStamp.length()>0){
+
+			tStamp = tStamp.substring(0, tStamp.length()-5);
+		//	System.out.println(tStamp);
+
+			DateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss z", Locale.ENGLISH);
+			try {
+				dateStamp = format.parse(tStamp);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return dateStamp;
+	}
+
+
 	/**
 	 * Support for the old version
 	 * 
@@ -71,19 +98,19 @@ public class Answer implements Serializable{
 	public String getOption() {
 		return option;
 	}
-	
+
 	public int getConfidenceOption(){
 		return confidenceOption;
 	}
-	
+
 	public String getExplanation() {
 		return explanation;
 	}
-	
+
 	public String getWorkerId() {
 		return workerId;
 	}
-	
+
 	public String getElapsedTime() {
 		return elapsedTime;
 	}
@@ -92,14 +119,18 @@ public class Answer implements Serializable{
 		return timeStamp;
 	}
 	
+	public Date getTimeStampDate(){
+		return this.timeStampDate;
+	}
+
 	public int getDifficulty(){
 		return difficulty;
 	}
-	
+
 	public int getOrderInWorkerSession(){
 		return orderInWorkerSession;
 	}
-	
+
 	public static String mapOptionToString(int number){
 		switch(number){
 		case 1: return Answer.YES; 
@@ -116,6 +147,16 @@ public class Answer implements Serializable{
 		case Answer.NO: return 3; 		
 		default: return 0;
 		}
-	}	
-	
+	}
+
+
+	 @Override
+	  public int compareTo(Object o) {
+	    if (getTimeStampDate() == null || ((Answer) o).getTimeStampDate() == null)
+	      return 0;
+	    return getTimeStampDate().compareTo(((Answer) o).getTimeStampDate());
+	  }
+
+
+
 }

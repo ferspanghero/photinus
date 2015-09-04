@@ -2,16 +2,25 @@ package edu.uci.ics.sdcl.firefly.report.predictive;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap; 
 
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask; 
 import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
+import edu.uci.ics.sdcl.firefly.util.ElapsedTimeUtil;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
 /**
@@ -117,7 +126,7 @@ public class OptimumFinder {
 				answerCount = answerCount+task.getAnswerOptions().size();
 			}
 		}
-		System.out.println(fileName+" has "+answerCount+" answers");
+		//System.out.println(fileName+" has "+answerCount+" answers");
 		return resultMap;
 	}
 
@@ -136,6 +145,8 @@ public class OptimumFinder {
 		return workerMap.size();
 	}
 	
+
+
 	public static void main(String[] args){
 
 		//Obtain bug covering question list
@@ -164,6 +175,7 @@ public class OptimumFinder {
 			Filter filter = combination.getFilter();
 
 			HashMap<String, Microtask> filteredMicrotaskMap = (HashMap<String, Microtask>) filter.apply(microtaskMap);
+			System.out.println("Elapsed time : "+ElapsedTimeUtil.getElapseTime(filteredMicrotaskMap));
 		
 			Integer totalDifferentWorkersAmongHITs = countWorkers(filteredMicrotaskMap, null);
 			
