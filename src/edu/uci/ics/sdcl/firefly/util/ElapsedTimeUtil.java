@@ -19,12 +19,12 @@ public class ElapsedTimeUtil {
 	
 	public static Double getElapseTime(HashMap<String,Microtask> microtaskMap){
 		
-		Vector<Answer> answerList = getListOfAnswers(microtaskMap);
+		Vector<Answer> answerList = getListOfAnswers(microtaskMap);	
 		Collections.sort(answerList);
 		
-		//for(Answer answer: answerList){
-		//	System.out.println(answer.getTimeStamp());
-		///}
+		for(Answer answer: answerList){
+			System.out.println(answer.getTimeStamp());
+		}
 		
 		Answer firstAnswer = answerList.get(0);
 		
@@ -41,7 +41,6 @@ public class ElapsedTimeUtil {
 		return hours;
 	}
 	
-	
 	private static Vector<Answer> getListOfAnswers(HashMap<String,Microtask> microtaskMap){
 		
 		Vector<Answer> answerList = new Vector<Answer>();
@@ -53,11 +52,11 @@ public class ElapsedTimeUtil {
 			for(Answer answer: taskAnswerlist){
 				if(answer.getTimeStamp()!=null && answer.getTimeStamp().length()>0)
 					answerList.add(answer);
+				else
+					System.out.println("timeStamp:"+ answer.getTimeStamp());
 			}
 		}
-		
 		return answerList;
-		
 	}
 	
 	
@@ -69,7 +68,6 @@ public class ElapsedTimeUtil {
 		if(iter.hasNext()){
 			firstTask = microtaskMap.get(iter.next());
 		}
-	
 		
 		while(iter.hasNext()){
 			lastTask = microtaskMap.get(iter.next());
@@ -84,12 +82,9 @@ public class ElapsedTimeUtil {
 		answerList = lastTask.getAnswerList();
 		if(answerList!=null && answerList.size()>0)
 			lastTimeStamp = answerList.get(0).getTimeStamp();
-		
 
 		System.out.println("firstDate: "+ firstTimeStamp+", lastDate:"+lastTimeStamp+ 
 				":"+computeDifferencesMinutes(firstTimeStamp, lastTimeStamp));
-	 
-		
 	}
 	
 	private static Double computeDifferencesMinutes(String firstTimeStamp,
@@ -120,5 +115,29 @@ public class ElapsedTimeUtil {
 		
 	}
 	
+	
+	public static void testResult(){
+		
+		String dateFirstStr = "Tue 2015 Jul 07 08:18:44.521";
+		String dateSecondStr = "Tue 2015 Jul 07 08:18:44.525";
+		
+		DateFormat format = new SimpleDateFormat("EEE yyyy MMM dd HH:mm:ss.S", Locale.ENGLISH);
+		try {
+			Date dateFirst = format.parse(dateFirstStr);
+			Date dateSecond = format.parse(dateSecondStr);
+			
+			long millisec = dateSecond.getTime() - dateFirst.getTime();
+			double hours = millisec /(1000*3600);
+			
+			System.out.println("millisec: " +millisec);
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String args[]){
+		testResult();
+	}
 	
 }

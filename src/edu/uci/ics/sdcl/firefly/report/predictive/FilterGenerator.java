@@ -6,12 +6,58 @@ import java.util.TreeMap;
 
 public class FilterGenerator {
 
+	
+	public void bestFilters(){
+		
+		HashMap<String, CombinedFilterRange> map;
+		CombinedFilterRange range;
+		
+		map = FilterGenerator.setupCombineScoreProfession();
+		range = map.get(FilterGenerator.WORKER_SCORE_100_NON_STUDENT);		
+
+		map = FilterGenerator.setupProfessionRangeFilters();
+		range = map.get(FilterGenerator.WORKER_NON_STUDENT);		
+		
+		map = FilterGenerator.setupCombineScoreProfession();
+		range = map.get(FilterGenerator.WORKER_SCORE_100_NON_STUDENT);		
+		
+		map = FilterGenerator.setupCombineScoreProfession();
+		range = map.get(FilterGenerator.WORKER_SCORE_100_80_NON_STUDENT);	
+		
+		map = FilterGenerator.setupScoreRangeFilters();
+		range = map.get(FilterGenerator.WORKER_SCORE_100);	
+		
+		map = FilterGenerator.setupAnswerDurations();
+		range = map.get(FilterGenerator.ANSWER_DURATION_MIN_q1_q1);//Check whether NO's are faster than YES's in average.
+		
+		map = FilterGenerator.setupConfidenceDifficulty();
+		range = map.get(FilterGenerator.CONFIDENCE_DIFFICULTY_UP_3_PERCENT);
+		
+		map =  FilterGenerator.setupExplanationSize();
+		range = map.get(FilterGenerator.EXPLANATION_2_3_4_QT_57_2383);
+		
+		map =  FilterGenerator.setupQuestionsToExclude();
+		range = map.get(FilterGenerator.CONDITIONAL_CLAUSE_ABOVE_3LINES);
+		
+		map =  FilterGenerator.setupNoFilters();
+		range = map.get(FilterGenerator.NO_FILTERS);
+		
+		//run the first 6h, 9h, 12h, 24h, 48h using the filtered logs. //Or make a filter for that.
+		
+		
+		
+		
+	}
+	
 
 	/** Filter answers by answer duration */
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
 
-		HashMap<String, CombinedFilterRange> map = FilterGenerator.setupNoFilters();
-		CombinedFilterRange range = map.get(FilterGenerator.NO_FILTERS);		
+		HashMap<String, CombinedFilterRange> map;
+		CombinedFilterRange range;
+		
+		map =  FilterGenerator.setupExplanationSize();
+		range = map.get(FilterGenerator.EXPLANATION_2_3_4_QT_57_2383);
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 
@@ -581,46 +627,46 @@ public class FilterGenerator {
 
 		//----------------------------------
 		CombinedFilterRange range = new CombinedFilterRange();
-		range.setRangeName(EXPLANATION_1QT_0_53) ;  //  1st Qu.:  53.0
-
-		int[] explanationSizeList_1 = {0};
-		range.setMaxExplanationSize(53);
-		range.setExplanationSizeList(explanationSizeList_1);
-		range.setUndefinedWithDefault();
-		rangeMap.put(range.getRangeName(),range);
-
-		//----------------------------------
-		range = new CombinedFilterRange();
-		range.setRangeName(EXPLANATION_2QT_53_99) ;  // Median :  99.0       
-
-		int[] explanationSizeList_2 = {53};
-		range.setMaxExplanationSize(99);
-		range.setExplanationSizeList(explanationSizeList_2);
-		range.setUndefinedWithDefault();
-		rangeMap.put(range.getRangeName(),range);
-
-		//----------------------------------
-
-		//----------------------------------
-		range = new CombinedFilterRange();
-		range.setRangeName(EXPLANATION_3QT_99_171) ;  // 3rd Qu.: 171.0 
-		int[] explanationSizeList_3 = {99};
-		range.setMaxExplanationSize(171);
-		range.setExplanationSizeList(explanationSizeList_3);
-		range.setUndefinedWithDefault();
-		rangeMap.put(range.getRangeName(),range);
-
-		//----------------------------------
-		range = new CombinedFilterRange();
-		range.setRangeName(EXPLANATION_4_QT_171_2383) ;  //  Max 2383           
-
-		int[] explanationSizeList_4 = {171};
-
-		range.setMaxExplanationSize(2383);
-
-		range.setExplanationSizeList(explanationSizeList_4);
-		range.setUndefinedWithDefault();
-		rangeMap.put(range.getRangeName(),range);
+//		range.setRangeName(EXPLANATION_1QT_0_53) ;  //  1st Qu.:  53.0
+//
+//		int[] explanationSizeList_1 = {0};
+//		range.setMaxExplanationSize(53);
+//		range.setExplanationSizeList(explanationSizeList_1);
+//		range.setUndefinedWithDefault();
+//		rangeMap.put(range.getRangeName(),range);
+//
+//		//----------------------------------
+//		range = new CombinedFilterRange();
+//		range.setRangeName(EXPLANATION_2QT_53_99) ;  // Median :  99.0       
+//
+//		int[] explanationSizeList_2 = {53};
+//		range.setMaxExplanationSize(99);
+//		range.setExplanationSizeList(explanationSizeList_2);
+//		range.setUndefinedWithDefault();
+//		rangeMap.put(range.getRangeName(),range);
+//
+//		//----------------------------------
+//
+//		//----------------------------------
+//		range = new CombinedFilterRange();
+//		range.setRangeName(EXPLANATION_3QT_99_171) ;  // 3rd Qu.: 171.0 
+//		int[] explanationSizeList_3 = {99};
+//		range.setMaxExplanationSize(171);
+//		range.setExplanationSizeList(explanationSizeList_3);
+//		range.setUndefinedWithDefault();
+//		rangeMap.put(range.getRangeName(),range);
+//
+//		//----------------------------------
+//		range = new CombinedFilterRange();
+//		range.setRangeName(EXPLANATION_4_QT_171_2383) ;  //  Max 2383           
+//
+//		int[] explanationSizeList_4 = {171};
+//
+//		range.setMaxExplanationSize(2383);
+//
+//		range.setExplanationSizeList(explanationSizeList_4);
+//		range.setUndefinedWithDefault();
+//		rangeMap.put(range.getRangeName(),range);
 
 
 		//----------------------------------

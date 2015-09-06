@@ -13,6 +13,8 @@ import java.util.ArrayList;
  * Remove SmokeTest entries
  * Rename the SessionIDs from workers who quit
  * Replace workerIDs with consolidated ones
+ * Cut the extra answers, so we have exactly 20 answers per questions (total 2580)
+ * Add the day, month, year to each log line (currently there was only hour,min, sec, millsec.
  * 
  * For each step there is a local folder to save temporary files
  * 
@@ -28,6 +30,7 @@ public class LogReadWriter {
 	String step2_folder = "\\2.unQuit\\";
 	String step3_folder = "\\3.consolidated\\";
 	String step4_folder = "\\4.cut\\";
+	String step5_folder = "\\5.dateStamp\\";
 
 	/** 
 	 * Flush the buffer back to the file
@@ -43,6 +46,7 @@ public class LogReadWriter {
 			case 2: folder = this.step2_folder; break;
 			case 3: folder = this.step3_folder; break;	
 			case 4: folder = this.step4_folder; break;
+			case 5: folder = this.step5_folder; break;
 			default: folder = null;
 		}
 
@@ -53,9 +57,9 @@ public class LogReadWriter {
 	/** 
 	 * Flush the buffer back to the file
 	 * @param newBuffer
-	 * @param destFileName
+	 * @param sourceFileName
 	 */
-	ArrayList<String>  readToBuffer( int step, String destFileName){
+	ArrayList<String>  readToBuffer( int step, String sourceFileName){
 
 		String folder = "";
 		switch(step){
@@ -64,10 +68,11 @@ public class LogReadWriter {
 			case 2: folder = this.step1_folder; break;
 			case 3: folder = this.step2_folder; break;
 			case 4: folder = this.step3_folder; break;
+			case 5: folder = this.step4_folder; break;
 			default: folder = null;
 		}
 
-		return this.readToBuffer(folder, destFileName);
+		return this.readToBuffer(folder, sourceFileName);
 	}
 
 
@@ -127,6 +132,7 @@ public class LogReadWriter {
 			case 2: return path + step1_folder; 
 			case 3: return path + step2_folder; 
 			case 4: return path + step3_folder; 
+			case 5: return path + step4_folder; 
 			default: return null;
 		}
 		
