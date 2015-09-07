@@ -56,8 +56,8 @@ public class FilterGenerator {
 		HashMap<String, CombinedFilterRange> map;
 		CombinedFilterRange range;
 		
-		map =  FilterGenerator.setupExplanationSize();
-		range = map.get(FilterGenerator.EXPLANATION_2_3_4_QT_57_2383);
+		map =  FilterGenerator.setupCombineScoreProfession();
+		range = map.get(FilterGenerator.WORKER_SCORE_100_NON_STUDENT);
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 

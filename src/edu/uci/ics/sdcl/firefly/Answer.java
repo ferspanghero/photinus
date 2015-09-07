@@ -39,8 +39,10 @@ public class Answer implements Serializable, Comparable{
 		this.timeStamp = timeStamp;
 		this.difficulty = difficulty;
 		this.orderInWorkerSession = orderInWorkerSession;
-
+		
 		this.timeStampDate = convertDateTime(timeStamp);
+		if(timeStampDate!=null)
+			this.timeStamp = timeStamp;
 	}
 
 	private Date convertDateTime(String tStamp){
@@ -48,12 +50,13 @@ public class Answer implements Serializable, Comparable{
 		Date dateStamp= null;
 		if(tStamp!=null && tStamp.length()>0){
 
-			tStamp = tStamp.substring(0, tStamp.length()-5);
-		//	System.out.println(tStamp);
+//			System.out.println(tStamp);
 
-			DateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss z", Locale.ENGLISH);
+			DateFormat format = new SimpleDateFormat("EEE yyyy MMM dd HH:mm:ss.S", Locale.ENGLISH);
 			try {
 				dateStamp = format.parse(tStamp);
+				System.out.println("converted:"+ format.format(dateStamp));
+				
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -78,7 +81,10 @@ public class Answer implements Serializable, Comparable{
 		this.explanation = explanation;
 		this.workerId = workerId;
 		this.elapsedTime = elapsedTime;
-		this.timeStamp = timeStamp;
+
+		this.timeStampDate = convertDateTime(timeStamp);
+		if(timeStampDate!=null)
+			this.timeStamp = timeStamp;
 	}
 
 	public String getShortOption(){

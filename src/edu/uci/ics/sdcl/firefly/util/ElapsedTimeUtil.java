@@ -20,11 +20,14 @@ public class ElapsedTimeUtil {
 	public static Double getElapseTime(HashMap<String,Microtask> microtaskMap){
 		
 		Vector<Answer> answerList = getListOfAnswers(microtaskMap);	
-		Collections.sort(answerList);
+		//Collections.sort(answerList);
 		
-		for(Answer answer: answerList){
-			System.out.println(answer.getTimeStamp());
-		}
+		//for(Answer answer: answerList){
+			//Date timeStamp = answer.getTimeStampDate();
+			//if(timeStamp==null){
+				//System.out.println("Answer workerID:"+ answer.getWorkerId()+ ", timestamp:"+ answer.getTimeStamp());
+			//}
+		//}
 		
 		Answer firstAnswer = answerList.get(0);
 		
@@ -50,10 +53,10 @@ public class ElapsedTimeUtil {
 			Microtask task = microtaskMap.get(iter.next());
 			Vector<Answer> taskAnswerlist = task.getAnswerList();
 			for(Answer answer: taskAnswerlist){
-				if(answer.getTimeStamp()!=null && answer.getTimeStamp().length()>0)
+				if(answer.getTimeStampDate()!=null)
 					answerList.add(answer);
 				else
-					System.out.println("timeStamp:"+ answer.getTimeStamp());
+					System.out.println("Answer workerID:"+ answer.getWorkerId()+ ", timestamp:"+ answer.getTimeStamp());
 			}
 		}
 		return answerList;

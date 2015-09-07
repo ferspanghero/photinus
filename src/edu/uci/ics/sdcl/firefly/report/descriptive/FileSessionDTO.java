@@ -23,19 +23,19 @@ public class FileSessionDTO extends SessionDTO{
 	private String logPath;// = //"C:/Users/igMoreira/Desktop/Dropbox/1.CrowdDebug-Summer2015/sampleDatalogs/session-log-TestSample - Copy.log";
 	private static int dayDate = 7; //July 7th
 	private static int lastHourRead = -1;
-	
-	
+
+
 	public FileSessionDTO() {
 		PropertyManager manager = PropertyManager.initializeSingleton();
 		this.logPath = manager.reportPath + manager.sessionLogFileName;
 		System.out.println("sessionDTO, logPath: "+logPath);
 	}
-	
+
 	public FileSessionDTO(String path) {
 		this.logPath = path;
 	}
-	
-	
+
+
 	@Override
 	public Map<String, WorkerSession> getSessions() {
 		if((this.openSessions.isEmpty()) || (this.closedSessions.isEmpty()))
@@ -57,7 +57,7 @@ public class FileSessionDTO extends SessionDTO{
 		this.closedSessions = new LinkedHashMap<String, WorkerSession>();
 		this.openSessions = new LinkedHashMap<String, WorkerSession>();
 		this.microtasks = new LinkedHashMap<String, Microtask>();
-		
+
 		BufferedReader log = null;
 		try {
 			log = new BufferedReader(new FileReader(logPath));
@@ -68,25 +68,25 @@ public class FileSessionDTO extends SessionDTO{
 					continue;
 				String event = line.split("%")[1];
 				switch (event) {
-					case "OPEN SESSION":
-						session = loadSession(line);
-						this.openSessions.put(session.getId()+ ":" +session.getWorkerId(), session);
-						break;
-					case "CLOSE SESSION":
-						session = loadSession(line);
-						if(this.openSessions.containsKey(session.getId()+ ":" +session.getWorkerId()))
-						{
-							session = this.openSessions.get(session.getId()+ ":" +session.getWorkerId());
-							this.openSessions.remove(session.getId()+ ":" +session.getWorkerId());
-						}
-						this.closedSessions.put(session.getId()+ ":" +session.getWorkerId(), session);
-						break;
-					case "MICROTASK":
-						loadMicrotask(line);
-						break;
-					default:
-						System.out.println("INVALID EVENT ON LOG " + event  );
-						System.exit(0);
+				case "OPEN SESSION":
+					session = loadSession(line);
+					this.openSessions.put(session.getId()+ ":" +session.getWorkerId(), session);
+					break;
+				case "CLOSE SESSION":
+					session = loadSession(line);
+					if(this.openSessions.containsKey(session.getId()+ ":" +session.getWorkerId()))
+					{
+						session = this.openSessions.get(session.getId()+ ":" +session.getWorkerId());
+						this.openSessions.remove(session.getId()+ ":" +session.getWorkerId());
+					}
+					this.closedSessions.put(session.getId()+ ":" +session.getWorkerId(), session);
+					break;
+				case "MICROTASK":
+					loadMicrotask(line);
+					break;
+				default:
+					System.out.println("INVALID EVENT ON LOG " + event  );
+					System.exit(0);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -117,8 +117,8 @@ public class FileSessionDTO extends SessionDTO{
 	 * setting to the microtasks attribute.
 	 */
 	private void loadMicrotask(String line) {
-		String[] result = line.split("%");
-		String[] resultDate = line.split(" ");
+
+		String[] result = line.split("%");		
 		Integer microtaskID = 0;
 		String sessionID = null;
 		String workerID = null;
@@ -130,16 +130,13 @@ public class FileSessionDTO extends SessionDTO{
 		Integer confidenceLevel = 0;
 		Integer diffculty = 0;
 		String questionType = null;
-		String questionTimestamp = null;
+		String questionTimestamp = line.substring(0, 27);
+
 		for (int i = 0; i < result.length; i++) {
+			
 			String field = result[i];
 			field = field.replaceAll("\\s", "");
 			field = field.replaceAll("\n", "");
-			String date = null;
-			if(i==0){
-				date = result[i].split(" ")[0]; //gets the date on osition 0
-				field = "timestamp";
-			}
 			switch (field) {
 			case "workerId": workerID = result[i+1]; break;
 			case "explanation": explanation = ( i < result.length) ? result[i+1] : "";	break;
@@ -152,49 +149,48 @@ public class FileSessionDTO extends SessionDTO{
 			case "confidenceLevel":	confidenceLevel = Integer.parseInt(result[i+1]);break;
 			case "difficulty":diffculty = Integer.parseInt(result[i+1]);break;
 			case "questionType":questionType = result[i+1]; break;
-			case "timestamp": questionTimestamp = setTimeStampDate(date); break;
 			}
-		}
-		
+		}//for
+
 		Vector<Answer> answerList = new Vector<Answer>();
 		Microtask microtask=null;
 		int currentNumberMicrotasks = 0;
-		
+
 		// Bind the microtask with the session
 		Map<String, WorkerSession> conc = concatenateSessionTable();
 		WorkerSession session = conc.get(sessionID+ ":" + workerID);
-	
+
 		if(session != null)
 		{
 			currentNumberMicrotasks = session.getMicrotaskListSize() + 1;//how many microtasks are there = index +1;
-			
+
 			answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, questionTimestamp,diffculty,currentNumberMicrotasks));
 			microtask = new Microtask(question, microtaskID, answerList , fileName);
 			microtask.setQuestionType(questionType);
-			
+
 			//Add this microtask to the session
 			session.getMicrotaskList().add(microtask);
 			conc.put(session.getId(),session);
-			
+
 		}
 		else{
 			System.out.println("ERROR SESSION NULL when adding Microtask, sessionID:"+sessionID);
 		}
-		
+
 		if(this.microtasks.get(microtaskID.toString()) == null)
 		{
 			// The microtask does not exist yet so insert on table
 			this.microtasks.put(microtaskID.toString(), microtask);
-			
+
 		}
 		else
 		{
 			//The microtask already exists so add the answer to it
 			answerList = this.microtasks.get(microtaskID.toString()).getAnswerList();
-			answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, null,diffculty,currentNumberMicrotasks));
+			answerList.add(new Answer(answer,confidenceLevel, explanation, workerID, duration, questionTimestamp,diffculty,currentNumberMicrotasks));
 		}
 	}
-	
+
 	/**
 	 * Will extract the session content of the
 	 * line on the database log.
@@ -212,7 +208,7 @@ public class FileSessionDTO extends SessionDTO{
 		session.setFileName(fileName);
 		return session;
 	}
-	
+
 	/**
 	 * Concatenates the open and the closed session in 
 	 * just one table.
@@ -225,7 +221,7 @@ public class FileSessionDTO extends SessionDTO{
 		conc.putAll(closedSessions);
 		return conc;
 	}
-	
+
 	/**
 	 * gets the sessions of a single worker
 	 * @return: A hashMap containing all the sessions related to the worker
@@ -241,25 +237,7 @@ public class FileSessionDTO extends SessionDTO{
 		}
 		return workerSessions;
 	}
-	
-	public String setTimeStampDate(String time){
-		final int MONTH = 6; //July
-		String[] times = time.split(":");
-		int hour = Integer.parseInt(times[0]);
-		int minute = Integer.parseInt(times[1]);
-		int second = (int) Double.parseDouble(times[2]);
-		if(lastHourRead == -1){
-			FileSessionDTO.lastHourRead = hour;
-		}else if(hour < lastHourRead){
-			FileSessionDTO.dayDate++;
-			FileSessionDTO.lastHourRead = hour;
-		}else{
-			FileSessionDTO.lastHourRead = hour;
-		}
-		Date date = new Date(2015, MONTH, dayDate,hour, minute,second);
-		return date.toString();
-	}
-	
+
 	public Map<String,WorkerSession> getClosedSessions(){
 		return this.closedSessions;
 	}
