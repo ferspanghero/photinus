@@ -1,5 +1,6 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -17,6 +18,7 @@ class Range {
 		String[] professionExclusionList;
 		HashMap<String, Tuple> confidenceDifficultyPairMap;
 		TreeMap<String, String> questionsToExcludeMap;
+		Date[] startEndDates = new Date[2];
 
 		public Range(int minValue, int maxValue){
 			this.min = new Integer(minValue);
@@ -42,12 +44,20 @@ class Range {
 
 		public Range(int[] workerExclusionList) {
 			this.list = workerExclusionList;
+		}	
+
+		public Range(Date maxDate, Date minDate) {
+			this.startEndDates[0] = minDate;
+			this.startEndDates[1] = maxDate;
 		}
 
 		public String toString(){
 			if(list!=null && list.length>0)
 				return "[excluded" +listToString(list)+  "]";
 			else
+				if(this.startEndDates[0]!=null && this.startEndDates[1]!=null) 
+					return "First " +listToString(startEndDates)+  " hours";
+				else
 				if(this.questionsToExcludeMap!=null && this.questionsToExcludeMap.size()>0) 
 					return "[excluded" +listToString(questionsToExcludeMap)+  "]";
 				else
@@ -62,6 +72,14 @@ class Range {
 					else
 						return "["+min.toString()+","+max.toString()+"]";
 				
+		}
+
+		private String listToString(Date[] startEndDates) {
+			
+			long millisec = startEndDates[1].getTime() - startEndDates[0].getTime();
+			Double hours = new Double(millisec /(1000*3600));
+			
+			return hours.toString();
 		}
 
 		private String listToString(

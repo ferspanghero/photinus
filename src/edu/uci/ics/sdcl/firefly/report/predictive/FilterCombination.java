@@ -1,5 +1,6 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -28,6 +29,7 @@ public class FilterCombination {
 	public static final String SECOND_THIRD_ANSWER_DURATION = "SECOND_THIRD_ANSWER_DURATION";
 	public static final String CONFIDENCE_DIFFICULTY_PAIRS = "CONFIDENCE_DIFFICULTY_PAIRS";
 	public static final String EXCLUDED_QUESTIONS = "EXCLUDED_QUESTIONS";
+	public static final String FIRST_HOURS = "FIRST_HOURS";
 
 	public HashMap<String,Range> combinationMap = new HashMap<String,Range>();
 
@@ -48,7 +50,8 @@ public class FilterCombination {
 		WORKER_PROFESSION,
 		WORKER_YEARS_OF_EXEPERIENCE,
 		CONFIDENCE_DIFFICULTY_PAIRS,
-		EXCLUDED_QUESTIONS
+		EXCLUDED_QUESTIONS,
+		FIRST_HOURS
 	};
 
 	public static String getFilterHeaders(){
@@ -157,6 +160,11 @@ public class FilterCombination {
 															Range range = this.combinationMap.get(filterName);
 															filter.setQuestionToExcludeMap(range.questionsToExcludeMap);
 														}
+														else
+															if(filterName.compareTo(FilterCombination.FIRST_HOURS)==0){
+																Range range = this.combinationMap.get(filterName);
+																filter.setStartEndDates(range.startEndDates);
+															}
 		}
 		return filter;	
 	}
@@ -194,6 +202,13 @@ public class FilterCombination {
 		if(combinationMap==null)
 			combinationMap = new HashMap<String, Range>();
 		combinationMap.put(questionExclusion, new Range(questionToExcludeMap));	
+		
+	}
+
+	public void addFilterParam(String firstHours, Date maxDate, Date minDate) {
+		if(combinationMap==null)
+			combinationMap = new HashMap<String, Range>();
+		combinationMap.put(firstHours, new Range(maxDate, minDate));	
 		
 	}
 	

@@ -22,6 +22,7 @@ import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
 import edu.uci.ics.sdcl.firefly.util.ElapsedTimeUtil;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
+import edu.uci.ics.sdcl.firefly.util.mturk.AnswerCounter;
 
 /**
  *  Uses the predictor StrengthSignal to search for the best result among all different filtered datasets.
@@ -175,9 +176,14 @@ public class OptimumFinder {
 			Filter filter = combination.getFilter();
 
 			HashMap<String, Microtask> filteredMicrotaskMap = (HashMap<String, Microtask>) filter.apply(microtaskMap);
-			System.out.println("Elapsed time : "+ElapsedTimeUtil.getElapseTime(filteredMicrotaskMap));
+			
 		
 			Integer totalDifferentWorkersAmongHITs = countWorkers(filteredMicrotaskMap, null);
+			
+			System.out.println("Elapsed time: "+ElapsedTimeUtil.getElapseTime(filteredMicrotaskMap)+
+					", number of answers: "+AnswerCounter.countAnswers(filteredMicrotaskMap) + 
+					", number of workers: "+totalDifferentWorkersAmongHITs);
+			
 			
 			for(String fileName: fileNameList){
 				HashMap<String, ArrayList<String>> answerMap = extractAnswersForFileName(filteredMicrotaskMap,fileName);

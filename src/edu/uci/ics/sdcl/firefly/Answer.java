@@ -55,7 +55,7 @@ public class Answer implements Serializable, Comparable{
 			DateFormat format = new SimpleDateFormat("EEE yyyy MMM dd HH:mm:ss.S", Locale.ENGLISH);
 			try {
 				dateStamp = format.parse(tStamp);
-				System.out.println("converted:"+ format.format(dateStamp));
+				//System.out.println("converted:"+ format.format(dateStamp));
 				
 			} catch (ParseException e) {
 				e.printStackTrace();

@@ -17,7 +17,7 @@ public class AnswerCounter {
 	public static String logPath =  "C:/firefly/logs/";
 	
 	public static String[] fileList = {"HIT01_8", "HIT02_24", "HIT03_6", "HIT04_7",
-			"HIT05_35","HIT06_51","HIT07_33","HIT08_54"};//,"HIT10_59"};
+			"HIT05_35","HIT06_51","HIT07_33","HIT08_54"};
 
 	
 	public static void initializeMaps(){
@@ -26,6 +26,14 @@ public class AnswerCounter {
 	}
 
 
+	public static int countAnswers(HashMap<String, Microtask> map){
+		int counter=0;
+		for(Microtask task: map.values()){
+			counter = task.getNumberOfAnswers() + counter;
+		}
+		return counter;
+	}
+	
 
 	public static void main(String[] args){
 		AnswerCounter.initializeMaps();

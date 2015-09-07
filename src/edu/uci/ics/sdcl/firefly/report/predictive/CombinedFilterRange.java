@@ -1,6 +1,7 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -18,6 +19,7 @@ public class CombinedFilterRange {
 	private int maxWorkerScore= -1; //5, 4, 3
 	private double maxYearsOfExperience=-1;
 	private int maxWorkerIDKPercentage =-1; //
+	private Date maxDate=null;
 
 	//Min values
 	private int minDifficulty=-1;//0;
@@ -25,6 +27,7 @@ public class CombinedFilterRange {
 	private double minWorkerYearsOfExperience=-1; //0
 	private double minFirstAnswerDuration = -1;
 	private double minSecondThirdAnswerDuration = -1;
+	private Date minDate=null;
 	
 
 	
@@ -224,6 +227,18 @@ public class CombinedFilterRange {
 	}
 	
 	
+	public Date getMaxDate() {
+		return maxDate;
+	}
+	public void setMaxDate(Date maxDate) {
+		this.maxDate = maxDate;
+	}
+	public Date getMinDate() {
+		return minDate;
+	}
+	public void setMinDate(Date minDate) {
+		this.minDate = minDate;
+	}
 	public void setUndefinedWithDefault(){
 		
 		if(rangeName==null) rangeName = "ALL";

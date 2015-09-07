@@ -1,63 +1,66 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.TreeMap;
 
 public class FilterGenerator {
 
-	
+
 	public void bestFilters(){
-		
+
 		HashMap<String, CombinedFilterRange> map;
 		CombinedFilterRange range;
-		
+
 		map = FilterGenerator.setupCombineScoreProfession();
 		range = map.get(FilterGenerator.WORKER_SCORE_100_NON_STUDENT);		
 
 		map = FilterGenerator.setupProfessionRangeFilters();
 		range = map.get(FilterGenerator.WORKER_NON_STUDENT);		
-		
-		map = FilterGenerator.setupCombineScoreProfession();
-		range = map.get(FilterGenerator.WORKER_SCORE_100_NON_STUDENT);		
-		
+
 		map = FilterGenerator.setupCombineScoreProfession();
 		range = map.get(FilterGenerator.WORKER_SCORE_100_80_NON_STUDENT);	
-		
+
 		map = FilterGenerator.setupScoreRangeFilters();
 		range = map.get(FilterGenerator.WORKER_SCORE_100);	
-		
+
 		map = FilterGenerator.setupAnswerDurations();
 		range = map.get(FilterGenerator.ANSWER_DURATION_MIN_q1_q1);//Check whether NO's are faster than YES's in average.
-		
+
 		map = FilterGenerator.setupConfidenceDifficulty();
 		range = map.get(FilterGenerator.CONFIDENCE_DIFFICULTY_UP_3_PERCENT);
-		
+
 		map =  FilterGenerator.setupExplanationSize();
 		range = map.get(FilterGenerator.EXPLANATION_2_3_4_QT_57_2383);
-		
+
 		map =  FilterGenerator.setupQuestionsToExclude();
 		range = map.get(FilterGenerator.CONDITIONAL_CLAUSE_ABOVE_3LINES);
-		
+
 		map =  FilterGenerator.setupNoFilters();
 		range = map.get(FilterGenerator.NO_FILTERS);
 		
+
 		//run the first 6h, 9h, 12h, 24h, 48h using the filtered logs. //Or make a filter for that.
-		
-		
-		
-		
+
+		map =  FilterGenerator.setupDateInterval();
+		range = map.get(FilterGenerator.FIRST_9_HOURS);
+
+
 	}
-	
+
 
 	/** Filter answers by answer duration */
 	public static ArrayList<FilterCombination> generateAnswerFilterCombinations(){
 
 		HashMap<String, CombinedFilterRange> map;
 		CombinedFilterRange range;
-		
-		map =  FilterGenerator.setupCombineScoreProfession();
-		range = map.get(FilterGenerator.WORKER_SCORE_100_NON_STUDENT);
+
+		map = FilterGenerator.setupCombineScoreProfession();
+		range = map.get(FilterGenerator.WORKER_SCORE_100_NON_STUDENT);	
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 
@@ -79,6 +82,7 @@ public class FilterGenerator {
 						combination.addFilterParam(FilterCombination.WORKER_PROFESSION, range.getProfessionExclusionList());
 						combination.addFilterParam(FilterCombination.WORKER_YEARS_OF_EXEPERIENCE, range.getMaxYearsOfExperience(), range.getMinWorkerYearsOfExperience());
 						combination.addFilterParam(FilterCombination.EXCLUDED_QUESTIONS, range.getQuestionsToExcludeMap());
+						combination.addFilterParam(FilterCombination.FIRST_HOURS, range.getMaxDate(),range.getMinDate());
 
 						filterList.add(combination);
 					}
@@ -152,10 +156,18 @@ public class FilterGenerator {
 	private static final String EXPLANATION_3QT_99_171 = "EXPLANATION_3QT_99_171";
 	private static final String EXPLANATION_4_QT_171_2383 = "EXPLANATION_4_QT_171_2383";
 	private static final String EXPLANATION_2_3_4_QT_57_2383 = "EXPLANATION_2_3_4_QT_57_2383";
-	
+
 	private static final String COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT = "COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT";
 	private static final String CONDITIONAL_CLAUSE_ABOVE_3LINES = "CONDITIONAL_CLAUSE_ABOVE_3LINES";
 
+	private static final String FIRST_6_HOURS= "FIRST_6_HOURS";
+	private static final String FIRST_9_HOURS= "FIRST_9_HOURS";
+	private static final String FIRST_12_HOURS= "FIRST_12_HOURS";
+	private static final String FIRST_15_HOURS= "FIRST_15_HOURS";
+	private static final String FIRST_18_HOURS= "FIRST_18_HOURS";
+	private static final String FIRST_24_HOURS= "FIRST_24_HOURS";
+	private static final String FIRST_36_HOURS= "FIRST_36_HOURS";
+	private static final String FIRST_48_HOURS= "FIRST_48_HOURS";
 
 	private static HashMap<String,CombinedFilterRange> setupNoFilters(){
 
@@ -371,34 +383,34 @@ public class FilterGenerator {
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
-		
-		
+
+
 		//----------------------------------
-				range = new CombinedFilterRange();
-				range.setRangeName(WORKER_SCORE_100_NON_STUDENT);
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_SCORE_100_NON_STUDENT);
 
-				range.setMaxWorkerScore(5);
-				range.setWorkerScoreExclusionList(new int[] {3,4});
-				range.setWorkerScoreList(new int[]{5});
+		range.setMaxWorkerScore(5);
+		range.setWorkerScoreExclusionList(new int[] {3,4});
+		range.setWorkerScoreList(new int[]{5});
 
-				range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
-				range.setUndefinedWithDefault();
-				rangeMap.put(range.getRangeName(),range);
+		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
 
 
-				//----------------------------------
-				range = new CombinedFilterRange();
-				range.setRangeName(WORKER_SCORE_100_80_NON_STUDENT);
+		//----------------------------------
+		range = new CombinedFilterRange();
+		range.setRangeName(WORKER_SCORE_100_80_NON_STUDENT);
 
-				range.setMaxWorkerScore(5);
-				range.setWorkerScoreExclusionList(new int[] {3});
-				range.setWorkerScoreList(new int[]{4});
+		range.setMaxWorkerScore(5);
+		range.setWorkerScoreExclusionList(new int[] {3});
+		range.setWorkerScoreList(new int[]{4});
 
-				range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
-				range.setUndefinedWithDefault();
-				rangeMap.put(range.getRangeName(),range);
+		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(),range);
 
-				
+
 		//----------------------------------
 		range = new CombinedFilterRange();
 		range.setRangeName(WORKER_SCORE60_NON_STUDENT);
@@ -627,46 +639,46 @@ public class FilterGenerator {
 
 		//----------------------------------
 		CombinedFilterRange range = new CombinedFilterRange();
-//		range.setRangeName(EXPLANATION_1QT_0_53) ;  //  1st Qu.:  53.0
-//
-//		int[] explanationSizeList_1 = {0};
-//		range.setMaxExplanationSize(53);
-//		range.setExplanationSizeList(explanationSizeList_1);
-//		range.setUndefinedWithDefault();
-//		rangeMap.put(range.getRangeName(),range);
-//
-//		//----------------------------------
-//		range = new CombinedFilterRange();
-//		range.setRangeName(EXPLANATION_2QT_53_99) ;  // Median :  99.0       
-//
-//		int[] explanationSizeList_2 = {53};
-//		range.setMaxExplanationSize(99);
-//		range.setExplanationSizeList(explanationSizeList_2);
-//		range.setUndefinedWithDefault();
-//		rangeMap.put(range.getRangeName(),range);
-//
-//		//----------------------------------
-//
-//		//----------------------------------
-//		range = new CombinedFilterRange();
-//		range.setRangeName(EXPLANATION_3QT_99_171) ;  // 3rd Qu.: 171.0 
-//		int[] explanationSizeList_3 = {99};
-//		range.setMaxExplanationSize(171);
-//		range.setExplanationSizeList(explanationSizeList_3);
-//		range.setUndefinedWithDefault();
-//		rangeMap.put(range.getRangeName(),range);
-//
-//		//----------------------------------
-//		range = new CombinedFilterRange();
-//		range.setRangeName(EXPLANATION_4_QT_171_2383) ;  //  Max 2383           
-//
-//		int[] explanationSizeList_4 = {171};
-//
-//		range.setMaxExplanationSize(2383);
-//
-//		range.setExplanationSizeList(explanationSizeList_4);
-//		range.setUndefinedWithDefault();
-//		rangeMap.put(range.getRangeName(),range);
+		//		range.setRangeName(EXPLANATION_1QT_0_53) ;  //  1st Qu.:  53.0
+		//
+		//		int[] explanationSizeList_1 = {0};
+		//		range.setMaxExplanationSize(53);
+		//		range.setExplanationSizeList(explanationSizeList_1);
+		//		range.setUndefinedWithDefault();
+		//		rangeMap.put(range.getRangeName(),range);
+		//
+		//		//----------------------------------
+		//		range = new CombinedFilterRange();
+		//		range.setRangeName(EXPLANATION_2QT_53_99) ;  // Median :  99.0       
+		//
+		//		int[] explanationSizeList_2 = {53};
+		//		range.setMaxExplanationSize(99);
+		//		range.setExplanationSizeList(explanationSizeList_2);
+		//		range.setUndefinedWithDefault();
+		//		rangeMap.put(range.getRangeName(),range);
+		//
+		//		//----------------------------------
+		//
+		//		//----------------------------------
+		//		range = new CombinedFilterRange();
+		//		range.setRangeName(EXPLANATION_3QT_99_171) ;  // 3rd Qu.: 171.0 
+		//		int[] explanationSizeList_3 = {99};
+		//		range.setMaxExplanationSize(171);
+		//		range.setExplanationSizeList(explanationSizeList_3);
+		//		range.setUndefinedWithDefault();
+		//		rangeMap.put(range.getRangeName(),range);
+		//
+		//		//----------------------------------
+		//		range = new CombinedFilterRange();
+		//		range.setRangeName(EXPLANATION_4_QT_171_2383) ;  //  Max 2383           
+		//
+		//		int[] explanationSizeList_4 = {171};
+		//
+		//		range.setMaxExplanationSize(2383);
+		//
+		//		range.setExplanationSizeList(explanationSizeList_4);
+		//		range.setUndefinedWithDefault();
+		//		rangeMap.put(range.getRangeName(),range);
 
 
 		//----------------------------------
@@ -680,7 +692,7 @@ public class FilterGenerator {
 		range.setExplanationSizeList(explanationSizeList);
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
-		
+
 		return rangeMap;
 	}
 
@@ -725,12 +737,12 @@ public class FilterGenerator {
 
 		return rangeMap;
 	}
-	
-	
+
+
 	private static HashMap<String,CombinedFilterRange> setupQuestionsToExclude(){
-		
+
 		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
-		
+
 		//----------------------------------
 		CombinedFilterRange range = new CombinedFilterRange();
 		range.setRangeName(CONDITIONAL_CLAUSE_ABOVE_3LINES) ;  // REMOVED QUESTIONS COVERING MORE THAN THREE LOCS       
@@ -749,5 +761,62 @@ public class FilterGenerator {
 		rangeMap.put(range.getRangeName(),range);
 		return rangeMap;
 	}
+
+	private static HashMap<String,CombinedFilterRange> setupDateInterval(){
+
+		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
+
+		CombinedFilterRange range = createDateRange(6,FIRST_6_HOURS);
+		rangeMap.put(range.getRangeName(), range);
+		//----------------------------------
+		range = createDateRange(9,FIRST_9_HOURS);
+		rangeMap.put(range.getRangeName(), range);
+		//----------------------------------
+		range = createDateRange(12,FIRST_12_HOURS);
+		rangeMap.put(range.getRangeName(), range);
+		//----------------------------------
+		range = createDateRange(15,FIRST_15_HOURS);
+		rangeMap.put(range.getRangeName(), range);
+		//----------------------------------
+		range = createDateRange(18,FIRST_18_HOURS);
+		rangeMap.put(range.getRangeName(), range);
+		//----------------------------------
+		range = createDateRange(24,FIRST_24_HOURS);
+		rangeMap.put(range.getRangeName(), range);
+		//----------------------------------
+		range = createDateRange(36,FIRST_36_HOURS);
+		rangeMap.put(range.getRangeName(), range);
+		//----------------------------------
+		range = createDateRange(48,FIRST_48_HOURS);
+		rangeMap.put(range.getRangeName(), range);
+		
+		return rangeMap;
+
+	}
+
+	private static CombinedFilterRange createDateRange(long hours, String label){
+		CombinedFilterRange range = new CombinedFilterRange();
+		range.setRangeName(label) ; 
+
+		String startDateStr = "Tue 2015 Jul 07 08:19:56";
+		DateFormat format = new SimpleDateFormat("EEE yyyy MMM dd HH:mm:ss", Locale.ENGLISH);
+		try {
+			Date startDate = format.parse(startDateStr);
+			long startTime = startDate.getTime();
+			long endTime = startTime + hours*3600*1000;
+			Date endDate = (Date) startDate.clone();
+			endDate.setTime(endTime);
+			range.setMaxDate(endDate);
+			range.setMinDate(startDate);
+			range.setUndefinedWithDefault();
+			return range;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+
 
 }

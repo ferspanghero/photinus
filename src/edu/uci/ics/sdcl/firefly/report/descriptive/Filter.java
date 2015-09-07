@@ -3,6 +3,7 @@ package edu.uci.ics.sdcl.firefly.report.descriptive;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,7 +37,8 @@ public class Filter {
 
 	private double[] FirstAnswerDuration = new double[2];
 	private double[] SecondThirdAnswerDuration = new double[2];
-	
+	private Date[] stardEndDates = new Date[2];
+
 
 
 	/** map of confidence, difficulty pairs */
@@ -47,7 +49,7 @@ public class Filter {
 
 	/** this is a list of scores that must be excluded */
 	private HashMap<String, Integer> workerScoreExclusionMap = new HashMap<String,Integer>();
-	
+
 	/** list of questionIDs to be ignored */
 	private TreeMap<String, String> questionToExcludeMap = new TreeMap<String,String>();
 
@@ -93,6 +95,7 @@ public class Filter {
 		Arrays.fill(yearsOfExperience,-1.0);
 		Arrays.fill(FirstAnswerDuration, -1.0);
 		Arrays.fill(SecondThirdAnswerDuration, -1.0);
+		Arrays.fill(stardEndDates, null);
 	}
 
 	public void setExplanationSizeCriteria(int minimum, int maximum)
@@ -214,7 +217,7 @@ public class Filter {
 		}
 		return aux;
 	}
-	
+
 	/**
 	 * Applies the filter on the desired content.
 	 * @param content: Desired content to be filtered
@@ -223,23 +226,23 @@ public class Filter {
 	public Map<String, Microtask> apply(HashMap<String, Microtask> microtaskMap)
 	{
 		Map<String, Microtask> content = (Map<String, Microtask>)  microtaskMap.clone();
-		
+
 		//Remove questions that should be excluded
 		if(this.questionToExcludeMap !=null && this.questionToExcludeMap.size()>0)
 			content = excludeQuestions(content);
-		
+
 		Map<String, Microtask> aux = new LinkedHashMap<String, Microtask>();
 		aux.putAll(content);
 		List<Integer> removeIndex = new ArrayList<Integer>();	
 		FileConsentDTO workerDTO = new FileConsentDTO();
 		HashMap<String,Worker> workerMap = workerDTO.getWorkers();
- 
+
 		//Remove questions that should be excluded
 		if(this.questionToExcludeMap !=null && this.questionToExcludeMap.size()>0)
 			aux = excludeQuestions(aux);
-		
+
 		for (String questionID : aux.keySet()) {
-			
+
 			Vector<Answer> answerList = aux.get(questionID).getAnswerList();
 			for (int i = 0; i < answerList.size(); i++) {				
 				Answer answer = answerList.get(i);
@@ -404,26 +407,40 @@ public class Filter {
 					}
 					if(confidenceDifficultyPairMap.size()>0){
 
-						
+
 						for(Tuple tuple: confidenceDifficultyPairMap.values()){
 							//System.out.println(tuple.toString()+": answer:"+answer.getConfidenceOption()+","+answer.getDifficulty());
-							
+
 							if(( (tuple.confidence != -1) && (answer.getConfidenceOption() == tuple.confidence)) &&
-							((tuple.difficulty != -1) && (answer.getDifficulty() == tuple.difficulty)))
+									((tuple.difficulty != -1) && (answer.getDifficulty() == tuple.difficulty)))
 							{
 								//System.out.print("removed ["+answer.getConfidenceOption()+","+answer.getDifficulty()+"]");
 								removeIndex.add(i);
-							 
+
 								continue;
 							}
 						}
 					}
-				}
 
+					if((stardEndDates[0] !=null) || (stardEndDates[0] !=null) ){
+
+						Date answerDate = answer.getTimeStampDate();
+						if(answerDate.compareTo(stardEndDates[0])<0){
+							System.out.print("removed:" + answerDate);
+							removeIndex.add(i);
+						}
+
+						if(answerDate.compareTo(stardEndDates[1])>0){
+							System.out.print("removed:" + answerDate);
+							removeIndex.add(i);
+						}
+					}
+				}
 			}//for
-		 
+
+
 			System.out.println("Filter, removeIndex size: "+removeIndex.size());
-			
+
 			Collections.reverse(removeIndex);
 			for (Integer index : removeIndex) {
 				Microtask question = content.get(questionID);
@@ -436,9 +453,9 @@ public class Filter {
 		return content;
 	}
 
-	
+
 	public boolean validMicrotask(Microtask microtask){
-				
+
 		HashMap<String, Microtask> map = new HashMap<String,Microtask>();
 		map.put(microtask.getID().toString(), microtask);
 		HashMap<String,Microtask> filteredMap = (HashMap<String, Microtask>) this.apply(map);
@@ -447,7 +464,7 @@ public class Filter {
 		else 
 			return true;
 	}
-	
+
 
 	private void calculateSessionsDuration()
 	{
@@ -536,11 +553,15 @@ public class Filter {
 			HashMap<String, Tuple> confidenceDifficultyPairMap) {
 		this.confidenceDifficultyPairMap = confidenceDifficultyPairMap;
 	}
-	
+
 	public void setQuestionToExcludeMap(TreeMap<String, String> questionsToExcludeMap){
 		this.questionToExcludeMap = questionsToExcludeMap;
 	}
-	
+
+	public void setStartEndDates(Date[] startEndDates) {
+		this.stardEndDates = startEndDates;
+	}
+
 
 
 }

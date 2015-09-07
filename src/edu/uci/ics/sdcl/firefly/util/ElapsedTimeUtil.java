@@ -20,7 +20,7 @@ public class ElapsedTimeUtil {
 	public static Double getElapseTime(HashMap<String,Microtask> microtaskMap){
 		
 		Vector<Answer> answerList = getListOfAnswers(microtaskMap);	
-		//Collections.sort(answerList);
+		Collections.sort(answerList);
 		
 		//for(Answer answer: answerList){
 			//Date timeStamp = answer.getTimeStampDate();
@@ -36,7 +36,7 @@ public class ElapsedTimeUtil {
 		Answer lastAnswer = answerList.lastElement();
 		Date lastDate = lastAnswer.getTimeStampDate();
 		
-		System.out.println(firstAnswer.getTimeStampDate()+":"+lastAnswer.getTimeStampDate());
+		System.out.println(firstAnswer.getTimeStampDate()+" to "+lastAnswer.getTimeStampDate());
 		
 		long millisec = lastDate.getTime() - firstDate.getTime();
 		double hours = millisec /(1000*3600);
