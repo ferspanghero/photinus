@@ -18,9 +18,12 @@ public class CombinedFilterRange {
 	private int maxExplanationSize =-1;//1000
 	private int maxWorkerScore= -1; //5, 4, 3
 	private double maxYearsOfExperience=-1;
+	
 	private int maxWorkerIDKPercentage =-1; //
 	private Date maxDate=null;
-
+	private int maxAnswers=-1;  //maximum number of answers per question
+	private int[] maxAnswerList=null;
+	
 	//Min values
 	private int minDifficulty=-1;//0;
 	private int minWorkerIDKPercentage =-1;//0;
@@ -28,8 +31,6 @@ public class CombinedFilterRange {
 	private double minFirstAnswerDuration = -1;
 	private double minSecondThirdAnswerDuration = -1;
 	private Date minDate=null;
-	
-
 	
 	//Range sets. There are two types. One is for setting the valid range and other to 
 	//explicity excluding items that lie within that range.
@@ -47,6 +48,8 @@ public class CombinedFilterRange {
 	private HashMap<String, Tuple> confidenceDiffcultyPairMap;
 
 	private TreeMap<String,String> questionsToExcludeMap;
+
+
 	
 	public String getRangeName() {
 		return rangeName;
@@ -66,8 +69,6 @@ public class CombinedFilterRange {
 	public void setMaxFirstAnswerDuration(double d) {
 		this.maxFirstAnswerDuration = d;
 	}
-	
-	
 	
 	public double getMaxSecondThirdAnswerDuration() {
 		return maxSecondThirdAnswerDuration;
@@ -239,6 +240,14 @@ public class CombinedFilterRange {
 	public void setMinDate(Date minDate) {
 		this.minDate = minDate;
 	}
+	
+	public int getMaxAnswers() {
+		return maxAnswers;
+	}
+	public void setMaxAnswers(int maxAnswers) {
+		this.maxAnswers = maxAnswers;
+	}
+	
 	public void setUndefinedWithDefault(){
 		
 		if(rangeName==null) rangeName = "ALL";
@@ -259,7 +268,13 @@ public class CombinedFilterRange {
 		if(questionsToExcludeMap==null) questionsToExcludeMap = new TreeMap<String,String>();
 	}
 	
+	public void setMaxAnswerList(int[] maxList) {
+		this.maxAnswerList = maxList;	
+	}
 	
+	public int[] getMaxAnswerList() {
+		return this.maxAnswerList;	
+	}
 	
 	
 

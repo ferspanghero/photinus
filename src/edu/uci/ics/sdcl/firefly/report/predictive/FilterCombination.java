@@ -30,6 +30,7 @@ public class FilterCombination {
 	public static final String CONFIDENCE_DIFFICULTY_PAIRS = "CONFIDENCE_DIFFICULTY_PAIRS";
 	public static final String EXCLUDED_QUESTIONS = "EXCLUDED_QUESTIONS";
 	public static final String FIRST_HOURS = "FIRST_HOURS";
+	public static final String MAX_ANSWERS = "MAX_ANSWERS";
 
 	public HashMap<String,Range> combinationMap = new HashMap<String,Range>();
 
@@ -51,7 +52,8 @@ public class FilterCombination {
 		WORKER_YEARS_OF_EXEPERIENCE,
 		CONFIDENCE_DIFFICULTY_PAIRS,
 		EXCLUDED_QUESTIONS,
-		FIRST_HOURS
+		FIRST_HOURS,
+		MAX_ANSWERS
 	};
 
 	public static String getFilterHeaders(){
@@ -93,7 +95,6 @@ public class FilterCombination {
 
 		Filter filter = new Filter();
 		
-
 		for(String filterName: this.combinationMap.keySet()){
 
 			int min=-1;
@@ -165,6 +166,11 @@ public class FilterCombination {
 																Range range = this.combinationMap.get(filterName);
 																filter.setStartEndDates(range.startEndDates);
 															}
+															else
+																if(filterName.compareTo(FilterCombination.MAX_ANSWERS)==0){
+																	Range range = this.combinationMap.get(filterName);
+																	filter.setMaxAnswers(range.max.intValue());
+																}
 		}
 		return filter;	
 	}

@@ -38,6 +38,9 @@ public class Filter {
 	private double[] FirstAnswerDuration = new double[2];
 	private double[] SecondThirdAnswerDuration = new double[2];
 	private Date[] stardEndDates = new Date[2];
+	private int maxAnswers = -1;
+
+
 
 
 
@@ -217,6 +220,23 @@ public class Filter {
 		}
 		return aux;
 	}
+	
+	
+	private Map<String, Microtask>  excludeAnswers(Map<String, Microtask>  aux){
+		
+		HashMap<String, Microtask> newMap = new HashMap<String, Microtask>();
+		
+		for(Microtask task : aux.values()){
+			Vector<Answer> answerList = task.getAnswerList();
+			Vector<Answer> newList = new Vector<Answer>();
+			for(int i=0;i<this.maxAnswers;i++){
+				newList.add(answerList.get(i));
+				task.setAnswerList(newList);
+				newMap.put(task.getID().toString(), task);
+			}
+		}
+		return newMap;
+	}
 
 	/**
 	 * Applies the filter on the desired content.
@@ -241,9 +261,14 @@ public class Filter {
 		if(this.questionToExcludeMap !=null && this.questionToExcludeMap.size()>0)
 			aux = excludeQuestions(aux);
 
+		//Remove answers that should be excluded
+		if(this.maxAnswers !=-1 )
+			aux = excludeAnswers(aux);
+		
 		for (String questionID : aux.keySet()) {
 
 			Vector<Answer> answerList = aux.get(questionID).getAnswerList();
+			
 			for (int i = 0; i < answerList.size(); i++) {				
 				Answer answer = answerList.get(i);
 				String workerID = answer.getWorkerId();
@@ -435,6 +460,7 @@ public class Filter {
 							removeIndex.add(i);
 						}
 					}
+					
 				}
 			}//for
 
@@ -452,7 +478,6 @@ public class Filter {
 		}//for		
 		return content;
 	}
-
 
 	public boolean validMicrotask(Microtask microtask){
 
@@ -562,6 +587,12 @@ public class Filter {
 		this.stardEndDates = startEndDates;
 	}
 
+	public int getMaxAnswers() {
+		return maxAnswers;
+	}
 
+	public void setMaxAnswers(int maxAnswers) {
+		this.maxAnswers = maxAnswers;
+	}
 
 }

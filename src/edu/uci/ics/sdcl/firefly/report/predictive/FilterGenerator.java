@@ -59,8 +59,8 @@ public class FilterGenerator {
 		HashMap<String, CombinedFilterRange> map;
 		CombinedFilterRange range;
 
-		map = FilterGenerator.setupCombineScoreProfession();
-		range = map.get(FilterGenerator.WORKER_SCORE_100_NON_STUDENT);	
+		map = FilterGenerator.setupMaxAnswers(20);
+		range = map.get(FilterGenerator.MAX_ANSWERS);	
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 
@@ -68,6 +68,7 @@ public class FilterGenerator {
 			for(int maxDifficulty : range.getDifficulytList()){
 				for(int minExplanationSize : range.getExplanationSizeList()){
 					for(int minWorkerScore : range.getWorkerScoreList()){
+						for(int maxAnswers: range.getMaxAnswerList()){
 						FilterCombination combination = new FilterCombination();
 
 						combination.addFilterParam(FilterCombination.FIRST_ANSWER_DURATION, range.getMaxFirstAnswerDuration(), range.getMinFirstAnswerDuration());
@@ -83,8 +84,9 @@ public class FilterGenerator {
 						combination.addFilterParam(FilterCombination.WORKER_YEARS_OF_EXEPERIENCE, range.getMaxYearsOfExperience(), range.getMinWorkerYearsOfExperience());
 						combination.addFilterParam(FilterCombination.EXCLUDED_QUESTIONS, range.getQuestionsToExcludeMap());
 						combination.addFilterParam(FilterCombination.FIRST_HOURS, range.getMaxDate(),range.getMinDate());
-
+						combination.addFilterParam(FilterCombination.MAX_ANSWERS, maxAnswers, 0);
 						filterList.add(combination);
+					}
 					}
 				}
 			}
@@ -168,6 +170,8 @@ public class FilterGenerator {
 	private static final String FIRST_24_HOURS= "FIRST_24_HOURS";
 	private static final String FIRST_36_HOURS= "FIRST_36_HOURS";
 	private static final String FIRST_48_HOURS= "FIRST_48_HOURS";
+	
+	private static final String MAX_ANSWERS = "MAX_ANSWERS";
 
 	private static HashMap<String,CombinedFilterRange> setupNoFilters(){
 
@@ -817,6 +821,19 @@ public class FilterGenerator {
 		}
 	}
 
+	private static HashMap<String,CombinedFilterRange> setupMaxAnswers(int max){
 
+		HashMap<String,CombinedFilterRange> rangeMap = new 	HashMap<String,CombinedFilterRange>();
 
+		CombinedFilterRange range = new CombinedFilterRange();
+		range.setRangeName(MAX_ANSWERS);
+		range.setMaxAnswers(max);
+		
+		int maxList[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+		
+		range.setMaxAnswerList(maxList);
+		range.setUndefinedWithDefault();
+		rangeMap.put(range.getRangeName(), range);
+		return rangeMap;
+	}
 }
