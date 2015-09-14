@@ -8,9 +8,26 @@ public class RandomKeyGenerator {
 
 	public static void main(String [] args){
 		RandomKeyGenerator gen =  new RandomKeyGenerator();
-		System.out.println("randomSequence = "+ gen.generate());
+		//System.out.println("randomSequence = "+ gen.generate());
+		
+				
+		for(int i=0;i<20;i++){
+				System.out.println(gen.getRandom(i));
+		}
 	}
 	
+	public int getRandom(int max){
+				
+		int timeMillis = new Double(System.currentTimeMillis()).intValue();
+		int digit = timeMillis % 10;
+		
+		Random rand = new Random(); 
+		
+		
+		return  rand.nextInt(20);
+		
+		
+	}
 	
 	public String generate(){
 		
@@ -73,5 +90,6 @@ public class RandomKeyGenerator {
 		
 		return character;
 	}
-		
+	
+	
 }

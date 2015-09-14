@@ -8,38 +8,42 @@ package edu.uci.ics.sdcl.firefly.report.predictive;
  */
 public class Outcome {
 
-	FilterCombination filter;
+	public FilterCombination filter;
 	
-	String fileName;
+	public String fileName;
 	
-	String predictorType;
+	public String predictorType;
 	
-	Boolean faultLocated;
+	public Boolean faultLocated;
 	
-	Double signalStrength;
+	public Double signalStrength;
 	
 	/** Maximum different workers per question for this HIT */
-	Integer maxWorkerPerQuestion;
+	public Integer maxWorkerPerQuestion;
 	
 	/** All the YES, NO, IDK for all different questions in the same HIT */
-	Integer totalAnswersObtained;
+	public Integer totalAnswersObtained;
 	
 	/** Minimal number of YES's (has different definitions for MajorityVoting and Positive Voting */
-	Integer threshold; 
+	public Integer threshold; 
 	
-	Integer truePositives;
+	public Integer truePositives;
 	
-	Integer trueNegatives;
+	public Integer trueNegatives;
 
-	Integer falsePositives;	
+	public Integer falsePositives;	
 	
-	Integer falseNegatives;
+	public Integer falseNegatives;
+	
+	public Double precision;
+	
+	public Double recall;
 	
 	/** Total workers that contributed to one HIT after applying the combined filter */
-	Integer differentWorkersPerHIT;
+	public Integer differentWorkersPerHIT;
 	
 	/** Total workers that remained after applying the combined filter */
-	Integer differentWorkersAmongHITs;
+	public Integer differentWorkersAmongHITs;
 		
 	public Outcome(FilterCombination filter, String fileName, String predictorType, Boolean faultLocated,
 			Double signalStrength, Integer maxWorkerPerQuestion, Integer totalAnswers, Integer threshold,
@@ -60,8 +64,21 @@ public class Outcome {
 		this.falseNegatives = falseNegatives;
 		this.differentWorkersPerHIT = differentWorkersPerHIT;
 		this.differentWorkersAmongHITs = differentWorkersAmongHITs;
+		this.precision = this.computePrecision(this.truePositives, this.falsePositives);
+		this.recall = this.computeRecall(this.truePositives, this.falseNegatives);
 	}
 
+	private Double computePrecision(int tp, int fp){
+		Double tpD = new Double(tp);
+		Double fpD =  new Double(fp);
+		return tpD/(tpD+fpD);
+	}
+	
+	private Double computeRecall(int tp, int fn){
+		Double tpD = new Double(tp);
+		Double fnD =  new Double(fn);
+		return tpD/(tpD+fnD);
+	}
 
 	public static String getHeader(){
 		
@@ -69,7 +86,6 @@ public class Outcome {
 				"True positives:True negatives:False positives:False negatives:Different workers in HIT:"+
 				"Different Workers among all HITs";	
 	}
-
 	
 	public String toString(){
 		

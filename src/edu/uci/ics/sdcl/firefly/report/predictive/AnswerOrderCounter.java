@@ -41,8 +41,10 @@ public class AnswerOrderCounter {
 		double FP=0.0;
 
 		String questionID=null;
+		String javaMethod=null;
 
 		double duration=0.0;
+		String answerOption=null;
 
 		boolean isEmpty = false;
 
@@ -50,10 +52,10 @@ public class AnswerOrderCounter {
 
 			if(questionID==null){
 				isEmpty=true;
-				return ", , , , , ";
+				return ", , , , , , , ";
 			}
 			else
-				return questionID+","+duration+","+TP+","+TN+","+FN+","+FP;
+				return javaMethod+","+questionID+","+duration+","+TP+","+TN+","+FN+","+FP+","+answerOption;
 
 		}
 	}
@@ -104,6 +106,8 @@ public class AnswerOrderCounter {
 				if(validDuration(order, duration)){
 					Tuple tuple = computeCorrectness(microtask.getID().toString(),answer.getOption());
 					tuple.duration = duration;
+					tuple.javaMethod = microtask.getFileName();
+					tuple.answerOption = answer.getShortOption();
 					addAnswer(order,tuple,answer.getWorkerId());
 				}
 
@@ -192,9 +196,9 @@ public class AnswerOrderCounter {
 
 
 	private String getDurationOrderFileHeader(){
-		String header = "FirstID,FirstDuration, FirstTP, FirstTN, FirstFN, FirstFP,"+
-				"SecondID,SecondDuration, SecondTP, SecondTN, SecondFN, SecondFP,"+
-				"ThirdID,ThirdDuration, ThirdTP, ThirdTN, ThirdFN, ThirdFP";
+		String header = "FirstJavaMethod,FirstID,FirstDuration, FirstTP, FirstTN, FirstFN, FirstFP,FirstOption,"+
+				"SecondJavaMethod,SecondID,SecondDuration, SecondTP, SecondTN, SecondFN, SecondFP,SecondOption,"+
+				"ThirdJavaMethod,ThirdID,ThirdDuration, ThirdTP, ThirdTN, ThirdFN, ThirdFP,ThirdOption";
 		return header;
 	}
 
@@ -304,6 +308,23 @@ public class AnswerOrderCounter {
 	
 	public static void main(String args[]){
 
+		analyseAllAnswers();
+		//analysesQuartiles();
+	}
+	
+	public static void analyseAllAnswers(){
+		
+		for(int i=0;i<4;i++){
+			AnswerOrderCounter order = new AnswerOrderCounter(0, 7200,0, 7200,0, 7200);
+			FileSessionDTO sessionDTO = new FileSessionDTO();
+			HashMap<String,Microtask> microtaskMap =  (HashMap<String, Microtask>) sessionDTO.getMicrotasks();
+			order.buildDurationsByOrder(microtaskMap);
+			order.printDurationOrderLists();//CSV FILE
+		}
+		
+	}
+	
+	public static void analysesQuartiles(){
 		double[] firstAnswerQuartileVector = {0,167.4,333.4,683.9,3600};
 		double[] secondAnswerQuartileVector = {0,69.9,134.0,266.4,3600};
 		double[] thirdAnswerQuartileVector = {0,55.8,104.9,202.6,3600};
@@ -316,6 +337,8 @@ public class AnswerOrderCounter {
 			FileSessionDTO sessionDTO = new FileSessionDTO();
 			HashMap<String,Microtask> microtaskMap =  (HashMap<String, Microtask>) sessionDTO.getMicrotasks();
 			order.buildDurationsByOrder(microtaskMap);
+			order.printDurationOrderLists();//CSV FILE
+			
 			System.out.println();
 			System.out.print("Quartile "+i +" :");
 			order.printQuartileAccuracy();
@@ -328,6 +351,5 @@ public class AnswerOrderCounter {
 		}
 		
 		System.out.println("Distinct workers in quartile = "+distinctWorkersMap.size());
-		
 	}
 }
