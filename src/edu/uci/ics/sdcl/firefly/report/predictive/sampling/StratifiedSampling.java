@@ -87,7 +87,7 @@ public class StratifiedSampling {
 			Vector<Answer> answerList = task.getAnswerList();
 			ArrayList<Vector<Answer>> sampleAnswerList = this.sampleAnswers(answerList);
 			
-			printSamples(questionID,sampleAnswerList);
+			//printSamples(questionID,sampleAnswerList);
 			
 			sampledAnswerByQuestion.put(questionID, sampleAnswerList);
 		}
@@ -198,9 +198,9 @@ public class StratifiedSampling {
 	}
 	
 	public static void main(String args[]){
-		StratifiedSampling sampling = new StratifiedSampling(3,2,20);
-		//sampling.testSampleAnswerForQuestion();
-		sampling.testGenerateSamplesPerQuestion();
+		StratifiedSampling sampling = new StratifiedSampling(19,2,20);
+		sampling.testSampleAnswerForQuestion();
+		//sampling.testGenerateSamplesPerQuestion();
 	}
 
 
