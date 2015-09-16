@@ -1,4 +1,4 @@
-package edu.uci.ics.sdcl.firefly.report.predictive.sampling;
+package edu.uci.ics.sdcl.firefly.report.predictive.montecarlo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,13 +17,13 @@ import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
  * 
  * @author adrianoc
  */
-public class StratifiedSampling {
+public class RandomSampler {
 
 	private int numberOfSamples;
 	private int sampleSize;  
 	private int populationSize;
 
-	public StratifiedSampling(int sampleSize, int numberOfSamples, int populationSize){
+	public RandomSampler(int sampleSize, int numberOfSamples, int populationSize){
 		this.sampleSize = sampleSize;
 		this.numberOfSamples = numberOfSamples;
 		this.populationSize = populationSize;
@@ -198,7 +198,7 @@ public class StratifiedSampling {
 	}
 	
 	public static void main(String args[]){
-		StratifiedSampling sampling = new StratifiedSampling(19,2,20);
+		RandomSampler sampling = new RandomSampler(19,2,20);
 		sampling.testSampleAnswerForQuestion();
 		//sampling.testGenerateSamplesPerQuestion();
 	}

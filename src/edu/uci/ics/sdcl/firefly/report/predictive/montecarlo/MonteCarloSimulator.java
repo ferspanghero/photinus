@@ -1,4 +1,4 @@
-package edu.uci.ics.sdcl.firefly.report.predictive.sampling;
+package edu.uci.ics.sdcl.firefly.report.predictive.montecarlo;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -16,7 +16,7 @@ import edu.uci.ics.sdcl.firefly.report.predictive.Predictor;
 import edu.uci.ics.sdcl.firefly.report.predictive.AnswerConfidenceCounter.Output;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 
-public class PredictorSimulator {
+public class MonteCarloSimulator {
 
 	/**  list of precision values calculated for each sample */
 	private ArrayList<DataPoint> outcomes_PositiveVoting = new ArrayList<DataPoint>();
@@ -65,7 +65,7 @@ public class PredictorSimulator {
 	}//DataPoint internal class
 
 
-	public PredictorSimulator(){
+	public MonteCarloSimulator(){
 
 		//Obtain bug covering question list
 		PropertyManager manager = PropertyManager.initializeSingleton();
@@ -211,13 +211,13 @@ public class PredictorSimulator {
 		for(int i=1;i<=19;i++){
 			int sampleSize = i; //how many answers per question
 			
-			StratifiedSampling sampling = new StratifiedSampling(sampleSize, numberOfSamples, populationSize);
+			RandomSampler sampling = new RandomSampler(sampleSize, numberOfSamples, populationSize);
 			FileSessionDTO dto =  new FileSessionDTO();
 
 			HashMap<String, Microtask> microtaskMap = (HashMap<String, Microtask>) dto.getMicrotasks();
 
 			ArrayList<HashMap<String, Microtask>> listOfMicrotaskMaps =sampling.generateMicrotaskMap(microtaskMap);
-			PredictorSimulator sim = new PredictorSimulator();
+			MonteCarloSimulator sim = new MonteCarloSimulator();
 
 			sim.computeVoting(listOfMicrotaskMaps);
 
