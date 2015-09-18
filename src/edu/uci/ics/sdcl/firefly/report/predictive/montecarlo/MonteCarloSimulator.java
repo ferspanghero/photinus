@@ -9,6 +9,7 @@ import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
 import edu.uci.ics.sdcl.firefly.report.predictive.AnswerData;
+import edu.uci.ics.sdcl.firefly.report.predictive.DataPoint;
 import edu.uci.ics.sdcl.firefly.report.predictive.MajorityVoting;
 import edu.uci.ics.sdcl.firefly.report.predictive.Outcome;
 import edu.uci.ics.sdcl.firefly.report.predictive.PositiveVoting;
@@ -30,39 +31,6 @@ public class MonteCarloSimulator {
 	private HashMap<String,String> bugCoveringMap;
 
 
-	public class DataPoint {
-
-		Double precision;
-		Double recall;
-
-		public DataPoint(){}
-
-		HashMap<String, Outcome> fileNameOutcomeMap = new HashMap<String, Outcome>();
-
-		public void computeAverages(){
-
-			ArrayList<Double> precisionValues = new ArrayList<Double>();
-			ArrayList<Double> recallValues = new ArrayList<Double>();
-
-			for(String key: fileNameOutcomeMap.keySet()){
-				Outcome outcome = fileNameOutcomeMap.get(key);
-				precisionValues.add(outcome.precision);
-				recallValues.add(outcome.recall);
-			}
-			precision = average(precisionValues);
-			recall = average(recallValues);
-		}
-
-
-		private Double average(ArrayList<Double> values){
-
-			Double total = 0.0;
-			for(int i=0; i<values.size();i++){
-				total = total + values.get(i);
-			}
-			return total/values.size();
-		}
-	}//DataPoint internal class
 
 
 	public MonteCarloSimulator(){
@@ -184,10 +152,10 @@ public class MonteCarloSimulator {
 				DataPoint datapointMV = this.outcomes_MajorityVoting.get(i);
 
 				String line= new Integer(i).toString() +","+
-						datapointPV.precision.toString()+","+
-						datapointPV.recall.toString()+","+
-						datapointMV.precision.toString()+","+
-						datapointMV.recall.toString();
+						datapointPV.averagePrecision.toString()+","+
+						datapointPV.averageRecall.toString()+","+
+						datapointMV.averagePrecision.toString()+","+
+						datapointMV.averageRecall.toString();
 
 				log.write(line+"\n");
 			}
@@ -206,7 +174,6 @@ public class MonteCarloSimulator {
 
 		int populationSize = 20; //total answers per question
 		int numberOfSamples = 10000; //how many simulated crowds
-		
 
 		for(int i=1;i<=19;i++){
 			int sampleSize = i; //how many answers per question
