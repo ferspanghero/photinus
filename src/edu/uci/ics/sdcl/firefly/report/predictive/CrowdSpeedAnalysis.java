@@ -10,6 +10,7 @@ import java.util.Vector;
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
+import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 import edu.uci.ics.sdcl.firefly.util.RoundDouble;
 
@@ -62,7 +63,6 @@ public class CrowdSpeedAnalysis {
 			}	
 		}
 		return currentAnswer;
-
 	}
 
 	private Answer getLastAnswer(HashMap<String,Microtask> map){
@@ -89,7 +89,8 @@ public class CrowdSpeedAnalysis {
 		return millisec /(3600 *1000);
 	}
 
-
+	
+	
 	private HashMap<String, Microtask> filterMicrotaskMap(int maxAnswers, HashMap<String, Microtask> map){
 
 		HashMap<String, Microtask> newMap = new HashMap<String, Microtask>();
@@ -98,8 +99,10 @@ public class CrowdSpeedAnalysis {
 			Vector<Answer> answerList = microtask.getAnswerList();
 			Vector<Answer> newAnswerList = new Vector<Answer>();
 			for(int i=0;i<maxAnswers;i++){
-				Answer answer = answerList.get(i);
-				newAnswerList.add(answer);
+				if(answerList.size()>i){
+					Answer answer = answerList.get(i);
+					newAnswerList.add(answer);
+				}
 			}
 			Microtask newMicrotask = microtask.getSimpleVersion();
 			newMicrotask.setAnswerList(newAnswerList);
@@ -129,7 +132,7 @@ public class CrowdSpeedAnalysis {
 	}
 
 	//-------------------------------------------------------------------------------------------------------
-	private static Integer countWorkers(
+	private Integer countWorkers(
 			HashMap<String, Microtask> filteredMicrotaskMap, String fileName) {
 
 		HashMap<String,String> workerMap = new HashMap<String, String>();
@@ -144,7 +147,16 @@ public class CrowdSpeedAnalysis {
 		return workerMap.size();
 	}
 
-	private static HashMap<String, ArrayList<String>>  extractAnswersForFileName(
+	private Integer countAnswers(HashMap<String, Microtask> map){
+
+		int count=0;
+		for(Microtask microtask: map.values()){
+			count = count + microtask.getNumberOfAnswers();
+		}
+		return count;
+	}
+
+	private HashMap<String, ArrayList<String>>  extractAnswersForFileName(
 			HashMap<String, Microtask> microtaskMap,String fileName){
 
 		int answerCount = 0;
@@ -182,6 +194,10 @@ public class CrowdSpeedAnalysis {
 			outcome = computeDataPoint(data,predictor);
 			majorityVDataPoint.fileNameOutcomeMap.put(fileName, outcome);
 		}
+		
+		positiveVDataPoint.totalAnswers = this.countAnswers(microtaskMap);
+		majorityVDataPoint.totalAnswers = positiveVDataPoint.totalAnswers;
+		
 		positiveVDataPoint.computeAverages();//Compute the average precision and recall for all Java methods
 		majorityVDataPoint.computeAverages();
 
@@ -195,31 +211,31 @@ public class CrowdSpeedAnalysis {
 		this.outcomes_MajorityVoting.add(majorityVDataPoint);
 	}
 
-	public void computeElapsedTimeForAnswerLevels(){
+	public void computeElapsedTimeForAnswerLevels(HashMap<String, Microtask> map){
 
-		FileSessionDTO dto = new FileSessionDTO();
-		HashMap<String, Microtask> map = (HashMap<String, Microtask>) dto.getMicrotasks();
+		if(map==null){
+			FileSessionDTO dto = new FileSessionDTO();
+			map = (HashMap<String, Microtask>) dto.getMicrotasks();
+		}
 		for(int i=1;i<=20;i++){
 			HashMap<String, Microtask> newMap = this.filterMicrotaskMap(i, map);
 			Answer firstAnswer = this.getFirstAnswer(newMap);
 			Answer lastAnswer = this.getLastAnswer(newMap);
 			Double elapsedTime = this.computeElapsedTime_Hours(firstAnswer.getTimeStampDate(),lastAnswer.getTimeStampDate());
-
 			this.computeVoting(newMap,RoundDouble.round(elapsedTime, 1));
-
 		}
 	}
 
 	//----------------------------------------------------------------------
 
 	private String getHeader(){
-		return "Answer level,Average Precision_PV,Average Recall_PV,Average Precision_MV,Average Recall_MV, Total Workers,"
+		return "Answer level,Average Precision_PV,Average Recall_PV,Average Precision_MV,Average Recall_MV, Total Workers, Total Answers, "
 				+ " Hours taken, Faults Located_PV, Faults Located_MV, False Positives";
 	}
 
 	public void printDataPointsToFile(){
 
-		String destination = "C://firefly//SpeedAnalysis//speedAnalysis.csv";
+		String destination = "C://firefly//SpeedAnalysis//speedAnalysis_NonStudents.csv";
 		BufferedWriter log;
 
 		try {
@@ -238,13 +254,11 @@ public class CrowdSpeedAnalysis {
 						datapointMV.averagePrecision.toString()+","+
 						datapointMV.averageRecall.toString()+","+
 						datapointMV.totalWorkers.toString()+","+
+						datapointMV.totalAnswers.toString()+","+
 						datapointMV.elapsedTime.toString()+","+
 						datapointPV.faultsLocated.toString()+","+
 						datapointMV.faultsLocated.toString()+","+
 						datapointPV.falsePositives.toString();
-				
-
-
 				log.write(line+"\n");
 			}
 
@@ -257,13 +271,39 @@ public class CrowdSpeedAnalysis {
 		}
 	}
 
+	//-------------------------------------------------------------------
+	//Work with filtered map, instead of all filters
 
+	public HashMap<String, Microtask> getFilteredMap(){
+		FileSessionDTO dto = new FileSessionDTO();
+		HashMap<String,Microtask> map =  (HashMap<String, Microtask>) dto.getMicrotasks();
 
+		ArrayList<FilterCombination> filterList = FilterGenerator.generateAnswerFilterCombinations();
+
+		FilterCombination combination = filterList.get(0);
+		Filter filter = combination.getFilter();
+
+		HashMap<String,Microtask> filteredMap =  (HashMap<String, Microtask>) filter.apply(map);
+
+		return filteredMap;
+	}
+
+	public int getMaxAnswersPerQuestion(HashMap<String, Microtask> map){
+		return 0;
+	}
+	
+	/**
+	 * 
+	 * @param map
+	 * @param maxAnswers
+	 */
+	public void simulateMonteCarlo(HashMap<String, Microtask> map, int maxAnswers){}
+	
 	//----------------------------------------------------------------------
 
 	public static void main(String args[]){
 		CrowdSpeedAnalysis analysis =  new CrowdSpeedAnalysis();
-		analysis.computeElapsedTimeForAnswerLevels();
+		analysis.computeElapsedTimeForAnswerLevels(analysis.getFilteredMap());
 		analysis.printDataPointsToFile();
 	}
 

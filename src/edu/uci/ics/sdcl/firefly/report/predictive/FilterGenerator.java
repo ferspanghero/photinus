@@ -42,7 +42,7 @@ public class FilterGenerator {
 
 		map =  FilterGenerator.setupNoFilters();
 		range = map.get(FilterGenerator.NO_FILTERS);
-		
+
 
 		//run the first 6h, 9h, 12h, 24h, 48h using the filtered logs. //Or make a filter for that.
 
@@ -59,8 +59,8 @@ public class FilterGenerator {
 		HashMap<String, CombinedFilterRange> map;
 		CombinedFilterRange range;
 
-		map = FilterGenerator.setupMaxAnswers(20);
-		range = map.get(FilterGenerator.MAX_ANSWERS);	
+		map = FilterGenerator.setupProfessionRangeFilters();
+		range = map.get(FilterGenerator.WORKER_NON_STUDENT);	
 
 		ArrayList<FilterCombination> filterList = new ArrayList<FilterCombination>();
 
@@ -69,24 +69,24 @@ public class FilterGenerator {
 				for(int minExplanationSize : range.getExplanationSizeList()){
 					for(int minWorkerScore : range.getWorkerScoreList()){
 						for(int maxAnswers: range.getMaxAnswerList()){
-						FilterCombination combination = new FilterCombination();
+							FilterCombination combination = new FilterCombination();
 
-						combination.addFilterParam(FilterCombination.FIRST_ANSWER_DURATION, range.getMaxFirstAnswerDuration(), range.getMinFirstAnswerDuration());
-						combination.addFilterParam(FilterCombination.SECOND_THIRD_ANSWER_DURATION, range.getMaxSecondThirdAnswerDuration(), range.getMinSecondThirdAnswerDuration());
-						combination.addFilterParam(FilterCombination.CONFIDENCE_DIFFICULTY_PAIRS,range.getConfidenceDifficultyPairList());
-						combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, range.getMaxConfidence(), minConfidence);
-						combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty,range.getMinDifficulty());
-						combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, range.getMaxExplanationSize(), minExplanationSize);
-						combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, range.getWorkerScoreExclusionList());
-						combination.addFilterParam(FilterCombination.WORKER_SCORE, range.getMaxWorkerScore(), minWorkerScore);
-						combination.addFilterParam(FilterCombination.WORKER_IDK, range.getMaxWorkerIDKPercentage(),range.getMinWorkerIDKPercentage());
-						combination.addFilterParam(FilterCombination.WORKER_PROFESSION, range.getProfessionExclusionList());
-						combination.addFilterParam(FilterCombination.WORKER_YEARS_OF_EXEPERIENCE, range.getMaxYearsOfExperience(), range.getMinWorkerYearsOfExperience());
-						combination.addFilterParam(FilterCombination.EXCLUDED_QUESTIONS, range.getQuestionsToExcludeMap());
-						combination.addFilterParam(FilterCombination.FIRST_HOURS, range.getMaxDate(),range.getMinDate());
-						combination.addFilterParam(FilterCombination.MAX_ANSWERS, maxAnswers, 0);
-						filterList.add(combination);
-					}
+							combination.addFilterParam(FilterCombination.FIRST_ANSWER_DURATION, range.getMaxFirstAnswerDuration(), range.getMinFirstAnswerDuration());
+							combination.addFilterParam(FilterCombination.SECOND_THIRD_ANSWER_DURATION, range.getMaxSecondThirdAnswerDuration(), range.getMinSecondThirdAnswerDuration());
+							combination.addFilterParam(FilterCombination.CONFIDENCE_DIFFICULTY_PAIRS,range.getConfidenceDifficultyPairList());
+							combination.addFilterParam(FilterCombination.CONFIDENCE_LEVEL, range.getMaxConfidence(), minConfidence);
+							combination.addFilterParam(FilterCombination.DIFFICULTY_LEVEL, maxDifficulty,range.getMinDifficulty());
+							combination.addFilterParam(FilterCombination.EXPLANATION_SIZE, range.getMaxExplanationSize(), minExplanationSize);
+							combination.addFilterParam(FilterCombination.WORKER_SCORE_EXCLUSION, range.getWorkerScoreExclusionList());
+							combination.addFilterParam(FilterCombination.WORKER_SCORE, range.getMaxWorkerScore(), minWorkerScore);
+							combination.addFilterParam(FilterCombination.WORKER_IDK, range.getMaxWorkerIDKPercentage(),range.getMinWorkerIDKPercentage());
+							combination.addFilterParam(FilterCombination.WORKER_PROFESSION, range.getProfessionExclusionList());
+							combination.addFilterParam(FilterCombination.WORKER_YEARS_OF_EXEPERIENCE, range.getMaxYearsOfExperience(), range.getMinWorkerYearsOfExperience());
+							combination.addFilterParam(FilterCombination.EXCLUDED_QUESTIONS, range.getQuestionsToExcludeMap());
+							combination.addFilterParam(FilterCombination.FIRST_HOURS, range.getMaxDate(),range.getMinDate());
+							combination.addFilterParam(FilterCombination.MAX_ANSWERS, maxAnswers, 0);
+							filterList.add(combination);
+						}
 					}
 				}
 			}
@@ -170,7 +170,7 @@ public class FilterGenerator {
 	private static final String FIRST_24_HOURS= "FIRST_24_HOURS";
 	private static final String FIRST_36_HOURS= "FIRST_36_HOURS";
 	private static final String FIRST_48_HOURS= "FIRST_48_HOURS";
-	
+
 	private static final String MAX_ANSWERS = "MAX_ANSWERS";
 
 	private static HashMap<String,CombinedFilterRange> setupNoFilters(){
@@ -793,7 +793,7 @@ public class FilterGenerator {
 		//----------------------------------
 		range = createDateRange(48,FIRST_48_HOURS);
 		rangeMap.put(range.getRangeName(), range);
-		
+
 		return rangeMap;
 
 	}
@@ -828,9 +828,9 @@ public class FilterGenerator {
 		CombinedFilterRange range = new CombinedFilterRange();
 		range.setRangeName(MAX_ANSWERS);
 		range.setMaxAnswers(max);
-		
+
 		int maxList[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
-		
+
 		range.setMaxAnswerList(maxList);
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(), range);

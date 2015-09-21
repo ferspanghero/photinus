@@ -266,6 +266,7 @@ public class CombinedFilterRange {
 		if(yearsOfExperienceList==null)yearsOfExperienceList = new double[] {-1.0}; //{25,50,75}; //{33};
 		if(confidenceDiffcultyPairMap==null) confidenceDiffcultyPairMap = new HashMap<String,Tuple>();
 		if(questionsToExcludeMap==null) questionsToExcludeMap = new TreeMap<String,String>();
+		if(this.maxAnswerList==null) maxAnswerList= new int[]{-1};
 	}
 	
 	public void setMaxAnswerList(int[] maxList) {

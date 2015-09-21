@@ -9,6 +9,7 @@ public class DataPoint {
 	public Double averageRecall;
 	public Double elapsedTime;
 	public Integer totalWorkers;
+	public Integer totalAnswers=0;
 	public Integer faultsLocated=0;
 	public Integer falsePositives=0;
 
@@ -31,10 +32,7 @@ public class DataPoint {
 		}
 		averagePrecision = average(precisionValues);
 		averageRecall = average(recallValues);
-
 	}
-
-
 
 	private Double average(ArrayList<Double> values){
 
