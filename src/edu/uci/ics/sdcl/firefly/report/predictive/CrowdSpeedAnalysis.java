@@ -11,6 +11,7 @@ import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
+import edu.uci.ics.sdcl.firefly.util.MicrotaskMapUtil;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 import edu.uci.ics.sdcl.firefly.util.RoundDouble;
 
@@ -195,7 +196,7 @@ public class CrowdSpeedAnalysis {
 			majorityVDataPoint.fileNameOutcomeMap.put(fileName, outcome);
 		}
 		
-		positiveVDataPoint.totalAnswers = this.countAnswers(microtaskMap);
+		positiveVDataPoint.totalAnswers = MicrotaskMapUtil.countAnswers(microtaskMap);
 		majorityVDataPoint.totalAnswers = positiveVDataPoint.totalAnswers;
 		
 		positiveVDataPoint.computeAverages();//Compute the average precision and recall for all Java methods
@@ -204,8 +205,8 @@ public class CrowdSpeedAnalysis {
 		positiveVDataPoint.elapsedTime = elapsedTime;
 		majorityVDataPoint.elapsedTime = elapsedTime;
 
-		positiveVDataPoint.totalWorkers = totalDifferentWorkersAmongHITs;
-		majorityVDataPoint.totalWorkers = totalDifferentWorkersAmongHITs;
+		positiveVDataPoint.totalWorkers = new Double(totalDifferentWorkersAmongHITs);
+		majorityVDataPoint.totalWorkers = new Double(totalDifferentWorkersAmongHITs);
 
 		this.outcomes_PositiveVoting.add(positiveVDataPoint);
 		this.outcomes_MajorityVoting.add(majorityVDataPoint);
@@ -289,15 +290,37 @@ public class CrowdSpeedAnalysis {
 	}
 
 	public int getMaxAnswersPerQuestion(HashMap<String, Microtask> map){
-		return 0;
+		
+		int maxAnswers=0;
+		for(Microtask microtask: map.values()){
+			maxAnswers = maxAnswers<microtask.getNumberOfAnswers()? microtask.getNumberOfAnswers(): maxAnswers;
+		}
+		return maxAnswers;
+	}
+	
+	/**
+	 * The largest number of answers that all questions have. 
+	 * 
+	 * @param map
+	 * @return
+	 */
+	public int getMaxCommonAnswersPerQuestion(HashMap<String, Microtask> map){
+		
+		int maxCommonAnswers=20;
+		for(Microtask microtask: map.values()){
+			maxCommonAnswers = maxCommonAnswers>microtask.getNumberOfAnswers()? microtask.getNumberOfAnswers(): maxCommonAnswers;
+		}
+		return maxCommonAnswers;
 	}
 	
 	/**
 	 * 
 	 * @param map
-	 * @param maxAnswers
+	 * @param minAnswers the minimal number of answers for which all questions
 	 */
-	public void simulateMonteCarlo(HashMap<String, Microtask> map, int maxAnswers){}
+	public void simulateMonteCarlo(HashMap<String, Microtask> map, int maxAnswers){
+		
+	}
 	
 	//----------------------------------------------------------------------
 

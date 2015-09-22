@@ -5,13 +5,16 @@ import java.util.HashMap;
 
 public class DataPoint {
 
-	public Double averagePrecision;
-	public Double averageRecall;
-	public Double elapsedTime;
-	public Integer totalWorkers;
-	public Integer totalAnswers=0;
-	public Integer faultsLocated=0;
-	public Integer falsePositives=0;
+	public Double averagePrecision=0.0;
+	public Double averageRecall=0.0;
+	public Double elapsedTime=0.0;
+	public Double totalWorkers=0.0;
+	public Double totalAnswers=0.0;
+	public Double faultsLocated=0.0;
+	public Double falsePositives=0.0;
+	public Double falseNegatives=0.0;
+	public Double truePositives=0.0;
+	public Double trueNegatives=0.0;
 
 	public DataPoint(){}
 
