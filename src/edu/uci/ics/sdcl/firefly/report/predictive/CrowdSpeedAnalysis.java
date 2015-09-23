@@ -279,7 +279,7 @@ public class CrowdSpeedAnalysis {
 		FileSessionDTO dto = new FileSessionDTO();
 		HashMap<String,Microtask> map =  (HashMap<String, Microtask>) dto.getMicrotasks();
 
-		ArrayList<FilterCombination> filterList = FilterGenerator.generateAnswerFilterCombinations();
+		ArrayList<FilterCombination> filterList = FilterGenerator.generateAnswerFilterCombinationList();
 
 		FilterCombination combination = filterList.get(0);
 		Filter filter = combination.getFilter();
@@ -289,29 +289,7 @@ public class CrowdSpeedAnalysis {
 		return filteredMap;
 	}
 
-	public int getMaxAnswersPerQuestion(HashMap<String, Microtask> map){
-		
-		int maxAnswers=0;
-		for(Microtask microtask: map.values()){
-			maxAnswers = maxAnswers<microtask.getNumberOfAnswers()? microtask.getNumberOfAnswers(): maxAnswers;
-		}
-		return maxAnswers;
-	}
 	
-	/**
-	 * The largest number of answers that all questions have. 
-	 * 
-	 * @param map
-	 * @return
-	 */
-	public int getMaxCommonAnswersPerQuestion(HashMap<String, Microtask> map){
-		
-		int maxCommonAnswers=20;
-		for(Microtask microtask: map.values()){
-			maxCommonAnswers = maxCommonAnswers>microtask.getNumberOfAnswers()? microtask.getNumberOfAnswers(): maxCommonAnswers;
-		}
-		return maxCommonAnswers;
-	}
 	
 	/**
 	 * 

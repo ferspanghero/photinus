@@ -21,10 +21,10 @@ import edu.uci.ics.sdcl.firefly.util.RoundDouble;
 
 public class MonteCarloSimulator {
 
-	/**  list of precision values calculated for each sample */
+	/**  list of precision values calculated for each sample using Positive voting predictor*/
 	private ArrayList<DataPoint> outcomes_PositiveVoting = new ArrayList<DataPoint>();
 
-	/**  list of precision values calculated for each sample */
+	/**  list of precision values calculated for each sample using Majority voting predictor*/
 	private ArrayList<DataPoint> outcomes_MajorityVoting = new ArrayList<DataPoint>();
 
 	private String[] fileNameList = {"HIT01_8", "HIT02_24", "HIT03_6", "HIT04_7",
@@ -34,9 +34,13 @@ public class MonteCarloSimulator {
 
 	private HashMap<String, DataPoint> averageDataPointByAnswerLevel = new HashMap<String,DataPoint>();
 
+	private String outputFolder = "";
+	
+	
+	public MonteCarloSimulator(String outputFolder){
 
-	public MonteCarloSimulator(){
-
+		this.outputFolder = outputFolder;
+		
 		//Obtain bug covering question list
 		PropertyManager manager = PropertyManager.initializeSingleton();
 		bugCoveringMap = new HashMap<String,String>();
@@ -45,8 +49,9 @@ public class MonteCarloSimulator {
 			bugCoveringMap.put(questionID,questionID);
 		}
 	}
+	
 
-	public void computeVoting(ArrayList<HashMap<String,Microtask>> listOfMicrotaskMaps){
+	private void computeVoting(ArrayList<HashMap<String,Microtask>> listOfMicrotaskMaps){
 
 		for(int i=0; i<listOfMicrotaskMaps.size();i++){
 
@@ -151,8 +156,6 @@ public class MonteCarloSimulator {
 		return averageDataPoint;
 	}
 	
-	
-	
 	private Outcome computeDataPoint(AnswerData answerData, Predictor predictor) {
 
 		Outcome outcome = new Outcome(null,
@@ -173,9 +176,6 @@ public class MonteCarloSimulator {
 		return outcome;
 	}
 
-
-
-
 	private String getHeader(){
 		return "Sample,Average Precision_PV,Average Recall_PV,Average Precision_MV,Average Recall_MV";
 	}
@@ -183,7 +183,7 @@ public class MonteCarloSimulator {
 	public void printDataPointsToFile(int name){
 
 		String nameStr = new Integer(name).toString();
-		String destination = "C://firefly//SamplingPredictor//"+ nameStr+".csv";
+		String destination = "C://firefly//"+this.outputFolder+"//"+ nameStr+".csv";
 		BufferedWriter log;
 
 		try {
@@ -213,39 +213,43 @@ public class MonteCarloSimulator {
 			e.printStackTrace();
 		}
 	}
-
-	public HashMap<String,DataPoint> computeSimulation(int populationSize, int numberOfSamples){
+	
+	public HashMap<String,DataPoint> computeSimulation(int populationSize, int numberOfSamples, 
+			HashMap<String, Microtask> microtaskMap){
 		
 		for(int i=1;i<=populationSize-1;i++){
-			int sampleSize = i; //how many answers per question
 			
+			//how many answers per question
+			int sampleSize = i; 
+			
+			//Generate the samples
 			RandomSampler sampling = new RandomSampler(sampleSize, numberOfSamples, populationSize);
-			FileSessionDTO dto =  new FileSessionDTO();
-
-			HashMap<String, Microtask> microtaskMap = (HashMap<String, Microtask>) dto.getMicrotasks();
-
 			ArrayList<HashMap<String, Microtask>> listOfMicrotaskMaps =sampling.generateMicrotaskMap(microtaskMap);
 		
-
+			//Compute statistics for each sample
 			computeVoting(listOfMicrotaskMaps);
 			
+			//Save samples with statistics to files
 			printDataPointsToFile(sampleSize);
 			
-			computeAverages(sampleSize);
-			
+			//Takes the average of all samples		
+			computeAverages(sampleSize);	
 		}
-
 		return this.averageDataPointByAnswerLevel;
 	}
 
+	/** THis is used to test, but the actual call is made from class SimulationController */
 	public static void main(String args[]){
 
 		int populationSize = 20; //total answers per question
 		int numberOfSamples = 10000; //how many simulated crowds
 
-		MonteCarloSimulator sim = new MonteCarloSimulator();
+		MonteCarloSimulator sim = new MonteCarloSimulator("SamplingPredictor");
 		
-		sim.computeSimulation(populationSize, numberOfSamples);
+		FileSessionDTO dto = new FileSessionDTO();
+		HashMap<String, Microtask> microtaskMap = (HashMap<String, Microtask>) dto.getMicrotasks();
+		
+		sim.computeSimulation(populationSize, numberOfSamples, microtaskMap);
 	}
 
 }
