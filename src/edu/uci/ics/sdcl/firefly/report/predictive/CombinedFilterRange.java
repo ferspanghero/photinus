@@ -1,20 +1,28 @@
 package edu.uci.ics.sdcl.firefly.report.predictive;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+/**
+ * 
+ * This class holds all possible attributes and the upper and lower bound for their values.
+ * 
+ * Not all attributes need to be set. We used -1 as flag to indicate that the attribute should not be used for filtering.
+ * 
+ * @author adrianoc
+ */
 public class CombinedFilterRange {
 
 	private String rangeName;
 
-	//Max values
+	//Maximum values
 	private double maxSessionDuration = -1; //default is 3h 
 	private double maxFirstAnswerDuration = -1; //First answer
 	private double maxSecondThirdAnswerDuration = -1; //Second and Third answerss 
 
 	private int maxConfidence= -1; //5
+	private int maxDifficulty = -1; //5
 	private int maxExplanationSize =-1;//1000
 	private int maxWorkerScore= -1; //5, 4, 3
 	private double maxYearsOfExperience=-1;
@@ -24,7 +32,8 @@ public class CombinedFilterRange {
 	private int maxAnswers=-1;  //maximum number of answers per question
 	private int[] maxAnswerList=null;
 	
-	//Min values
+	//Minimum values
+	private int minConfidence = -1; //0
 	private int minDifficulty=-1;//0;
 	private int minWorkerIDKPercentage =-1;//0;
 	private double minWorkerYearsOfExperience=-1; //0
@@ -44,12 +53,19 @@ public class CombinedFilterRange {
 	private int[] IDKpercentageList; //{25,50,75}; //{33};
 	private String[] professionExclusionList;
 	private double[] yearsOfExperienceList; //0, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40
+	private int minWorkerScore = -1;
+	private int minExplanationSize =-1;
 
 	private HashMap<String, Tuple> confidenceDiffcultyPairMap;
 
 	private TreeMap<String,String> questionsToExcludeMap;
 
 
+
+
+
+	//-----------------------------------------------------
+	//getters and setters
 	
 	public String getRangeName() {
 		return rangeName;
@@ -227,7 +243,6 @@ public class CombinedFilterRange {
 		this.questionsToExcludeMap = map;
 	}
 	
-	
 	public Date getMaxDate() {
 		return maxDate;
 	}
@@ -247,6 +262,48 @@ public class CombinedFilterRange {
 	public void setMaxAnswers(int maxAnswers) {
 		this.maxAnswers = maxAnswers;
 	}
+	
+	public void setMaxAnswerList(int[] maxList) {
+		this.maxAnswerList = maxList;	
+	}
+	
+	public int[] getMaxAnswerList() {
+		return this.maxAnswerList;	
+	}
+	
+	public int getMaxDifficulty() {
+		return this.maxDifficulty;
+	}
+	
+	public void setMaxDifficulty(int difficulty) {
+		this.maxDifficulty = difficulty;
+	}
+	
+	public int getMinConfidence() {
+		return this.minConfidence;
+	}
+	
+	public void setMinConfidence(int confidence) {
+		this.minConfidence =  confidence;
+	}
+	
+	public int getMinWorkerScore() {
+		return this.minWorkerScore;
+	}
+	
+	public void setMinWorkerScore(int score) {
+		this.minWorkerScore = score;
+	}
+	
+	public int getMinExplanationSize() {
+		return this.minExplanationSize;
+	}
+	
+	public void setMinExplanationSize(int size){
+		this.minExplanationSize = size;
+	}
+	
+	//----------------------------------------
 	
 	public void setUndefinedWithDefault(){
 		
@@ -269,13 +326,8 @@ public class CombinedFilterRange {
 		if(this.maxAnswerList==null) maxAnswerList= new int[]{-1};
 	}
 	
-	public void setMaxAnswerList(int[] maxList) {
-		this.maxAnswerList = maxList;	
-	}
 	
-	public int[] getMaxAnswerList() {
-		return this.maxAnswerList;	
-	}
+	
 	
 	
 

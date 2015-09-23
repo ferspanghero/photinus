@@ -169,7 +169,7 @@ public class AnswerConfidenceCounter {
 		FileSessionDTO sessionDTO = new FileSessionDTO();
 		
 		//Produce the list of filters
-		ArrayList<FilterCombination> filterList = FilterGenerator.generateAnswerFilterCombinations();
+		ArrayList<FilterCombination> filterList = FilterGenerator.generateAnswerFilterCombinationList();
 		FilterCombination combination =  filterList.get(0);
 		Filter filter = combination.getFilter();
 	

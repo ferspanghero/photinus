@@ -17,6 +17,7 @@ import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
 import edu.uci.ics.sdcl.firefly.report.predictive.Tuple;
+import edu.uci.ics.sdcl.firefly.util.MicrotaskMapUtil;
 
 /**
  * Responsible for filter a collection of Sessions.
@@ -240,12 +241,12 @@ public class Filter {
 
 	/**
 	 * Applies the filter on the desired content.
-	 * @param content: Desired content to be filtered
-	 * @return: The filtered content
+	 * @param content Desired content to be filtered
+	 * @return The filtered content
 	 */
 	public Map<String, Microtask> apply(HashMap<String, Microtask> microtaskMap)
 	{
-		Map<String, Microtask> content = (Map<String, Microtask>)  microtaskMap.clone();
+		Map<String, Microtask> content = MicrotaskMapUtil.cloneMap(microtaskMap);
 
 		//Remove questions that should be excluded
 		if(this.questionToExcludeMap !=null && this.questionToExcludeMap.size()>0)

@@ -159,7 +159,7 @@ public class OptimumFinder {
 		}
 
 		//Produce the list of filters
-		ArrayList<FilterCombination> filterList = FilterGenerator.generateAnswerFilterCombinations();
+		ArrayList<FilterCombination> filterList = FilterGenerator.generateAnswerFilterCombinationList();
 
 		String[] fileNameList = {"HIT01_8", "HIT02_24", "HIT03_6", "HIT04_7",
 								"HIT05_35","HIT06_51","HIT07_33","HIT08_54"};

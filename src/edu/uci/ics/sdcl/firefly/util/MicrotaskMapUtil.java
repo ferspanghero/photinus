@@ -18,7 +18,7 @@ import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
  */
 public class MicrotaskMapUtil {
 
-	private static Answer getFirstAnswer(HashMap<String, Microtask> map){
+	public static Answer getFirstAnswer(HashMap<String, Microtask> map){
 
 		Answer currentAnswer=null;
 
@@ -37,7 +37,7 @@ public class MicrotaskMapUtil {
 		return currentAnswer;
 	}
 
-	private static Answer getLastAnswer(HashMap<String,Microtask> map){
+	public static Answer getLastAnswer(HashMap<String,Microtask> map){
 
 		Answer currentAnswer=null;
 
@@ -56,13 +56,11 @@ public class MicrotaskMapUtil {
 		return currentAnswer;
 	}
 
-	private static double computeElapsedTime_Hours(Date startDate, Date endDate){
+	public static double computeElapsedTime_Hours(Date startDate, Date endDate){
 		double millisec = endDate.getTime() - startDate.getTime();
 		return millisec /(3600 *1000);
 	}
 
-	
-	//-------------------------------------------------------------------------------------------------------
 	public static Integer countWorkers(
 			HashMap<String, Microtask> filteredMicrotaskMap, String fileName) {
 
@@ -77,7 +75,7 @@ public class MicrotaskMapUtil {
 		}
 		return workerMap.size();
 	}
-	
+
 	public static Double countAnswers(HashMap<String, Microtask> map){
 
 		double count=0.0;
@@ -89,11 +87,11 @@ public class MicrotaskMapUtil {
 
 	public static Double computeElapsedTimeForAnswerLevels(HashMap<String, Microtask> map){
 
-			Answer firstAnswer = getFirstAnswer(map);
-			Answer lastAnswer = getLastAnswer(map);
-			return computeElapsedTime_Hours(firstAnswer.getTimeStampDate(),lastAnswer.getTimeStampDate());
+		Answer firstAnswer = getFirstAnswer(map);
+		Answer lastAnswer = getLastAnswer(map);
+		return computeElapsedTime_Hours(firstAnswer.getTimeStampDate(),lastAnswer.getTimeStampDate());
 	}
-	
+
 	public static HashMap<String, ArrayList<String>>  extractAnswersForFileName(
 			HashMap<String, Microtask> microtaskMap,String fileName){
 
@@ -110,7 +108,59 @@ public class MicrotaskMapUtil {
 		//System.out.println(fileName+" has "+answerCount+" answers");
 		return resultMap;
 	}
-	//----------------------------------------------------------------------------------------------------------
 
-	
+	public static HashMap<String, Microtask> cloneMap(HashMap<String, Microtask> map){
+
+		HashMap<String, Microtask> cloneMap = new HashMap<String, Microtask>();
+
+		for(Microtask microtask: map.values()){
+			Microtask cloneTask = microtask.getSimpleVersion();
+			cloneMap.put(cloneTask.getID().toString(), cloneTask);
+		}
+		return cloneMap;
+	}
+
+	public static int getMaxAnswersPerQuestion(HashMap<String, Microtask> map){
+
+		int maxAnswers=0;
+		for(Microtask microtask: map.values()){
+			maxAnswers = maxAnswers<microtask.getNumberOfAnswers()? microtask.getNumberOfAnswers(): maxAnswers;
+		}
+		return maxAnswers;
+	}
+
+	/**
+	 * The largest number of answers that all questions have. 
+	 * 
+	 * @param map
+	 * @return
+	 */
+	public static int getMaxCommonAnswersPerQuestion(HashMap<String, Microtask> map){
+
+		int maxCommonAnswers=20;
+		for(Microtask microtask: map.values()){
+			maxCommonAnswers = maxCommonAnswers>microtask.getNumberOfAnswers()? microtask.getNumberOfAnswers(): maxCommonAnswers;
+		}
+		return maxCommonAnswers;
+	}
+
+	public static HashMap<String, Microtask> cutMapToMaximumAnswers(HashMap<String, Microtask> map, Integer maxCommonAnswers) {
+		
+		HashMap<String, Microtask> cutMap = new HashMap<String, Microtask>();
+		
+		for(Microtask microtask: map.values()){
+			
+			Vector<Answer> answerList = microtask.getAnswerList();
+			if(answerList.size()>=maxCommonAnswers){
+				answerList.subList(0, maxCommonAnswers-1);
+			}
+			else
+				return null; //size should be at least of maxCommonAnswers
+			
+			microtask.setAnswerList(answerList);
+			cutMap.put(microtask.getID().toString(), microtask);
+		}
+		return cutMap;
+	}
+
 }
