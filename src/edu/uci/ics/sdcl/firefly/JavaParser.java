@@ -1,5 +1,4 @@
 package edu.uci.ics.sdcl.firefly;
-//package edu.uci.ics.sdcl.firefly;
 
 import java.util.List;
 import java.util.Map;
@@ -7,18 +6,15 @@ import java.util.Map;
 import org.eclipse.jdt.core.*;
 import org.eclipse.jdt.core.dom.*;
 
-
+/**
+ * Parses one Java file at a time and produces a list of code snippets.
+ * 
+ * @author adrianoc
+ *
+ */
 public class JavaParser {
 
 	private CompilationUnit unit = null;
-//	private MethodVisitor methodVisitor = null;
-//	private IfVisitor ifVisitor = null; //See org.eclipse.jdt.core.dom.IfStatement
-	
-	//private WhileVisitor whileVisitor= null; //See org.eclipse.jdt.core.dom.WhileStatement
-	//private ForVisitor forVisitor = null; //See org.eclipse.jdt.core.dom.ForStatement
-	//private SwitchVisitor switchVisitor = null; //See org.eclipse.jdt.core.dom.SwitchStatement
-	//private ReturnVisitor returnVisitor = null; // 
-	//private MethodInvocationVisitor methodInvocationVisitor = null; //See org.eclipse.jdt.core.dom.MethodInvocation
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public JavaParser(CodeSnippetFactory snippetFactory) {
@@ -35,8 +31,6 @@ public class JavaParser {
 		
 		this.unit  = (CompilationUnit) parser.createAST(null);
 		
-		//Add a Method Visitor
-//		this.methodVisitor
 		this.unit.accept(new MyVisitor(this.unit, snippetFactory));
 		List<Comment> commentsList = (List<Comment>)this.unit.getCommentList();
 		for (Comment comment : commentsList) {
@@ -44,7 +38,7 @@ public class JavaParser {
 		}
 	}
 
-/*
+
 	public void printICompilationUnitInfo(){
 		if(this.unit!=null){
 			List<AbstractTypeDeclaration> list = this.unit.types();
@@ -56,34 +50,5 @@ public class JavaParser {
 			System.err.println("No Compilation Unit to print");
 	}
 	
-	
-	public void printMethods(){	
-		for (MethodDeclaration method : methodVisitor.getMethods()) {
-			System.out.println("-----------");
-			System.out.print("Method name: " + method.getName());
-			System.out.print(" Return type: " + method.getReturnType2());
-			System.out.print(" Body: " + method.getBody().toString());
-			System.out.print(" Line: " + unit.getLineNumber(method.getStartPosition()));
-			System.out.println("-----------");	
-			
-			printIfs(method);
-		//	printWhiles(method);
-		//	printFors(method);
-		//	printSwitches(method);
-		//  printMethodInvocation(method);
-		//  printReturnStatement(method);
-		}
-	}
-	
-	
-	private void printIfs(MethodDeclaration method){
-//		CompilationUnit methodUnit = (CompilationUnit) method.getAST().newCompilationUnit();
-		this.ifVisitor=new IfVisitor();
-		this.unit.accept(ifVisitor);
-		for (IfStatement statement : ifVisitor.getStatements()) {
-			System.out.println("-----------");
-			System.out.println("Line position for If: " + unit.getLineNumber(statement.getStartPosition()));
-		}
-	} */
 	  
 }

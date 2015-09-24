@@ -13,6 +13,12 @@ import java.util.Vector;
 
 import edu.uci.ics.sdcl.firefly.util.PathUtil;
 
+/**
+ *  Generates a list of code snippets from all the program statements in a source code.
+ *   
+ * @author adrianoc
+ *
+ */
 public class CodeSnippetFactory { 
 	private String fileContent;
 	private String fileName;
