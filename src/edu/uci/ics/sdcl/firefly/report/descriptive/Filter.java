@@ -216,7 +216,7 @@ public class Filter {
 		for(String questionID : this.questionToExcludeMap.keySet()){
 			if(aux.containsKey(questionID)){
 				aux.remove(questionID);
-				System.out.println("key removed: "+questionID);
+				//System.out.println("key removed: "+questionID);
 			}
 		}
 		return aux;
@@ -321,7 +321,7 @@ public class Filter {
 						if(answer.getOrderInWorkerSession()==1){
 							if( (FirstAnswerDuration[0] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) < FirstAnswerDuration[0]))
 							{
-								System.out.println("removing first, duration:"+FirstAnswerDuration[0]+":value: "+Double.valueOf(answer.getElapsedTime())/1000);
+								///System.out.println("removing first, duration:"+FirstAnswerDuration[0]+":value: "+Double.valueOf(answer.getElapsedTime())/1000);
 								removeIndex.add(i);
 								continue;
 							}
@@ -337,7 +337,7 @@ public class Filter {
 						if(answer.getOrderInWorkerSession()==2 || answer.getOrderInWorkerSession()==3){
 							if( (SecondThirdAnswerDuration[0] != -1) && ((Double.valueOf(answer.getElapsedTime())/1000) < SecondThirdAnswerDuration[0]))
 							{
-								System.out.println("removing second/third, duration:"+SecondThirdAnswerDuration[0]);
+								//System.out.println("removing second/third, duration:"+SecondThirdAnswerDuration[0]);
 								removeIndex.add(i);
 								continue;
 							}
@@ -352,11 +352,15 @@ public class Filter {
 					{
 						if(worker!=null && (workerScore[0] != -1) && (worker.getGrade() < workerScore[0]))
 						{
+							if(worker.getGrade()==4)
+								System.out.println("removing workerScore:"+worker.getGrade());
 							removeIndex.add(i);
 							continue;
 						}
 						if( worker!=null && (workerScore[1] != -1) && (worker.getGrade() > workerScore[1]))
 						{
+							if(worker.getGrade()==4)
+								System.out.println("removing workerScore:"+worker.getGrade());
 							removeIndex.add(i);
 							continue;
 						}
@@ -384,13 +388,13 @@ public class Filter {
 						calculateWorkersIDK();
 						if( (workerIDKPercentage[0] != -1) && (workerIDKMap.get(answer.getWorkerId()) < workerIDKPercentage[0]))
 						{
-							System.out.println("min IDK: "+ workerIDKPercentage[0] +" Removig worker: "+answer.getWorkerId());
+							//System.out.println("min IDK: "+ workerIDKPercentage[0] +" Removig worker: "+answer.getWorkerId());
 							removeIndex.add(i);
 							continue;
 						}
 						if( (workerIDKPercentage[1] != -1) && (workerIDKMap.get(answer.getWorkerId()) > workerIDKPercentage[1]))
 						{
-							System.out.println("max IDK: "+ workerIDKPercentage[1] +" Removig worker: "+answer.getWorkerId());
+							//System.out.println("max IDK: "+ workerIDKPercentage[1] +" Removig worker: "+answer.getWorkerId());
 							removeIndex.add(i);
 							continue;
 						}
@@ -402,13 +406,13 @@ public class Filter {
 							workerProfession = "Other";
 						if( (workerProfessionMap.containsKey(workerProfession)))
 						{
-							System.out.println("profession: "+ workerProfession +" Removig worker: "+answer.getWorkerId());
+							//System.out.println("profession: "+ workerProfession +" Removig worker: "+answer.getWorkerId());
 							removeIndex.add(i);
 							continue;
 						}
 						if( (workerProfessionMap.containsKey(workerProfession)))
 						{
-							System.out.println("profession: "+ workerProfession +" Removig worker: "+answer.getWorkerId());
+							//System.out.println("profession: "+ workerProfession +" Removig worker: "+answer.getWorkerId());
 							removeIndex.add(i);
 							continue;
 						}
@@ -466,7 +470,7 @@ public class Filter {
 			}//for
 
 
-			System.out.println("Filter, removeIndex size: "+removeIndex.size());
+			//System.out.println("Filter, removeIndex size: "+removeIndex.size());
 
 			Collections.reverse(removeIndex);
 			for (Integer index : removeIndex) {

@@ -183,7 +183,7 @@ public class MonteCarloSimulator {
 	public void printDataPointsToFile(int name){
 
 		String nameStr = new Integer(name).toString();
-		String destination = "C://firefly//"+this.outputFolder+"//"+ nameStr+".csv";
+		String destination = "C://firefly//MonteCarloSimulation//"+this.outputFolder+"//"+ nameStr+".csv";
 		BufferedWriter log;
 
 		try {

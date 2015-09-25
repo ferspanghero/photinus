@@ -15,11 +15,11 @@ import java.util.TreeMap;
  */
 public class AttributeRangeGenerator {
 
-	 static String NO_FILTERS = "no filters";
-	 static String WORKER_SCORE_100 ="100% score worker only";
-	 static String WORKER_SCORE_80 ="80% score worker only";
+	 public static String NO_FILTERS = "ALL_WORKERS";
+	 public static String WORKER_SCORE_100 ="100_SCORE_WORKERS";
+	 static String WORKER_SCORE_80 ="80_SCORE_WORKERS";
 	 static String WORKER_SCORE_60 ="60% score worker only";
-	 static String WORKER_SCORE_100_80 ="100% and 80% score workers";
+	 public static String WORKER_SCORE_100_80 ="100_80_SCORE_WORKERS";
 	 static String WORKER_SCORE_80_60 ="80% and 60% score workers";
 
 	 static String WORKER_PROFESSIONAL_PROGRAMMER ="Professional Developer Only";
@@ -27,7 +27,7 @@ public class AttributeRangeGenerator {
 	 static String WORKER_UNDERGRADUATE_STUDENT ="Undergraduate Student Only";
 	 static String WORKER_HOBBYIST ="Hobbyist Only";
 	 static String WORKER_OTHER ="Other Only";
-	 static String WORKER_NON_STUDENT ="Non-Student Only";
+	 public static String WORKER_NON_STUDENT ="WORKER_NON_STUDENT";
 	 static String WORKER_STUDENT ="Student Only";
 
 	 static final String WORKER_SCORE_NON_STUDENT = "Scores and Non-Students";
@@ -38,8 +38,8 @@ public class AttributeRangeGenerator {
 	 static final String WORKER_SCORE60_STUDENT = "Score 60% and Students";
 	 static final String WORKER_SCORE60_80_NON_STUDENT = "Score 60% to 80% and Non-Students";
 	 static final String WORKER_SCORE60_80_STUDENT = "Score 60% to 80% and Students";
-	 static final String WORKER_SCORE_100_NON_STUDENT = "WORKER_SCORE_100_NON_STUDENT";
-	 static final String WORKER_SCORE_100_80_NON_STUDENT = "WORKER_SCORE_100_80_NON_STUDENT";
+	 public static final String WORKER_SCORE_100_NON_STUDENT = "WORKER_SCORE_100_NON_STUDENT";
+	 public static final String WORKER_SCORE_100_80_NON_STUDENT = "WORKER_SCORE_100_80_NON_STUDENT";
 
 	 static final String WORKER_PERCENT_IDK_1_34 = "WORKER_PERCENT_IDK_1_34";
 	 static final String WORKER_PERCENT_IDK_35_67 = "WORKER_PERCENT_IDK_35_67";
@@ -62,7 +62,7 @@ public class AttributeRangeGenerator {
 	 static final String ANSWER_DURATION_MIN_30_15 = "ANSWER_DURATION_MIN_30_15"; 
 	 static final String ANSWER_DURATION_MIN_60_30 = "ANSWER_DURATION_MIN_60_30";
 	 static final String ANSWER_DURATION_MIN_120_60 = "ANSWER_DURATION_MIN_120_60";
-	 static final String ANSWER_DURATION_MIN_q1_q1 = "ANSWER_DURATION_MIN_q1_q1";
+	 public static final String ANSWER_DURATION_MIN_q1_q1 = "ANSWER_DURATION_MIN_q1_q1";
 	 static final String ANSWER_DURATION_MIN_q1_q3 = "ANSWER_DURATION_MIN_q1_q3";
 
 	//Second Third answers  1st Qu.:  69.387s
@@ -70,7 +70,7 @@ public class AttributeRangeGenerator {
 	 static final String SECOND_THIRD_ANSWER_DURATION_MIN_30s = "SECOND_THIRD_ANSWER_DURATION_MIN_30s";
 	 static final String SECOND_THIRD_ANSWER_DURATION_MIN_60s = "SECOND_THIRD_ANSWER_DURATION_MIN_60s";
 
-	 static final String CONFIDENCE_DIFFICULTY_UP_3_PERCENT = "CONFIDENCE_DIFFICULTY_UP_3PERCENT";
+	 public static final String CONFIDENCE_DIFFICULTY_UP_3_PERCENT = "CONFIDENCE_DIFFICULTY_UP_3PERCENT";
 	 static final String CONFIDENCE_DIFFICULTY_HIGH_CONFIDENCE = "CONFIDENCE_DIFFICULTY_HIGH_CONFIDENCE";
 	 static final String CONFIDENCE_DIFFICULTY_LOW_DIFFICULTY = "CONFIDENCE_DIFFICULTY_LOW_DIFFICULTY";
 
@@ -78,10 +78,10 @@ public class AttributeRangeGenerator {
 	 static final String EXPLANATION_2QT_53_99 = "EXPLANATION_2QT_53_99";
 	 static final String EXPLANATION_3QT_99_171 = "EXPLANATION_3QT_99_171";
 	 static final String EXPLANATION_4_QT_171_2383 = "EXPLANATION_4_QT_171_2383";
-	 static final String EXPLANATION_2_3_4_QT_57_2383 = "EXPLANATION_2_3_4_QT_57_2383";
+	 public static final String EXPLANATION_2_3_4_QT_57_2383 = "EXPLANATION_2_3_4_QT_57_2383";
 
 	 static final String COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT = "COMBINED_DURATION_CONFIDENCE_EXPLANATIONSIZE_1QT_3PERCENT_1QT";
-	 static final String CONDITIONAL_CLAUSE_ABOVE_3LINES = "CONDITIONAL_CLAUSE_ABOVE_3LINES";
+	 public static final String CONDITIONAL_CLAUSE_ABOVE_3LINES = "CONDITIONAL_CLAUSE_ABOVE_3LINES";
 
 	 static final String FIRST_6_HOURS= "FIRST_6_HOURS";
 	 static final String FIRST_9_HOURS= "FIRST_9_HOURS";
@@ -124,7 +124,7 @@ public class AttributeRangeGenerator {
 		selectedRangeMap.put(AttributeRangeGenerator.WORKER_SCORE_100, range);
 
 		originalMap = AttributeRangeGenerator.setupAnswerDurations();
-		range = originalMap.get(AttributeRangeGenerator.ANSWER_DURATION_MIN_q1_q1);//Check whether NO's are faster than YES's in average.
+		range = originalMap.get(AttributeRangeGenerator.ANSWER_DURATION_MIN_q1_q1);
 		selectedRangeMap.put(AttributeRangeGenerator.ANSWER_DURATION_MIN_q1_q1, range);
 		
 		originalMap = AttributeRangeGenerator.setupConfidenceDifficulty();
@@ -349,7 +349,8 @@ public class AttributeRangeGenerator {
 		range.setMaxWorkerScore(5);
 		range.setWorkerScoreExclusionList(new int[] {});
 		range.setWorkerScoreList(new int[]{3,4,5});
-
+		range.setMinWorkerScore(3);
+		
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
@@ -361,7 +362,8 @@ public class AttributeRangeGenerator {
 		range.setMaxWorkerScore(4);
 		range.setWorkerScoreExclusionList(new int[] {3,5});
 		range.setWorkerScoreList(new int[]{4});
-
+		range.setMinWorkerScore(4);
+		
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
@@ -374,7 +376,8 @@ public class AttributeRangeGenerator {
 		range.setMaxWorkerScore(5);
 		range.setWorkerScoreExclusionList(new int[] {3,4});
 		range.setWorkerScoreList(new int[]{5});
-
+		range.setMinWorkerScore(5);
+		
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
@@ -387,6 +390,7 @@ public class AttributeRangeGenerator {
 		range.setMaxWorkerScore(5);
 		range.setWorkerScoreExclusionList(new int[] {3});
 		range.setWorkerScoreList(new int[]{4});
+		range.setMinWorkerScore(4);
 
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
@@ -400,7 +404,8 @@ public class AttributeRangeGenerator {
 		range.setMaxWorkerScore(3);
 		range.setWorkerScoreExclusionList(new int[] {4,5});
 		range.setWorkerScoreList(new int[]{3});
-
+		range.setMinWorkerScore(3);
+		
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
@@ -412,7 +417,8 @@ public class AttributeRangeGenerator {
 		range.setMaxWorkerScore(4);
 		range.setWorkerScoreExclusionList(new int[] {5});
 		range.setWorkerScoreList(new int[]{3});
-
+		range.setMinWorkerScore(3);
+		
 		range.setProfessionExclusionList(new String[] {"Graduate_Student","Undergraduate_Student"});
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
@@ -424,6 +430,7 @@ public class AttributeRangeGenerator {
 		range.setMaxWorkerScore(4);
 		range.setWorkerScoreExclusionList(new int[] {3,5});
 		range.setWorkerScoreList(new int[]{4});
+		range.setMinWorkerScore(4);
 
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
@@ -437,6 +444,7 @@ public class AttributeRangeGenerator {
 		range.setMaxWorkerScore(3);
 		range.setWorkerScoreExclusionList(new int[] {4,5});
 		range.setWorkerScoreList(new int[]{3});
+		range.setMinWorkerScore(3);
 
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
@@ -450,6 +458,7 @@ public class AttributeRangeGenerator {
 		range.setMaxWorkerScore(4);
 		range.setWorkerScoreExclusionList(new int[] {5});
 		range.setWorkerScoreList(new int[]{3});
+		range.setMinWorkerScore(3);
 
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
@@ -461,6 +470,7 @@ public class AttributeRangeGenerator {
 		range.setMaxWorkerScore(5);
 		range.setWorkerScoreExclusionList(new int[] {});
 		range.setWorkerScoreList(new int[]{3,4,5});
+		range.setMinWorkerScore(3);
 
 		range.setProfessionExclusionList(new String[] {"Professional_Developer","Hobbyist","Other"});
 		range.setUndefinedWithDefault();
@@ -530,6 +540,7 @@ public class AttributeRangeGenerator {
 
 		range.setMaxFirstAnswerDuration(3600);//1hour 
 		range.setMinFirstAnswerDuration(167.4);
+		
 
 		range.setMaxSecondThirdAnswerDuration(3600);//1hour
 		range.setMinSecondThirdAnswerDuration(69.9);
@@ -537,13 +548,15 @@ public class AttributeRangeGenerator {
 		range.setUndefinedWithDefault();
 		rangeMap.put(range.getRangeName(),range);
 		//----------------------------------
+		
+		//REMOVED FIRST AND LAST QUARTILES
 		range = new CombinedFilterRange();
 		range.setRangeName(ANSWER_DURATION_MIN_q1_q3);
 
-		range.setMaxFirstAnswerDuration(683.90);//1hour
+		range.setMaxFirstAnswerDuration(683.90);
 		range.setMinFirstAnswerDuration(167.4);
 
-		range.setMaxSecondThirdAnswerDuration(228.700);//1hour  
+		range.setMaxSecondThirdAnswerDuration(228.700); 
 		range.setMinSecondThirdAnswerDuration(69.9);
 
 		range.setUndefinedWithDefault();
@@ -670,6 +683,7 @@ public class AttributeRangeGenerator {
 		int[] explanationSizeList = {57};
 
 		range.setMaxExplanationSize(2383);
+		range.setMinExplanationSize(57);
 
 		range.setExplanationSizeList(explanationSizeList);
 		range.setUndefinedWithDefault();

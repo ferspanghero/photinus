@@ -8,6 +8,7 @@ import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
 import edu.uci.ics.sdcl.firefly.report.predictive.AttributeRangeGenerator;
 import edu.uci.ics.sdcl.firefly.report.predictive.CombinedFilterRange;
+import edu.uci.ics.sdcl.firefly.report.predictive.DataPoint;
 import edu.uci.ics.sdcl.firefly.report.predictive.FilterCombination;
 import edu.uci.ics.sdcl.firefly.report.predictive.FilterGenerator;
 import edu.uci.ics.sdcl.firefly.util.MicrotaskMapUtil;
@@ -29,19 +30,19 @@ import edu.uci.ics.sdcl.firefly.util.MicrotaskMapUtil;
 public class SimulationController {
 
 	private int numberOfSamples=10000;
-	
+
 	/**
 	 * 1- Generate sub-crowd filters
 	 * 
 	 * @return list of empty SubCrowd objects only populated the respective filter type
 	 */
-	private ArrayList<SubCrowd> generateSubCrowdFilters(){
-		
+	public ArrayList<SubCrowd> generateSubCrowdFilters(){
+
 		HashMap<String, CombinedFilterRange> rangeMap = AttributeRangeGenerator.getSubCrowdFilters();
 		ArrayList<SubCrowd> subCrowdList =  new ArrayList<SubCrowd>();
-		
+
 		for(CombinedFilterRange range: rangeMap.values()){
-			
+
 			FilterCombination combination = FilterGenerator.generateFilterCombination(range);
 			Filter filter = combination.getFilter();
 			SubCrowd crowd =  new SubCrowd();
@@ -49,62 +50,66 @@ public class SimulationController {
 			crowd.filter = filter;
 			subCrowdList.add(crowd);
 		}
-		
+
 		return subCrowdList;
 	}
-	
+
 	/**
 	 * 2- Obtain the microtasks for each of these sub-crowds
 	 * @param filterList
 	 * @return
 	 */
-	private ArrayList<SubCrowd> generateSubCrowdMicrotasks(ArrayList<SubCrowd> subCrowdList){
-		
+	public ArrayList<SubCrowd> generateSubCrowdMicrotasks(ArrayList<SubCrowd> subCrowdList){
+
 		FileSessionDTO dto = new FileSessionDTO();
 		HashMap<String, Microtask> microtaskMap = (HashMap<String, Microtask>) dto.getMicrotasks();
-		
+
 		for(int i=0; i<subCrowdList.size();i++){
-			
+
 			SubCrowd crowd = subCrowdList.get(i);
 			HashMap<String, Microtask> map = (HashMap<String, Microtask>) crowd.filter.apply(microtaskMap);
 			crowd.microtaskMap = map;
+			crowd.totalWorkers = MicrotaskMapUtil.countWorkers(map, null);
+			crowd.totalAnswers = MicrotaskMapUtil.getMaxAnswersPerQuestion(map);
 			subCrowdList.set(i, crowd);
 		}
-		
+
 		return subCrowdList;
 	}
-	
+
 	/**
 	 * 3- Obtain the maximum common number of answers for each sub-crowd
 	 * 
 	 */
-	private ArrayList<SubCrowd> setMaximumCommonAnswers(ArrayList<SubCrowd> subCrowdList){
-		
+	public ArrayList<SubCrowd> setMaximumCommonAnswers(ArrayList<SubCrowd> subCrowdList){
+
 		for(int i=0; i<subCrowdList.size();i++){
-			
+
 			SubCrowd crowd = subCrowdList.get(i);
 			HashMap<String, Microtask> map = crowd.microtaskMap;
-			crowd.maxCommonAnswers = MicrotaskMapUtil.getMaxAnswersPerQuestion(map);
+			crowd.maxCommonAnswers = MicrotaskMapUtil.getMaxCommonAnswersPerQuestion(map);
 			subCrowdList.set(i, crowd);
 		}
 		return subCrowdList;
 	}
-	
+
 	/**
 	 * 4- Cut the answers from each sub-crowd to the maximum of answers per question
 	 */
-	private ArrayList<SubCrowd> cutAnswerListsToMaximum(ArrayList<SubCrowd> subCrowdList){
-		
+	public ArrayList<SubCrowd> cutAnswerListsToMaximum(ArrayList<SubCrowd> subCrowdList){
+
 		for(int i=0; i<subCrowdList.size();i++){
-			
+
 			SubCrowd crowd = subCrowdList.get(i);
 			HashMap<String, Microtask> map = crowd.microtaskMap;
 			crowd.microtaskMap = MicrotaskMapUtil.cutMapToMaximumAnswers(map,crowd.maxCommonAnswers);
+			crowd.totalAnswers = MicrotaskMapUtil.countAnswers(crowd.microtaskMap).intValue();
+			crowd.totalWorkers = MicrotaskMapUtil.countWorkers(crowd.microtaskMap, null);
 			subCrowdList.set(i, crowd);
 		}
 		return subCrowdList;
 	}
-	
+
 	/**
 	 * 5- For each sub-crowd generate random samples from 1 to the maximum common answers minus 1
 	 * 6- For each sample compute Precision, Recall, TP, TN, FP, FN, elapsed time, #workers, #answers
@@ -112,17 +117,18 @@ public class SimulationController {
 	 * 8- Write results to a file
 	 */
 	private void runSimulations(ArrayList<SubCrowd> subCrowdList){
-		
+
 		for(SubCrowd crowd: subCrowdList){
-			
+
 			MonteCarloSimulator simulator = new MonteCarloSimulator(crowd.name);
-			simulator.computeSimulation(crowd.maxCommonAnswers-1, this.numberOfSamples, crowd.microtaskMap);
+			HashMap<String, DataPoint> averageMap = simulator.computeSimulation(crowd.maxCommonAnswers, this.numberOfSamples, crowd.microtaskMap);
+			//printToFile(averageMap,crowd);
 		}
 	}
-	
+
 	/** Entry point method */
 	public void run(){
-		
+
 		ArrayList<SubCrowd> subCrowdList =  this.generateSubCrowdFilters();
 		subCrowdList = this.generateSubCrowdMicrotasks(subCrowdList);
 		subCrowdList = this.setMaximumCommonAnswers(subCrowdList);
@@ -130,10 +136,10 @@ public class SimulationController {
 		this.runSimulations(subCrowdList);
 	}
 
-	
+
 	public static void main(String args[]){
-		
-		
+		SimulationController controller = new SimulationController();
+		controller.run();
 	}
-	
+
 }
