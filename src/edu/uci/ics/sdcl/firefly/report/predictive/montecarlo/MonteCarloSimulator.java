@@ -35,12 +35,12 @@ public class MonteCarloSimulator {
 	private HashMap<String, DataPoint> averageDataPointByAnswerLevel = new HashMap<String,DataPoint>();
 
 	private String outputFolder = "";
-	
-	
+
+
 	public MonteCarloSimulator(String outputFolder){
 
 		this.outputFolder = outputFolder;
-		
+
 		//Obtain bug covering question list
 		PropertyManager manager = PropertyManager.initializeSingleton();
 		bugCoveringMap = new HashMap<String,String>();
@@ -49,7 +49,7 @@ public class MonteCarloSimulator {
 			bugCoveringMap.put(questionID,questionID);
 		}
 	}
-	
+
 
 	private void computeVoting(ArrayList<HashMap<String,Microtask>> listOfMicrotaskMaps){
 
@@ -74,10 +74,10 @@ public class MonteCarloSimulator {
 				outcome = computeDataPoint(data,predictor);
 				majorityVDataPoint.fileNameOutcomeMap.put(fileName, outcome);
 			}
-			
+
 			positiveVDataPoint.totalAnswers = MicrotaskMapUtil.countAnswers(microtaskMap);
 			majorityVDataPoint.totalAnswers = positiveVDataPoint.totalAnswers;
-			
+
 			positiveVDataPoint.computeAverages();//Compute the average precision and recall for all Java methods
 			majorityVDataPoint.computeAverages();
 
@@ -86,29 +86,29 @@ public class MonteCarloSimulator {
 
 			positiveVDataPoint.totalWorkers = new Double(totalDifferentWorkersAmongHITs);
 			majorityVDataPoint.totalWorkers = new Double(totalDifferentWorkersAmongHITs);
-			
+
 			this.outcomes_PositiveVoting.add(positiveVDataPoint);
 			this.outcomes_MajorityVoting.add(majorityVDataPoint);
 		}
 	}
-	
-	
+
+
 	private void computeAverages(int sampleSize){
-		
+
 		String key = new Integer(sampleSize).toString();
-		
+
 		DataPoint point = this.computeAveragesForList(outcomes_PositiveVoting);
 		this.averageDataPointByAnswerLevel.put(key, point);
-		
-		point = this.computeAveragesForList(outcomes_PositiveVoting);
+
+		point = this.computeAveragesForList(outcomes_MajorityVoting);
 		this.averageDataPointByAnswerLevel.put(key, point);	
-		
+
 	}
 
 	private DataPoint computeAveragesForList(ArrayList<DataPoint> dataPointList){
-		
+
 		int size = dataPointList.size();
-		
+
 		Double sumAnswers=0.0;
 		Double sumWorkers=0.0;
 
@@ -117,45 +117,45 @@ public class MonteCarloSimulator {
 		Double sumFP=0.0;
 		Double sumFN=0.0;
 		Double sumElapsedTime=0.0;
-		
+
 		Double sumPrecision=0.0;
 		Double sumRecall=0.0;
-		
-		
+
+
 		for(DataPoint data: dataPointList){
 			sumAnswers = sumAnswers + data.totalAnswers;
 			sumWorkers = sumWorkers + data.totalWorkers;
-			
+
 			sumTP = sumTP + data.truePositives;
 			sumFP = sumFP + data.falsePositives;
 			sumTN = sumTN + data.trueNegatives;
 			sumFN = sumFN + data.falseNegatives;
-			
+
 			sumPrecision = sumPrecision + data.averagePrecision;
 			sumRecall = sumRecall + data.averageRecall;
-			
+
 			sumElapsedTime = sumElapsedTime + data.elapsedTime;
 		}
-		
+
 		//Averages
 		DataPoint averageDataPoint = new DataPoint();
-		
+
 		averageDataPoint.totalAnswers = sumAnswers / size;
 		averageDataPoint.totalWorkers = sumWorkers / size;
-		
+
 		averageDataPoint.falseNegatives = sumFN /size;
 		averageDataPoint.falsePositives = sumFP / size;
 		averageDataPoint.trueNegatives = sumTN / size;
 		averageDataPoint.truePositives = sumTP / size;
-		
+
 		averageDataPoint.averagePrecision = sumPrecision / size;
 		averageDataPoint.averageRecall = sumRecall / size;
-		
+
 		averageDataPoint.elapsedTime = sumElapsedTime /size;
-		
+
 		return averageDataPoint;
 	}
-	
+
 	private Outcome computeDataPoint(AnswerData answerData, Predictor predictor) {
 
 		Outcome outcome = new Outcome(null,
@@ -176,9 +176,6 @@ public class MonteCarloSimulator {
 		return outcome;
 	}
 
-	private String getHeader(){
-		return "Sample,Average Precision_PV,Average Recall_PV,Average Precision_MV,Average Recall_MV";
-	}
 
 	public void printDataPointsToFile(int name){
 
@@ -190,19 +187,14 @@ public class MonteCarloSimulator {
 			log = new BufferedWriter(new FileWriter(destination));
 			//Print file header
 
-			log.write(getHeader()+"\n");
+			log.write("#,"+DataPoint.getHeader("_PV")+","+DataPoint.getHeader("_MV")+"\n");
 
 			for(int i=0; i<this.outcomes_MajorityVoting.size();i++){
-				DataPoint datapointPV = this.outcomes_PositiveVoting.get(i);
-				DataPoint datapointMV = this.outcomes_MajorityVoting.get(i);
+				String index = new Integer(i).toString();
+				String positiveVote_Outcomes = this.outcomes_PositiveVoting.get(i).toString();
+				String majorytVote_Outcomes = this.outcomes_MajorityVoting.get(i).toString();
 
-				String line= new Integer(i).toString() +","+
-						datapointPV.averagePrecision.toString()+","+
-						datapointPV.averageRecall.toString()+","+
-						datapointMV.averagePrecision.toString()+","+
-						datapointMV.averageRecall.toString();
-
-				log.write(line+"\n");
+				log.write(index+","+positiveVote_Outcomes+","+majorytVote_Outcomes+"\n");
 			}
 
 			log.close();
@@ -213,27 +205,29 @@ public class MonteCarloSimulator {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public HashMap<String,DataPoint> computeSimulation(int populationSize, int numberOfSamples, 
 			HashMap<String, Microtask> microtaskMap){
-		
+
 		for(int i=1;i<=populationSize-1;i++){
-			
+
 			//how many answers per question
 			int sampleSize = i; 
-			
+
 			//Generate the samples
 			RandomSampler sampling = new RandomSampler(sampleSize, numberOfSamples, populationSize);
 			ArrayList<HashMap<String, Microtask>> listOfMicrotaskMaps =sampling.generateMicrotaskMap(microtaskMap);
-		
+
 			//Compute statistics for each sample
 			computeVoting(listOfMicrotaskMaps);
-			
+
 			//Save samples with statistics to files
 			printDataPointsToFile(sampleSize);
-			
+
 			//Takes the average of all samples		
 			computeAverages(sampleSize);	
+			
+			//printToFile(averageMap,crowd);
 		}
 		return this.averageDataPointByAnswerLevel;
 	}
@@ -245,10 +239,10 @@ public class MonteCarloSimulator {
 		int numberOfSamples = 10000; //how many simulated crowds
 
 		MonteCarloSimulator sim = new MonteCarloSimulator("SamplingPredictor");
-		
+
 		FileSessionDTO dto = new FileSessionDTO();
 		HashMap<String, Microtask> microtaskMap = (HashMap<String, Microtask>) dto.getMicrotasks();
-		
+
 		sim.computeSimulation(populationSize, numberOfSamples, microtaskMap);
 	}
 

@@ -585,7 +585,7 @@ public class AttributeRangeGenerator {
 		//map.remove(new Tuple(0,4).toString()); don't need to consider IDK answers
 		//map.remove(new Tuple(0,5).toString());
 
-		System.out.println("Size of exclusion map:" + map.size());
+		//System.out.println("Size of exclusion map:" + map.size());
 		range.setConfidenceDifficultyPairMap(map);
 
 		range.setUndefinedWithDefault();

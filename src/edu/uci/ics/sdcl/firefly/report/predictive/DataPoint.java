@@ -3,6 +3,8 @@ package edu.uci.ics.sdcl.firefly.report.predictive;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import edu.uci.ics.sdcl.firefly.report.predictive.montecarlo.SubCrowd;
+
 public class DataPoint {
 
 	public Double averagePrecision=0.0;
@@ -15,7 +17,12 @@ public class DataPoint {
 	public Double falseNegatives=0.0;
 	public Double truePositives=0.0;
 	public Double trueNegatives=0.0;
+	public int numberOfOutcomes=0;
 
+	private static String[] header = { "average Precision", "average Recall", "elapsed Time", "total Workers", 
+			"total Answers", "faults Located", "true Positives", "true Negatives", 
+			 "false Positives", "false Negatives", "number of Outcomes"} ;
+	
 	public DataPoint(){}
 
 	public HashMap<String, Outcome> fileNameOutcomeMap = new HashMap<String, Outcome>();
@@ -32,7 +39,11 @@ public class DataPoint {
 			if(outcome.precision!=0)
 				faultsLocated++;
 			falsePositives = falsePositives + outcome.falsePositives;
+			falseNegatives = falseNegatives + outcome.falseNegatives;
+			truePositives = truePositives + outcome.truePositives;
+			trueNegatives = trueNegatives + outcome.trueNegatives;
 		}
+		numberOfOutcomes = fileNameOutcomeMap.size();
 		averagePrecision = average(precisionValues);
 		averageRecall = average(recallValues);
 	}
@@ -45,5 +56,29 @@ public class DataPoint {
 		}
 		return total/values.size();
 	}
+	
+	/**
+	 * 
+	 * @param suffix necessary to identify the type of predictor that produced this datapoint
+	 * @return
+	 */
+	public static String getHeader(String suffix){
+		
+		StringBuffer titles=new StringBuffer();
+		for(String label: header){
+			titles.append(label);
+			titles.append(suffix);
+			titles.append(",");
+		}
+		return titles.toString();
+	}
+	
+	public String toString(){
+		return this.averagePrecision+","+this.averageRecall+","+this.elapsedTime+","+this.totalWorkers+","+
+				this.totalAnswers+","+this.faultsLocated+","+this.truePositives+","+this.trueNegatives+","+
+				this.falsePositives+","+this.falseNegatives+","+this.numberOfOutcomes;
+	}
+
+
 }
 
