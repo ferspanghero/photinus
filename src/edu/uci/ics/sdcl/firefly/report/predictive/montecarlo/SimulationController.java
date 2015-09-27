@@ -1,7 +1,6 @@
 package edu.uci.ics.sdcl.firefly.report.predictive.montecarlo;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,7 +9,6 @@ import edu.uci.ics.sdcl.firefly.report.descriptive.FileSessionDTO;
 import edu.uci.ics.sdcl.firefly.report.descriptive.Filter;
 import edu.uci.ics.sdcl.firefly.report.predictive.AttributeRangeGenerator;
 import edu.uci.ics.sdcl.firefly.report.predictive.CombinedFilterRange;
-import edu.uci.ics.sdcl.firefly.report.predictive.DataPoint;
 import edu.uci.ics.sdcl.firefly.report.predictive.FilterCombination;
 import edu.uci.ics.sdcl.firefly.report.predictive.FilterGenerator;
 import edu.uci.ics.sdcl.firefly.util.MicrotaskMapUtil;
@@ -31,7 +29,7 @@ import edu.uci.ics.sdcl.firefly.util.MicrotaskMapUtil;
  */
 public class SimulationController {
 
-	private int numberOfSamples=100;
+	private int numberOfSamples=10000;
 
 	/**
 	 * 1- Generate sub-crowd filters
@@ -110,37 +108,7 @@ public class SimulationController {
 			subCrowdList.set(i, crowd);
 		}
 		return subCrowdList;
-	}
-
-	
-	private void printToFile(HashMap<String, DataPoint> averageMap,
-			SubCrowd crowd) {
-
-		String nameStr = crowd.name+"_datapoint";
-		String destination = "C://firefly//MonteCarloSimulation//DataPoints//"+ nameStr+".csv";
-		BufferedWriter log;
-
-		try {
-			log = new BufferedWriter(new FileWriter(destination));
-			//Print file header
-
-			log.write("#,"+DataPoint.getHeader("_average")+"\n");
-			int i=0;
-			for(DataPoint point:averageMap.values()){
-				i++;
-				String line= new Integer(i).toString()+","+point.toString();
-
-				log.write(line+"\n");
-			}		
-
-			log.close();
-			System.out.println("file written at: "+destination);
-		} 
-		catch (Exception e) {
-			System.out.println("ERROR while processing file:" + destination);
-			e.printStackTrace();
-		}
-	}
+	}	
 
 	/**
 	 * 5- For each sub-crowd generate random samples from 1 to the maximum common answers minus 1
@@ -153,8 +121,7 @@ public class SimulationController {
 		for(SubCrowd crowd: subCrowdList){
 
 			MonteCarloSimulator simulator = new MonteCarloSimulator(crowd.name);
-			HashMap<String, DataPoint> averageMap = simulator.computeSimulation(crowd.maxCommonAnswers, this.numberOfSamples, crowd.microtaskMap);
-			printToFile(averageMap,crowd);
+			simulator.generateSiumalations(crowd.maxCommonAnswers, this.numberOfSamples, crowd.microtaskMap, crowd.name);
 		}
 	}
 

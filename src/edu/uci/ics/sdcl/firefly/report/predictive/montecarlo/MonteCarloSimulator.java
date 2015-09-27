@@ -27,12 +27,13 @@ public class MonteCarloSimulator {
 	/**  list of precision values calculated for each sample using Majority voting predictor*/
 	private ArrayList<DataPoint> outcomes_MajorityVoting = new ArrayList<DataPoint>();
 
-	private String[] fileNameList = {"HIT01_8", "HIT02_24", "HIT03_6", "HIT04_7",
-			"HIT05_35","HIT06_51","HIT07_33","HIT08_54"};
+	private String[] fileNameList = {"HIT01_8", "HIT02_24", "HIT03_6", "HIT04_7", "HIT05_35","HIT06_51","HIT07_33","HIT08_54"};
 
 	private HashMap<String,String> bugCoveringMap;
 
-	private HashMap<String, DataPoint> averageDataPointByAnswerLevel = new HashMap<String,DataPoint>();
+	private HashMap<String, DataPoint> positiveVoting_AverageDataPointByAnswerLevel = new HashMap<String,DataPoint>();
+
+	private HashMap<String, DataPoint> majorityVoting_AverageDataPointByAnswerLevel = new HashMap<String,DataPoint>();
 
 	private String outputFolder = "";
 
@@ -98,11 +99,10 @@ public class MonteCarloSimulator {
 		String key = new Integer(sampleSize).toString();
 
 		DataPoint point = this.computeAveragesForList(outcomes_PositiveVoting);
-		this.averageDataPointByAnswerLevel.put(key, point);
+		this.positiveVoting_AverageDataPointByAnswerLevel.put(key, point);
 
 		point = this.computeAveragesForList(outcomes_MajorityVoting);
-		this.averageDataPointByAnswerLevel.put(key, point);	
-
+		this.majorityVoting_AverageDataPointByAnswerLevel.put(key, point);	
 	}
 
 	private DataPoint computeAveragesForList(ArrayList<DataPoint> dataPointList){
@@ -121,7 +121,9 @@ public class MonteCarloSimulator {
 		Double sumPrecision=0.0;
 		Double sumRecall=0.0;
 
-
+		Double sumFaultsLocated =0.0;
+		Double sumNumberOfOutcomes = 0.0;
+	
 		for(DataPoint data: dataPointList){
 			sumAnswers = sumAnswers + data.totalAnswers;
 			sumWorkers = sumWorkers + data.totalWorkers;
@@ -135,6 +137,10 @@ public class MonteCarloSimulator {
 			sumRecall = sumRecall + data.averageRecall;
 
 			sumElapsedTime = sumElapsedTime + data.elapsedTime;
+			
+			sumFaultsLocated = sumFaultsLocated + data.faultsLocated;
+			
+			sumNumberOfOutcomes = sumNumberOfOutcomes + data.numberOfOutcomes;
 		}
 
 		//Averages
@@ -152,6 +158,10 @@ public class MonteCarloSimulator {
 		averageDataPoint.averageRecall = sumRecall / size;
 
 		averageDataPoint.elapsedTime = sumElapsedTime /size;
+		
+		averageDataPoint.faultsLocated = sumFaultsLocated / size;
+		
+		averageDataPoint.numberOfOutcomes = sumNumberOfOutcomes;
 
 		return averageDataPoint;
 	}
@@ -176,7 +186,9 @@ public class MonteCarloSimulator {
 		return outcome;
 	}
 
-
+	//------------------------------------------------------------------------------------------------
+	//PRINT FUNCTIONS
+	
 	public void printDataPointsToFile(int name){
 
 		String nameStr = new Integer(name).toString();
@@ -206,8 +218,39 @@ public class MonteCarloSimulator {
 		}
 	}
 
-	public HashMap<String,DataPoint> computeSimulation(int populationSize, int numberOfSamples, 
-			HashMap<String, Microtask> microtaskMap){
+	private void printToFile(HashMap<String, DataPoint> positiveVotingAverageMap,
+			HashMap<String, DataPoint> majorityVotingAverageMap,String name) {
+
+		String nameStr = name+"_datapoint";
+		String destination = "C://firefly//MonteCarloSimulation//DataPoints//"+ nameStr+".csv";
+		BufferedWriter log;
+
+		try {
+			log = new BufferedWriter(new FileWriter(destination));
+			//Print file header
+
+			log.write("#,"+DataPoint.getHeader(" Positive Voting")+DataPoint.getHeader(" Majority Voting")+"\n");
+			for(String key: positiveVotingAverageMap.keySet()){
+				
+				String line= key+","+positiveVotingAverageMap.get(key).toString();
+				line = line +","+ majorityVotingAverageMap.get(key).toString(); 
+				
+				log.write(line+"\n");
+			}		
+
+			log.close();
+			System.out.println("file written at: "+destination);
+		} 
+		catch (Exception e) {
+			System.out.println("ERROR while processing file:" + destination);
+			e.printStackTrace();
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------------
+	
+	public void generateSiumalations(int populationSize, int numberOfSamples, 
+			HashMap<String, Microtask> microtaskMap, String crowdName){
 
 		for(int i=1;i<=populationSize-1;i++){
 
@@ -227,9 +270,9 @@ public class MonteCarloSimulator {
 			//Takes the average of all samples		
 			computeAverages(sampleSize);	
 			
-			//printToFile(averageMap,crowd);
 		}
-		return this.averageDataPointByAnswerLevel;
+		//print the averages samples from Majority voting and Positive voting
+		printToFile(this.positiveVoting_AverageDataPointByAnswerLevel,this.majorityVoting_AverageDataPointByAnswerLevel,crowdName);
 	}
 
 	/** THis is used to test, but the actual call is made from class SimulationController */
@@ -243,7 +286,7 @@ public class MonteCarloSimulator {
 		FileSessionDTO dto = new FileSessionDTO();
 		HashMap<String, Microtask> microtaskMap = (HashMap<String, Microtask>) dto.getMicrotasks();
 
-		sim.computeSimulation(populationSize, numberOfSamples, microtaskMap);
+		sim.generateSiumalations(populationSize, numberOfSamples, microtaskMap, "all workers");
 	}
 
 }

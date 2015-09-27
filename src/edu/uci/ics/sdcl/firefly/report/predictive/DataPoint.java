@@ -3,8 +3,6 @@ package edu.uci.ics.sdcl.firefly.report.predictive;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import edu.uci.ics.sdcl.firefly.report.predictive.montecarlo.SubCrowd;
-
 public class DataPoint {
 
 	public Double averagePrecision=0.0;
@@ -17,11 +15,11 @@ public class DataPoint {
 	public Double falseNegatives=0.0;
 	public Double truePositives=0.0;
 	public Double trueNegatives=0.0;
-	public int numberOfOutcomes=0;
+	public Double numberOfOutcomes=0.0;
 
 	private static String[] header = { "average Precision", "average Recall", "elapsed Time", "total Workers", 
 			"total Answers", "faults Located", "true Positives", "true Negatives", 
-			 "false Positives", "false Negatives", "number of Outcomes"} ;
+			 "false Positives", "false Negatives", "number of Outcomes Simulated"} ;
 	
 	public DataPoint(){}
 
@@ -43,7 +41,7 @@ public class DataPoint {
 			truePositives = truePositives + outcome.truePositives;
 			trueNegatives = trueNegatives + outcome.trueNegatives;
 		}
-		numberOfOutcomes = fileNameOutcomeMap.size();
+		numberOfOutcomes = new Double(fileNameOutcomeMap.size());
 		averagePrecision = average(precisionValues);
 		averageRecall = average(recallValues);
 	}
