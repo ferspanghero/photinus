@@ -4,10 +4,10 @@
 <appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
 <!-- "application-name" is a variable --> 
 <!--  /var/lib/tomcat7/webapps/-->
-<!-- C:\Users\adrianoc\Documents\GitHub\firefly-log.log -->
-<!-- C:/Users/Christian Adriano/Documents/GitHub/ -->
+<!--C:/Users/admin/Documents/Eclipse/photinus/output-->
+<!--C:/Users/admin/Documents/Eclipse/photinus/output-->
 
- <file> C:\Users\adrianoc\Documents\GitHub\firefly-log.log</file>
+ <file>C:/Users/admin/Documents/Eclipse/photinus/output/firefly-log.log</file>
 <layout class="ch.qos.logback.classic.PatternLayout"> 
  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
  
@@ -23,7 +23,7 @@
 <appender name="MICROTASK" class="ch.qos.logback.core.FileAppender"> 
 <!-- "application-name" is a variable --> 
 
- <file> C:\Users\adrianoc\Documents\GitHub\microtask-log.log</file>
+ <file>C:/Users/admin/Documents/Eclipse/photinus/output/microtask-log.log</file>
  <layout class="ch.qos.logback.classic.PatternLayout"> 
  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
  
@@ -38,7 +38,7 @@
 <appender name="SESSION" class="ch.qos.logback.core.FileAppender"> 
 <!-- "application-name" is a variable --> 
 
- <file> C:\Users\adrianoc\Documents\GitHub\session-log.log</file>
+ <file>C:/Users/admin/Documents/Eclipse/photinus/output/session-log.log</file>
  <layout class="ch.qos.logback.classic.PatternLayout"> 
  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
  
@@ -52,7 +52,7 @@
 <appender name="CONSENT" class="ch.qos.logback.core.FileAppender"> 
 <!-- "application-name" is a variable --> 
 
- <file> C:\Users\adrianoc\Documents\GitHub\consent-log.log</file>
+ <file>C:/Users/admin/Documents/Eclipse/photinus/output/consent-log.log</file>
 <layout class="ch.qos.logback.classic.PatternLayout"> 
  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
  

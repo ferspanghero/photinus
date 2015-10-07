@@ -1,0 +1,16 @@
+13:33:27.729 [http-bio-8080-exec-4] INFO  - EVENT =FileUpload; FileName=HIT01_8; CodeSnippets=55; Microtasks=10
+13:33:27.730 [http-bio-8080-exec-4] INFO  - Event =UPLOAD; File=HIT01_8.java; MethodName=forOffsetHoursMinutes; Microtasks=Code snippets generated: 55<br> Microtasks generated: 10<br>Total Microtasks available now: 10<br>
+13:33:54.892 [http-bio-8080-exec-4] INFO  - EVENT =FileUpload; FileName=HIT02_24; CodeSnippets=7; Microtasks=6
+13:33:54.892 [http-bio-8080-exec-4] INFO  - Event =UPLOAD; File=HIT02_24.java; MethodName=getPaint; Microtasks=Code snippets generated: 7<br> Microtasks generated: 6<br>Total Microtasks available now: 16<br>
+13:33:55.027 [http-bio-8080-exec-4] INFO  - EVENT =FileUpload; FileName=HIT03_6; CodeSnippets=3; Microtasks=17
+13:33:55.028 [http-bio-8080-exec-4] INFO  - Event =UPLOAD; File=HIT03_6.java; MethodName=translate; Microtasks=Code snippets generated: 3<br> Microtasks generated: 17<br>Total Microtasks available now: 33<br>
+13:33:55.364 [http-bio-8080-exec-4] INFO  - EVENT =FileUpload; FileName=HIT04_7; CodeSnippets=27; Microtasks=37
+13:33:55.365 [http-bio-8080-exec-4] INFO  - Event =UPLOAD; File=HIT04_7.java; MethodName=updateBounds; Microtasks=Code snippets generated: 27<br> Microtasks generated: 37<br>Total Microtasks available now: 70<br>
+13:33:56.914 [http-bio-8080-exec-4] INFO  - EVENT =FileUpload; FileName=HIT05_35; CodeSnippets=175; Microtasks=9
+13:33:56.915 [http-bio-8080-exec-4] INFO  - Event =UPLOAD; File=HIT05_35.java; MethodName=add; Microtasks=Code snippets generated: 175<br> Microtasks generated: 9<br>Total Microtasks available now: 79<br>
+13:33:57.138 [http-bio-8080-exec-4] INFO  - EVENT =FileUpload; FileName=HIT06_51; CodeSnippets=33; Microtasks=18
+13:33:57.139 [http-bio-8080-exec-4] INFO  - Event =UPLOAD; File=HIT06_51.java; MethodName=addNumber; Microtasks=Code snippets generated: 33<br> Microtasks generated: 18<br>Total Microtasks available now: 97<br>
+13:33:57.384 [http-bio-8080-exec-4] INFO  - EVENT =FileUpload; FileName=HIT07_33; CodeSnippets=36; Microtasks=8
+13:33:57.385 [http-bio-8080-exec-4] INFO  - Event =UPLOAD; File=HIT07_33.java; MethodName=toClass; Microtasks=Code snippets generated: 36<br> Microtasks generated: 8<br>Total Microtasks available now: 105<br>
+13:33:57.497 [http-bio-8080-exec-4] INFO  - EVENT =FileUpload; FileName=HIT08_54; CodeSnippets=9; Microtasks=24
+13:33:57.497 [http-bio-8080-exec-4] INFO  - Event =UPLOAD; File=HIT08_54.java; MethodName=toLocale; Microtasks=Code snippets generated: 9<br> Microtasks generated: 24<br>Total Microtasks available now: 129<br>
