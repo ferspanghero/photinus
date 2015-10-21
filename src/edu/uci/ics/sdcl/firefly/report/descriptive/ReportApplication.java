@@ -10,10 +10,10 @@ public class ReportApplication {
 	public static void main(String[] args) {
 
 		ReportApplication application = new ReportApplication(new Filter(),new ExcelExporter());
-		application.runAnswerOptionReport(); //Instantiates with an empty (no effect) filter
+//		application.runAnswerOptionReport(); //Instantiates with an empty (no effect) filter
 		
 		//workers demographics is different
-		//application.workerDemographicsReport();
+		application.workerDemographicsReport();
 	}
 	
 	

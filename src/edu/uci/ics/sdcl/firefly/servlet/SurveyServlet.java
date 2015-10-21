@@ -20,7 +20,7 @@ public class SurveyServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static String question[] = {"Gender", "Age", "Country", "Experience", "Language", "YearsProgramming", "Learned"};   
+	public static String question[] = {"Gender", "Age", "Country", "Experience", "YearsProgramming", "Learned"};   
 	
     private final String SkillTestPage = "/SkillTest.jsp";
     
@@ -37,10 +37,9 @@ public class SurveyServlet extends HttpServlet {
 			worker.addSurveyAnswer(question[0], request.getParameter("gender"));
 			worker.addSurveyAnswer(question[1], request.getParameter("age"));
 			worker.addSurveyAnswer(question[2], request.getParameter("country"));
-			worker.addSurveyAnswer(question[3], mapExperience(request.getParameter("experience"),request.getParameter("otherexperience")));
-			worker.addSurveyAnswer(question[4], request.getParameter("language"));
-			worker.addSurveyAnswer(question[5], request.getParameter("years"));
-			worker.addSurveyAnswer(question[6], request.getParameter("hlearned"));
+			worker.addSurveyAnswer(question[3], mapExperience(request.getParameter("experience"),request.getParameter("otherexperience")));			
+			worker.addSurveyAnswer(question[4], request.getParameter("years"));
+			worker.addSurveyAnswer(question[5], request.getParameter("hlearned"));
 
 			//Store result
 			storage.insertSurvey(worker);
@@ -48,15 +47,15 @@ public class SurveyServlet extends HttpServlet {
 			//request.setAttribute("sessionId",worker.getSessionId());
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 			request = loadQuestions(request, response, worker.getCurrentFileName());
-			if(request.getAttribute("sourceCode").equals(""))
-			{
-				request.setAttribute("executionId", request.getParameter("workerId"));
-				request.setAttribute("error", "@SurveyServlet - Invalid file name. The requested file was not found.");
-				//Displays the error page
-				request.getRequestDispatcher("/ErrorPage.jsp").forward(request, response);
-			}
-			else
-				request.getRequestDispatcher(SkillTestPage).forward(request, response);
+//			if(request.getAttribute("sourceCode").equals(""))
+//			{
+//				request.setAttribute("executionId", request.getParameter("workerId"));
+//				request.setAttribute("error", "@SurveyServlet - Invalid file name. The requested file was not found.");
+//				//Displays the error page
+//				request.getRequestDispatcher("/ErrorPage.jsp").forward(request, response);
+//			}
+//			else			
+			request.getRequestDispatcher(SkillTestPage).forward(request, response);
 		}
 		else{
 			request.setAttribute("executionId", request.getParameter("workerId"));

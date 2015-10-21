@@ -1,12 +1,22 @@
 package edu.uci.ics.sdcl.firefly;
 
 public class SkillTest {
-
+	private String name;
 	private StringBuffer sourceCode;
 	private String[] questions;
 	private String[][] options;
 	private String[] answers;
 	
+	public SkillTest(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public StringBuffer getSourceCode() {
 		return sourceCode;
 	}

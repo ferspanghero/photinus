@@ -167,45 +167,44 @@
 			<center>
 				<b>University of California, Irvine<br> Study Information
 					Sheet<br> <br> Programming Online Study<br> <br>
-					Lead Researcher
-				</b><br> Thomas LaToza, PhD <br> Department of Informatics<br>
-				Donald Bren School of Information and Computer Sciences<br>
-				tlatoza @uci.edu<br> <br> <b>Faculty Sponsor</b><br>
-				Professor Adriaan W. van der Hoek<br> Department of Informatics<br>
+					Faculty Sponsor and Lead Researcher
+				</b><br> Professor Adriaan W. van der Hoek <br> Department of Informatics<br>
 				Donald Bren School of Information and Computer Sciences<br>
 				andre@ics.uci.edu<br> 949-824-6326<br>
 			</center>
 			<ul>
-				<li>You are being asked to participate in a research study to
-					perform some programming tasks related to software design, coding,
-					debugging, and testing.</li>
+				<li>You are being asked to participate in a research study to perform some 
+					programming tasks related to software design, coding, debugging, 
+					and testing.</li>
 				<br>
-				<li>Programming tasks will be performed in an online tool that
-					consists of an external website accessible via a link in a
-					Mechanical Turk task (HIT - Human Intelligent Task).</li>
+				<li>Programming tasks will be performed in an online tool that consists of 
+					an external website accessible via a link in a Mechanical Turk task 
+					(HIT - Human Intelligent Task).</li>
 				<br>
-				<li>The purpose of the study is to identify the challenges
-					developers face using tools while trying to answer their questions
-					about the code. That knowledge can inform the design of new tools
-					to help developers to work more effectively.</li>
+				<li>The purpose of the study is to better understand the challenges 
+					developers face in using tools to answer their questions about code 
+					and to help inform the design of new tools that help developers to work 
+					more effectively.</li>
 				<br>
-				<li>You are eligible to participate in this study if you are at
-					least 18 years of age or older and are fluent in English.</li>
+				<li>You are eligible to participate in this study if you are at least 18 
+					years of age or older; are fluent in English; and have at least minimal 
+					programming skills.</li>
 				<br>
-				<li>The research procedures involve using an online software
-					development tool and will last approximately from 15 to 25 minutes.</li>
+				<li>The research procedures involve using an online software development tool 
+					and will last approximately from 5 to 45 minutes.</li>
 				<br>
-				<li>There are no risks or discomfort associated with the study.
-					No personal information will be collected.</li>
+				<li>There are no risks/discomforts associated with the study. No personal 
+					information will be collected.</li>
 				<br>
-				<li>There are no direct benefits from participation in the
-					study. However, this study may help us to better understand how
-					programmers work with tools.</li>
+				<li>There are no direct benefits from participation in the study. However, 
+					this study may help us to better understand how programmers work with 
+					tools.</li>
 				<br>
-				<li>You will be paid 3 dollars through
-					Amazon Mechanical Turk. At the end of the study, you will be given
-					a code to enter in your HIT (Human Intelligent Task) that confirms
-					that you participated.</li>
+				<li>You will be paid the equivalent of 9  dollars per hour, which is 
+					California minimal wage, prorated by the expected length of the task 
+					to be completed. You will be paid through Amazon Mechanical Turk. 
+					At the end of the study, you will be given a code to enter in your HIT 
+					(Human Intelligent Task) that confirms that you participated.</li>
 				<br>
 				<li>All research data collected will be stored securely and
 					confidentially in encrypted files. At the end of the study, the
@@ -245,8 +244,8 @@
 				<input type="hidden" id="subAction" name="subAction" value="loadConsentForm"> 
 				<input type="hidden" id="workerId" name="workerId" value="consentForm">	
 				<input type="hidden" id="fileName" name="fileName">	
-					<input type="checkbox" name="consentBox" id="consentBox"><i>By checking this box I hereby state
-					that I have read, understood and agreed with the terms above.</i> <br>
+					<input type="checkbox" name="consentBox" id="consentBox"><i> By checking this box I hereby state 
+					that "I have read the study information sheet and want to proceed with this study".</i> <br>
 					
 					<br> 
 					<input type="button" style="float: left;" value="No, thanks" onclick='quitConfirm()'>

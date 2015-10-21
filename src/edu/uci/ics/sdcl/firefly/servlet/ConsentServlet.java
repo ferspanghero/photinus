@@ -46,7 +46,7 @@ public class ConsentServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		// In the context of CrowdDesign, "fileName" refers to the task type (i.e: UI, Architecture, etc.)
 		this.fileName = request.getParameter("fileName");
 		
 		storage = StorageStrategy.initializeSingleton();
@@ -56,7 +56,7 @@ public class ConsentServlet extends HttpServlet {
 		}
 		else if(!storage.isFileAvailable(fileName))
 		{
-			showErrorPage(request, response, "Dear worker, at this moment there are no questions available for the requested file.");
+			showErrorPage(request, response, "Dear worker, at this moment there are no questions available for the requested task type.");
 		}
 		else{
 			Worker worker = null;

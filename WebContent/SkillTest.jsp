@@ -155,9 +155,10 @@
 			<input type="hidden" id="subAction" name="subAction" value=${requestScope["subAction"]}> 
 			<input type="hidden" id="timeStamp" name="timeStamp" value=${requestScope["timeStamp"]}>
 			<input type="hidden" id="isTest" name="isTest" value="false">
-			<br> The source code below is used for all the questions below.<br>
-			<div id="sourceCode"><xmp>${requestScope["sourceCode"]}</xmp></div>
-
+			<c:if test="${not empty requestScope.sourceCode}">
+				<br> The source code below is used for all the questions below.<br>			
+				<div id="sourceCode"><xmp>${requestScope["sourceCode"]}</xmp></div>
+			</c:if>
 				<script>
 					//Editor for Questions 1, 2, and 3
 					var editor1 = ace.edit("sourceCode");

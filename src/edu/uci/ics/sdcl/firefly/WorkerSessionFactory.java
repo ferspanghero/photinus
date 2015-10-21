@@ -279,7 +279,7 @@ public class WorkerSessionFactory{
 				while(microtaskIter.hasNext()){
 					Integer mtaskID = (Integer) microtaskIter.next();
 					Microtask mtask = microtaskMap.get(mtaskID);
-					String methodName = mtask.getCodeSnippet().getMethodSignature().getName();
+					String methodName = "CrowdDesign"; //mtask.getCodeSnippet().getMethodSignature().getName();
 
 					Hashtable<String,Vector<Microtask>> methodMap = fileMethodMap.get(fileName);
 					Vector<Microtask> methodMicrotaskList = methodMap.get(methodName);

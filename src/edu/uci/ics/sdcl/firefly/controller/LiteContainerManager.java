@@ -89,9 +89,9 @@ public class LiteContainerManager extends StorageStrategy{
 		
 		//Bind files with skill tests
 		SkillTestStorage skillTests = new SkillTestStorage();
-		for (String fileName : newSessionTable.keySet()) {
-			skillTests.bindSkillTest(fileName);
-		}
+//		for (String fileName : newSessionTable.keySet()) {
+//			skillTests.bindSkillTest(fileName);
+//		}
 //		skillTests.bindSkillTest();
 	}
 

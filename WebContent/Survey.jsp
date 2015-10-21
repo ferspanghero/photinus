@@ -62,14 +62,7 @@
 			if (expOption === -1) {
 				alert("Please select a level of experience .");
 				return false;
-			}
-			
-			var languageField = document.getElementById("language");
-			languageField.value = languageField.value.trim();
-			if (!languageField.value) {
-				alert("Please enter a programming language.");
-				return false;
-			}
+			}				
 			
 			var yearsField = document.getElementById("years");
 			yearsField.value = yearsField.value.trim();
@@ -194,17 +187,15 @@
 				<input type="radio" name="experience" value="3">Undergraduate student<br>
 				<input type="radio" name="experience" value="4">Hobbyist<br>
 				<input type="radio" name="experience" value="5">Other <input type="text" id="otherexperience" name="otherexperience" size="15">
-				<br>
-				<br>Which programming language(s) do you use most at present?
-				<input type="text" id="language" name="language" size="25"><br>
-				<br>How many years have you been programming?
+				<br>				
+				<br>How many years have you been developing software?
 				<input type="text" id="years" name="years" size="2"><br>
 				<div id="learnedDiv">			
-   				<br>Where did you learn to code (mark all that apply)?<br>
+   				<br>Where did you learn to develop software (mark all that apply)?<br>
    				<input type="hidden" id="hlearned" name="hlearned" value="">
    				<input type="checkbox" name="learned" value="High School" /> High school<br>
    				<input type="checkbox" name="learned" value="University"/> College/University<br>
-   				<input type="checkbox" name="learned" value="Web" /> In the web<br>
+   				<input type="checkbox" name="learned" value="Web" /> On the web<br>
    				<input type="checkbox" name="learned" value="Other" /> Other 
    				<input type="text" id="otherlearned" name="otherlearned" />
    				</div>
