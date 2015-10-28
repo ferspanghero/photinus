@@ -12,11 +12,11 @@ public class PropertyManager {
 
 	private String devPropertyPath= "C:/Users/admin/Documents/Eclipse/photinus/"; 
 
-	public String serverPropertyPath ="C:/Users/admin/Desktop/eclipse-jee-mars-R-win32-x86_64/eclipse/apache-tomcat-7.0.64/webapps";   
+	public String serverPropertyPath ="/var/lib/tomcat7/webapps/crowddesign/";   
 	
 	public String fileUploadFolder = "samples/bulkLoadPhotinus/";
 	
-	public String skillTestUploadFolder = "/samples/bulkSkillTests/";
+	public String skillTestUploadFolder = "samples/bulkSkillTests/";
 	
 	public String fileUploadSourcePath;
 	

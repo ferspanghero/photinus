@@ -1,20 +1,20 @@
 FINDTOP.JAVA ANSWERS
 //Q: What is the output of the code above?
-//O: -1, 0, 2, 4, 8
+//O: -1; 0; 2; 4; 8
 //A: 8
 
-//Q: What would have been the output if we had "numbers.findHighest(1,1)" at line 21?
-//O: 10, 5, 2, 4, 8
+//Q: What would have been the output if we had "numbers.findHighest(1;1)" at line 21?
+//O: 10; 5; 2; 4; 8
 //A: 5
 
 //Q: What would have been the output if instead of "int i=lowIndex;" we had "int i=0;" at line 11?
-//O: 10, 5, 2, 4, 8
+//O: 10; 5; 2; 4; 8
 //A: 10
 
 //Q: What would have been the output if we had "return i;" at line 13?
-//O: 10, 5, 2, 4, 8
+//O: 10; 5; 2; 4; 8
 //A: 4
 
-//Q: What line in the program would have caused an ArrayIndexOutOfBounds exception if we  had "numbers.findHighest(0,5)" at line 21?
-//O: 6, 10, 11, 12, 13
+//Q: What line in the program would have caused an ArrayIndexOutOfBounds exception if we  had "numbers.findHighest(0;5)" at line 21?
+//O: 6; 10; 11; 12; 13
 //A: 12

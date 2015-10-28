@@ -53,7 +53,7 @@
 				}
 			}
 			
-			if (expOption===4){//if user selected other
+			if (expOption===5){//if user selected other
 				if(document.getElementById("otherexperience").value==""){
 					alert("Please fill the experience field!")
 					return false;
@@ -170,7 +170,7 @@
 	<div id="container">
 		<br>
 		<div id="content">
-			<b>Thank you for your interest in CrowdDebug and for helping us localize faults in software from all over the world.<br><br>
+			<b>Thank you for your interest in CrowdDesign and for helping us finding out better ways to design software by using the power of the crowd.<br><br>
 			
 			Please let us know a little bit more about you. This will help us to design future tasks.</b>
 
@@ -182,16 +182,17 @@
 				 <!--  EXPERIENCE QUESTIONS -->
 		
 				<br> I am currently a:</b><br>	
-				<input type="radio" name="experience" value="1">Professional developer<br>
-				<input type="radio" name="experience" value="2">Graduate student<br>
-				<input type="radio" name="experience" value="3">Undergraduate student<br>
-				<input type="radio" name="experience" value="4">Hobbyist<br>
-				<input type="radio" name="experience" value="5">Other <input type="text" id="otherexperience" name="otherexperience" size="15">
+				<input type="radio" name="experience" value="1">Professional software developer<br>
+				<input type="radio" name="experience" value="2">Professional UI/UX designer<br>
+				<input type="radio" name="experience" value="3">Graduate student<br>
+				<input type="radio" name="experience" value="4">Undergraduate student<br>
+				<input type="radio" name="experience" value="5">Hobbyist<br>
+				<input type="radio" name="experience" value="6">Other <input type="text" id="otherexperience" name="otherexperience" size="15">
 				<br>				
-				<br>How many years have you been developing software?
+				<br>How many years of experience do you have?
 				<input type="text" id="years" name="years" size="2"><br>
 				<div id="learnedDiv">			
-   				<br>Where did you learn to develop software (mark all that apply)?<br>
+   				<br>Where did you learn your skills (mark all that apply)?<br>
    				<input type="hidden" id="hlearned" name="hlearned" value="">
    				<input type="checkbox" name="learned" value="High School" /> High school<br>
    				<input type="checkbox" name="learned" value="University"/> College/University<br>

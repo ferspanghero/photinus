@@ -47,7 +47,7 @@ public class SkillTest {
 		boolean[] result = new boolean[answers.length];
 		for (int i=0; i<answers.length; i++) {
 			int letter = ((answers[i].charAt(0)) - 97);
-			result[i] = this.answers[i].equals(this.options[i][letter]);
+			result[i] = this.answers[i].trim().toLowerCase().equals(this.options[i][letter].trim().toLowerCase());
 		}
 		return result;
 	}

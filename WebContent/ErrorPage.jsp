@@ -30,7 +30,7 @@
 	
 	<div id = 'content'>
 		<p style="font-size:30px"><b>Oh no! Something unexpected happened!</b></p><br>
-		<p style="font-size:20px">Please send the following report to: adrianoc@uci.edu</p><br><br>
+		<p style="font-size:20px">Please send the following report to: sdcl.crowddesign@gmail.com</p><br><br>
 		
 		<p style="font-size:20px"><b>Bug report</b></p>
 		<table>

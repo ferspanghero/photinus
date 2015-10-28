@@ -1,21 +1,15 @@
 package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.Charsets;
 
@@ -77,7 +71,7 @@ public class SkillTestServlet extends HttpServlet {
 												// this file
 				sorryPage(request, response, "Dear participant, you have already taken this task,"
 						+ " please obtain the link for a new task and try again."
-						+ " Thank you. In case you have doubts, please send an email" + " to adrianoc@uci.edu.");
+						+ " Thank you. In case you have doubts, please send an email" + " to sdcl.crowddesign@gmail.com.");
 			} else {
 				int grade = this.processAnswers(request);
 				worker.setGrade(grade);
@@ -113,7 +107,7 @@ public class SkillTestServlet extends HttpServlet {
 			answers[i] = request.getParameter("QUESTION" + (i + 1));
 		}
 		SkillTestStorage skillStorage = new SkillTestStorage();
-		SkillTest exam = skillStorage.getSource(worker.getCurrentFileName());
+		SkillTest exam = skillStorage.getSource(worker);
 		boolean[] gradeMap = exam.applyRubrics(answers);
 		int grade = this.countCorrectAnswers(gradeMap);
 
@@ -193,9 +187,9 @@ public class SkillTestServlet extends HttpServlet {
 
 			encryptCipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
 			
-			byte[] encryptedData = Base64.getEncoder().encode(encryptCipher.doFinal(data));
+			//byte[] encryptedData = Base64.getEncoder().encode(encryptCipher.doFinal(data));
 					
-			return new String(encryptedData, Charsets.UTF_8).replace("+", "_").replace("/", "@"); // Replaces slash with underscore to avoid messing with the URL
+			return DatatypeConverter.printBase64Binary(encryptCipher.doFinal(data)).replace("+", "_").replace("/", "@"); // Replaces slash with underscore to avoid messing with the URL
 		} catch (Exception ex) {
 			System.out.println(ex);
 		}

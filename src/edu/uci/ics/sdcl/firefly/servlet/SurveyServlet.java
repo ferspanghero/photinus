@@ -46,7 +46,7 @@ public class SurveyServlet extends HttpServlet {
 			request.setAttribute("workerId",worker.getWorkerId());
 			//request.setAttribute("sessionId",worker.getSessionId());
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
-			request = loadQuestions(request, response, worker.getCurrentFileName());
+			request = loadQuestions(request, response, worker);
 //			if(request.getAttribute("sourceCode").equals(""))
 //			{
 //				request.setAttribute("executionId", request.getParameter("workerId"));
@@ -70,21 +70,23 @@ public class SurveyServlet extends HttpServlet {
 	
 	protected String mapExperience(String level, String other){
 		if(level.equals("1")){
-			return "Professional_Developer";
+			return "Professional_Software_Developer";
 		}else if(level.equals("2")){
-			return "Graduate_Student";
+			return "Professional_UI_UX_Designer";
 		}else if(level.equals("3")){
-			return "Undergraduate_Student";
+			return "Graduate_Student";
 		}else if(level.equals("4")){
+			return "Undergraduate_Student";
+		}else if(level.equals("5")){
 			return "Hobbyist";
 		}else{
 			return "Other "+other;
 		}
 	}
 	
-	private HttpServletRequest loadQuestions(HttpServletRequest request, HttpServletResponse response, String fileName) throws ServletException, IOException {
+	private HttpServletRequest loadQuestions(HttpServletRequest request, HttpServletResponse response, Worker worker) throws ServletException, IOException {
 		SkillTestStorage source = new SkillTestStorage();
-		SkillTest skillTest = source.getSource(fileName);
+		SkillTest skillTest = source.getSource(worker);
 		if(skillTest != null)
 		{
 			request.setAttribute("sourceCode", skillTest.getSourceCode());

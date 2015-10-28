@@ -9,9 +9,8 @@ import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
 import edu.uci.ics.sdcl.firefly.SkillTest;
+import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.util.PropertyManager;
-
-import java.lang.StringBuffer;
 
 public class SkillTestStorage {
 	
@@ -23,6 +22,8 @@ public class SkillTestStorage {
 	
 	//Holds the relationship between files and skillTests
 	private static Hashtable<String, List<SkillTest>> skillFileTable = new Hashtable<String, List<SkillTest>>();
+	
+	private static Hashtable<String, SkillTest> skillTestWorkerTable = new Hashtable<>();
 	
 	public SkillTestStorage(){
 		if(skillTests.size() == 0)
@@ -153,22 +154,26 @@ public class SkillTestStorage {
 			fileName = (String) fileName.subSequence(0, extensionIndex); // Avoid file extension
 					
 		if (!skillFileTable.containsKey(fileName)) {
-			skillFileTable.put(fileName, new ArrayList<>());
+			skillFileTable.put(fileName, new ArrayList<SkillTest>());
 		}
 		
 		skillFileTable.get(fileName).add(skillTests.get(testName));
 	}
 	
 	/**
-	 * Gets the skill test related to a file
+	 * Gets the skill test related to a worker
 	 * 
-	 * @param fileName: File name without the extension
-	 * @return: A StringBuffer containing the skill test or null if no skill is related to the file
+	 * @param worker: The worker
+	 * @return: A StringBuffer containing the skill test or null if no skill is related to the worker
 	 */
-	public SkillTest getSource(String fileName)
+	public SkillTest getSource(Worker worker)
 	{
-		int randomTestIndex = ThreadLocalRandom.current().nextInt(0, skillFileTable.get(fileName).size() - 1);
+		if (!skillTestWorkerTable.containsKey(worker.getWorkerId())) {
+			int randomTestIndex = ThreadLocalRandom.current().nextInt(0, skillFileTable.get(worker.getCurrentFileName()).size() - 1);
+			
+			skillTestWorkerTable.put(worker.getWorkerId(), skillFileTable.get(worker.getCurrentFileName()).get(randomTestIndex));
+		}
 		
-		return skillFileTable.get(fileName).get(randomTestIndex);
+		return skillTestWorkerTable.get(worker.getWorkerId());
 	}
 }

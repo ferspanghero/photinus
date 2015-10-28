@@ -1,20 +1,20 @@
 //WORDFINDER ANSWERS
 //Q: What is the output of the code above?
-//O: -1, 0, 1, 2, 3
+//O: -1; 0; 1; 2; 3
 //A: 0
 
 //Q: What would have been the output if the variable mySentence was set to "cogito ergo cogito" at line 20?
-//O: -1, 0, 1, 2, 3
+//O: -1; 0; 1; 2; 3
 //A: 2
 
 //Q: What would have been the output if instead of "int i=0;" we had "int i=1;" at line 12?
-//O: -1, 0, 1, 2, 3
+//O: -1; 0; 1; 2; 3
 //A: -1
 
 //Q: What would have been the output if instead of "found= i;" we had "return i;" at line 14?
-//O: -1, 0, 1, 2, 3
+//O: -1; 0; 1; 2; 3
 //A: 0
 
 //Q: What line in the program would have caused a Null Pointer exception if we set the variable mySentence to null at line 20? 
-//O: 21, 22, 6, 10, 13
+//O: 21; 22; 6; 10; 13
 //A: 10

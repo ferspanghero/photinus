@@ -147,7 +147,7 @@
 <div id="container"><br>
 	<div id="content">
 		<b>Before we allow you to continue, we need to evaluate your 
-		programming skills. Please answer the following questions. </b>
+		skills. Please answer the following questions. </b>
 	
 	
 		<form name="testForm" method="get" action="skillTest">

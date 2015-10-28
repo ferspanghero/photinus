@@ -30,7 +30,7 @@ public class ConsentServlet extends HttpServlet {
 	private String hasAlreadyTakenTask ="Dear participant, you have already taken this task,"
 			+ " please obtain the link for a new task. "
 			+ "In case you have doubts, please send an email"
-			+ " to adrianoc@uci.edu.";
+			+ " to sdcl.crowddesign@gmail.com.";
 	
 	private String fileName;
 	private String consentDateStr;
