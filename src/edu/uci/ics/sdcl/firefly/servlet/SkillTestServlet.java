@@ -167,7 +167,7 @@ public class SkillTestServlet extends HttpServlet {
 				throw new RuntimeException("Error while encrypting microtask " + microtask.getID());
 			}
 
-			String redirectURL = "http://sdclturkone.meteor.com/" + worker.getSessionId() + "/" + worker.getWorkerId() + "/" + encryptedDecisionPointId;			
+			String redirectURL = "http://turkone-54382.onmodulus.net/" + worker.getSessionId() + "/" + worker.getWorkerId() + "/" + encryptedDecisionPointId;			
 			
 			// Redirects to CrowdDesign prototype
 			response.sendRedirect(redirectURL); 

@@ -2,6 +2,7 @@ package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -20,8 +21,11 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import edu.uci.ics.sdcl.firefly.FileDebugSession;
 import edu.uci.ics.sdcl.firefly.Microtask;
@@ -179,26 +183,63 @@ public class FileUploadServlet extends HttpServlet {
 
 		request.getRequestDispatcher("/FileUpload.jsp").forward(request, response);
 	}
+	
+	private class DecisionPoint {
+		public DecisionPoint(int type, int numWorkers) {
+			this.type = type;
+			this.numWorkers = numWorkers;
+		}
+		
+		public int type;
+		public int numWorkers;
+	}
 
 	private String generateMicrotasks(String fileName, String fileContent, String methodName, String numberOfParameters,
 			String bugReport, String testCase) {
 		// 2 types of tasks: User Interface (UI) and Architecture (AR)
 		// 4 decision points per type
 		// 20 users per decision point
-		// Total: 2 x 4 x 20 = 160 tasks
-		final int MAX_DECISION_POINTS = 4;
-		final int MAX_WORKERS = 20;
-		Hashtable<Integer, Microtask> microtasksTable = new Hashtable<>(MAX_DECISION_POINTS * MAX_WORKERS);
+		// Total: 2 x 4 x 20 = 160 tasks		
+		
+		// Probably the worst piece of code I have ever written in my life...
+		List<DecisionPoint> workersDecisionPointRelation = new ArrayList<>();
+		
+		workersDecisionPointRelation.add(new DecisionPoint(1, 5)); // DP1
+		workersDecisionPointRelation.add(new DecisionPoint(2, 5)); // DP2
+		workersDecisionPointRelation.add(new DecisionPoint(3, 5)); // DP3
+		workersDecisionPointRelation.add(new DecisionPoint(4, 5)); // DP4
+		
+		Hashtable<Integer, Microtask> microtasksTable = new Hashtable<>();
 		int microtaskId = 1;
-
-		for (int j = 1; j <= MAX_WORKERS; j++) {
-			for (int k = 1; k <= MAX_DECISION_POINTS; k++) {
-				Microtask microtask = new Microtask(Integer.toString(k), microtaskId++, null, fileName);
-
+		int i = 0;
+		int originalSize = workersDecisionPointRelation.size();
+		
+		while (workersDecisionPointRelation.size() > 0) {
+			if (i <= workersDecisionPointRelation.size() - 1) {
+				Microtask microtask = new Microtask(Integer.toString(workersDecisionPointRelation.get(i).type), microtaskId++, null, fileName);
+	
 				microtask.setQuestionType(fileName);
 				microtasksTable.put(microtask.getID(), microtask);
+				
+				workersDecisionPointRelation.get(i).numWorkers--;
+				
+				if (workersDecisionPointRelation.get(i).numWorkers == 0) {
+					workersDecisionPointRelation.remove(i);
+					continue;
+				}
 			}
-		}		
+			
+			i = (i + 1) % originalSize;			
+		}
+		
+//		for (int j = 1; j <= MAX_WORKERS; j++) {
+//			for (int k = 1; k <= MAX_DECISION_POINTS; k++) {
+//				Microtask microtask = new Microtask(Integer.toString(k), microtaskId++, null, fileName);
+//
+//				microtask.setQuestionType(fileName);
+//				microtasksTable.put(microtask.getID(), microtask);
+//			}
+//		}		
 
 		String results = "";
 

@@ -169,9 +169,12 @@ public class SkillTestStorage {
 	public SkillTest getSource(Worker worker)
 	{
 		if (!skillTestWorkerTable.containsKey(worker.getWorkerId())) {
-			int randomTestIndex = ThreadLocalRandom.current().nextInt(0, skillFileTable.get(worker.getCurrentFileName()).size() - 1);
+			int testIndex = 0;
 			
-			skillTestWorkerTable.put(worker.getWorkerId(), skillFileTable.get(worker.getCurrentFileName()).get(randomTestIndex));
+			if (skillFileTable.get(worker.getCurrentFileName()).size() > 1)
+				testIndex = ThreadLocalRandom.current().nextInt(0, skillFileTable.get(worker.getCurrentFileName()).size() - 1);
+						
+			skillTestWorkerTable.put(worker.getWorkerId(), skillFileTable.get(worker.getCurrentFileName()).get(testIndex));
 		}
 		
 		return skillTestWorkerTable.get(worker.getWorkerId());
