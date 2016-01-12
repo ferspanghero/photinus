@@ -1,5 +1,8 @@
 package edu.uci.ics.sdcl.firefly.controller;
 
+import java.util.Hashtable;
+import java.util.List;
+
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
@@ -70,6 +73,7 @@ public abstract class StorageStrategy {
 	public abstract boolean insertSurvey(Worker worker);
 	public abstract boolean insertFeedback(String feedback, Worker workerId);
 	public abstract WorkerSession readActiveSessionById(String sessionId);
+	public abstract Hashtable<String, List<String>> getPastWorkers();
 	
 
 	}

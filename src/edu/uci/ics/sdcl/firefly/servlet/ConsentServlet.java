@@ -56,7 +56,7 @@ public class ConsentServlet extends HttpServlet {
 		}
 		else if(!storage.isFileAvailable(fileName))
 		{
-			showErrorPage(request, response, "Dear worker, at this moment there are no questions available for the requested task type.");
+			sorryPage(request, response, "Dear worker, at this moment there are no questions available for the requested task type.");			
 		}
 		else{
 			Worker worker = null;

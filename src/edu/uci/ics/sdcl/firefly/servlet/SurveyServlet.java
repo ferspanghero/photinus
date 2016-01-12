@@ -20,7 +20,7 @@ public class SurveyServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static String question[] = {"Gender", "Age", "Country", "Experience", "YearsProgramming", "Learned"};   
+	public static String question[] = {"Gender", "Age", "Country", "Experience", "YearsProgramming", "Learned", "TurkId"};   
 	
     private final String SkillTestPage = "/SkillTest.jsp";
     
@@ -40,6 +40,7 @@ public class SurveyServlet extends HttpServlet {
 			worker.addSurveyAnswer(question[3], mapExperience(request.getParameter("experience"),request.getParameter("otherexperience")));			
 			worker.addSurveyAnswer(question[4], request.getParameter("years"));
 			worker.addSurveyAnswer(question[5], request.getParameter("hlearned"));
+			worker.addSurveyAnswer(question[6], request.getParameter("turkid"));					
 
 			//Store result
 			storage.insertSurvey(worker);

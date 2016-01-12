@@ -204,10 +204,10 @@ public class FileUploadServlet extends HttpServlet {
 		// Probably the worst piece of code I have ever written in my life...
 		List<DecisionPoint> workersDecisionPointRelation = new ArrayList<>();
 		
-		workersDecisionPointRelation.add(new DecisionPoint(1, 5)); // DP1
-		workersDecisionPointRelation.add(new DecisionPoint(2, 5)); // DP2
-		workersDecisionPointRelation.add(new DecisionPoint(3, 5)); // DP3
-		workersDecisionPointRelation.add(new DecisionPoint(4, 5)); // DP4
+		workersDecisionPointRelation.add(new DecisionPoint(1, 50)); // DP1
+		workersDecisionPointRelation.add(new DecisionPoint(2, 50)); // DP2
+		workersDecisionPointRelation.add(new DecisionPoint(3, 50)); // DP3
+		workersDecisionPointRelation.add(new DecisionPoint(4, 50)); // DP4
 		
 		Hashtable<Integer, Microtask> microtasksTable = new Hashtable<>();
 		int microtaskId = 1;

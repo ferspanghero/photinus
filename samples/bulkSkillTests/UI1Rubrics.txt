@@ -1,0 +1,20 @@
+//USERINTERFACEONE(1,8,11,5,10)
+//Giving feedback about the system status to the user is an important part of its design. The system should always keep users informed about what is going on. Which of the following statements is an example of such feedback?
+//The system sends an email to the user informing about the latest developments; The system prompts the user for his password when logging in; The system gives the user a tutorial about how to use a new feature; The system shows a progress indicator when it is loading
+//A: The system shows a progress indicator when it is loading 
+
+//When users need to read text in your application it is important that it presented in a way that does not harm its readability. Which of the following could harm the readability of text in your application?
+//Text with a high contrast; Font sizes that are large enough to be readable on standard displays; Text that is colored to stand out; Unique labels for menu’s and buttons 
+//A: Text that is colored to stand out 
+
+// When considering design principles which of the following is true?
+//Simplicity comes before usability; Discoverability comes before consistency; Efficiency comes before learnability; None of these are true
+//A: None of these are true
+
+//When designing an user interface it is important to make your designs consistent. Which of the following statements about consistency in design is correct?<br><br>I. Offer users consistent visual cues for a sense of "home"<br>II. Users do not have to be informed when they face delay
+//I is correct and II is false; I is false and II is correct; Both I and II are correct; Both I and II are false
+//A: I is correct and II is false
+
+//What is a problem, also known as the "Illusion of Simplicity", that can happen when focusing to much on simplicity? 
+//Creating simplicity will harm the usability; Hiding complexity, in favour of simplicity, will actually increase it; Creating optical illusions on your website will mislead the user; Simplicity improves usage patterns 
+//A: Hiding complexity, in favor of simplicity, will actually increase it

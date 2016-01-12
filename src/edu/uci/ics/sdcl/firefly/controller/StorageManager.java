@@ -1,5 +1,8 @@
 package edu.uci.ics.sdcl.firefly.controller;
 
+import java.util.Hashtable;
+import java.util.List;
+
 import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
@@ -144,6 +147,12 @@ public class StorageManager extends StorageStrategy{
 	@Override
 	public boolean insertFeedback(String feedback, Worker workerId) {
 		return false;
+	}
+
+	@Override
+	public Hashtable<String, List<String>> getPastWorkers() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

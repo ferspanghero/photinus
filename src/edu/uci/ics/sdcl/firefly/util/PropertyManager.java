@@ -39,6 +39,8 @@ public class PropertyManager {
 	public String microtaskTokenList;
 	
 	public String bugCoveringList;
+	
+	public String pastWorkersFilePath;
 
 	private static PropertyManager manager;
 	
@@ -80,6 +82,7 @@ public class PropertyManager {
 			this.fileNameTokenList = new String(properties.getProperty("fileNameList"));
 			this.microtaskTokenList = new String(properties.getProperty("microtaskList"));
 			this.bugCoveringList = new String(properties.getProperty("bugCoveringQuestions"));
+			this.pastWorkersFilePath = new String(properties.getProperty("pastWorkersFilePath"));
 		} 
 		catch (IOException e) {
 			System.out.println("Could not load properties. Please be sure that the property file is located at: "+this.devPropertyPath);
@@ -99,6 +102,7 @@ public class PropertyManager {
 			this.fileNameTokenList = new String(properties.getProperty("fileNameList"));
 			this.microtaskTokenList = new String(properties.getProperty("microtaskList"));
 			this.bugCoveringList = new String(properties.getProperty("bugCoveringQuestions"));
+			this.pastWorkersFilePath = new String(properties.getProperty("pastWorkersFilePath"));
 		} 
 		catch (IOException e) {
 			System.out.println("Could not load properties. Please be sure that the property file is located at: "+this.serverPropertyPath);

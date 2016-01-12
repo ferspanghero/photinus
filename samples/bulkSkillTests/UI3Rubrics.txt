@@ -1,0 +1,20 @@
+//USERINTERFACEONE(3,6,8,11,7)
+//Even better than good error messages is a careful design, which prevents a problem from occurring in the first place. Which of the following statements is not an example of preventing errors?
+//Google auto-complete; Amazon's "you might also like" product recommendations; Autocorrect of grammar and spelling; Conflicting buttons, like "cancel" and "submit", are clearly kept separated 
+//A: Amazon's "you might also like" product recommendations 
+
+//Placeholder text is used in text fields as a temporary solution until a proper value or variable can be assigned. Which of the following statements about placeholder text fields are correct?<br><br>I. Placeholder text within a field should be easy to replace <br>II. The word "default" is a meaningful and responsive term to put in a default text field 
+//I is correct and II is false; I is false and II is correct; Both I and II are correct; Both I and II are false
+//A: I is correct and II is false
+
+//When users need to read text in your application it is important that it presented in a way that does not harm its readability. Which of the following could harm the readability of text in your application?
+//Text with a high contrast; Text that is colored to stand out; Unique labels for menu’s and buttons; Font sizes that are large enough to be readable on standard displays 
+//A: Text that is colored to stand out 
+
+// When considering design principles which of the following is true?
+//Simplicity comes before usability; None of these are true; Discoverability comes before consistency; Efficiency comes before learnability
+//A: None of these are true
+
+//While using your website an user clicks a button but unfortunately an error occurs. What should your website show to the user?
+//The user gets a detailed message containing all the information about the error including the stack trace and an option to retry the action; The user gets shown a blank page with an error code; The user gets a message that an error occurred and is asked to try again; The user gets navigated back to the homepage 
+//A: The user gets a message that an error occurred and is asked to try again 

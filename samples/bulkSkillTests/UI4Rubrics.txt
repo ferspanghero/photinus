@@ -1,0 +1,20 @@
+//USERINTERFACEONE(9,4,11,10,1)
+//A good User Interface design can improve the user experience of an application. Which of the following statements about user interfaces are correct?<br><br>I. Controls and other objects necessary for the successful use of software have to be visibly accessible at all times <br>II. Users are capable of learning quickly, therefore after giving instructions once they will not need them again
+//I is correct and II is false; I is false and II is correct; Both I and II are correct; Both I and II are false
+//A: I is correct and II is false
+
+//The aesthetics of an application can influence the user experience a lot. Which of the following principles about aesthetics in design is not true?
+//Aesthetic design should be left to those schooled and skilled in its application(e.g. graphic and visual designers); Fashion should never be put before usability; Aesthetics should lead the design of software; Test the visual design as thoroughly as the behavioral design
+//A: Aesthetics should lead the design of software
+
+// When considering design principles which of the following is true?
+//Efficiency comes before learnability; Discoverability comes before consistency; None of these are true; Simplicity comes before usability
+//A: None of these are true
+
+//What is a problem, also known as the "Illusion of Simplicity", that can happen when focusing to much on simplicity? 
+//Creating optical illusions on your website will mislead the user; Simplicity improves usage patterns; Creating simplicity will harm the usability; Hiding complexity, in favour of simplicity, will actually increase it
+//A: Hiding complexity, in favor of simplicity, will actually increase it
+
+//Giving feedback about the system status to the user is an important part of its design. The system should always keep users informed about what is going on. Which of the following statements is an example of such feedback?
+//The system shows a progress indicator when it is loading; The system prompts the user for his password when logging in; The system gives the user a tutorial about how to use a new feature; The system sends an email to the user informing about the latest developments
+//A: The system shows a progress indicator when it is loading 

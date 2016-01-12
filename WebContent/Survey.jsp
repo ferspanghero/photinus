@@ -212,7 +212,8 @@
 					size="2" /><br>
 				<br> What is your country of residence?</b> <input type=text
 					name="country" id="country" size="25" /><br>
-   				
+   				<br>Please provide your Amazon Mechnical Turk id if you have done this experiment before:
+   				<br> <input type=text name="turkid" id="turkid" size="25" /><br>
 
    				<br><br>
 

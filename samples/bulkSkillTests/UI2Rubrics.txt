@@ -1,0 +1,20 @@
+//USERINTERFACEONE(12,10,2,6,9)
+//There are many known common design mistakes. Which of the following is not a design mistake?
+//Prompting alert boxes to a user; Using very small fonts; Having a confusing navigation; Not informing the user about a successful submission 
+//A:Prompting alert boxes to a user
+
+//What is a problem, also known as the "Illusion of Simplicity", that can happen when focusing to much on simplicity? 
+//Creating optical illusions on your website will mislead the user; Simplicity improves usage patterns; Creating simplicity will harm the usability; Hiding complexity, in favour of simplicity, will actually increase it 
+//A: Hiding complexity, in favor of simplicity, will actually increase it
+
+//When designing an user interface it is important to make your designs consistent. Which of the following statements about consistency in design is correct?<br><br>I. Users should not have to wonder whether different words, situations, or actions mean the same thing.<br>II. It is just as important to be visually inconsistent when things act differently as it is to be visually consistent when things act the same
+//I is correct and II is false; I is false and II is correct; Both I and II are correct; Both I and II are false
+//A: Both I and II are correct
+
+//Placeholder text is used in text fields as a temporary solution until a proper value or variable can be assigned. Which of the following statements about placeholder text fields are correct?<br><br>I. The word "default" is a meaningful and responsive term to put in a default text field<br>II. Placeholder text within a field should be easy to replace
+//I is correct and II is false; I is false and II is correct; Both I and II are correct; Both I and II are false
+//A: I is false and II is correct
+
+//A good User Interface design can improve the user experience of an application. Which of the following statements about user interfaces are correct?<br><br>I. Controls and other objects necessary for the successful use of software do not have to be visibly accessible at all times <br>II. Users are capable of learning quickly, therefore after giving instructions once they will not need them again
+//I is correct and II is false; I is false and II is correct; Both I and II are correct; Both I and II are false
+//A: Both I and II are false

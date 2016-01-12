@@ -172,7 +172,7 @@ public class SkillTestStorage {
 			int testIndex = 0;
 			
 			if (skillFileTable.get(worker.getCurrentFileName()).size() > 1)
-				testIndex = ThreadLocalRandom.current().nextInt(0, skillFileTable.get(worker.getCurrentFileName()).size() - 1);
+				testIndex = ThreadLocalRandom.current().nextInt(0, skillFileTable.get(worker.getCurrentFileName()).size()); // upper bound is exclusive
 						
 			skillTestWorkerTable.put(worker.getWorkerId(), skillFileTable.get(worker.getCurrentFileName()).get(testIndex));
 		}

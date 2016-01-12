@@ -1,6 +1,8 @@
 package edu.uci.ics.sdcl.firefly.servlet;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Stack;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -140,27 +142,26 @@ public class SkillTestServlet extends HttpServlet {
 			request.setAttribute("fileName", fileName);
 			request.setAttribute("timeStamp", TimeStampUtil.getTimeStampMillisec());
 
-			// Load the new Microtask data into the Request
-
+			Microtask microtask = storage.getNextMicrotask(session.getId());			
+			String workerTurkId = worker.getSurveyAnswer("TurkId");
+			String decisionPointId = microtask.getQuestionType() + microtask.getQuestion(); // I.E: UI1, AR4, etc.
+			
+			// If the worker did the experiment before
+			if (workerTurkId != null && !workerTurkId.isEmpty() && storage.getPastWorkers().containsKey(workerTurkId.toLowerCase())) {
+				List<String> workerPastQuestionTypes = storage.getPastWorkers().get(workerTurkId);
+				
+				// If the worker already did this type of question
+				while (!workerPastQuestionTypes.isEmpty() && workerPastQuestionTypes.contains(decisionPointId.toLowerCase())) {
+					session = storage.readNewSession(worker.getWorkerId(), fileName);
+					microtask = storage.getNextMicrotask(session.getId());
+					decisionPointId = microtask.getQuestionType() + microtask.getQuestion();
+				}
+			}
+			
 			// Data for the Progress bar
 			request.setAttribute("currentTask", session.getCurrentIndexPlus());
 			request.setAttribute("totalTasks", session.getMicrotaskListSize());
-
-			// For load test
-			//Boolean isTest = Boolean.valueOf(request.getParameter("isTest"));
-			// System.out.println("isTest: "+isTest);
-			// request = MicrotaskServlet.generateRequest(request,
-			// storage.getNextMicrotask(session.getId()));
-			// if(isTest)
-			// request.getRequestDispatcher(MicrotaskLoadTestPage).forward(request,
-			// response);
-			// else
-			// request.getRequestDispatcher(QuestionMicrotaskPage).forward(request,
-			// response);
-
-			Microtask microtask = storage.getNextMicrotask(session.getId());
-
-			String decisionPointId = microtask.getQuestionType() + microtask.getQuestion(); // I.E: UI1, AR4, etc.
+			
 			String encryptedDecisionPointId = getEncryptedData(decisionPointId.getBytes());
 
 			if (encryptedDecisionPointId == null || worker.getSessionId() == null || worker.getWorkerId() == null) {

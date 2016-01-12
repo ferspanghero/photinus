@@ -1,6 +1,13 @@
 package edu.uci.ics.sdcl.firefly.controller;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -11,9 +18,10 @@ import edu.uci.ics.sdcl.firefly.Answer;
 import edu.uci.ics.sdcl.firefly.Microtask;
 import edu.uci.ics.sdcl.firefly.Worker;
 import edu.uci.ics.sdcl.firefly.WorkerSession;
-import edu.uci.ics.sdcl.firefly.servlet.SkillTestServlet;
+import edu.uci.ics.sdcl.firefly.servlet.FileUploadServlet;
 import edu.uci.ics.sdcl.firefly.storage.SkillTestStorage;
 import edu.uci.ics.sdcl.firefly.storage.WorkerSessionStorage;
+import edu.uci.ics.sdcl.firefly.util.PropertyManager;
 import edu.uci.ics.sdcl.firefly.util.RandomKeyGenerator;
 
 public class LiteContainerManager extends StorageStrategy{
@@ -36,6 +44,8 @@ public class LiteContainerManager extends StorageStrategy{
 	/** Keeps track of Worker Consents, Surveys, and Feedback 
 	 * Indexed by workerId and sessionId and has one of the labels "CONSENT", "SURVEY", "FEEDBACK"*/
 	private Hashtable<String, Hashtable<String,String>> consentSurveyTestFeedbackTable;
+		
+	private Hashtable<String, List<String>> pastWorkers;
 		
 	/** Logger for register consent, skilltest, and survey */
 	private Logger consentLogger;
@@ -79,6 +89,7 @@ public class LiteContainerManager extends StorageStrategy{
 		closedSessionVector = new Vector<WorkerSession>();
 		sessionMicrotaskTable = new Hashtable<String, Hashtable<String,Hashtable<Integer, Integer>>>();
 		consentSurveyTestFeedbackTable = new Hashtable<String, Hashtable<String,String>>();
+		pastWorkers = readPastWorkers();
 		
 		//Initialize Worker table
 		workerTable = new Hashtable<String, Worker>();
@@ -93,6 +104,45 @@ public class LiteContainerManager extends StorageStrategy{
 //			skillTests.bindSkillTest(fileName);
 //		}
 //		skillTests.bindSkillTest();
+	}
+
+	private Hashtable<String, List<String>> readPastWorkers() {
+		PropertyManager manager = PropertyManager.initializeSingleton();
+		Hashtable<String, List<String>> pastWorkers = new Hashtable<>();
+		Logger logger = LoggerFactory.getLogger(FileUploadServlet.class);
+		
+		try {
+			logger.info("Past workers property file path: " + manager.pastWorkersFilePath);
+			Path pastWorkersPath = Paths.get(manager.pastWorkersFilePath);
+			logger.info("Past workers processed path: " + pastWorkersPath.toString());
+			
+			List<String> lines = Files.readAllLines(pastWorkersPath, Charset.defaultCharset());
+			
+			for (String line : lines) {
+				if (line != null && !line.isEmpty()) {
+					String[] splitLine = line.split(";");
+					String key = splitLine[0].toLowerCase();
+					
+					if (splitLine.length > 0) {
+						if (!pastWorkers.containsKey(key)) {
+							pastWorkers.put(key, new ArrayList<String>());
+						}
+						
+						for (int i = 1; i < splitLine.length; i++) {
+							pastWorkers.get(key).add(splitLine[i].toLowerCase());
+						}
+					}
+				}
+			}
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+		
+		return pastWorkers;
+	}
+	
+	public Hashtable<String, List<String>> getPastWorkers() {
+		return pastWorkers;
 	}
 
 	public synchronized  Microtask getNextMicrotask(String sessionId){
