@@ -148,13 +148,15 @@ public class SkillTestServlet extends HttpServlet {
 			
 			// If the worker did the experiment before
 			if (workerTurkId != null && !workerTurkId.isEmpty() && storage.getPastWorkers().containsKey(workerTurkId.toLowerCase())) {
-				List<String> workerPastQuestionTypes = storage.getPastWorkers().get(workerTurkId);
+				List<String> workerPastQuestionTypes = storage.getPastWorkers().get(workerTurkId.toLowerCase());
 				
 				// If the worker already did this type of question
-				while (!workerPastQuestionTypes.isEmpty() && workerPastQuestionTypes.contains(decisionPointId.toLowerCase())) {
-					session = storage.readNewSession(worker.getWorkerId(), fileName);
-					microtask = storage.getNextMicrotask(session.getId());
-					decisionPointId = microtask.getQuestionType() + microtask.getQuestion();
+				if (workerPastQuestionTypes != null) {
+					while (!workerPastQuestionTypes.isEmpty() && workerPastQuestionTypes.contains(decisionPointId.toLowerCase())) {
+						session = storage.readNewSession(worker.getWorkerId(), fileName);
+						microtask = storage.getNextMicrotask(session.getId());
+						decisionPointId = microtask.getQuestionType() + microtask.getQuestion();
+					}
 				}
 			}
 			

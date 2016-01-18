@@ -1,6 +1,8 @@
 package edu.uci.ics.sdcl.firefly.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -112,6 +114,10 @@ public class LiteContainerManager extends StorageStrategy{
 		Logger logger = LoggerFactory.getLogger(FileUploadServlet.class);
 		
 		try {
+			if (manager.pastWorkersFilePath == null || manager.pastWorkersFilePath.isEmpty()) {
+				throw new IllegalArgumentException("'pastWorkersFilePath' property is not specified.");
+			}
+			
 			logger.info("Past workers property file path: " + manager.pastWorkersFilePath);
 			Path pastWorkersPath = Paths.get(manager.pastWorkersFilePath);
 			logger.info("Past workers processed path: " + pastWorkersPath.toString());
@@ -127,15 +133,18 @@ public class LiteContainerManager extends StorageStrategy{
 						if (!pastWorkers.containsKey(key)) {
 							pastWorkers.put(key, new ArrayList<String>());
 						}
-						
+							
 						for (int i = 1; i < splitLine.length; i++) {
 							pastWorkers.get(key).add(splitLine[i].toLowerCase());
 						}
 					}
 				}
 			}
-		} catch (IOException e) {			
-			e.printStackTrace();
+		} catch (IllegalArgumentException | IOException e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);			
+			logger.error(sw.toString());
 		}
 		
 		return pastWorkers;
